@@ -99,14 +99,15 @@
 		            {/if}
 		            {/block}
 		            
-		            {* Article price configurator *}
+		          	{* Article price configurator *}
 		            {block name='frontend_detail_data_price_configurator'}
 					<strong>
 						{if $sArticle.priceStartingFrom && !$sArticle.sConfigurator}
 							<span id="DetailDataInfoFrom">{se name="DetailDataInfoFrom"}{/se}</span>
+							{$sArticle.priceStartingFrom|currency}
+						{else}
+							{$sArticle.price|currency}
 						{/if}
-						
-						{$sArticle.price|currency}
 					</strong>
 					{/block}
 				</div>
