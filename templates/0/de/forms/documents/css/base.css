@@ -1,0 +1,125 @@
+body {
+	padding: 0;
+	margin: 0;
+	width:100%;
+}
+
+div#head_left {
+	/*float: left;*/
+	line-height: 16px;
+}
+
+a {
+	color: #FFF;
+}
+a {
+	margin: 0px;
+}
+
+div#head_sender {
+	float: left;
+	margin-top: <!--{$style.sender.top}-->;
+	margin-left: <!--{$style.sender.left}-->;
+	font-size: 12px;
+	height: 120px;
+}
+div#head_top {
+	font-size: 16px;
+	height: <!--{$style.header.top2}-->;
+	overflow: hidden;
+}
+.fixfloat {
+	clear:both;
+	font-size:0pt;
+	height:1px;
+	line-height:0pt;
+}
+div#head_under {
+	float: left;
+	clear: both;
+	padding-top: <!--{$style.headline.margin}-->;
+}
+
+div#head_left p.sender {
+	font-size: 9px;
+	margin: 0px;
+	line-height: 2.5em;
+}
+
+div#head_right {
+	float: right;
+	font-size: 10px;
+	line-height: 1.5em;
+	margin-right: <!--{$style.header.margin}-->;
+}
+div#header img.logo {
+	border: 0pt none;
+}
+
+div#header a.logo {
+	outline-style: none;
+}
+
+div#head_under {
+	line-height: 1.5em;
+	float: left;
+	padding:50px 0 10px 0;
+}
+
+div#content {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	margin: <!--{$style.margin.top}--> <!--{$style.margin.right}--> <!--{$style.margin.bottom}--> <!--{$style.margin.left}-->;
+	padding: 0;
+}
+
+div#header {
+	height: <!--{$style.content_middle.height}-->;
+	clear: both;
+	
+}
+div#footer {
+	float: left;
+	font-size: 8px;
+	line-height: 1.5em;
+	clear: both;
+}
+
+div#content_middle {
+	/*float: left;*/
+	padding:0 0 0 0;
+	height: <!--{$style.content_middle.height}-->;
+	clear: both;
+	font-size: 10px;
+}
+
+div#content_middle td{
+	padding: 5px 0;
+}
+
+div#under {
+	margin-top: 20px;
+	float: right;
+	text-align: right;
+}
+
+div#content_middle td {
+	white-space:nowrap;
+}
+div#content_middle td.name {
+	white-space:normal;
+}
+
+div#content_middle td.line {
+	border-bottom: 1px solid #999;
+	height: 0px;
+	padding: 0;
+}
+div#content_middle td.line2 {
+	border-bottom: 1px solid #000;
+	height: 0px;
+	padding: 0;
+}
+
+div#footer {
+	position: fixed; bottom: <!--{$style.margin.bottom}-->; left: <!--{$style.margin.left}-->;
+}

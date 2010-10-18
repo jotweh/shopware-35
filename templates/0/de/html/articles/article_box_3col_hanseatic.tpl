@@ -1,0 +1,1 @@
+{$sArticle.calculator}

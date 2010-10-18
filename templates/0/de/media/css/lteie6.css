@@ -1,0 +1,117 @@
+
+body#hideLeft div#center {height: 500px;}
+
+div#navigation ul li a {width:1px; white-space:nowrap;}
+div#navigation ul li.active a:hover {color:#fff;}
+
+div#topseller { width:147px; }
+
+div.container_waehrung {width: 155px;}
+div.container_language {width:180px;}
+
+input#searchfield {float:left;}
+form#searchform input#searchfield {width:255px;}
+#submit_search {padding:2px 2px 4px 2px;font-size:10px !important;}
+
+div.artbox div.top{ height:170px;}
+div.artbox div.middle{ height:66px;padding: 0px 15px;}
+div.artbox div.bottom{ height:55px;}
+
+
+div.artbox2 a.more_artbox4 {top:296px;}
+div.artbox2 a.compare_artbox4 {top:272px;}
+
+div.article-options a.navi {line-height:12px;}
+div.article-options div.more {height:7px;padding-top:7px;line-height:0;}
+div.article-options form#frmsort label {margin-right:0px;padding-right:5px;width:90px;}
+
+/*ticket*/
+div.col_right2 {margin:0 0 0 0px;}
+.ticketoverview_container {margin-left:50px;}
+
+.box_login label {width:100px !important;}
+
+#frmRegister div.form_box fieldset {width:590px;}
+input.nr {width:41px;}
+input.ort {width:235px;}
+
+div.captcha div.code label {width:180px;}
+#bewertungen {padding: 25px 80px 10px 0px;}
+div.detailinfo_col1 {width:550px;}
+#tabContainer {width:585px;}
+#bewertungen .form_box {width:500px;margin:0;pading:0;}
+
+.chg_adress {margin-right:130px !important;}
+
+/* header
+------------------------------------------------------------------*/
+
+fieldset p {padding: 3px 10px 3px 10px;display: block;height:10px;line-height: 12px;}
+fieldset label {height:10px;}
+
+div.col_center_listing {margin: 0 3px 0 0;}
+/*.grid_left {margin: 9px 0 0 4px; }*/
+
+
+ul#mainbuttons {height: 12px; }
+ul#mainbuttons li { height: 12px; }
+ul#mainbuttons li a { height: 12px; }
+
+/* subnavigation
+------------------------------------------------------------------*/
+div.box3 ul#submenu { height: 12px; }
+div.box3 ul#submenu li { height: 12px; }
+div.box3 ul#submenu li a { height: 12px; }
+
+div.box3 ul#submenu ul { height: 12px; }
+div.box3 ul#submenu ul li { height: 12px; }
+div.box3 ul#submenu ul li a { height: 12px; }
+
+div.box3 ul#submenu ul ul { height: 12px; }
+div.box3 ul#submenu ul ul li { height: 12px; }
+div.box3 ul#submenu ul ul li a { height: 12px; }
+
+ul#servicenav li a { height:4px;}
+
+
+/* detailseite
+------------------------------------------------------------------*/
+.tabs-nav a {width:1px;cursor:pointer;}
+.tabs-nav .tabs-selected a {margin:0;}
+ul#article_info_tabs {padding:0;margin:0;}
+#linkzubehoer a { width:80px;}
+#linkbewertungen a { width:110px;}
+div.form_box_small {height:410px;}
+div.rezension1, div.rezension2 {height:120px;}
+div.form_box_small input.normal{width:275px;}
+
+.detail_col3 {padding:0px 0 0 0px; margin-top:0px;}
+
+/* my account
+------------------------------------------------------------------*/
+ul#buybox { padding: 0 1px 10px 1px; margin: 0; }
+ul#buybox li { height: 12px; }
+ul#buybox li a { display: block; padding: 1px 3px 5px 18px; color: #999; height: 12px; }
+
+
+/* footer
+------------------------------------------------------------------*/
+div.col_center_container .col_center_custom { width: 503px;}
+
+table.basket-middle td.sum2  { width:90px;}
+
+li.searchresult { height:60px;}
+
+li.searchresult_cat ul li {
+padding:3px;
+height:5px;
+}
+
+li.searchresult_cat {
+		padding:0px 5px 10px 5px;
+
+}
+li.searchresult_cat ul {margin:0;}
+
+.bar_time { left:10px !important;}
+

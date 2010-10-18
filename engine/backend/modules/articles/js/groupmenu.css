@@ -1,0 +1,60 @@
+<style>
+
+
+
+
+.example1{font:0.78em "Verdana";width:40%;float:left;}
+.example2{font:0.78em "Verdana";width:100%;margin:12px auto !important;;}
+hr{clear:both;margin:12px;}
+dt.hd1{color:red !important;}
+
+
+
+cite{font-style:normal;display:block;text-align:right;color:#666666;}
+code{font-size:1.3em;color:green;}
+/*b{color:red;}*/
+
+dl.accordion{margin:0;padding:0;_overflow:hidden;width:600;}
+dl.accordion dt
+{
+	
+	-moz-border-radius-topLeft:6px;
+	_width:100%;/*hack for IE*/
+	cursor:pointer;
+	display:block;
+	cursor:hand;
+	margin:0;
+	padding:0;
+	padding:3px 6px;
+	color:black;
+	border-left:solid 0px #cccccc;
+	border-top:solid 0px #f0f0f0;
+	border-right:solid 0px #222222;
+	border-bottom:solid 2px #222222;
+	background-color: #C3DAF9;
+}
+
+dl.accordion dt.hover
+{
+	
+	background:#555555;
+}
+
+dl.accordion dt.collapsing
+{
+	
+	background:#31324A;
+}
+dl.accordion dt.expanding
+{
+	
+	background:#333366;
+}
+
+dl.accordion dd{margin:0;padding:0;border:solid 1px #aaaaaa;border-bottom:inset 3px #aaaaaa;padding:6px;line-height:1.4;overflow:hidden;}
+dl.accordion dd.default{
+height:auto;
+border-bottom:solid 2px #222222;
+display:block; * { width:100%; }}
+
+</style>

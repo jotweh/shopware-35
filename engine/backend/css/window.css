@@ -1,0 +1,142 @@
+/* 
+	Zuletzt bearbeitet:		Sebastian Hamann
+	Datum:					16.02.2007
+------------------------------------------------------------------*/
+/* Just the following code construction 
+
+__________________01. SHADOWS
+__________________02. CONTAINER
+__________________03. WINDOWTITLE
+__________________04. BUTTONS for example <button>
+__________________05. xxx
+
+------------------------------------------------------------------*/
+/*  01. SHADOWS 
+------------------------------------------------------------------*/
+
+/*  02. CONTAINER 
+------------------------------------------------------------------*/
+.container {
+	position: absolute;
+	left: 325px;
+	top: 49px;
+}
+div.windowContent {	
+	position: relative;
+	display: block;
+	clear: both;
+	padding: 0;
+	margin: 0;
+	border-left: 1px solid #393939;
+	border-bottom: 1px solid #393939;
+	border-right: 1px solid #393939;
+}
+div.content {
+	position: relative;
+	padding: 5 5 5 5;
+	display: block;
+	background: #D8D8D8 url(window/bg_container2.gif) repeat-x;
+}
+
+/*  03. WINDOWTITLE 
+------------------------------------------------------------------*/
+div.windowTitle {
+	position: relative;
+	height: 27px;
+	margin: 0;
+	padding: 0;
+	background: url(window/bg_title_inactive.gif) repeat-x;
+	border-top: 1px solid #6b6b6b;
+}
+div.active {
+	background: url(window/bg_title_active.gif) repeat-x;
+}
+div.description {
+	position: absolute;
+	height: 19px;
+	font-size:11px;
+	padding: 5px 15px 2px 15px;
+	border-left: 1px solid #f4f4f4;
+	width: 250px;
+	font-weight: bold;
+	color: #ffffff;
+	-moz-user-select:none;
+	-khtml-user-select:none;
+}
+	  
+/* 04. BUTTONS (minimize, maximize, close, increase, resize)
+------------------------------------------------------------------*/
+ul.window_bt_opt {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	cursor:pointer;
+	margin: 0;
+	padding:1px 0 0;
+	list-style: none;
+}
+ul.window_bt_opt li {
+	margin:0;
+	padding:0;
+	float:left;
+}
+.handle_minimized a.bt_opt_increase { width: 23px; height: 18px; background: url(window/bt_opt_increase.gif) 0px 0px no-repeat; display:block; }
+/* Buttons*/
+.window_bt_opt a.bt_opt_minimize, .window_minimized a.bt_opt_minimize{ width: 23px; height: 18px; background: url(window/bt_opt_minimize.gif) 0px 0px no-repeat; display:block; }
+.window_bt_opt a.bt_opt_maximize, .window_minimized a.bt_opt_maximize { width: 23px; height: 18px; background: url(window/bt_opt_maximize.gif) 0px 0px no-repeat; display:block; }
+.window_bt_opt a.bt_opt_close, .window_minimized a.bt_opt_close { width: 23px; height: 18px; background: url(window/bt_opt_close.gif) 0px 0px no-repeat; display:block; }
+.window_bt_opt a.bt_opt_refresh, .window_minimized a.bt_refresh { width: 23px; height: 18px; background: url(window/bt_opt_refresh.gif) 0px 0px no-repeat; display:block; }
+.window_bt_opt a.bt_opt_info, .window_minimized a.bt_info { width: 23px; height: 18px; background: url(window/bt_opt_info.gif) 0px 0px no-repeat; display:block; }
+
+/* resize button corner bottom right */
+div.resize-se {
+	position: absolute;
+	bottom: -2px;
+	right: 0px;
+	padding: 0px;
+	height: 15px;
+	width: 16px;
+	cursor: se-resize;
+	background: url(window/bt_resize.gif) -1px 0px no-repeat ;
+}
+
+/* <button>
+------------------------------------------------------------------*/
+div.buttons {
+
+}
+div.buttons ul {
+	margin: 0;
+	padding:0;
+	text-align: right;
+}
+div.buttons ul li {
+	list-style: none;	
+	float: left;	
+	margin: 0 30px 0 0;
+	padding: 0 0 0 10px;
+	line-height: 24px;	
+	height: 27px;	
+	cursor: pointer;	
+	background: url("../img/default/window/bg_bt.gif") no-repeat 0px 0px;	
+}
+.button {
+	padding:0 25px 0 0;
+	margin:0;
+	border: none;
+	line-height: 24px;
+	height:25px;
+	cursor: pointer;
+	background: url("../img/default/window/bg_bt_end.gif") no-repeat right top;
+}
+
+.button div {
+	display: block;
+	margin: 0px;
+	padding: 0 0 0 12px;
+	color: #323232;
+	line-height: 24px;
+	font-size: 11px;
+}
+
+</style>

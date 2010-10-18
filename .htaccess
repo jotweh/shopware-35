@@ -1,0 +1,27 @@
+RewriteEngine on
+
+RewriteRule shopware.dll shopware.php
+RewriteRule files/documents/.*? engine [NC,L]
+RewriteRule application.yaml engine [NC,L]
+RewriteRule images/ayww/(.*) images/banner/$1
+RewriteRule sitemap.xml(.*) shopware.php?controller=SitemapXml
+RewriteRule templates/.*(css|js)$ engine/backend/php/sCacheTemplate.php?file=$0 [NC,L]
+RewriteRule engine/core/php/sAjaxSearch.php$ engine/backend/php/sAjaxSearch.php [NC,L]
+RewriteRule engine/core/php/campaigns.php$ engine/backend/php/campaigns.php [NC,L]
+
+DirectoryIndex index.php
+DirectoryIndex shopware.php
+
+<Files *.tpl>
+Deny from all
+</Files>
+
+AddDefaultCharset ISO-8859-1
+
+RewriteCond %{REQUEST_URI} !(\/engine\/|\/images\/|\/files\/|\/templates\/|\.js$|\.css$|\.jpg$|\.png$)
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ shopware.php/$1 [PT,L,QSA]
+
+Options -Indexes

@@ -1,0 +1,2 @@
+<h1>{* sSnippet: the order was canceled *}{$sConfig.sSnippets.sErrororderwascanceled}</h1><br /><br />
+<p><a href="{$checkout_url}"><strong>{* sSnippet: checkout *}{$sConfig.sSnippets.sErrorcheckout}</strong></a></p>

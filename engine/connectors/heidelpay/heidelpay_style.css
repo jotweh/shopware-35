@@ -1,0 +1,49 @@
+html,body { 
+  background-color: #ffffff 
+}
+tr[id=notMandatoryRow] { 
+  display: none; 
+}
+tr[id=spacer1] { 
+  display: none; 
+}
+tr[id=spacer2] { 
+  display: none; 
+}
+tr[id=spacer3] { 
+  display: none; 
+}
+tr[id=spacer4] { 
+  display: none; 
+}
+tr[id=contactBlock] { 
+  display: none; 
+}
+tr[id=userInfoBlock] { 
+  display: none; 
+}
+tr[id=addressBlock] { 
+  display: none; 
+}
+td { 
+  color: #000000; 
+}
+input,select { 
+  color: #000000; 
+  background-color: #ffffff;
+}
+a:link { 
+  color:#000000; 
+}
+a:visited { 
+  color:#000000;
+}
+a:hover { 
+  color:#000000;
+}
+a:active { 
+  color:#000000;
+}
+a:focus { 
+  color:#000000;
+}

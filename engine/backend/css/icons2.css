@@ -1,0 +1,736 @@
+/* 
+	Zuletzt bearbeitet:		Sebastian Hamann
+	Datum:					18.04.2007
+------------------------------------------------------------------*/
+/* Just the following code construction 
+
+__________________01. ICONS
+
+
+
+------------------------------------------------------------------*/
+
+/* 01. ICONS
+------------------------------------------------------------------*/
+a.ico {
+
+}
+a.ico2, a.ico2:active, a.ico2:visited, a.ico2:link {
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding: 2px 0 2px 25px;
+}
+a.ico3, a.ico3:active, a.ico3:visited, a.ico3:link {
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding: 2px 0 2px 25px;
+	border:1px solid #e9e9e9;
+}
+a.ico3:hover { 
+	 color: #000;
+	 text-decoration: none;
+	 background-color: #DDEEFF;
+	 border:1px solid #59b8e6;
+}
+a.ico:hover { 
+	text-decoration: none;
+	background-color: none;
+}
+a.ico2:hover { 
+	text-decoration: none;
+	background-color: #59b8e6;
+	color: #fff;
+}
+a.ico3:hover { 
+	 color: #000;
+	 text-decoration: none;
+	 background-color: #DDEEFF;
+	 border:1px solid #59b8e6;
+}
+
+a.add_grey {
+	background: url(../img/default/icons2/add_grey.png) no-repeat 0px 0px;
+}
+a.arrow_all_in {
+	background: url(../img/default/icons2/arrow_all_in.png) no-repeat 0px 0px;
+}
+a.arrow_all_out {
+	background: url(../img/default/icons2/arrow_all_out.png) no-repeat 0px 0px;
+}
+a.arrow_down {
+	background: url(../img/default/icons2/arrow_down.png) no-repeat 0px 0px;
+}
+a.arrow_down_green {
+	background: url(../img/default/icons2/arrow_down_green.png) no-repeat 0px 0px;
+}
+a.arrow_down_green2 {
+	background: url(../img/default/icons2/arrow_down_green2.png) no-repeat 0px 0px;
+} 
+a.arrow_down_green3 {
+	background: url(../img/default/icons2/arrow_down_green3.png) no-repeat 0px 0px;
+}
+a.arrow_down_green4 {
+	background: url(../img/default/icons2/arrow_down_green4.png) no-repeat 0px 0px;
+}
+a.arrow_down2 {
+	background: url(../img/default/icons2/arrow_down2.png) no-repeat 0px 0px;
+}
+a.arrow_left_down {
+	background: url(../img/default/icons2/arrow_left_down.png) no-repeat 0px 0px;
+}
+a.arrow_left_green {
+	background: url(../img/default/icons2/arrow_left_green.png) no-repeat 0px 0px;
+}
+a.arrow_left_green4 {
+	background: url(../img/default/icons2/arrow_left_green4.png) no-repeat 0px 0px;
+}
+a.arrow_left1 {
+	background: url(../img/default/icons2/arrow_left1.png) no-repeat 0px 0px;
+}
+a.arrow_leftup {
+	background: url(../img/default/icons2/arrow_leftup.png) no-repeat 0px 0px;
+}
+a.arrow_leftright_red {
+	background: url(../img/default/icons2/arrow_leftright_blue.png) no-repeat 0px 0px;
+}
+a.arrow_right_down {
+	background: url(../img/default/icons2/arrow_right_down.png) no-repeat 0px 0px;
+}
+a.arrow_right_green4 {
+	background: url(../img/default/icons2/arrow_right_green4.png) no-repeat 0px 0px;
+}
+a.arrow_right_green {
+	background: url(../img/default/icons2/arrow_right_green.png) no-repeat 0px 0px;
+}
+a.arrow_right_up {
+	background: url(../img/default/icons2/arrow_right_up.png) no-repeat 0px 0px;
+}
+a.arrow_right1 {
+	background: url(../img/default/icons2/arrow_right1.png) no-repeat 0px 0px;
+}
+a.arrow_up {
+	background: url(../img/default/icons2/arrow_up.png) no-repeat 0px 0px;
+}
+a.arrow_up_green {
+	background: url(../img/default/icons2/arrow_up_green.png) no-repeat 0px 0px;
+}
+a.arrow_up_green2 {
+	background: url(../img/default/icons2/arrow_up_green2.png) no-repeat 0px 0px;
+}
+a.arrow_up_green3 {
+	background: url(../img/default/icons2/arrow_up_green3.png) no-repeat 0px 0px;
+}
+a.arrow_up_green4 {
+	background: url(../img/default/icons2/arrow_up_green4.png) no-repeat 0px 0px;
+}
+a.arrow_up1 {
+	background: url(../img/default/icons2/arrow_up1.png) no-repeat 0px 0px;
+}
+a.arrow_up2 {
+	background: url(../img/default/icons2/arrow_up2.png) no-repeat 0px 0px;
+}
+a.arrowskip_left {
+	background: url(../img/default/icons2/arrowskip_left.png) no-repeat 0px 0px;
+}
+a.arrowskip_right {
+	background: url(../img/default/icons2/arrowskip_right.png) no-repeat 0px 0px;
+}
+a.attach2 {
+	background: url(../img/default/icons2/attach2.png) no-repeat 0px 0px;
+}
+a.back {
+	background: url(../img/default/icons2/back.png) no-repeat 0px 0px;
+}
+a.bag {
+	background: url(../img/default/icons2/bag.png) no-repeat 0px 0px;
+}
+a.basket_empty {
+	background: url(../img/default/icons2/basket_empty.png) no-repeat 0px 0px;
+}
+a.basket_full {
+	background: url(../img/default/icons2/basket_full.png) no-repeat 0px 0px;
+}
+a.book_blue {
+	background: url(../img/default/icons2/book_blue.png) no-repeat 0px 0px;
+}
+a.book_brown {
+	background: url(../img/default/icons2/book_brown.png) no-repeat 0px 0px;
+}
+a.book_green {
+	background: url(../img/default/icons2/book_green.png) no-repeat 0px 0px;
+}
+a.book_open1 {
+	background: url(../img/default/icons2/book_open1.png) no-repeat 0px 0px;
+}
+a.book_open2 {
+	background: url(../img/default/icons2/book_open2.png) no-repeat 0px 0px;
+}
+a.book_yellow {
+	background: url(../img/default/icons2/book_yellow.png) no-repeat 0px 0px;
+}
+a.bubble {
+	background: url(../img/default/icons2/bubble.png) no-repeat 0px 0px;
+}
+a.bubble01 {
+	background: url(../img/default/icons2/bubble01.png) no-repeat 0px 0px;
+}
+a.bubble02 {
+	background: url(../img/default/icons2/bubble02.png) no-repeat 0px 0px;
+}
+a.bulb_off {
+	background: url(../img/default/icons2/bulb_off.png) no-repeat 0px 0px;
+}
+a.bulb_on {
+	background: url(../img/default/icons2/book_yellow.png) no-repeat 0px 0px;
+}
+a.calculator01 {
+	background: url(../img/default/icons2/calculator01.png) no-repeat 0px 0px;
+}
+a.calculator02 {
+	background: url(../img/default/icons2/calculator02.png) no-repeat 0px 0px;
+}
+a.cd {
+	background: url(../img/default/icons2/cd.png) no-repeat 0px 0px;
+}
+a.chart_bar01 {
+	background: url(../img/default/icons2/chart_bar01.png) no-repeat 0px 0px;
+}
+a.chart_bar02 {
+	background: url(../img/default/icons2/chart_bar02.png) no-repeat 0px 0px;
+}
+a.chart_curve1 {
+	background: url(../img/default/icons2/chart_curve1.png) no-repeat 0px 0px;
+}
+a.chart_pie1 {
+	background: url(../img/default/icons2/chart_pie1.png) no-repeat 0px 0px;
+}
+a.chart_bar01 {
+	background: url(../img/default/icons2/chart_bar01.png) no-repeat 0px 0px;
+}
+a.clock {
+	background: url(../img/default/icons2/clock.png) no-repeat 0px 0px;
+}
+a.clock2 {
+	background: url(../img/default/icons2/clock2.png) no-repeat 0px 0px;
+}
+a.closefolderb {
+	background: url(../img/default/icons2/closefolderb.png) no-repeat 0px 0px;
+}
+a.cog1 {
+	background: url(../img/default/icons2/cog1.png) no-repeat 0px 0px;
+}
+a.cross1 {
+	background: url(../img/default/icons2/cross1.png) no-repeat 0px 0px;
+}
+a.crown {
+	background: url(../img/default/icons2/crown.png) no-repeat 0px 0px;
+}
+a.date1 {
+	background: url(../img/default/icons2/date1.png) no-repeat 0px 0px;
+}
+a.date2 {
+	background: url(../img/default/icons2/date2.png) no-repeat 0px 0px;
+}
+a.delete1 {
+	background: url(../img/default/icons2/delete1.png) no-repeat 0px 0px;
+}
+a.delete2 {
+	background: url(../img/default/icons2/delete2.png) no-repeat 0px 0px;
+}
+a.disc {
+	background: url(../img/default/icons2/disc.png) no-repeat 0px 0px;
+}
+a.discblack {
+	background: url(../img/default/icons2/discblack.png) no-repeat 0px 0px;
+}
+a.down {
+	background: url(../img/default/icons2/down.png) no-repeat 0px 0px;
+}
+a.email_open {
+	background: url(../img/default/icons2/email_open.png) no-repeat 0px 0px;
+}
+a.email2 {
+	background: url(../img/default/icons2/email2.png) no-repeat 0px 0px;
+}
+a.email2_open {
+	background: url(../img/default/icons2/email2_open.png) no-repeat 0px 0px;
+}
+a.error1 {
+	background: url(../img/default/icons2/error1.png) no-repeat 0px 0px;
+}
+a.feed {
+	background: url(../img/default/icons2/feed.png) no-repeat 0px 0px;
+}
+a.female01 {
+	background: url(../img/default/icons2/female01.png) no-repeat 0px 0px;
+}
+a.female02 {
+	background: url(../img/default/icons2/female02.png) no-repeat 0px 0px;
+}
+a.female03 {
+	background: url(../img/default/icons2/female03.png) no-repeat 0px 0px;
+}
+a.filter {
+	background: url(../img/default/icons2/filter.png) no-repeat 0px 0px;
+}
+a.fire {
+	background: url(../img/default/icons2/fire.png) no-repeat 0px 0px;
+}
+a.flag_blue {
+	background: url(../img/default/icons2/flag_blue.png) no-repeat 0px 0px;
+}
+a.flag_green {
+	background: url(../img/default/icons2/flag_green.png) no-repeat 0px 0px;
+}
+a.flag_orange {
+	background: url(../img/default/icons2/flag_orange.png) no-repeat 0px 0px;
+}
+a.flag_purple {
+	background: url(../img/default/icons2/flag_purple.png) no-repeat 0px 0px;
+}
+a.flag_purple2 {
+	background: url(../img/default/icons2/flag_purple2.png) no-repeat 0px 0px;
+}
+a.flag_red {
+	background: url(../img/default/icons2/flag_red.png) no-repeat 0px 0px;
+}
+a.flag_yellow {
+	background: url(../img/default/icons2/flag_yellow.png) no-repeat 0px 0px;
+}
+a.forward {
+	background: url(../img/default/icons2/forward.png) no-repeat 0px 0px;
+}
+a.forbidden {
+	background: url(../img/default/icons2/forbidden.png) no-repeat 0px 0px;
+}
+a.heart01 {
+	background: url(../img/default/icons2/heart01.png) no-repeat 0px 0px;
+}
+a.heart02 {
+	background: url(../img/default/icons2/heart02.png) no-repeat 0px 0px;
+}
+a.house1 {
+	background: url(../img/default/icons2/house1.png) no-repeat 0px 0px;
+}
+a.key1 {
+	background: url(../img/default/icons2/key1.png) no-repeat 0px 0px;
+}
+a.key_grey {
+	background: url(../img/default/icons2/key_grey.png) no-repeat 0px 0px;
+}
+a.layout1 {
+	background: url(../img/default/icons2/layout1.png) no-repeat 0px 0px;
+}
+a.lightning1 {
+	background: url(../img/default/icons2/lightning.png) no-repeat 0px 0px;
+}
+a.lightning {
+	background: url(../img/default/icons2/lightning.png) no-repeat 0px 0px;
+}
+a.lock_grey {
+	background: url(../img/default/icons2/lock_grey.png) no-repeat 0px 0px;
+}
+a.lock_open_grey {
+	background: url(../img/default/icons2/lock_open_grey.png) no-repeat 0px 0px;
+}
+a.lock1 {
+	background: url(../img/default/icons2/lock1.png) no-repeat 0px 0px;
+}
+a.lock1_open {
+	background: url(../img/default/icons2/lock1_open.png) no-repeat 0px 0px;
+}
+a.magnifier1 {
+	background: url(../img/default/icons2/magnifier1.png) no-repeat 0px 0px;
+}
+a.male01 {
+	background: url(../img/default/icons2/male01.png) no-repeat 0px 0px;
+}
+a.male02 {
+	background: url(../img/default/icons2/male02.png) no-repeat 0px 0px;
+}
+a.male03 {
+	background: url(../img/default/icons2/male03.png) no-repeat 0px 0px;
+}
+a.monitor1 {
+	background: url(../img/default/icons2/monitor1.png) no-repeat 0px 0px;
+}
+a.monitor2 {
+	background: url(../img/default/icons2/monitor2.png) no-repeat 0px 0px;
+}
+a.music {
+	background: url(../img/default/icons2/music.png) no-repeat 0px 0px;
+}
+a.mp3 {
+	background: url(../img/default/icons2/mp3.png) no-repeat 0px 0px;
+}
+a.note01 {
+	background: url(../img/default/icons2/note01.png) no-repeat 0px 0px;
+}
+a.note02 {
+	background: url(../img/default/icons2/note02.png) no-repeat 0px 0px;
+}
+a.note03 {
+	background: url(../img/default/icons2/note03.png) no-repeat 0px 0px;
+}
+a.note04 {
+	background: url(../img/default/icons2/note04.png) no-repeat 0px 0px;
+}
+a.note05 {
+	background: url(../img/default/icons2/note05.png) no-repeat 0px 0px;
+}
+a.note06 {
+	background: url(../img/default/icons2/note06.png) no-repeat 0px 0px;
+}
+a.note07 {
+	background: url(../img/default/icons2/note07.png) no-repeat 0px 0px;
+}
+a.note08 {
+	background: url(../img/default/icons2/note08.png) no-repeat 0px 0px;
+}
+a.note09 {
+	background: url(../img/default/icons2/note09.png) no-repeat 0px 0px;
+}
+a.note10 {
+	background: url(../img/default/icons2/note10.png) no-repeat 0px 0px;
+}
+a.note11 {
+	background: url(../img/default/icons2/note11.png) no-repeat 0px 0px;
+}
+a.note12 {
+	background: url(../img/default/icons2/note12.png) no-repeat 0px 0px;
+}
+a.notepad {
+	background: url(../img/default/icons2/notepad.png) no-repeat 0px 0px;
+}
+a.openfolderb {
+	background: url(../img/default/icons2/openfolderb.png) no-repeat 0px 0px;
+}
+a.pause {
+	background: url(../img/default/icons2/pause.png) no-repeat 0px 0px;
+}
+a.pencil01 {
+	background: url(../img/default/icons2/pencil01.png) no-repeat 0px 0px;
+}
+a.pencil02 {
+	background: url(../img/default/icons2/pencil02.png) no-repeat 0px 0px;
+}
+a.pencil03 {
+	background: url(../img/default/icons2/pencil03.png) no-repeat 0px 0px;
+}
+a.pendant01 {
+	background: url(../img/default/icons2/pendant01.png) no-repeat 0px 0px;
+}	
+a.pendant02 {
+	background: url(../img/default/icons2/pendant02.png) no-repeat 0px 0px;
+}	
+a.pendant03 {
+	background: url(../img/default/icons2/pendant03.png) no-repeat 0px 0px;
+}	
+a.pendant04 {
+	background: url(../img/default/icons2/pendant04.png) no-repeat 0px 0px;
+}	
+a.pendant05 {
+	background: url(../img/default/icons2/pendant05.png) no-repeat 0px 0px;
+}	
+a.pendant06 {
+	background: url(../img/default/icons2/pendant06.png) no-repeat 0px 0px;
+}	
+a.pendant07 {
+	background: url(../img/default/icons2/pendant07.png) no-repeat 0px 0px;
+}	
+a.pictures {
+	background: url(../img/default/icons2/pictures.png) no-repeat 0px 0px;
+}	
+a.photo01 {
+	background: url(../img/default/icons2/photo01.png) no-repeat 0px 0px;
+}
+a.photo02 {
+	background: url(../img/default/icons2/photo02.png) no-repeat 0px 0px;
+}
+a.plugin_green {
+	background: url(../img/default/icons2/plugin_green.png) no-repeat 0px 0px;
+}
+a.plugin_white {
+	background: url(../img/default/icons2/plugin_white.png) no-repeat 0px 0px;
+}
+a.plus_green {
+	background: url(../img/default/icons2/plus_green.png) no-repeat 0px 0px;
+}
+a.present01 {
+	background: url(../img/default/icons2/present01.png) no-repeat 0px 0px;
+}
+a.present02 {
+	background: url(../img/default/icons2/present02.png) no-repeat 0px 0px;
+}
+a.print01 {
+	background: url(../img/default/icons2/print01.png) no-repeat 0px 0px;
+}
+a.print02 {
+	background: url(../img/default/icons2/print02.png) no-repeat 0px 0px;
+}
+a.reload1 {
+	background: url(../img/default/icons2/reload1.png) no-repeat 0px 0px;
+}
+a.reload2 {
+	background: url(../img/default/icons2/reload2.png) no-repeat 0px 0px;
+}
+a.reload3 {
+	background: url(../img/default/icons2/reload3.png) no-repeat 0px 0px;
+}
+a.reload4 {
+	background: url(../img/default/icons2/reload4.png) no-repeat 0px 0px;
+}
+a.resultset_first1 {
+	background: url(../img/default/icons2/resultset_first1.png) no-repeat 0px 0px;
+}
+a.resultset_last1 {
+	background: url(../img/default/icons2/resultset_last1.png) no-repeat 0px 0px;
+}
+a.resultset_next1 {
+	background: url(../img/default/icons2/resultset_next1.png) no-repeat 0px 0px;
+}
+a.resultset_previous1 {
+	background: url(../img/default/icons2/resultset_previous1.png) no-repeat 0px 0px;
+}
+a.script {
+	background: url(../img/default/icons2/script.png) no-repeat 0px 0px;
+}
+a.script2 {
+	background: url(../img/default/icons2/script2.png) no-repeat 0px 0px;
+}		
+a.setsquare_brown {
+	background: url(../img/default/icons2/setsquare_brown.png) no-repeat 0px 0px;
+}	
+a.shield {
+	background: url(../img/default/icons2/shield.png) no-repeat 0px 0px;
+}
+a.smilie01 {
+	background: url(../img/default/icons2/smilie01.png) no-repeat 0px 0px;
+}
+a.smilie02 {
+	background: url(../img/default/icons2/smilie02.png) no-repeat 0px 0px;
+}
+a.smilie03 {
+	background: url(../img/default/icons2/smilie03.png) no-repeat 0px 0px;
+}
+a.smilie04 {
+	background: url(../img/default/icons2/smilie04.png) no-repeat 0px 0px;
+}
+a.smilie05 {
+	background: url(../img/default/icons2/smilie05.png) no-repeat 0px 0px;
+}
+a.smilie06 {
+	background: url(../img/default/icons2/smilie06.png) no-repeat 0px 0px;
+}
+a.star01 {
+	background: url(../img/default/icons2/star01.png) no-repeat 0px 0px;
+}
+a.star02 {
+	background: url(../img/default/icons2/star02.png) no-repeat 0px 0px;
+}
+a.stop_black {
+	background: url(../img/default/icons2/stop_black.png) no-repeat 0px 0px;
+}
+a.stop_blue {
+	background: url(../img/default/icons2/stop_blue.png) no-repeat 0px 0px;
+}
+a.stop_green {
+	background: url(../img/default/icons2/stop_green.png) no-repeat 0px 0px;
+}
+a.stop_grey {
+	background: url(../img/default/icons2/stop_grey.png) no-repeat 0px 0px;
+}
+a.stop_orange {
+	background: url(../img/default/icons2/stop_orange.png) no-repeat 0px 0px;
+}
+a.stop_purple {
+	background: url(../img/default/icons2/stop_purple.png) no-repeat 0px 0px;
+}
+a.stop_purple2 {
+	background: url(../img/default/icons2/stop_purple2.png) no-repeat 0px 0px;
+}
+a.stop_red {
+	background: url(../img/default/icons2/stop_red.png) no-repeat 0px 0px;
+}
+a.stop_red2 {
+	background: url(../img/default/icons2/stop_red2.png) no-repeat 0px 0px;
+}
+a.stop_white {
+	background: url(../img/default/icons2/stop_white.png) no-repeat 0px 0px;
+}
+a.stop_yellow {
+	background: url(../img/default/icons2/stop_yellow.png) no-repeat 0px 0px;
+}
+a.stopblue {
+	background: url(../img/default/icons2/stopblue.png) no-repeat 0px 0px;
+}
+a.sun01 {
+	background: url(../img/default/icons2/sun01.png) no-repeat 0px 0px;
+}
+a.sun02 {
+	background: url(../img/default/icons2/sun02.png) no-repeat 0px 0px;
+}
+a.sun03 {
+	background: url(../img/default/icons2/sun03.png) no-repeat 0px 0px;
+}
+a.sun04 {
+	background: url(../img/default/icons2/sun04.png) no-repeat 0px 0px;
+}
+a.swap1 {
+	background: url(../img/default/icons2/swap1.png) no-repeat 0px 0px;
+}
+a.swap2 {
+	background: url(../img/default/icons2/swap2.png) no-repeat 0px 0px;
+}
+a.swap3 {
+	background: url(../img/default/icons2/swap3.png) no-repeat 0px 0px;
+}
+a.swap4 {
+	background: url(../img/default/icons2/swap4.png) no-repeat 0px 0px;
+}
+a.table01 {
+	background: url(../img/default/icons2/table01.png) no-repeat 0px 0px;
+}
+a.table02 {
+	background: url(../img/default/icons2/table02.png) no-repeat 0px 0px;
+}		
+a.table03 {
+	background: url(../img/default/icons2/table03.png) no-repeat 0px 0px;
+}	
+a.table04 {
+	background: url(../img/default/icons2/table04.png) no-repeat 0px 0px;
+}	
+a.table05 {
+	background: url(../img/default/icons2/table05.png) no-repeat 0px 0px;
+}	
+a.table06 {
+	background: url(../img/default/icons2/table06.png) no-repeat 0px 0px;
+}	
+a.telephone1 {
+	background: url(../img/default/icons2/telephone1.png) no-repeat 0px 0px;
+}
+a.telephone2 {
+	background: url(../img/default/icons2/telephone2.png) no-repeat 0px 0px;
+}
+a.tick1 {
+	background: url(../img/default/icons2/tick1.png) no-repeat 0px 0px;
+}
+a.time1 {
+	background: url(../img/default/icons2/time1.png) no-repeat 0px 0px;
+}
+a.tree {
+	background: url(../img/default/icons2/tree.png) no-repeat 0px 0px;
+}
+a.tv {
+	background: url(../img/default/icons2/tv.png) no-repeat 0px 0px;
+}
+a.twobubbles01 {
+	background: url(../img/default/icons2/twobubbles01.png) no-repeat 0px 0px;
+}
+a.twobubbles02 {
+	background: url(../img/default/icons2/twobubbles02.png) no-repeat 0px 0px;
+}
+a.up {
+	background: url(../img/default/icons2/up.png) no-repeat 0px 0px;
+}
+a.vcard1 {
+	background: url(../img/default/icons2/vcard1.png) no-repeat 0px 0px;
+}
+a.world1 {
+	background: url(../img/default/icons2/world1.png) no-repeat 0px 0px;
+}
+a.wrench1 {
+	background: url(../img/default/icons2/wrench1.png) no-repeat 0px 0px;
+}
+/*
+
+
+a.resultset_first {
+	background: url(../img/default/icons/resultset_first.png) no-repeat 0px 0px;
+}
+a.resultset_last {
+	background: url(../img/default/icons/resultset_last.png) no-repeat 0px 0px;
+}
+a.resultset_next {
+	background: url(../img/default/icons/resultset_next.png) no-repeat 0px 0px;
+}
+a.resultset_previous {
+	background: url(../img/default/icons/resultset_previous.png) no-repeat 0px 0px;
+}
+a.report {
+	background: url(../img/default/icons/report.png) no-repeat 0px 0px;
+}
+a.server {
+	background: url(../img/default/icons/server.png) no-repeat 0px 0px;
+}
+a.shopware {
+	background: url(../img/default/icons/shopware.png) no-repeat 0px 0px;
+}
+a.sitemap {
+	background: url(../img/default/icons/sitemap.png) no-repeat 0px 0px;
+}
+a.star {
+	background: url(../img/default/icons/star.png) no-repeat 0px 0px;
+}
+a.status_offline {
+	background: url(../img/default/icons/status_offline.png) no-repeat 0px 0px;
+}
+a.status_online {
+	background: url(../img/default/icons/status_online.png) no-repeat 0px 0px;
+}
+a.stop {
+	background: url(../img/default/icons/stop.png) no-repeat 0px 0px;
+}
+a.table {
+	background: url(../img/default/icons/table.png) no-repeat 0px 0px;
+}
+a.telephone {
+	background: url(../img/default/icons/telephone.png) no-repeat 0px 0px;
+}
+a.tick {
+	background: url(../img/default/icons/tick.png) no-repeat 0px 0px;
+}
+a.transmit_blue {
+	background: url(../img/default/icons/transmit_blue.png) no-repeat 0px 0px;
+}
+a.report {
+	background: url(../img/default/icons/report.png) no-repeat 0px 0px;
+}
+a.time {
+	background: url(../img/default/icons/time.png) no-repeat 0px 0px;
+}
+a.user {
+	background: url(../img/default/icons/user.png) no-repeat 0px 0px;
+}
+a.user_add {
+	background: url(../img/default/icons/user_add.png) no-repeat 0px 0px;
+}
+a.user_edit {
+	background: url(../img/default/icons/user_edit.png) no-repeat 0px 0px;
+}
+a.vcard {
+	background: url(../img/default/icons/vcard.png) no-repeat 0px 0px;
+}
+a.world {
+	background: url(../img/default/icons/world.png) no-repeat 0px 0px;
+}
+a.world_link {
+	background: url(../img/default/icons/world_link.png) no-repeat 0px 0px;
+}
+a.wrench {
+	background: url(../img/default/icons/wrench.png) no-repeat 0px 0px;
+}	
+a.zoom {
+	background: url(../img/default/icons/zoom.png) no-repeat 0px 0px;
+}	
+
+/*Fenster *//*
+a.minimieren {
+	background: url(../img/default/icons/minimieren.png) no-repeat 0px 0px;
+}
+a.schliessen {
+	background: url(../img/default/icons/schliessen.png) no-repeat 0px 0px;
+}*/
+
