@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
 		$('input.auto_submit:radio, a.auto_submit, input.auto_submit:checkbox').live('click', function() { this.form.submit(); });
 		$('input.auto_submit:text').live('blur', function() { this.form.submit(); });
 		
-		$('.modal_close').live('click', function() { $.modalClose(); });
+		$('.modal_close').live('click', function() { $.modalClose(); $.ie6fix.selectShow(); });
 		
 		$('.modal_open a').click(function(event) {
 			event.preventDefault();
@@ -120,8 +120,13 @@ jQuery(document).ready(function($) {
 		if($('.topseller')) $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350});
 		
 		//Suche
-		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults'});
-		
+		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults', 'searchPosition': 'right'});
+		$('#searchfield').focus(function(){
+			if ($('#searchfield').val() == "Suche:"){
+				$('#searchfield').val("");
+			}
+			
+		});
 		//Serverzeit fuer Liveshopping
 		$.server.init(timeNow);
 		
@@ -1510,7 +1515,9 @@ jQuery.fn.liveSearch = function (conf) {
 		position: -1,
 		results: {},
 		lastValue: '',
-		timer: null
+		timer: null,
+		searchPosition: 'middle',		// left, middle, right
+		searchWidth: 450				// search width
 	}, conf);
 
 	var liveSearch    = jQuery('#' + config.id);
@@ -1537,14 +1544,30 @@ jQuery.fn.liveSearch = function (conf) {
 	return this.each(function () {
 		var input = jQuery(this).attr('autocomplete', 'off');
 		var liveSearchPaddingBorderHoriz = parseInt(liveSearch.css('paddingLeft'), 10) + parseInt(liveSearch.css('paddingRight'), 10) + parseInt(liveSearch.css('borderLeftWidth'), 10) + parseInt(liveSearch.css('borderRightWidth'), 10);
-
+		
 		// Re calculates live search's position
 		var repositionLiveSearch = function () {
+			
 			var tmpOffset	= input.offset();
+			
+			switch(config.searchPosition) {
+				case 'left':
+					leftValue = tmpOffset.left;
+					break;
+				case 'middle':
+					leftValue = (tmpOffset.left + input.outerWidth() / 2) - (config.searchWidth / 2);
+					break;
+				case 'right':
+					leftValue = (tmpOffset.left + input.outerWidth()) - config.searchWidth + 8;
+					break;
+			}
+			
+			//console.log(leftValue);
+			
 			var inputDim    = {
 				
 				//setting static offset
-				left:	tmpOffset.left - 270,
+				left:	leftValue,
 				top:	tmpOffset.top,
 				width:	input.outerWidth(),
 				height:	input.outerHeight()
@@ -1553,14 +1576,11 @@ jQuery.fn.liveSearch = function (conf) {
 			inputDim.topPos        = inputDim.top + inputDim.height;
 			inputDim.totalWidth    = inputDim.width - liveSearchPaddingBorderHoriz;
 			
-			//setting static width
-			inputDim.totalWidth = 450;
-
 			liveSearch.css({
 				position:	'absolute',
 				left:		inputDim.left + 'px',
 				top:		inputDim.topPos + 'px',
-				width:		inputDim.totalWidth + 'px'
+				width:		config.searchWidth + 'px'
 			});
 		};
 
@@ -1694,7 +1714,13 @@ jQuery.fn.liveSearch = function (conf) {
 	 // Methods to fix the select box bug
     // and the missing position fixed
     $.ie6fix ={
-    	
+    	_init: function() {
+    		if($.browser.msie && parseInt($.browser.version) == 6) {
+     			$.ie6fix.open(modal, config);
+     		} else {
+     			return false;
+     		}
+    	},
     	open: function(obj) {
     		// Hide select boxes
     		$('select:visible').css('visibility', 'hidden');
@@ -1727,6 +1753,9 @@ jQuery.fn.liveSearch = function (conf) {
     	},
     	selectShow: function() {
 			$('select, #detail .liveshopping_detail, .accessory_container').css('visibility', 'visible');
+    	},
+    	selectOnlyShow: function() {
+    		$('select').css('visibility', 'visible')
     	}
     }; 
 
@@ -1897,7 +1926,11 @@ jQuery.fn.liveSearch = function (conf) {
                 
                 //neue Ordernumber in die globale Variable schreiben
                 $.ordernumber = ordernumber;
-            	
+            	try {
+            		$('#variantOrdernumber').val(ordernumber);
+            	}catch (err){
+            		
+            	}
             	// try to active liveshopping
             	try {
             		$('#article_details').liveshopping();
@@ -2412,7 +2445,7 @@ jQuery.fn.liveSearch = function (conf) {
             container.appendTo(modal);
         }
         var close = $('<a>', {
-            'text': 'Schließen',
+            'text': 'Schlieﬂen',
             'class': 'close'
         }).appendTo(modal);
         close.bind('click', function (event) {
@@ -2509,7 +2542,7 @@ jQuery.fn.liveSearch = function (conf) {
             }).appendTo(modal)
         }
         var close = $('<a>', {
-            'text': 'Schließen',
+            'text': 'Schlieﬂen',
             'class': 'close'
         }).appendTo(modal);
         close.bind('click', function (event) {
@@ -3182,8 +3215,8 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
             height: centerHeight,
             marginLeft: -centerWidth / 2
         }).show();
-        compatibleOverlay = ie6 || (overlay.currentStyle && (overlay.currentStyle.position != "fixed"));
-        if (compatibleOverlay) overlay.style.position = "absolute";
+        /* compatibleOverlay = ie6 || (overlay.currentStyle && (overlay.currentStyle.position != "fixed"));
+        if (compatibleOverlay) overlay.style.position = "absolute";*/
         $(overlay).css("opacity", options.overlayOpacity).fadeIn(options.overlayFadeDuration);
         position();
         setup(1);
@@ -3240,10 +3273,10 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         })
     }
     function setup(open) {
-        $("object").add(ie6 ? "select" : "embed").each(function (index, el) {
+        /*$("object").add(ie6 ? "select" : "embed").each(function (index, el) {
             if (open) $.data(el, "slimbox", el.style.visibility);
             el.style.visibility = open ? "hidden" : $.data(el, "slimbox")
-        });
+        }); */
         var fn = open ? "bind" : "unbind";
         win[fn]("scroll resize", position);
     }
@@ -3327,6 +3360,7 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         });
         
         //Hide Prev and Next picture link
+         $.ie6fix.selectHide();
     }
     function animateCaption() {
         $(closer).show();
@@ -3336,8 +3370,10 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         preload.src = preloadPrev.src = preloadNext.src = activeURL;
         $([center, image, bottom]).stop(true);
         $([prevLink, nextLink, image, bottomContainer, closer]).hide()
+        $.ie6fix.selectShow();
     }
     function close() {
+
         if (activeImage >= 0) {
             stop();
             $(thumbs).empty();
@@ -3346,6 +3382,7 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
             $(center).hide();
             $(overlay).stop().fadeOut(options.overlayFadeDuration, setup)
         }
+        $.ie6fix.selectShow();
         return false
     }
 })(jQuery);
@@ -3561,8 +3598,6 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
             //////////////////////////////////////////////////////////////////////					
             $mouseTrap.bind('mouseleave', this, function (event) {
             	
-            	$.ie6fix.selectShow();
-            	
                 clearTimeout(controlTimer);
                 //event.data.removeBits();                
 				if(lens) { lens.fadeOut(299); }
@@ -3571,14 +3606,15 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
 				
 				zoomDiv.fadeOut(300, function () {
                     ctx.fadedOut();
-                });																
+                });			
+                $.ie6fix.selectShow();													
                 return false;
             });
             //////////////////////////////////////////////////////////////////////			
             $mouseTrap.bind('mouseenter', this, function (event) {
             
-            	$.ie6fix.selectHide('#detail');
-            	
+            	$.ie6fix.selectHide();
+            		
 				mx = event.pageX;
                 my = event.pageY;
                 zw = event.data;

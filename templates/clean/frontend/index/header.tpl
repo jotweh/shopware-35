@@ -9,7 +9,3 @@
 		<link type="text/css" rel="stylesheet" media="all" href="{link file='frontend/_resources/styles/ie6_clean.css'}" />
 	<![endif]-->
 {/block}
-
-{block name="frontend_index_header_javascript_jquery"}
-	<script type="text/javascript" src="{link file='frontend/_resources/javascript/jquery.shopware.js'}"></script>
-{/block}
