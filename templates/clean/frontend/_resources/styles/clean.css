@@ -63,7 +63,7 @@ a.link {color:#666}
 #topbar select {color: #999;}
 .my_options a {color: #be0a30}
 #mainNavigation {background-color: transparent;border-bottom: 1px solid #dddddd;}
-#mainNavigation a {color:#5e5e5e;border: 0 none;}
+#mainNavigation a {color:#5e5e5e;border-left-color:#fff;border-right-color: #fff;}
 #mainNavigation .dropactive:hover a {color: #be0a30;}
 #mainNavigation a.first {border-left-color: #cc3d5b; border: 0 none;}
 #mainNavigation a.active {color: #be0a30; border: 0 none; border-bottom: 1px solid #be0a30;background: transparent;}
@@ -582,4 +582,5 @@ input#searchfield {width:167px;}
 
 div.supplier_filter {border-right: 1px solid #ccc; width:149px;}
 
+div.inner_searchcontainer .ajax_loader {left: 175px;}
 

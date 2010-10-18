@@ -63,7 +63,7 @@ a.link {color:#666}
 #topbar select {color: #666;background-color: transparent;}
 .my_options a {color: #666}
 #mainNavigation {background-color: transparent;}
-#mainNavigation a {color:#444;border-left-color: #aaaaaa; border-right: 1px solid #c4c4c4;}
+#mainNavigation a {color:#444;border-left-color: #aaaaaa; border-right: 1px solid #fff;}
 #mainNavigation .dropactive:hover a {color: #000000;}
 #mainNavigation ul li a.active {color: #fff;border-right: 1px solid #c4c4c4;border-left: 1px solid #b5b5b5;  }
 #mainNavigation ul li a.first {border-left: 0 none;}
@@ -456,7 +456,7 @@ div#left div.searchbox h3 {color: #758E00}
 
 /*	TOPSELLER
 	------------------------ */
-.topseller {border-color: #cfcfcf;border-right-color:#fff;border-right: 0 none;}
+.topseller {border-color: #cfcfcf;border-right-color:#fff;border-right: 0 none !important;}
 .topseller h3 {color: #000000;border-bottom-color: #e3e3e3;}
 
 /*	FORM SYSTEM
@@ -602,5 +602,6 @@ input#searchfield {width:140px;}
 #footer .bottom {padding-top:30px;}
 
 
-#content {width:1000px;}
+#content {width:998px;}
 
+div.inner_searchcontainer .ajax_loader{left: 150px;}
