@@ -25,7 +25,7 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 	
 	protected function sendMail($recipient, $template, $optin=false)
 	{
-		$mail = clone Shopware()->System()->Mail();
+		$mail = clone Shopware()->Mail();
 		
 		$mail->IsHTML($template['ishtml']);
 		$mail->From     = $template['frommail'];

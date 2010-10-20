@@ -496,6 +496,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			$basket['sAmount'] = round($basket['AmountNetNumeric'], 2);
 			$basket['sAmountTax'] = round($basket['AmountWithTaxNumeric']-$basket['AmountNetNumeric'], 2);
 			$basket['sAmountWithTax'] = round($basket['AmountWithTaxNumeric'], 2);
+			
 		}
 		else
 		{
@@ -503,6 +504,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			
 			$basket['sShippingcosts'] = $shippingcosts['brutto'];
 			$basket['sAmount'] = $basket['AmountNumeric'];
+			
 			$basket['sAmountTax'] = round($basket['AmountNumeric']-$basket['AmountNetNumeric'], 2);
 		}
 		return $basket;
