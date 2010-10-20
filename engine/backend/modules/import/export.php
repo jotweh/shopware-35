@@ -10,8 +10,8 @@
 //set_time_limit(0);
 ini_set('memory_limit','2046M');
 ini_set('max_execution_time','9999999');
-ini_set('display_errors',1);
-error_reporting(E_ALL);
+ini_set('display_errors',0);
+error_reporting(0);
 
 require_once('../../../connectors/api/api.php');
 $api = new sAPI();
