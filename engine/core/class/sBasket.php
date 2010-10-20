@@ -38,6 +38,7 @@ class sBasket
 	 * @return array
 	 */
 	public function sCheckBasketQuantities(){
+		
 		$sql = "SELECT 
 			SUM(s_articles_details.instock - s_order_basket.quantity) AS diffStock, s_order_basket.ordernumber
 			FROM s_articles,s_articles_details,s_order_basket
@@ -45,6 +46,7 @@ class sBasket
 			s_articles.mode = 0 AND s_articles.active = 1 AND s_articles.laststock = 1 AND s_articles.id = s_articles_details.articleID
 			AND s_articles_details.ordernumber = s_order_basket.ordernumber AND s_order_basket.modus = 0 AND
 			s_order_basket.sessionID = ?
+			GROUP BY  s_order_basket.ordernumber
 			";
 		$sql2 = "SELECT 
 			SUM(s_articles_groups_value.instock - s_order_basket.quantity) AS diffStock, s_order_basket.ordernumber
@@ -52,7 +54,9 @@ class sBasket
 			WHERE 
 			s_articles.mode = 0 AND s_articles.active = 1 AND s_articles.laststock = 1 AND s_articles.id = s_articles_groups_value.articleID
 			AND s_articles_groups_value.ordernumber = s_order_basket.ordernumber AND s_order_basket.modus = 0 AND
-			s_order_basket.sessionID = ?";
+			s_order_basket.sessionID = ?
+			GROUP BY  s_order_basket.ordernumber
+			";
 		$result = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql,array($this->sSYSTEM->sSESSION_ID));
 		$result2 = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql2,array($this->sSYSTEM->sSESSION_ID));
 		$result = array_merge($result,$result2);
