@@ -12,8 +12,8 @@ ALTER TABLE `s_categories` ADD `hidetop` INT( 1 ) NOT NULL ;
 ALTER TABLE `s_core_menu` ADD `pluginID` INT( 11 ) UNSIGNED NULL;
 ALTER TABLE `s_core_menu` DROP `ul_properties`;
 
-DROP TABLE `sessions2`;
-DROP TABLE `adodb_logsql`;
+DROP TABLE IF EXISTS `sessions2`;
+DROP TABLE IF EXISTS `adodb_logsql`;
 
 CREATE TABLE IF NOT EXISTS `s_core_sessions` (
   `id` varchar(64) NOT NULL,
