@@ -128,8 +128,19 @@ class Shopware_Plugins_Frontend_ViewportDispatcher_Bootstrap extends Shopware_Co
 		
 		if(Shopware()->Config()->TemplateOld) {
 			if($request->getControllerName()=='index') {
-				$args->getSubject()->View()->loadTemplate('index/index.tpl');
-				$args->getSubject()->View()->assign('sContainer', $args->getSubject()->View()->fetch('index/index_home.tpl'));
+				$view = $args->getSubject()->View();
+				$render = Shopware()->Modules()->Core()->sStart();
+				if(empty($render)) {
+					$render = array('templates'=>array(), 'variables'=>array());;
+				}
+				$variables = $view->getAssign();
+				if(!empty($variables)) {
+					$render['variables'] = array_merge($variables, $render['variables']);
+				}
+				$render = Shopware()->Modules()->Core()->sCustomRenderer($render, '', '');
+				$view->assign($render['variables']);
+				$view->loadTemplate('index/index.tpl');
+				$view->assign('sContainer', $view->fetch('index/index_home.tpl'));
 			} elseif($request->getControllerName()=='viewport' && $request->getParam('sViewport')=='logout') {
 				$args->getSubject()->forward('index', 'index');
 			}
