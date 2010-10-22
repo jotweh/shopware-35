@@ -483,10 +483,11 @@ INSERT IGNORE INTO `s_core_config_mails` (`id`, `name`, `frommail`, `fromname`, 
 INSERT IGNORE INTO `s_core_config_mails` (`id`, `name`, `frommail`, `fromname`, `subject`, `content`, `contentHTML`, `ishtml`, `htmlable`, `attachment`) VALUES
 (NULL, 'PluginCouponsSendCoupon', 'info@shopware.de', 'Shopware Demo', 'Ihre Gutschein Bestellung', 'Hallo {$sUser.billing_firstname}{$sUser.billing_lastname},\r\n \r\nvielen Dank fuer Ihre Bestellung im Shopware Demoshop (Nummer: {$sOrder.ordernumber}).\r\n\r\nAnbei schicken wir Ihnen die bestellten Gutschein-Codes.\r\n\r\n{$EventResult.code}\r\n\r\nViele Grüße,\r\n\r\nIhr Team von Shopware', '', 0, 0, '');
 
+DROP TABLE IF EXISTS `s_articles_avoid_customergroups`;
 CREATE TABLE IF NOT EXISTS `s_articles_avoid_customergroups` (
   `articleID` int(11) NOT NULL,
-  `customergroup` varchar(35) NOT NULL,
-  UNIQUE KEY `articleID` (`articleID`,`customergroup`)
+  `customergroupID` int(11) NOT NULL,
+  UNIQUE KEY `articleID` (`articleID`,`customergroupID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
  
 INSERT IGNORE INTO `s_core_engine_groups` (
