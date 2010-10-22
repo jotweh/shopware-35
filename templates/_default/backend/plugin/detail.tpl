@@ -2,6 +2,7 @@
 {$callback|escape:'javscript'}({
 	xtype: 'panel',
 	closable: true,
+	autoScroll:true,
 	id: 'plugin{$plugin.id}',
 	title: 'Plugin ({$plugin.label})',
 	items: [

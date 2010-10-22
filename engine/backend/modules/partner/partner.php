@@ -342,7 +342,7 @@ $sql = "SELECT
 
 $partnerData = mysql_query($sql);
 ?>
-<strong><?php echo $sLang["partner"]["partner_partner_link"] ?></strong> http://<?php echo $sCore->sCONFIG["sBASEPATH"] ?>/<?php echo $sCore->sCONFIG["sBASEFILE"] ?>/sPartner,<?php echo $partner["idcode"]?>/ <br /><br />
+<strong><?php echo $sLang["partner"]["partner_partner_link"] ?></strong> http://<?php echo $sCore->sCONFIG["sBASEPATH"] ?>/<?php echo $sCore->sCONFIG["sBASEFILE"] ?>?sPartner=<?php echo $partner["idcode"]?> <br /><br />
 <?php
 if (@mysql_num_rows($partnerData)){
 ?>

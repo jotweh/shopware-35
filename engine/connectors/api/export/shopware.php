@@ -714,6 +714,7 @@ class sShopwareExport
 			WHERE
 				$where
 		";
+		
 		$rows = $this->sDB->GetAll($sql);
 		if(empty($rows)||!is_array($rows)||!count($rows))
 			return false;
