@@ -493,7 +493,7 @@ class sShopwareExport
 		{
 			$sql_where = 'WHERE '.$order['where'];
 		}
-		if ($this->sSystem->sCheckLicense("","",$this->sSystem->sLicenseData["sPREMIUM"])&&!empty($this->sSystem->sCONFIG['sPREMIUMSHIPPIUNG']))
+		if (!empty($this->sSystem->sCONFIG['sPREMIUMSHIPPIUNG']))
 		{
 			$dispatch_table = 's_premium_dispatch';
 		}
