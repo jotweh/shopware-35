@@ -85,10 +85,10 @@ class sCore
 		$query = parse_url($url, PHP_URL_QUERY);
 		parse_str($query, $query);
 		
-		if(!empty($title))
-		{
+		if(!empty($title)) {
 			$query['title'] = $title;
 		}
+		$query['module'] = 'frontend';
 		return Shopware()->Front()->Router()->assemble($query);
 	}
 	
