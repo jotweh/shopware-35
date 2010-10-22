@@ -21,6 +21,8 @@ if($_REQUEST['action']=="save")
 	if(!empty($_REQUEST['field_label_new']))
 		$values['field_label_new'] = mysql_real_escape_string($_REQUEST['field_label_new']);
 	
+	
+	
 	if (count($_REQUEST['field'])) { foreach ($_REQUEST['field'] as $key => $value)
 	{
 		if(!empty($value['name']))
@@ -94,6 +96,9 @@ if($_REQUEST['action']=="save")
 
 	if(!isset($values['artID']))
 	{
+		if (empty($values['name'])){
+			echo "<br /><br /><strong>Füllen Sie das Feld Name aus</strong><br /><br /><br /><br />";
+		}else {
 		$sql = "
 			INSERT INTO 
 				`s_cms_support`
@@ -107,9 +112,13 @@ if($_REQUEST['action']=="save")
 		";
 		$result = mysql_query($sql);
 		$values['artID'] = mysql_insert_id();
+		}
 	}
 	else
 	{
+		if (empty($values['name'])){
+			echo "<strong>Füllen Sie das Feld Name aus</strong><br /><br /><br /><br />";
+		}else {
 		$sql = "
 			UPDATE `s_cms_support` 
 			SET 
@@ -123,6 +132,7 @@ if($_REQUEST['action']=="save")
 				`id` = '{$values['artID']}'
 		";
 		$result = mysql_query($sql);
+		}
 	}
 	if (!empty($values['field_name_new']))
 	{
