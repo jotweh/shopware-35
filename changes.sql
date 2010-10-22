@@ -594,152 +594,6 @@ SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'Caching')
 INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
 (NULL, @parent, 'sDISABLECACHE', '0', 'Shopcache deaktivieren', 0, 0, '', 0, 'int');
 
-
-CREATE TABLE IF NOT EXISTS `s_core_plugin_configs` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `value` text NOT NULL,
-  `pluginID` int(11) unsigned NOT NULL,
-  `localeID` int(11) unsigned NOT NULL,
-  `shopID` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`,`pluginID`,`localeID`,`shopID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `s_core_subscribes`;
-CREATE TABLE IF NOT EXISTS `s_core_subscribes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subscribe` varchar(255) NOT NULL,
-  `type` int(11) unsigned NOT NULL,
-  `listener` varchar(255) NOT NULL,
-  `pluginID` int(11) unsigned DEFAULT NULL,
-  `position` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `subscribe` (`subscribe`,`type`,`listener`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
-INSERT IGNORE INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
-(1, 'Enlight_Bootstrap_InitResource_License', 0, 'Shopware_Plugins_Core_License_Bootstrap::onInitResourceLicense', 17, 0),
-(2, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Core_Shop_Bootstrap::onPreDispatch', 8, 0),
-(3, 'Enlight_Bootstrap_InitResource_Shop', 0, 'Shopware_Plugins_Core_Shop_Bootstrap::onInitResourceShop', 8, 0),
-(4, 'Enlight_Bootstrap_InitResource_Auth', 0, 'Shopware_Plugins_Backend_Auth_Bootstrap::onInitResourceAuth', 36, 0),
-(5, 'Enlight_Controller_Action_PreDispatch', 0, 'Shopware_Plugins_Backend_Auth_Bootstrap::onPreDispatchBackend', 36, 0),
-(6, 'Enlight_Bootstrap_InitResource_Menu', 0, 'Shopware_Plugins_Backend_Menu_Bootstrap::onInitResourceMenu', 35, 0),
-(7, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Core_ControllerBase_Bootstrap::onPostDispatch', 13, 100),
-(8, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Core_ErrorHandler_Bootstrap::onStartDispatch', 12, 0),
-(9, 'Enlight_Plugins_ViewRenderer_FilterRender', 0, 'Shopware_Plugins_Core_PostFilter_Bootstrap::onFilterRender', 9, 0),
-(10, 'Enlight_Bootstrap_InitResource_System', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceSystem', 6, 0),
-(11, 'Enlight_Bootstrap_InitResource_Modules', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceModules', 6, 0),
-(12, 'Enlight_Bootstrap_InitResource_Adodb', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceAdodb', 6, 0),
-(13, 'Enlight_Bootstrap_InitResource_Template', 0, 'Shopware_Plugins_Core_Template_Bootstrap::onInitResourceTemplate', 1, 0),
-(14, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Core_ViewportForward_Bootstrap::onPreDispatch', 7, 10),
-(15, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onRouteStartup', 4, 0),
-(16, 'Enlight_Controller_Front_RouteShutdown', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onRouteShutdown', 4, 0),
-(17, 'Enlight_Controller_Router_FilterAssembleParams', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onFilterAssemble', 4, 0),
-(18, 'Enlight_Controller_Router_FilterUrl', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onFilterUrl', 4, 0),
-(19, 'Enlight_Controller_Router_Assemble', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onAssemble', 4, 100),
-(61, 'Shopware_CronJob_ArticleComment', 0, 'Shopware_Plugins_Core_CronRating_Bootstrap::onRun', 11, 0),
-(60, 'Enlight_Bootstrap_InitResource_Cron', 0, 'Shopware_Plugins_Core_Cron_Bootstrap::onInitResourceCron', 2, 0),
-(59, 'Enlight_Controller_Front_AfterSendResponse', 0, 'Shopware_Plugins_Core_Cron_Bootstrap::onAfterSendResponse', 2, 0),
-(58, 'Enlight_Controller_Dispatcher_ControllerPath_Backend_Cron', 0, 'Shopware_Plugins_Core_Cron_Bootstrap::onGetControllerPath', 2, 0),
-(87, 'Enlight_Plugins_ViewRenderer_FilterRender', 0, 'Shopware_Plugins_Frontend_Seo_Bootstrap::onFilterRender', 19, 0),
-(88, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Seo_Bootstrap::onPostDispatch', 19, 0),
-(89, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Frontend_RouterRewrite_Bootstrap::onStartDispatch', 32, 0),
-(36, 'Enlight_Bootstrap_InitResource_Api', 0, 'Shopware_Plugins_Core_Api_Bootstrap::onInitResourceApi', 16, 0),
-(37, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_ViewportDispatcher_Bootstrap::onPreDispatch', 24, 50),
-(38, 'Enlight_Bootstrap_InitResource_Log', 0, 'Shopware_Plugins_Core_Log_Bootstrap::onInitResourceLog', 10, 0),
-(39, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Core_Log_Bootstrap::onRouteStartup', 10, 0),
-(40, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Core_Debug_Bootstrap::onStartDispatch', 3, 0),
-(41, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Core_Benchmark_Bootstrap::onStartDispatch', 14, 0),
-(42, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Core_BenchmarkEvents_Bootstrap::onStartDispatch', 5, 0),
-(43, 'Enlight_Controller_Front_DispatchLoopShutdown', 0, 'Shopware_Plugins_Core_BenchmarkEvents_Bootstrap::onDispatchLoopShutdown', 5, 0),
-(86, 'Enlight_Controller_Front_DispatchLoopShutdown', 0, 'Shopware_Plugins_Frontend_Statistics_Bootstrap::onDispatchLoopShutdown', 29, 0),
-(85, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Google_Bootstrap::onPostDispatch', 23, 0),
-(63, 'Shopware_CronJob_ArticleStock', 0, 'Shopware_Plugins_Core_CronStock_Bootstrap::onRun', 15, 0),
-(64, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Compare_Bootstrap::onPostDispatch', 18, 0),
-(98, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_LastArticles_Bootstrap::onPostDispatch', 20, 0),
-(99, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onPreDispatch', 34, 0),
-(100, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_TagCloud_Bootstrap::onPostDispatch', 33, 0),
-(84, 'Shopware_CronJob_Birthday', 0, 'Shopware_Plugins_Core_CronBirthday_Bootstrap::onRun', 39, 0);
-
-DROP TABLE IF EXISTS `s_core_plugins`;
-CREATE TABLE IF NOT EXISTS `s_core_plugins` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `namespace` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `label` varchar(255) NOT NULL,
-  `source` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `description_long` text NOT NULL,
-  `active` int(1) unsigned NOT NULL,
-  `installation_date` datetime DEFAULT NULL,
-  `update_date` datetime DEFAULT NULL,
-  `autor` varchar(255) DEFAULT NULL,
-  `copyright` varchar(255) DEFAULT NULL,
-  `license` varchar(255) NOT NULL,
-  `version` varchar(255) NOT NULL,
-  `support` varchar(255) NOT NULL,
-  `changes` text NOT NULL,
-  `link` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `namespace` (`namespace`,`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
-INSERT IGNORE INTO `s_core_plugins` (`id`, `namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`) VALUES
-(1, 'Core', 'Template', '', '', '', '', 1, '2010-10-13 22:02:31', '2010-10-13 22:02:31', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(2, 'Core', 'Cron', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(3, 'Core', 'Debug', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(4, 'Core', 'Router', '', '', '', '', 1, '2010-10-13 22:08:39', '2010-10-13 22:08:39', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(5, 'Core', 'BenchmarkEvents', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(6, 'Core', 'System', '', '', '', '', 1, '2010-10-13 22:02:24', '2010-10-13 22:02:24', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(7, 'Core', 'ViewportForward', '', '', '', '', 1, '2010-10-13 22:02:35', '2010-10-13 22:02:35', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(8, 'Core', 'Shop', '', '', '', '', 1, '2010-10-13 22:02:03', '2010-10-13 22:02:03', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(9, 'Core', 'PostFilter', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(10, 'Core', 'Log', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(11, 'Core', 'CronRating', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(12, 'Core', 'ErrorHandler', '', '', '', '', 1, '2010-10-13 22:01:35', '2010-10-13 22:01:35', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(13, 'Core', 'ControllerBase', '', '', '', '', 1, '2010-10-13 22:01:28', '2010-10-13 22:01:28', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(14, 'Core', 'Benchmark', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(15, 'Core', 'CronStock', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(16, 'Core', 'Api', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(17, 'Core', 'License', '', '', '', '', 1, '2010-10-13 22:01:40', '2010-10-13 22:01:40', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(18, 'Frontend', 'Compare', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(19, 'Frontend', 'Seo', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(20, 'Frontend', 'LastArticles', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(21, 'Frontend', 'RouterOld', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(22, 'Frontend', 'Ticket', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(23, 'Frontend', 'Google', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(24, 'Frontend', 'ViewportDispatcher', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(25, 'Frontend', 'Paypal', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(26, 'Frontend', 'ReCaptcha', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(27, 'Frontend', 'AdvancedMenu', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(28, 'Frontend', 'CouponsSelling', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(29, 'Frontend', 'Statistics', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(30, 'Frontend', 'Recommendation', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(31, 'Frontend', 'Notification', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(32, 'Frontend', 'RouterRewrite', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(33, 'Frontend', 'TagCloud', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(34, 'Frontend', 'InputFilter', '', '', '', '', 1, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(35, 'Backend', 'Menu', '', '', '', '', 1, '2010-10-13 22:01:22', '2010-10-13 22:01:22', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', ''),
-(36, 'Backend', 'Auth', '', '', '', '', 1, '2010-10-13 22:01:17', '2010-10-13 22:01:17', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', '');
-
-CREATE TABLE IF NOT EXISTS `s_core_plugin_elements` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `pluginID` int(11) unsigned NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `value` text NOT NULL, 
-  `label` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `required` int(1) unsigned NOT NULL,
-  `order` int(11) NOT NULL,
-  `scope` int(11) unsigned NOT NULL,
-  `filters` text,
-  `validators` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `pluginID` (`pluginID`,`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
-
 SET @parent = (SELECT `id` FROM `s_core_menu` WHERE `name` LIKE 'Einstellungen');
 
 INSERT IGNORE INTO `s_core_menu` (`id`, `parent`, `hyperlink`, `name`, `onclick`, `style`, `class`, `position`, `active`) VALUES
@@ -2221,3 +2075,167 @@ INSERT INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, 
 (1548, 'frontend/checkout/finish_footer', 1, 1, 'CheckoutFinishTaxInformation', 'Der Empfänger der Leistung schuldet die Steuer', '2010-10-18 00:31:38', '2010-10-18 00:31:38'),
 (1549, 'frontend/account/payment', 1, 1, 'ChangePaymentTitle', 'Zahlungsart ändern', '2010-10-18 00:57:15', '2010-10-18 00:57:25'),
 (1550, 'frontend/account/select_shipping', 1, 1, 'SelectShippingTitle', 'Adresse auswählen', '2010-10-18 00:58:04', '2010-10-18 00:58:11');
+
+
+DROP TABLE IF EXISTS `s_core_plugins`;
+CREATE TABLE IF NOT EXISTS `s_core_plugins` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `namespace` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `source` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `description_long` text NOT NULL,
+  `active` int(1) unsigned NOT NULL,
+  `installation_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `autor` varchar(255) DEFAULT NULL,
+  `copyright` varchar(255) DEFAULT NULL,
+  `license` varchar(255) NOT NULL,
+  `version` varchar(255) NOT NULL,
+  `support` varchar(255) NOT NULL,
+  `changes` text NOT NULL,
+  `link` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `namespace` (`namespace`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=38 ;
+
+INSERT INTO `s_core_plugins` (`id`, `namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`, `changes`, `link`) VALUES
+(1, 'Core', 'Log', 'Log', 'Default', '', '', 1, '2010-10-22 14:55:31', '2010-10-22 14:55:31', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(2, 'Core', 'ErrorHandler', 'ErrorHandler', 'Default', '', '', 1, '2010-10-22 14:55:23', '2010-10-22 14:55:23', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(3, 'Core', 'Debug', 'Debug', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(4, 'Core', 'BenchmarkEvents', 'BenchmarkEvents', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(5, 'Core', 'Benchmark', 'Benchmark', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(6, 'Core', 'Template', 'Template', 'Default', '', '', 1, '2010-10-22 14:56:16', '2010-10-22 14:56:16', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(7, 'Core', 'Cron', 'Cron', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(8, 'Core', 'Router', 'Router', 'Default', '', '', 1, '2010-10-22 14:55:47', '2010-10-22 14:55:47', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(9, 'Core', 'CronBirthday', 'CronBirthday', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(10, 'Core', 'System', 'System', 'Default', '', '', 1, '2010-10-22 14:56:05', '2010-10-22 14:56:05', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(11, 'Core', 'ViewportForward', 'ViewportForward', 'Default', '', '', 1, '2010-10-22 14:56:22', '2010-10-22 14:56:22', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(12, 'Core', 'Shop', 'Shop', 'Default', '', '', 1, '2010-10-22 14:55:57', '2010-10-22 14:55:57', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(13, 'Core', 'PostFilter', 'PostFilter', 'Default', '', '', 1, '2010-10-22 14:55:40', '2010-10-22 14:55:40', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(14, 'Core', 'CronRating', 'CronRating', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(15, 'Core', 'ControllerBase', 'ControllerBase', 'Default', '', '', 1, '2010-10-22 14:55:04', '2010-10-22 14:55:04', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(16, 'Core', 'CronStock', 'CronStock', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(17, 'Core', 'Api', 'Api', 'Default', '', '', 1, '2010-10-22 14:54:55', '2010-10-22 14:54:55', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(18, 'Core', 'License', 'License', 'Default', '', '', 1, '2010-10-22 14:56:39', '2010-10-22 14:56:39', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(19, 'Frontend', 'RouterRewrite', 'RouterRewrite', 'Default', '', '', 1, '2010-10-22 14:58:53', '2010-10-22 14:58:53', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(20, 'Frontend', 'Compare', 'Compare', 'Default', '', '', 1, '2010-10-22 14:57:52', '2010-10-22 14:57:52', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(21, 'Frontend', 'Facebook', 'Facebook', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(22, 'Frontend', 'Seo', 'Seo', 'Default', '', '', 1, '2010-10-22 14:58:04', '2010-10-22 14:58:04', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(23, 'Frontend', 'LastArticles', 'LastArticles', 'Default', '', '', 1, '2010-10-22 14:59:40', '2010-10-22 14:59:40', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(24, 'Frontend', 'RouterOld', 'RouterOld', 'Default', '', '', 1, '2010-10-22 14:59:09', '2010-10-22 14:59:09', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(25, 'Frontend', 'Ticket', 'Ticket', 'Default', '', '', 1, '2010-10-22 14:58:33', '2010-10-22 14:58:33', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(26, 'Frontend', 'Google', 'Google', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(27, 'Frontend', 'ViewportDispatcher', 'ViewportDispatcher', 'Default', '', '', 1, '2010-10-22 14:58:40', '2010-10-22 14:58:40', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(28, 'Frontend', 'Paypal', 'Paypal', 'Default', '', '', 1, '2010-10-22 14:59:16', '2010-10-22 14:59:16', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(29, 'Frontend', 'AdvancedMenu', 'AdvancedMenu', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(30, 'Frontend', 'CouponsSelling', 'CouponsSelling', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(31, 'Frontend', 'Statistics', 'Statistics', 'Default', '', '', 1, '2010-10-22 14:57:58', '2010-10-22 14:57:58', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(32, 'Frontend', 'Recommendation', 'Recommendation', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(33, 'Frontend', 'Notification', 'Notification', 'Default', '', '', 0, NULL, NULL, 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(34, 'Frontend', 'TagCloud', 'TagCloud', 'Default', '', '', 1, '2010-10-22 14:58:17', '2010-10-22 14:58:17', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(35, 'Frontend', 'InputFilter', 'InputFilter', 'Default', '', '', 1, '2010-10-22 14:59:25', '2010-10-22 14:59:25', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(36, 'Backend', 'Auth', 'Auth', 'Default', '', '', 1, '2010-10-22 14:54:40', '2010-10-22 14:54:40', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/'),
+(37, 'Backend', 'Menu', 'Menu', 'Default', '', '', 1, '2010-10-22 14:54:48', '2010-10-22 14:54:48', 'shopware AG', 'Copyright © 2010, shopware AG', '', '1', 'http://www.shopware.de/wiki/', '', 'http://www.shopware.de/');
+
+DROP TABLE IF EXISTS `s_core_plugin_configs`;
+CREATE TABLE IF NOT EXISTS `s_core_plugin_configs` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `pluginID` int(11) unsigned NOT NULL,
+  `localeID` int(11) unsigned NOT NULL,
+  `shopID` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`,`pluginID`,`localeID`,`shopID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+
+INSERT INTO `s_core_plugin_configs` (`id`, `name`, `value`, `pluginID`, `localeID`, `shopID`) VALUES
+(1, 'show', 's:1:"1";', 34, 1, 1),
+(2, 'controller', 's:14:"index, listing";', 34, 1, 1),
+(7, 'sql_protection', 's:1:"1";', 35, 1, 1),
+(8, 'sql_regex', 's:134:"s_core|s_order|benchmark.*\\(|insert.+into|update.+set|delete.+from|select.+from|drop.+(?:table|database)|truncate.+table|union.+select";', 35, 1, 1),
+(9, 'xss_protection', 's:1:"1";', 35, 1, 1),
+(10, 'xss_regex', 's:42:"javascript:|src\\s*=|on[a-z]+\\s*=|style\\s*=";', 35, 1, 1),
+(11, 'show', 's:1:"1";', 23, 1, 1);
+
+DROP TABLE IF EXISTS `s_core_plugin_elements`;
+CREATE TABLE IF NOT EXISTS `s_core_plugin_elements` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pluginID` int(11) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `label` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `required` int(1) unsigned NOT NULL,
+  `order` int(11) NOT NULL,
+  `scope` int(11) unsigned NOT NULL,
+  `filters` text,
+  `validators` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pluginID` (`pluginID`,`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+INSERT INTO `s_core_plugin_elements` (`id`, `pluginID`, `name`, `value`, `label`, `description`, `type`, `required`, `order`, `scope`, `filters`, `validators`) VALUES
+(1, 1, 'logDb', 'i:1;', 'Fehler in Datenbank schreiben', '', 'Checkbox', 0, 0, 0, NULL, NULL),
+(2, 1, 'logMail', 's:1:"0";', 'Fehler an Shopbetreiber senden', '', 'Checkbox', 0, 0, 0, NULL, NULL),
+(3, 34, 'show', 'i:1;', 'Tag-Cloud anzeigen', '', 'Checkbox', 0, 0, 1, NULL, NULL),
+(4, 34, 'controller', 's:14:"index, listing";', 'Controller-Auswahl', '', 'Text', 0, 0, 1, NULL, NULL),
+(5, 35, 'sql_protection', 'i:1;', 'SQL-Injection-Schutz aktivieren', '', 'Text', 0, 0, 0, NULL, NULL),
+(6, 35, 'sql_regex', 's:134:"s_core|s_order|benchmark.*\\(|insert.+into|update.+set|delete.+from|select.+from|drop.+(?:table|database)|truncate.+table|union.+select";', 'SQL-Injection-Filter', '', 'Text', 0, 0, 0, NULL, NULL),
+(7, 35, 'xss_protection', 'i:1;', 'XSS-Schutz aktivieren', '', 'Text', 0, 0, 0, NULL, NULL),
+(8, 35, 'xss_regex', 's:42:"javascript:|src\\s*=|on[a-z]+\\s*=|style\\s*=";', 'XSS-Filter', '', 'Text', 0, 0, 0, NULL, NULL),
+(9, 23, 'show', 'i:1;', 'Artikelverlauf anzeigen', '', 'Checkbox', 0, 0, 1, NULL, NULL);
+
+DROP TABLE IF EXISTS `s_core_subscribes`;
+CREATE TABLE IF NOT EXISTS `s_core_subscribes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscribe` varchar(255) NOT NULL,
+  `type` int(11) unsigned NOT NULL,
+  `listener` varchar(255) NOT NULL,
+  `pluginID` int(11) unsigned DEFAULT NULL,
+  `position` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `subscribe` (`subscribe`,`type`,`listener`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=38 ;
+
+INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
+(1, 'Enlight_Bootstrap_InitResource_Auth', 0, 'Shopware_Plugins_Backend_Auth_Bootstrap::onInitResourceAuth', 36, 0),
+(2, 'Enlight_Controller_Action_PreDispatch', 0, 'Shopware_Plugins_Backend_Auth_Bootstrap::onPreDispatchBackend', 36, 0),
+(3, 'Enlight_Bootstrap_InitResource_Menu', 0, 'Shopware_Plugins_Backend_Menu_Bootstrap::onInitResourceMenu', 37, 0),
+(4, 'Enlight_Bootstrap_InitResource_Api', 0, 'Shopware_Plugins_Core_Api_Bootstrap::onInitResourceApi', 17, 0),
+(5, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Core_ControllerBase_Bootstrap::onPostDispatch', 15, 100),
+(6, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Core_ErrorHandler_Bootstrap::onStartDispatch', 2, 0),
+(7, 'Enlight_Bootstrap_InitResource_Log', 0, 'Shopware_Plugins_Core_Log_Bootstrap::onInitResourceLog', 1, 0),
+(8, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Core_Log_Bootstrap::onRouteStartup', 1, 0),
+(9, 'Enlight_Plugins_ViewRenderer_FilterRender', 0, 'Shopware_Plugins_Core_PostFilter_Bootstrap::onFilterRender', 13, 0),
+(10, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onRouteStartup', 8, 0),
+(11, 'Enlight_Controller_Front_RouteShutdown', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onRouteShutdown', 8, 0),
+(12, 'Enlight_Controller_Router_FilterAssembleParams', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onFilterAssemble', 8, 0),
+(13, 'Enlight_Controller_Router_FilterUrl', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onFilterUrl', 8, 0),
+(14, 'Enlight_Controller_Router_Assemble', 0, 'Shopware_Plugins_Core_Router_Bootstrap::onAssemble', 8, 100),
+(15, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Core_Shop_Bootstrap::onPreDispatch', 12, -50),
+(16, 'Enlight_Bootstrap_InitResource_Shop', 0, 'Shopware_Plugins_Core_Shop_Bootstrap::onInitResourceShop', 12, 0),
+(17, 'Enlight_Bootstrap_InitResource_System', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceSystem', 10, 0),
+(18, 'Enlight_Bootstrap_InitResource_Modules', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceModules', 10, 0),
+(19, 'Enlight_Bootstrap_InitResource_Adodb', 0, 'Shopware_Plugins_Core_System_Bootstrap::onInitResourceAdodb', 10, 0),
+(20, 'Enlight_Bootstrap_InitResource_Template', 0, 'Shopware_Plugins_Core_Template_Bootstrap::onInitResourceTemplate', 6, 0),
+(21, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Core_ViewportForward_Bootstrap::onPreDispatch', 11, 10),
+(22, 'Enlight_Bootstrap_InitResource_License', 0, 'Shopware_Plugins_Core_License_Bootstrap::onInitResourceLicense', 18, 0),
+(23, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Compare_Bootstrap::onPostDispatch', 20, 0),
+(24, 'Enlight_Controller_Front_DispatchLoopShutdown', 0, 'Shopware_Plugins_Frontend_Statistics_Bootstrap::onDispatchLoopShutdown', 31, 0),
+(25, 'Enlight_Plugins_ViewRenderer_FilterRender', 0, 'Shopware_Plugins_Frontend_Seo_Bootstrap::onFilterRender', 22, 0),
+(26, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Seo_Bootstrap::onPostDispatch', 22, 0),
+(27, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_TagCloud_Bootstrap::onPostDispatch', 34, 0),
+(28, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Ticket_Bootstrap::onPostDispatch', 25, 0),
+(29, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_ViewportDispatcher_Bootstrap::onPreDispatch', 27, 50),
+(30, 'Enlight_Controller_Front_StartDispatch', 0, 'Shopware_Plugins_Frontend_RouterRewrite_Bootstrap::onStartDispatch', 19, 0),
+(31, 'Enlight_Controller_Router_Route', 0, 'Shopware_Plugins_Frontend_RouterOld_Bootstrap::onRoute', 24, 10),
+(32, 'Enlight_Controller_Router_Assemble', 0, 'Shopware_Plugins_Frontend_RouterOld_Bootstrap::onAssemble', 24, 10),
+(33, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_Paypal_Bootstrap::onPostDispatch', 28, 0),
+(34, 'Enlight_Controller_Dispatcher_ControllerPath_Frontend_Paypal', 0, 'Shopware_Plugins_Frontend_Paypal_Bootstrap::onGetControllerPath', 28, 0),
+(35, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_Paypal_Bootstrap::onPreDispatch', 28, 10),
+(36, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onPreDispatch', 35, -100),
+(37, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_LastArticles_Bootstrap::onPostDispatch', 23, 0);
