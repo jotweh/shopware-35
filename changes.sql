@@ -540,7 +540,6 @@ DELETE FROM `s_core_config` WHERE `name` IN (
  'sMEMCACHE',
  'sSHOWBASKET',
  'sDONTHASH',
- 'sUSEDEFAULTTEMPLATES',
  'sVATCHECKCONFIRMATION',
  'sSHOWCLOUD'
 );
@@ -2239,3 +2238,6 @@ INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginI
 (35, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_Paypal_Bootstrap::onPreDispatch', 28, 10),
 (36, 'Enlight_Controller_Front_PreDispatch', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onPreDispatch', 35, -100),
 (37, 'Enlight_Controller_Action_PostDispatch', 0, 'Shopware_Plugins_Frontend_LastArticles_Bootstrap::onPostDispatch', 23, 0);
+
+INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
+(NULL, 0, 'sUSEDEFAULTTEMPLATES', '1', '', 0, 0, '', 0, 'int');
