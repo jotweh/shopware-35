@@ -40,6 +40,8 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 		$this->View()->sSearchResultsNum = empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"];
 		$this->View()->sSearchTerm = $this->request()->sSearch;
 		$this->View()->sPages = $variables["sPages"];
+		$this->View()->sPerPage = $variables["sPerPage"];
+		$this->View()->sNumberPages = $variables["sNumberPages"];
 	
 		$this->View()->sPage = $this->request()->sPage;
 		$this->view->loadTemplate('frontend/search/index.tpl');
