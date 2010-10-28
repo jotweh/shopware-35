@@ -9,7 +9,8 @@ $file = dirname(dirname(dirname(dirname(__FILE__)))).'/'.$file;
 if(preg_match('/[^a-z0-9\\/\\\\_.:-]/i', $file)) return;
 if(!file_exists($file)) return;
 
-$extension = end(explode('.',$file));
+$extension = pathinfo($file, PATHINFO_EXTENSION);
+
 switch ($extension)
 {
 	case 'js':
