@@ -112,10 +112,7 @@ jQuery(document).ready(function($) {
 				$.modal(data, '', {'position':'fixed'}).find('.close').remove();			
 			});
 		});
-		
-		//Striping der Tabellen
-		$.stripe('zebra');
-		
+				
 		//Topseller
 		if($('.topseller')) $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350});
 		
@@ -1817,34 +1814,7 @@ jQuery.fn.liveSearch = function (conf) {
         }
         return s
     };
-    
-    //Stripes tables
-    $.stripe = function (id) {
-        var even = false;
-        var evenColor = arguments[1] ? arguments[1] : "#fff";
-        var oddColor = arguments[2] ? arguments[2] : "#efefef";
-        var table = document.getElementById(id);
-        if (!table) {
-            return
-        }
-        var tbodies = table.getElementsByTagName("tbody");
-        for (var h = 0; h < tbodies.length; h++) {
-            var trs = tbodies[h].getElementsByTagName("tr");
-            for (var i = 0; i < trs.length; i++) {
-                if (!hasClass(trs[i]) && !trs[i].style.backgroundColor) {
-                    var tds = trs[i].getElementsByTagName("td");
-                    for (var j = 0; j < tds.length; j++) {
-                        var mytd = tds[j];
-                        if (!hasClass(mytd) && !mytd.style.backgroundColor) {
-                            mytd.style.backgroundColor = even ? evenColor : oddColor
-                        }
-                    }
-                }
-                even = !even
-            }
-        }
-    };
-        
+            
     //Changes the state of the related articles which is
     //used by the bundle module
     $.changeRelatedArticleState = function (ordernumber, active) {

@@ -54,6 +54,7 @@ class sCategories
 					SELECT c.*, (SELECT COUNT(*) FROM s_articles_categories WHERE categoryID = c.id GROUP BY categoryID) AS countArticles
 					FROM s_categories c
 					WHERE parent = ? 
+					AND c.active = 1
 					AND (
 					SELECT categoryID 
 					FROM s_categories_avoid_customergroups 
@@ -107,6 +108,7 @@ class sCategories
 			SELECT *
 			FROM s_categories c
 			WHERE parent = ?  
+			AND c.active = 1
 			AND (
 					SELECT categoryID 
 					FROM s_categories_avoid_customergroups 
@@ -116,7 +118,6 @@ class sCategories
 				SELECT categoryID
 				FROM s_articles_categories
 				WHERE categoryID = c.id
-				AND c.active = 1
 				LIMIT 1
 			)
 			ORDER BY position, description
