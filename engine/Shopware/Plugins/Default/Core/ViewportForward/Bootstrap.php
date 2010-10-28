@@ -26,6 +26,7 @@ class Shopware_Plugins_Core_ViewportForward_Bootstrap extends Shopware_Component
 		{
 			switch ($viewport)
 			{
+				case 'shopware.php':
 				case 'sViewport,sale':
 					$url = $args->getRequest()->getPathInfo();
 					$url = trim($url, '/');

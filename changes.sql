@@ -49,7 +49,7 @@ SET @parent = (SELECT `id` FROM `s_core_menu` WHERE `name` = 'Einstellungen');
 SET @parent = (SELECT `id` FROM `s_core_menu` WHERE `name` = 'Textbausteine' AND `parent`=@parent);
 UPDATE `s_core_menu` SET `onclick` = '', `style`=''  WHERE `id`=@parent;
 INSERT IGNORE INTO `s_core_menu` (`id`, `parent`, `hyperlink`, `name`, `onclick`, `style`, `class`, `position`, `active`, `pluginID`) VALUES
-(NULL, @parent, '', 'Neue Templatebasis', 'loadController(''snippet'')', 'background-position: 5px 5px', 'ico2 plugin', 0, 1, NULL),
+(NULL, @parent, '', 'Neue Templatebasis', 'openAction(''snippet'')', 'background-position: 5px 5px', 'ico2 plugin', 0, 1, NULL),
 (NULL, @parent, '', 'Alte Templatebasis', 'loadSkeleton(''snippets'')', 'background-position: 5px 5px', 'ico2 plugin', 1, 1, NULL);
 
 DELETE FROM `s_core_menu` WHERE name = 'FAQ';

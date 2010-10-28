@@ -1878,13 +1878,24 @@ jQuery.fn.liveSearch = function (conf) {
     //article detail site and changes the active
     //images which is used by variant articles
     $.changeDetails = function (ordernumber) {
-        if (typeof($.checkNotification) == 'function') {
+    	if (typeof($.checkNotification) == 'function') {
         	if (!ordernumber){
             	$.checkNotification($.ordernumber);
         	}else {
         		$.checkNotification(ordernumber);
         	}
         }
+    	try { 
+			if(!ordernumber || $('#instock_'+ordernumber).val() > 0) {
+				$('#article_notification').hide();
+				$('#detailCartButton').show();
+				$('#detailBuyInfoNotAvailable').hide();
+			} else {
+				$('#article_notification').show();
+				$('#detailCartButton').hide();
+				$('#detailBuyInfoNotAvailable').show();
+			}
+        } catch(e) {}
         
         if (!ordernumber) {
         	// Hide all other thumbnails
@@ -1943,7 +1954,9 @@ jQuery.fn.liveSearch = function (conf) {
     //email notification and checks if
     //a notification was sent 
     $.checkNotification = function(ordernumber) {
-    	
+    	if(typeof(variantOrdernumberArray) == 'undefined') {
+    		return;
+    	}
     	var isSet = false;
     	try {
 	    	for(var i = 0; i < variantOrdernumberArray.length; ++i) {
@@ -1956,19 +1969,6 @@ jQuery.fn.liveSearch = function (conf) {
 						$('#sendArticleNotification').hide();
 					} catch(e) {}
 				}
-			}
-			
-			var currentInstock = $('#instock_'+ordernumber).val();
-				if(currentInstock > 0) {
-					$('#article_notification').hide();
-					try {
-						$('#detailCartButton').show();
-					} catch(e) {}
-				} else {
-					$('#article_notification').show();
-					try {
-						$('#detailCartButton').hide();
-					} catch(e) {}
 			}
 		} catch(err) {}
 	}

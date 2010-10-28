@@ -22,15 +22,15 @@
 			</div>
 		</div>
 	{else}
-		<div class="notice">
 		{if $NotifyValid != true}
-			<div class="center">
+		<div class="notice">
+		<div class="center">
 				<strong>
 					{se name='DetailNotifyHeader'}{/se}
 				</strong>
 			</div>
-		{/if}
 		</div>
+		{/if}
 	{/if}
 	
 	<form method="post" action="{url action='notify' sArticle=$sArticle.articleID}" id="sendArticleNotification">
@@ -47,9 +47,8 @@
 				<input type="submit"  value="{s name='DetailNotifyActionSubmit'}{/s}" class="button-right small" />
 			</div>
 		</fieldset>
+		<div class="doublespace">&nbsp;</div>
 	</form>
-	
-	<div class="doublespace">&nbsp;</div>
 	
 	<div id="articleNotificationWasSend" class="displaynone">
 	{if $NotifyAlreadyRegistered != true && $NotifyValid != true && $NotifyInvalid != true}

@@ -18,7 +18,7 @@ class Shopware_Plugins_Frontend_LastArticles_Bootstrap extends Shopware_Componen
 		return true;
 	}
 	
-	function onPostDispatch(Enlight_Event_EventArgs $args)
+	public static function onPostDispatch(Enlight_Event_EventArgs $args)
 	{		
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
