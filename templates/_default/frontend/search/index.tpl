@@ -12,7 +12,7 @@
 				{include file="frontend/listing/box_article.tpl"}
 			{/foreach}
 		</div>
-		{if $sSearchResults|@count && $sPages|@count}
+		{if $sSearchResults|@count}
 			<div class="clear">&nbsp;</div>
 			{include file='frontend/listing/listing_actions.tpl'}
 		{/if}
@@ -21,8 +21,6 @@
 {/block}
 
 {block name='frontend_listing_actions_top'}
-
-{if $sPages.numbers|@count > 1}
 <div class="top">
 	<div class="sort-filter">&nbsp;</div>
 	<form method="post" action="{$sPages.first}">
@@ -36,11 +34,10 @@
 	</div>
 	</form>
 </div>
-{/if}
 {/block}
 
 {block name='frontend_listing_actions_paging'}
-{if $sPerPage}
+{if $sPages.numbers|@count > 1}
 <div class="bottom">
 	<div class="paging">
 		<label>{se name='ListingPaging'}Blättern:{/se}</label>
@@ -66,7 +63,7 @@
 		{/if}
 	</div>
 	<div class="display_sites">
-		{se name="ListingTextSite"}Seite{/se} <strong>{$sPage}</strong> {se name="ListingTextFrom"}von{/se} <strong>{$sNumberPages}</strong>
+		{se name="ListingTextSite"}Seite{/se} <strong>{if $sPage}{$sPage}{else}1{/if}</strong> {se name="ListingTextFrom"}von{/se} <strong>{$sNumberPages}</strong>
 	</div>
 </div>
 {/if}

@@ -461,9 +461,11 @@ class sArticles
 			
 		$sPage = !empty($this->sSYSTEM->_GET['sPage']) ? (int) $this->sSYSTEM->_GET['sPage'] : 1;
 
-		
 		if ($this->sSYSTEM->_GET['sPerPage']){
-			$this->sSYSTEM->_SESSION['sPerPage'] = $this->sSYSTEM->_GET['sPerPage'];
+			$this->sSYSTEM->_SESSION['sPerPage'] = (int) $this->sSYSTEM->_GET['sPerPage'];
+		}
+		if ($this->sSYSTEM->_POST['sPerPage']){
+			$this->sSYSTEM->_SESSION['sPerPage'] = (int) $this->sSYSTEM->_POST['sPerPage'];
 		}
 		
 		if ($this->sSYSTEM->_SESSION['sPerPage']){
