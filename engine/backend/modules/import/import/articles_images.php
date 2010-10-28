@@ -47,7 +47,7 @@ foreach ($articles as $article)
 
 	if($sConfig['sFormat']==1)
 	{
-		if(isset($article['images'])&&$sConfig['sArticleImages'])
+		if(!empty($article['images'])&&$sConfig['sArticleImages'])
 		{
 			$article['images'] = explode('|', $article['images']);
 		}
@@ -69,7 +69,7 @@ foreach ($articles as $article)
 	$inserts = array();
 	if(!empty($article['images']))
 	{
-		foreach ($article['images'] as $key=>&$image)
+		foreach ($article['images'] as $key=>$image)
 		{
 			if(!is_array($image)) $image = array('image'=>$image);
 			if(isset($image['link']))
