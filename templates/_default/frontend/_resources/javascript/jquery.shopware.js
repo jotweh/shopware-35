@@ -1862,8 +1862,10 @@ jQuery.fn.liveSearch = function (conf) {
 				$('#detailBuyInfoNotAvailable').hide();
 			} else {
 				$('#article_notification').show();
-				$('#detailCartButton').hide();
-				$('#detailBuyInfoNotAvailable').show();
+				if($('#detailBuyInfoNotAvailable').length) {
+					$('#detailCartButton').hide();
+					$('#detailBuyInfoNotAvailable').show();
+				}
 			}
         } catch(e) {}
         
