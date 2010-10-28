@@ -1,4 +1,6 @@
 <?php
+require_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'Shopware'.DIRECTORY_SEPARATOR.'Shopware.php');
+
 /**
  * Shopware API
  *
@@ -19,7 +21,7 @@
  * @subpackage  API
  * @version		1.0.0
  */
-class sAPI
+class sAPI extends Shopware
 {
 	
     /**
@@ -58,31 +60,33 @@ class sAPI
      * @var array
      */
 	var $sResource = array();
+	
+	var $sCONFIG;
+	var $sLicenseData = array();
+	
 	/**
 	  * Der Konstruktor lädt Einstellungen / Datenbank-Verbindung und den Shopware - Core
 	  * 
 	  * @access public
 	  */
-	function __construct ()
+	public function __construct ()
 	{
+		parent::__construct();
 		
-		global $ADODB_FETCH_MODE;
-		$this->sPath = realpath(dirname(__FILE__)."/../../../");
-		include($this->sPath."/config.php");
-		require_once ($this->sPath."/engine/core/class/sSystem.php");
-		//require_once ($this->sPath."/engine/vendor/adodb/adodb.inc.php");
-		//require_once ("../../vendor/phpmailer/class.phpmailer.php");
-		//require ($this->sPath."/vendor/smarty/libs/Smarty.class.php");
-		$this->sSystem = new sSystem();
-		$this->sSystem->sDB_CONNECTOR = $DB_CONNECTOR;
-		$this->sSystem->sDB_USER = $DB_USER;
-		$this->sSystem->sDB_PASSWORD = $DB_PASSWORD;
-		$this->sSystem->sDB_HOST = $DB_HOST;
-		$this->sSystem->sDB_DATABASE = $DB_DATABASE;
-		$this->sSystem->sInitAdo();
-		$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
-		$this->sDB =& $this->sSystem->sDB_CONNECTION;
-		$this->sSystem->sInitConfig();
+		$this->Bootstrap()->loadResource('Zend');
+		$this->Bootstrap()->loadResource('Cache');
+		$this->Bootstrap()->loadResource('Db');
+        
+        $this->sPath = $this->DocPath();
+        $this->sCONFIG = $this->Config();
+        $db = new Enlight_Components_Adodb(array(
+			'db' => $this->Db()
+		));
+		$this->sDB = $db;
+        $this->sSystem = $this;
+        
+        error_reporting(0);
+		ini_set("display_errors",false);
 	}
 	/**
 	  * Lädt externe Daten und speichert diese in einem File-Cache
@@ -118,48 +122,6 @@ class sAPI
 				fclose($put_handle);
 				$this->sFiles[] = $hash;
 				return "$dir/$hash.tmp";
-			case "post":
-				//$data = $_POST;
-				//$_FILES['userfile']['tmp_name']
-				//is_uploaded_file
-				break;
-			/*
-			case "shopware":
-				switch ($url_array['host']) {
-					case "sCore":
-						if(!empty($url_array['path'][1]))
-							$classname = $url_array['path'][1];
-						else 
-							return false;
-						if(!empty($url_array['path'][2]))
-							$functionname = $url_array['path'][2];
-						if(!empty($url_array['query']))
-							parse_str($url_array['query'],$params);
-						else 
-							$params = array();
-						if(!file_exists($this->sPath."/engine/core/class/".$classname.".php"))
-							return false;
-						include($this->sPath."/engine/core/class/".$classname.".php");
-						if(!class_exists($classname))
-							return false;
-						if (!empty($functionname)) {
-							if(!method_exists($classname,$functionname))
-								return false;
-							$class = new $classname;
-							$class->sSYSTEM =& $this->sSystem;
-							return call_user_func_array(array(&$class, $functionname),$params);
-						}
-						break;
-					default:
-						break;
-				}
-			*/
-			case "mail":
-			case "tcp":
-			case "udp":
-			case "php":
-			default:
-				break;
 		}
 	}
 	/**
@@ -175,33 +137,6 @@ class sAPI
 				@unlink($this->sPath."/engine/connectors/api/tmp/$hash.tmp");
 		}
 		
-	}
-	
-	/**
-	  * Lokales Speichern von Daten - derzeit ohne Funktion
-	  * @param string $url Der Pfad (inkl. Protokoll) zur Datei
-	  * @access public
-	  */
-	function save ($url)
-	{
-		$url_array = parse_url($url);
-		$url_array['path'] = explode("/",$url_array['path']);
-		switch ($url_array['scheme']) {
-			case "ftp":
-			case "http":
-			case "file":
-				break;
-			case "post":
-				break;
-			case "shopware":
-				break;
-			case "mail":
-			case "tcp":
-			case "udp":
-			case "php":
-			default:
-				break;
-		}
 	}
 	
 	protected $throwError = false;
@@ -220,6 +155,11 @@ class sAPI
     {
     	return end($this->sErrors);
     }
+    
+    function sCheckLicense($host=null, $module=null, $key)
+	{
+		return true;
+	}
     
     /**
 	  * Einbinden von externen Klassen / Objekten
@@ -307,4 +247,3 @@ class sClassHandler
 	}
 
 }
-?>

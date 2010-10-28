@@ -78,16 +78,20 @@
 		{/if}
 		{assign var="sCountConfigurator" value=$sArticle.sConfigurator|@count}
 		{if ($sArticle.sConfiguratorSettings.type!=1 || $sArticle.sConfigurator[$sCountConfigurator-1].user_selected) && (!isset($sArticle.active) || $sArticle.active)}	
-			{if $sArticle.laststock && $sArticle.instock <= 0}
-				{block name='frontend_detail_buy_laststock'}
+			{block name='frontend_detail_buy_laststock'}
+				{if $sArticle.laststock}
+				<div id="detailBuyInfoNotAvailable"{if $sArticle.instock > 0} style="display: none;"{/if}>
+					<div class="space">&nbsp;</div>
 					<div class="error bold center">
 						{s name="DetailBuyInfoNotAvailable"}{/s}
 					</div>
-				{/block}
-			{else}
-			<div {if $NotifyHideBasket && $sArticle.notification} id="detailCartButton" {/if} {if $NotifyHideBasket && $sArticle.notification && $sArticle.instock <= 0}style="display: none;"{/if}>
+				</div>
+				{/if}
+			{/block}
+			{if !$sArticle.laststock || $sArticle.sVariants || $sArticle.instock>0}
+			<div id="detailCartButton" {if $NotifyHideBasket && $sArticle.notification && $sArticle.instock <= 0}style="display: none;"{/if}>
 				{block name='frontend_detail_buy_quantity'}
-						{if $sArticle.laststock==true}
+						{if $sArticle.laststock && !$sArticle.sVariants}
 							{assign var=maxQuantity value=$sArticle.instock+1}
 						{else}
 							{assign var=maxQuantity value=$sArticle.maxpurchase+1}
@@ -102,7 +106,6 @@
 				
 				<div class="space">&nbsp;</div>
 				
-				
 				{* Cart button *}
 				{block name='frontend_detail_buy_button'}
 					<input type="submit" id="basketButton" class="" title="{$sArticle.articleName} {s name="DetailBuyActionAdd"}{/s}" name="{s name="DetailBuyActionAdd"}{/s}" value="{s name="DetailBuyActionAdd"}{/s}" style="{$buy_box_display}" />
@@ -110,8 +113,8 @@
 				
 				<div class="space">&nbsp;</div>
 			</div>
-			<div class="space">&nbsp;</div>
 			{/if}
+			<div class="space">&nbsp;</div>
 		{/if}
 	</form>
 {/block}

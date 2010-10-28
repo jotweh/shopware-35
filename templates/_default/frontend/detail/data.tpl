@@ -102,7 +102,7 @@
 		          	{* Article price configurator *}
 		            {block name='frontend_detail_data_price_configurator'}
 					<strong>
-						{if $sArticle.priceStartingFrom && !$sArticle.sConfigurator}
+						{if $sArticle.priceStartingFrom && !$sArticle.sConfigurator && $sView}
 							<span id="DetailDataInfoFrom">{se name="DetailDataInfoFrom"}{/se}</span>
 							{$sArticle.priceStartingFrom|currency}
 						{else}
