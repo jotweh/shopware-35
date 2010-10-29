@@ -44,7 +44,11 @@ header('Etag: '.$etag);
 if ((!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])&&@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time)
 	|| (!empty($_SERVER['HTTP_IF_NONE_MATCH'])&&trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag))
 {
-	header('x', true, 304);
+	if (php_sapi_name()=='cgi') {
+		header('Status: 304');
+	} else {
+		header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
+	}
     exit; 
 }
 
