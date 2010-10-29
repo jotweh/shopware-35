@@ -26,5 +26,4 @@ INSERT IGNORE INTO `s_cms_support_fields` (`id`, `error_msg`, `name`, `note`, `t
 
 UPDATE `s_core_snippets` SET `value` = '{link file=''frontend/_resources/favicon.ico''}' WHERE `value` = '{link file=''resources/favicon.ico''}';
 DELETE FROM `s_core_snippets` WHERE `namespace` LIKE 'templates/_default/%';
-
-DELETE FROM `s_core_config_groups` WHERE name = `Debugging`;
+DELETE FROM `s_core_config_groups` WHERE `name` = 'Debugging';
