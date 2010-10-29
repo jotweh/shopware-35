@@ -11,14 +11,14 @@
 	<script type="text/javascript" src="{link file='engine/vendor/ext/adapter/ext/ext-base.js'}"></script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/ext-all.js'}"></script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/build/locale/ext-lang-de.js'}" charset="utf-8"></script>
-	<script type='text/javascript' src='{link file='engine/backend/js/moo12-core.js'}'></script>
-	<script type='text/javascript' src='{link file='engine/backend/js/moo12-more.js'}'></script>
-	<script type='text/javascript' src='{link file='engine/backend/js/framework.php'}'></script>
+	<script type="text/javascript" src="{link file='engine/backend/js/moo12-core.js'}"></script>
+	<script type="text/javascript" src="{link file='engine/backend/js/moo12-more.js'}"></script>
+	<script type="text/javascript" src="{link file='engine/backend/js/framework.php'}"></script>
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.ux.TabScrollerMenu.js'}" charset="utf-8"></script>
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.Grid.RowExpander.js'}" charset="utf-8"></script>
 {/block}
 {block name='backend_index_header_title'}
-	{s name="IndexTitle"}Shopware {$this->config('Version')}  (29.10.2010) - Backend (c)2010,2011 shopware AG{/s}
+	Shopware {config name='Version'} - 29.10.2010 - Backend (c) 2010,2011 shopware AG
 {/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
@@ -29,8 +29,8 @@
 			{function name=categories level=0}
 				{foreach from=$categories item=category}
 				    <li {if !$level}class="main"{/if}>
-						<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick}"{/if}>
-							{$category->label}
+						<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
+							{$category->label} 
 						</a>
 				    	{if $category->hasChildren()}
 				    		<ul {if $level}style="margin-left:100%;width:100%"{/if}>
