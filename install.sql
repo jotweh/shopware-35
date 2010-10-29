@@ -14,3 +14,5 @@ INSERT IGNORE INTO `s_cms_support_fields` (`id`, `error_msg`, `name`, `note`, `t
 (62, '', 'rechnung', '', 'text', 1, 10, 'Rechnungsnummer', 'normal', '', '', '2007-11-06 17:32:02', 3, ''),
 (63, '', 'artikel', '', 'textarea', 1, 10, 'Artikelnummer(n)', 'normal', '', '', '2007-11-06 17:32:17', 4, ''),
 (64, '', 'info', '', 'textarea', 0, 10, 'Kommentar', 'normal', '', '', '2007-11-06 17:32:42', 5, '');
+
+UPDATE `s_core_snippets` SET `value` = '{link file=''frontend/_resources/favicon.ico''}' WHERE `value` = '{link file=''resources/favicon.ico''}';
