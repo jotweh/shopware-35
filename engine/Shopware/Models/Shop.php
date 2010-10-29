@@ -171,7 +171,6 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	public static function setCache(Zend_Cache_Core $cache=null)
 	{
 		self::$_cache = $cache;
-		Zend_Locale_Data::setCache($cache);
 	}
 	
 	public static function setDb($db)

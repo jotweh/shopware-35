@@ -299,6 +299,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	
     	Shopware_Models_Shop::setCache($cache);
 		Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
+		Zend_Locale_Data::setCache($cache);
     	return $cache;
     }
 }
