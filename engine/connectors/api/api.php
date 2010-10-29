@@ -23,7 +23,6 @@ require_once(dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR.'Shopware'.
  */
 class sAPI extends Shopware
 {
-	
     /**
      * Zugriff auf adoDB-Objekt
      * @access public
@@ -62,7 +61,6 @@ class sAPI extends Shopware
 	var $sResource = array();
 	
 	var $sCONFIG;
-	var $sLicenseData = array();
 	
 	/**
 	  * Der Konstruktor lädt Einstellungen / Datenbank-Verbindung und den Shopware - Core
@@ -155,11 +153,6 @@ class sAPI extends Shopware
     {
     	return end($this->sErrors);
     }
-    
-    function sCheckLicense($host=null, $module=null, $key)
-	{
-		return true;
-	}
     
     /**
 	  * Einbinden von externen Klassen / Objekten

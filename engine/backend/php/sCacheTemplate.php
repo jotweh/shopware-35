@@ -44,21 +44,14 @@ header('Etag: '.$etag);
 if ((!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])&&@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time)
 	|| (!empty($_SERVER['HTTP_IF_NONE_MATCH'])&&trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag))
 {
-	if (php_sapi_name()=='cgi')
-		header('Status: 304');
-	else
-		header($_SERVER['SERVER_PROTOCOL'].' 304 Not Modified');
+	header('x', true, 304);
     exit; 
 }
 
-if (strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip'))
-{
+if (strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') && !ini_get('zlib.output_compression')) {
 	ob_start("ob_gzhandler");
 	echo file_get_contents($file);
 	ob_end_flush();
-}
-else
-{
+} else {
 	echo file_get_contents($file);
 }
-?>

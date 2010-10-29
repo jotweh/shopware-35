@@ -18,14 +18,6 @@ echo "
 // *****************
 
 
-$apiPath = "../../../connectors/api/api.php";
-if(!is_file($apiPath))
-	die("Fehler: API kann nicht geladen werden!<br>Pfad: ".$apiPath);
-include($apiPath);
-
-
-
-
 // =======================================================================================
 if(isset($_POST['sAction'])){
 	// ===================================================================================
@@ -48,8 +40,7 @@ if(isset($_POST['sAction'])){
 			// ===========================================================================
 			// Delete articles && categories via API
 			// ===========================================================================
-			$api = new sAPI();
-			$import =& $api->import->shopware;	
+			$import = Shopware()->Api()->Import();
 			
 			$import->sDeleteAllArticles();
 			$import->sDeleteAllCategories();

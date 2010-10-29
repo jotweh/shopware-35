@@ -26,9 +26,11 @@ class Shopware_Plugins_Core_Api_Bootstrap extends Shopware_Components_Plugin_Boo
 	public static function onInitResourceApi(Enlight_Event_EventArgs $args)
 	{
 		$api = new sAPI();
-		$api->sSystem = Shopware()->System();
+		
+		$api->sSystem = $api;
 		$api->sDB = Shopware()->Adodb();
 		$api->sPath = Shopware()->OldPath();
+		$api->sCONFIG = Shopware()->Config();
 		
 		return $api;
 	}
@@ -72,6 +74,8 @@ class sAPI
      * @var array
      */
 	var $sResource = array();
+	
+	var $sCONFIG;
 
 	function Import(){
 		return $this->import->shopware;
