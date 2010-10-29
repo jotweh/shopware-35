@@ -58,10 +58,8 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
     	try {
 	    	$channel = new Zend_Feed_Rss('http://www.shopware-ag.de/rss.xml');
 	    	foreach ($channel as $i => $item) {
-	    		$title = utf8_decode($item->title());
-	    		$link = urlencode($item->link);
-	    		$data[] = array($i+1, $title, $link);
-				if ($i>4) {
+	    		$data[] = array($i+1, (string) $item->title, (string) $item->link);
+				if ($i>3) {
 					break;
 				}
 	    	}
