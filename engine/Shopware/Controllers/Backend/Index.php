@@ -54,22 +54,21 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	
 	protected function _getRssFeed()
 	{
-    	$channel = new Zend_Feed_Rss('http://www.shopware-ag.de/rss.xml');
-    	$jsrss = '[';
-    	$i = 0;
-    	foreach ($channel as $item) {
-    		$i++;
-    		$title = utf8_decode($item->title());
-    		$link = urlencode($item->link);
-    		$jsData[] = "[$i,'$title','$link']";
-			if ($i>=5) break;
+    	$data = array();
+    	try {
+	    	$channel = new Zend_Feed_Rss('http://www.shopware-ag.de/rss.xml');
+	    	foreach ($channel as $i => $item) {
+	    		$title = utf8_decode($item->title());
+	    		$link = urlencode($item->link);
+	    		$data[] = array($i+1, $title, $link);
+				if ($i>4) {
+					break;
+				}
+	    	}
+    	} catch (Exception $e) {
+    		$data[] = array(1, 'Feed konnte nicht gelesen werden', 'http://www.hamann-media.de/');
     	}
-    	$jsrss .= implode(',',$jsData);
-		$jsrss .= '];';
-		if ($i==0){
-	    	unset($jsrss);
-		}
-	    return $jsrss;
+	    return Zend_Json::encode($data);;
 	}
 	
 	protected function _getMenu(){
