@@ -47,7 +47,7 @@
 			{* Actual listing *}
 			<div class="listing" id="listing">
 				{foreach from=$sSearchResults.sArticles item=sArticle key=key name=list}
-					{include file="frontend/listing/box_article.tpl"}
+					{include file='frontend/listing/box_article.tpl' sTemplate='listing'}
 				{/foreach}
 				<div class="clear">&nbsp;</div>
 			</div>

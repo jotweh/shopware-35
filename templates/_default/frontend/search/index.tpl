@@ -9,7 +9,7 @@
 	{block name='frontend_search_index_result'}
 		<div class="listing" id="listing">
 			{foreach from=$sSearchResults item=sArticle key=key name=list}
-				{include file="frontend/listing/box_article.tpl"}
+				{include file='frontend/listing/box_article.tpl' sTemplate='listing'}
 			{/foreach}
 		</div>
 		{if $sSearchResults|@count}
