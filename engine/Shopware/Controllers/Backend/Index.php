@@ -3,8 +3,6 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 {	
 	public function indexAction()
 	{
-		Shopware()->Plugins()->Core()->License()->checkLicense('sPREMIUM');
-		
 		$this->View()->Menu = Shopware()->Menu();
 		$this->View()->PremiumLicence = Shopware()->License()->checkLicense('sPREMIUM');
 		if(Shopware()->License()->checkLicense('sTICKET') && !empty(Shopware()->Config()->sTICKETSIDEBAR)) {

@@ -34,12 +34,12 @@ class Shopware_Controllers_Backend_Auth extends Enlight_Controller_Action
 		if (!empty($username) && !empty($password)) {
 			$checkLogin = Shopware()->Plugins()->Backend()->Auth()->login($username, $password);
 			if ($checkLogin){
-				echo json_encode(array("success"=>true, "location"=>$this->Front()->Router()->assemble(array("controller"=>"index"))));
-			}else {
-				echo json_encode(array("success"=>false));
+				echo Zend_Json::encode(array("success"=>true, "location"=>$this->Front()->Router()->assemble(array("controller"=>"index"))));
+			} else {
+				echo Zend_Json::encode(array('success'=>false));
 			}
 		} else {
-			echo json_encode(array("success"=>false));
+			echo Zend_Json::encode(array('success'=>false));
 		}
 	}
 	

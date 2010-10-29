@@ -2,6 +2,15 @@ UPDATE `s_core_config` SET `value` = '5' WHERE `name` = 'sCHARTRANGE' LIMIT 1 ;
 UPDATE `s_core_config` SET `value` = '100' WHERE `name` = 'sMAXPURCHASE' LIMIT 1 ;
 UPDATE `s_core_config` SET `value` = '0' WHERE `name` = 'sLASTARTICLESTHUMB' LIMIT 1 ;
 
+TRUNCATE `s_emarketing_lastarticles`;
+TRUNCATE `s_statistics_currentusers`;
+TRUNCATE `s_statistics_pool`;
+TRUNCATE `s_statistics_referer`;
+TRUNCATE `s_statistics_search`;
+TRUNCATE `s_statistics_visitors`;
+
+------------------------------
+
 DELETE FROM `s_core_config_mails` WHERE `name` LIKE 'sSERVICE%';
 DELETE FROM `s_core_config_mails` WHERE `name` LIKE 'sCHEAPER';
 
@@ -16,3 +25,6 @@ INSERT IGNORE INTO `s_cms_support_fields` (`id`, `error_msg`, `name`, `note`, `t
 (64, '', 'info', '', 'textarea', 0, 10, 'Kommentar', 'normal', '', '', '2007-11-06 17:32:42', 5, '');
 
 UPDATE `s_core_snippets` SET `value` = '{link file=''frontend/_resources/favicon.ico''}' WHERE `value` = '{link file=''resources/favicon.ico''}';
+DELETE FROM `s_core_snippets` WHERE `namespace` LIKE 'templates/_default/%';
+
+DELETE FROM `s_core_config_groups` WHERE name = `Debugging`;
