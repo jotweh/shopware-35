@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.Grid.RowExpander.js'}" charset="utf-8"></script>
 {/block}
 {block name='backend_index_header_title'}
-	{s name="IndexTitle"}Shopware {$this->config('Version')}  (Rev. 3635, 18.10.2010) - Backend (c)2010,2011 shopware AG{/s}
+	{s name="IndexTitle"}Shopware {$this->config('Version')}  (29.10.2010) - Backend (c)2010,2011 shopware AG{/s}
 {/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
