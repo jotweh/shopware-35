@@ -32,7 +32,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$connectString = "?domain=".Shopware()->Config()->Host."&pairing=".Shopware()->Config()->AccountId;
 		$this->View()->accountUrl = "https://support.shopware2.de/account2/index.php$connectString";
 		
-		Shopware()->Db()->query("UPDATE s_core_config SET value = '3.5.1' WHERE name='sVERSION'");
+		Shopware()->Db()->query("UPDATE s_core_config SET value = '3.5.2' WHERE name='sVERSION'");
 	}
 	
 	public function logoutAction()
@@ -65,9 +65,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 					break;
 				}
 	    	}
-    	} catch (Exception $e) {
-    		$data[] = array(1, 'Feed konnte nicht gelesen werden', 'http://www.hamann-media.de/');
-    	}
+    	} catch (Exception $e) { }
 	    return Zend_Json::encode($data);;
 	}
 	
