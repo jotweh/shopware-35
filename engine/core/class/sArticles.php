@@ -1686,7 +1686,7 @@ class sArticles
 		}
 
 		$sql = "
-			SELECT a.id AS articleID,  IF( od.quantity = NULL , SUM( od.quantity + pseudosales ) , SUM( pseudosales ) ) AS quantity
+			SELECT a.id AS articleID, SUM(IFNULL(od.quantity, 0))+pseudosales AS quantity
 			FROM $categorySelect s_articles a
 			LEFT JOIN s_order_details od
 			ON a.id = od.articleID
@@ -3281,6 +3281,7 @@ class sArticles
 	 * @return float price
 	 */
 	public function sFormatPrice ($price){
+		$price = str_replace(",",".",$price);
 		$price = $this->sRound($price);
 		$price = str_replace(".",",",$price);	// Replaces points with commas
 		$commaPos = strpos($price,",");

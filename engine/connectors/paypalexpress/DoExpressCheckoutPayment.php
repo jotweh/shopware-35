@@ -97,6 +97,7 @@ require_once 'CallerService.php';
 	$item_amount = $amount_net-$shipping_net;
 	
 	$params['AMT'] = number_format($amount,2,'.',',');
+/*
 	if(!empty($item_tax_amount)) {
 		$params['SHIPPINGAMT'] = number_format($shipping,2,'.',',');
 		$params['HANDLINGAMT'] = 0;
@@ -115,6 +116,7 @@ require_once 'CallerService.php';
 			$params['L_TAXAMT'.$key] = number_format($item['tax'],2,'.',',');
 		}
 	}
+*/
 	$params['SHIPTONAME'] = $userData['shippingaddress']['firstname'].' '.$userData['shippingaddress']['lastname'];
 	$params['SHIPTOSTREET'] = $userData['shippingaddress']['street'].' '.$userData['shippingaddress']['streetnumber'];
 	$params['SHIPTOZIP'] = $userData['shippingaddress']['zipcode'];

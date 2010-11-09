@@ -1110,7 +1110,7 @@ class sBasket
 		if (!empty($this->sSYSTEM->_COOKIE)&&empty($this->sSYSTEM->_COOKIE["sUniqueID"]))
 		{
 			$this->sSYSTEM->_COOKIE["sUniqueID"] = md5(uniqid(rand()));
-			setcookie("sUniqueID", $this->sSYSTEM->_COOKIE["sUniqueID"], Time()+(86400*360));	
+			setcookie("sUniqueID", $this->sSYSTEM->_COOKIE["sUniqueID"], Time()+(86400*360), '/');	
 		}
 				
 		// Check if this article is already noted
