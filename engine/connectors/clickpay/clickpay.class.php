@@ -235,7 +235,6 @@ final class sClickPay extends sPayment
 	
 	public function sGetClickPayStatusMessage($statusCode)
 	{
-		
 		$sClickPayStatus = array(
 			0 => 'Offen',
 			1 => 'Reserviert',
@@ -247,7 +246,12 @@ final class sClickPay extends sPayment
 			7 => 'Status unbekannt',
 			8 => 'Geldeingang',
 			9 => 'Geldauszahlung',
-			10 => 'Buchung fehlgeschlagen'
+			10 => 'Buchung fehlgeschlagen',
+			11 => '3-D Secure fehlgeschlagen',
+			12 => 'User Accepted',
+			13 => 'InitFolgezahlung',
+			14 => 'Rückbuchung',
+			15 => 'Warte auf Zahlungseingang'
 		);
 		if(isset($sClickPayStatus[$statusCode]))
 			return $sClickPayStatus[$statusCode];

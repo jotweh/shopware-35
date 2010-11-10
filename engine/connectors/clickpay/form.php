@@ -201,9 +201,12 @@ if(!empty($_REQUEST['sAction'])&&!empty($_REQUEST['sStatus']))
 {
 	if($_REQUEST['sStatus']==5) {
 		$_REQUEST['sAction'] = 'back';
-	}
-	elseif(in_array($_REQUEST['sStatus'], array(4, 7, 10, 11))) {
+	} elseif(in_array($_REQUEST['sStatus'], array(4, 7, 10, 11))) {
 		$_REQUEST['sAction'] = 'fail';
+	} elseif(is_numeric($_REQUEST['sStatus']) && $_REQUEST['sStatus'] > 10) {
+		$_REQUEST['sAction'] = 'fail';
+	} elseif(in_array($_REQUEST['sStatus'], array(1, 2))) {
+		$_REQUEST['sAction'] = 'success';
 	}
 }
 if(!empty($_REQUEST['sAction'])&&$_REQUEST['sAction']=='success')
@@ -372,7 +375,7 @@ if(!empty($_REQUEST['sAction'])&&$_REQUEST['sAction']=='success')
 		</div>
 	<?php else: ?>
 		<div style="padding:20px 20px 0;height: 30px;">
-			<?php if(!empty($_REQUEST['sAction'])&&(in_array($_REQUEST['sStatus'],array(5))||$_REQUEST['sAction']=='back')):?>
+			<?php if(!empty($_REQUEST['sAction'])&&$_REQUEST['sAction']=='back'):?>
 				<?php echo $sClickPay->sGetSnippet('sClickPayUserAborted');?>
 	    	<?php else: ?>
 				<?php echo $sClickPay->sGetSnippet('sClickPayErrorAborted');?>
