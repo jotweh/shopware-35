@@ -201,7 +201,7 @@ if(!empty($_REQUEST['sAction'])&&!empty($_REQUEST['sStatus']))
 {
 	if($_REQUEST['sStatus']==5) {
 		$_REQUEST['sAction'] = 'back';
-	} elseif(in_array($_REQUEST['sStatus'], array(4, 7, 10, 11))) {
+	} elseif(in_array($_REQUEST['sStatus'], array(4, 5, 7, 10, 11))) {
 		$_REQUEST['sAction'] = 'fail';
 	} elseif(is_numeric($_REQUEST['sStatus']) && $_REQUEST['sStatus'] > 10) {
 		$_REQUEST['sAction'] = 'fail';
