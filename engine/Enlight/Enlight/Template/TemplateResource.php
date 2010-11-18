@@ -31,7 +31,12 @@ class Enlight_Template_TemplateResource extends Smarty_Internal_Resource_Extends
 	        }
 	        $_block_force = (bool) preg_match('#\sforce#', $_block_args);
 	        $_block_name = !empty($_match[3]) ? trim($_match[3], '\'"') : $_block_content;
-	        $_block_content = $this->getSnippet($_block_name, $_block_namespace, $_block_default, $_block_force);
+	        if (preg_match("!(.?)(namespace=)(.*?)(?=(\s|$))!", $_block_args, $_match)) {
+	            $_namespace = trim($_match[3], '\'"');
+	        } else {
+	        	$_namespace = $_block_namespace;
+	        }
+	        $_block_content = $this->getSnippet($_block_name, $_namespace, $_block_default, $_block_force);
 	        
 	        if(!empty($_block_default)) {
 	        	$_block_args .= ' default='.var_export($_block_default, true);
