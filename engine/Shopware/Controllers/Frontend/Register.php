@@ -170,8 +170,7 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			}
 		}
 		
-		if(!empty($this->session['sCountry'])&&!isset($this->View()->register->billing->form_data->country))
-		{
+		if(!empty($this->session['sCountry'])&&empty($this->View()->register->billing->form_data->country)) {
 			$this->View()->register->billing->form_data->country = $this->session['sCountry'];
 		}
 	}
@@ -384,6 +383,10 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		$this->admin->sSYSTEM->_POST = $this->post['billing'];
 		
 		$checkData = $this->admin->sValidateStep2($rules, false);
+		
+		if(empty($checkData['sErrorMessages'])) {
+			$this->session['sCountry'] = (int) $this->session['sRegister']['billing']['country'];
+		}
 		
 		return $checkData;
 	}
