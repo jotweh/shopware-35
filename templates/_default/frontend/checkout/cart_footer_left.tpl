@@ -16,7 +16,7 @@
 	{block name='frontend_checkout_table_footer_left_add_article'}
 	<div class="add_article">
 		<form method="post" action="{url action='addArticle' sTargetAction=$sTargetAction}">
-			<label for="basket_add_article">{s name='CheckoutFooterLabelAddArticle'}{/s}":</label>
+			<label for="basket_add_article">{s name='CheckoutFooterLabelAddArticle'}{/s}:</label>
 			<input id="basket_add_article" name="sAdd" type="text" value="{s name='CheckoutFooterIdLabelInline'}{/s}" onfocus="this.value='';" class="ordernum text" />
 			<input type="submit" class="button_tablefoot" value="{s name='CheckoutFooterActionAdd'}{/s}" />
 		</form>
