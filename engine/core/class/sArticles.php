@@ -1557,6 +1557,7 @@ class sArticles
 					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
 			) IS NULL
 			AND a.changetime <= NOW()
+			AND a.mode = 0
 			AND ac.categoryID = ?
 			AND ac.articleID = a.id
 			GROUP BY s.id
