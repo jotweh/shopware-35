@@ -2498,7 +2498,6 @@ class sShopwareImport
 			$this->sDB->Execute($sql,array($article['ordernumber']));
 		}
 		$this->sDeleteTranslation('objectkey',$article['articledetailsID']);
-		$this->sDB->Execute($sql);
 		return true;
 	}
 	
