@@ -28,14 +28,6 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 			$this->Post = Shopware()->Modules()->CmsSupport()->sPOSTS;
 						
 			if (!empty(Shopware()->Config()->CaptchaColor) && !$voteConfirmed) {
-				/*$captcha = str_replace(' ', '', strtoupper($this->Request()->sCaptcha));
-				if ($key = array_search($captcha, Shopware()->Session()->sCaptchaCodes)){
-					Shopware()->Session()->sCaptcha = "";
-					unset(Shopware()->Session()->sCaptchaCodes[$key]);
-				} else {
-					$this->FormElements["sCaptcha"]['class'] = " instyle_error";
-					$this->Errors["e"]["sCaptcha"] = true;
-				}*/
 				$captcha = str_replace(' ', '', strtolower($this->Request()->sCaptcha));
 				$rand = $this->Request()->getPost('sRand');
 				
@@ -193,7 +185,7 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 		$mail->Body = str_replace("{sDateTime}",date("d.m.Y h:i:s"),$mail->Body);
 		$mail->Body = strip_tags($mail->Body);
 		
-		$mail->Body = htmlentities($mail->Body);
+		$mail->Body = $mail->Body;
 
 		$mail->ClearAddresses();
 		

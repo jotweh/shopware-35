@@ -7,14 +7,14 @@
 			<div class="{if $sBasketItem.modus == 1} premium{elseif $sBasketItem.modus == 10} bundle{/if}{if $smarty.foreach.ajaxbasket.last} last{/if}">
 				{if $sBasketItem.image.src.0}
 				<div class="thumbnail">
-					<img src="{$sBasketItem.image.src.0}" alt="{$sBasketItem.articlename}" />
+					<img src="{$sBasketItem.image.src.0}" alt="{$sBasketItem.articlename|strip_tags}" />
 				</div>
 				{/if}
 				
 				{* Article name *}
 				{block name='frontend_checkout_ajax_cart_articlename'}
 				<span class="title">
-					<strong>{$sBasketItem.quantity}x</strong> <a href="{$sBasketItem.linkDetails}" title="{$sBasketItem.articlename}">
+					<strong>{$sBasketItem.quantity}x</strong> <a href="{$sBasketItem.linkDetails}" title="{$sBasketItem.articlename|strip_tags}">
 					{if $sBasketItem.modus == 10}{se name='AjaxCartInfoBundle'}{/se}{else}{$sBasketItem.articlename|truncate:30}{/if}
 					</a>
 				</span>
