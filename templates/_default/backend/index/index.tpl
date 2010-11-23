@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.Grid.RowExpander.js'}" charset="utf-8"></script>
 {/block}
 {block name='backend_index_header_title'}
-	Shopware {config name='Version'} - 29.10.2010 - Backend (c) 2010,2011 shopware AG
+	Shopware {config name='Version'} - 29.11.2010 - Backend (c) 2010,2011 shopware AG
 {/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}

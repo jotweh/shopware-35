@@ -44,8 +44,10 @@ if (!$_POST["limit"]) $_POST["limit"] = 25;
 
 if ($_POST["sort"]=="supplier") $_POST["sort"] = "supplierName";
 
+if (!in_array($_POST["sort"],array("datum","supplier","articleName","active"))) unset($_POST["sort"]);
 if (!$_POST["sort"] || $_POST["sort"]=="lastpost" || $_POST["sort"]=="info") $_POST["sort"] = "a.name";
 if (!$_POST["dir"]) $_POST["dir"] = "ASC";
+
 
 
 
