@@ -1084,8 +1084,9 @@ if (!$sCore->sCONFIG["sCLASSICMODE"]){
 					} else{
 						$set = 0;
 					}
-					$result_data[] = array("option"=>$id,"value"=>$name,"set"=>$set);
-					
+					if ($name != "../blog/details.tpl"){
+						$result_data[] = array("option"=>$id,"value"=>$name,"set"=>$set);
+					}
 				}
 			}
 			
