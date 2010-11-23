@@ -339,7 +339,11 @@ class sAdmin
 		
 		$countryID = (int) $user['additional']['countryShipping']['id'];
 		$subshopID = (int) $this->sSYSTEM->sSubShop['id'];
-		
+		if (empty($countryID)){
+			$countryID = $this->sSYSTEM->sDB_CONNECTION->GetOne("
+			SELECT id FROM s_core_countries ORDER BY position ASC LIMIT 1
+			");
+		}
 		$sql = "
 			SELECT p.*
 			FROM s_core_paymentmeans p
