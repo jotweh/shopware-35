@@ -487,6 +487,8 @@ if (!$licenceFailed){
 			AND 
 				status != 4
 			AND
+				status != -1
+			AND
 				partnerID = '{$partner["idcode"]}'
 			GROUP BY 
 			YEAR(ordertime)
@@ -506,6 +508,8 @@ if (!$licenceFailed){
 				YEAR(ordertime) = YEAR(now())
 			AND 
 				status != 4
+			AND
+				status != -1
 			AND
 				partnerID = '{$partner["idcode"]}'
 			GROUP BY 
