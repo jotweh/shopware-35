@@ -276,14 +276,14 @@ class sShopwareImport
 			$article['taxID'] = $row['taxID'];
 		}
 		
-		if($article['kind']==2)
+		if($article['kind']==2 && !empty($article['ordernumber']))
 		{
 			//Bestellnummer ist schon für eine Konfigurator-Auswahl vergeben
 			$sql = "SELECT articleID FROM s_articles_groups_value WHERE ordernumber={$article['ordernumber']}";
 			$result = $this->sDB->GetOne($sql);
 			if(!empty($result))
 			{
-				$this->sAPI->sSetError("Ordernumber '{$article['ordernumber']}' are already assigned", 10204);
+				$this->sAPI->sSetError("Ordernumber '{$article['ordernumber']}' is already assigned", 10204);
 				return false;
 			}
 			//Konfiguratoren und Varianten können nicht zusammen verwendet werden
@@ -291,7 +291,7 @@ class sShopwareImport
 			$result = $this->sDB->GetOne($sql);
 			if($result===false||!empty($result))
 			{
-				$this->sAPI->sSetError("Article are already a configurator", 10205);
+				$this->sAPI->sSetError("Article is already a configurator", 10205);
 				return false;
 			}
 		}
