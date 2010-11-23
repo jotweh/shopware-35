@@ -4248,7 +4248,7 @@ class sArticles
 					}
 				}
 			}else {
-				$referenceImages = array_flip(explode("/",$sCombination));
+				$referenceImages = array_flip(explode("$$",$sCombination));
 				$sArticle = array("images"=>$sArticle,"image"=>array());
 				foreach ($sArticle["images"] as $k => $value){
 					if (preg_match("/(.*){(.*)}/",$value["relations"])){

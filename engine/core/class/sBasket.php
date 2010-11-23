@@ -2011,7 +2011,7 @@ class sBasket
 						$sEsd,
 						'".$this->sSYSTEM->_SESSION["sPartner"]."',
 						".(empty($sUpPriceValues) ? "''" : $this->sSYSTEM->sDB_CONNECTION->qstr(serialize($sUpPriceValues))).",
-						".$this->sSYSTEM->sDB_CONNECTION->qstr(implode($pictureRelations,"/"))."
+						".$this->sSYSTEM->sDB_CONNECTION->qstr(implode($pictureRelations,"$$"))."
 						)
 					";
 					
