@@ -132,10 +132,6 @@ class sBasket
 	 * @return void
 	 */
 	public function sInsertDiscount (){
-		if (!empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG']))
-		{
-			return true;
-		}
 		// Get possible discounts 
 		$getDiscounts = $this->sSYSTEM->sDB_CONNECTION->GetAll("
 		SELECT basketdiscount, basketdiscountstart FROM s_core_customergroups_discounts
@@ -159,10 +155,6 @@ class sBasket
 		if (!$basketAmount) return;	// No articles in basket, return
 		
 		if ($this->sSYSTEM->sCurrency["factor"]){
-			/*$factor = $this->sSYSTEM->sCurrency["factor"];
-			echo "B: $basketAmount<br />";
-			$basketAmount /= $factor;
-			echo "A: $basketAmount<br />";*/
 		}else {
 			$factor = 1;
 		}
