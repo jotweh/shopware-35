@@ -410,6 +410,7 @@ class sShopwareExport
 		$open_order = array();
 		foreach ($orderIDs as $orderID)
 		{
+			$customers[$orderID]["paymentID"] = $orders[$orderID]["paymentID"];
 			$open_orders[$orderID] = array_merge($orders[$orderID],$customers[$orderID]);
 			$open_orders[$orderID]['details'] = $details[$orderID];
 		}

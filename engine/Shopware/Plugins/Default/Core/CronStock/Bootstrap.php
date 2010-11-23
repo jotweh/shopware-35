@@ -80,11 +80,7 @@ class Shopware_Plugins_Core_CronStock_Bootstrap extends Shopware_Components_Plug
 		$job->data = $data;
 		
 		if(empty($articles)) return;
-		
-		
-		//$job->inform_template = 'sARTICLESTOCK';
-		//$job->inform_mail = 'hl@shopware.de';
-		
+
 		$template = clone Shopware()->Config()->Templates->{$job->inform_template};
 		$template->tomail = $job->inform_mail;
 		$mail = clone Shopware()->Mail();
