@@ -132,7 +132,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
     		$class,
     		$method,
     		get_class($this).'::'.$listener,
-    		$typ,
+    		$type,
     		$position,
 	 		$this->getId()
     	);
