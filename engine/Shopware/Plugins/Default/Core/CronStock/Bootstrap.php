@@ -110,11 +110,4 @@ class Shopware_Plugins_Core_CronStock_Bootstrap extends Shopware_Components_Plug
 		$mail->send();
 	}
 	
-	public function getCapabilities()
-    {
-        return array(
-    		'install' => true,
-    		'update' => true
-    	);
-    }
 }

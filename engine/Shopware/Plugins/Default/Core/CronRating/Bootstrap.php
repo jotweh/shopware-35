@@ -88,12 +88,5 @@ class Shopware_Plugins_Core_CronRating_Bootstrap extends Shopware_Components_Plu
 			
 		}
 	}
-	
-	public function getCapabilities()
-    {
-        return array(
-    		'install' => true,
-    		'update' => true
-    	);
-    }
+
 }

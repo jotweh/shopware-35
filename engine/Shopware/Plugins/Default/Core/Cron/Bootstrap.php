@@ -41,11 +41,4 @@ class Shopware_Plugins_Core_Cron_Bootstrap extends Shopware_Components_Plugin_Bo
 		return new Shopware_Components_Cron_CronManager();
     }
     
-    public function getCapabilities()
-    {
-        return array(
-    		'install' => true,
-    		'update' => true
-    	);
-    }
 }
