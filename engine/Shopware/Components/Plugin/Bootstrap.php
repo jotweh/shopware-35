@@ -165,18 +165,28 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		return $form;
 	}
 	
-	public function subscribeCron($name,$action,$interval=86400,$active=1,$next="",$start="",$end=""){
-		if (empty($next)) $next = date("Y-m-d H:i:s",time());
-		if (empty($start)) $start = date("Y-m-d H:i:s",time()-86400);
-		if (empty($end)) $end = date("Y-m-d H:i:s",time()-86400);
-		
-		Shopware()->Db()->query("
-		INSERT INTO s_crontab (`name`,`action`,`next`,`start`,`interval`,`active`,`end`,`pluginID`)
-		VALUES (?,?,?,?,?,?,?,?)
-		",array($name,$action,$next,$start,$interval,$active,$end,$this->getId()));	
+	public function subscribeCron($name, $action, $interval=86400, $active=1, $next=null, $start=null, $end=null)
+	{
+		if (empty($next)) {
+			$next = date('Y-m-d H:i:s', time());
+		}
+		if (empty($start)) {
+			$start = date('Y-m-d H:i:s', time()-86400);
+		}
+		if (empty($end)) {
+			$end = date('Y-m-d H:i:s', time()-86400);
+		}
+		$sql = '
+			INSERT INTO s_crontab (`name`, `action`, `next`, `start`, `interval`, `active`, `end`, `pluginID`)
+			VALUES (?,?,?,?,?,?,?,?)
+		';
+		Shopware()->Db()->query($sql, array(
+			$name, $action, $next, $start, $interval, $active, $end, $this->getId()
+		));	
 	}
 	
-	public function unsubscribeCron(){
+	public function unsubscribeCron()
+	{
 		$sql = 'DELETE FROM `s_crontab` WHERE `pluginID`=?';
 		Shopware()->Db()->query($sql, $this->getId());
 	}

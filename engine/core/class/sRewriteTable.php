@@ -286,6 +286,9 @@ class sRewriteTable
 	
 	public function sInsertUrl($org_path, $path)
 	{
+		if(empty($path) || empty($org_path)) {
+			return false;
+		}
 		$sql_rewrite = 'UPDATE s_core_rewrite_urls SET main=0 WHERE org_path=? AND path!=? AND subshopID=?';
 		$this->sSYSTEM->sDB_CONNECTION->Execute($sql_rewrite, array($org_path, $path, $this->sSYSTEM->sSubShop['id']));
 		$sql_rewrite = '

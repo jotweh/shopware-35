@@ -23,7 +23,7 @@ class Enlight_Template_TemplateManager extends Smarty
         //$this->assignGlobal('this', $this->helper_manager);
         
         $this->allow_phptemplates = true;
-		$this->php_handling = SMARTY_PHP_ALLOW;
+		$this->allow_php_tag = true;
     }
         
 	const EXTENDS_APPEND = 'append';
