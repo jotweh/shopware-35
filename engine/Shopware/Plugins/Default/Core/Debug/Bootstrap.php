@@ -8,6 +8,10 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 			'onStartDispatch'
 		);
 		$this->subscribeEvent($event);
+		$form = $this->Form();
+	 	
+		$form->setElement('text', 'AllowIP', array('label'=>'Auf IP beschränken','value'=>''));
+		$form->save();
 		return true;
 	}
 	
@@ -23,6 +27,11 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 			return;
 		}
 		
+		$config = Shopware()->Plugins()->Core()->Debug()->Config();
+		if (!empty($config->AllowIP) && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
+			return;
+		}
+
 		if(!empty($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'FirePHP/')!==false) {
 			$writer = new Zend_Log_Writer_Firebug();
 			$writer->setPriorityStyle(8, 'TABLE');
