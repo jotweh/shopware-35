@@ -35,7 +35,7 @@
 		<div class="basket_details">
 			{* Article name *}
 			<a class="title" href="{$sBasketItem.linkDetails}" title="{$sBasketItem.articlename}">
-				{$sBasketItem.articlename}
+				{$sBasketItem.articlename|truncate:40}
 			</a>
 			
 			{* Supplier name *}

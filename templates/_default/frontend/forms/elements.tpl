@@ -20,10 +20,11 @@
 		    <fieldset>
 		    {foreach from=$sSupport.sElements item=sElement key=sKey}
 		    {if $sSupport.sFields[$sKey]||$sElement.note}
-		            <p {if $sSupport.sElements[$sKey].typ eq 'textarea'}class="textarea"{elseif $sSupport.sElements[$sKey].typ eq 'checkbox'}class="checkbox"{/if}>
-		            {$sSupport.sLabels.$sKey}
-		            {eval var=$sSupport.sFields[$sKey]}
-		            </p>
+			        <div {if $sSupport.sElements[$sKey].typ eq 'textarea'}class="textarea"{elseif $sSupport.sElements[$sKey].typ eq 'checkbox'}class="checkbox"{/if}>
+						{$sSupport.sLabels.$sKey}
+						{eval var=$sSupport.sFields[$sKey]}
+					</div>
+
 		            {if $sElement.note}
 		            <p class="description">
 		                {eval var=$sElement.note}

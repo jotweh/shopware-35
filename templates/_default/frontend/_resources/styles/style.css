@@ -226,8 +226,8 @@ div.blogInteract ul li.last {border-bottom: 0 none;}
 /* Register right */
 #content div#right.register {width: 168px;margin-left:10px !important;float:left;}
 div#right.register h2 {margin: 0;border: 1px solid;border-bottom: 0 none;font-weight: 700; font-size: 12px; line-height: 32px;height: 32px;padding: 0 0 0 9px;}
-div#right.register ul {padding-top:10px;border: 1px solid;border-top: 0 none;background: url(../images/backgrounds/bg_breadcrumb.png) top left repeat-x;}
-div#right.register li {margin:0 0 0 10px;padding: 10px 0 10px 30px;background: url(../images/icons/ico_register-benefit.png) no-repeat center left;color:#52892c;width:120px;}
+div#right.register ul {display: block;padding-top: 10px; border: 1px solid; border-top: 0 none transparent;background: url(../images/backgrounds/bg_breadcrumb.png) top left repeat-x;}
+div#right.register li {display: block;margin: 0 0 0 10px;padding: 10px 0 10px 30px;background: url(../images/icons/ico_register-benefit.png) no-repeat center left;color: #52892c;}
 div.blog_navi {margin-left:10px;}
 
 /*	CONTENT CENTER
@@ -319,7 +319,7 @@ div#notes .table_row .action a.basket,
 .content_listing a.more_info:hover,
 .bt_allsupplier:hover {background: url(../images/sprite_listing_buttons.png) right 0 no-repeat;}
 
-.artbox .actions a.buynow,.listing_actions .offers:hover,div#notes .table_row .action a.basket, .blogbox a.more_info:hover, .content_listing a.more_info:hover, .bt_allsupplier:hover {background-position: right -21px;}
+.artbox .actions a.more,.listing_actions .offers:hover,div#notes .table_row .action a.basket, .blogbox a.more_info:hover, .content_listing a.more_info:hover, .bt_allsupplier:hover {background-position: right -21px;}
 
 /* Offers */
 .listing_actions .offers {margin: 3px 0 0 195px; display:block;width: 190px;}
@@ -458,6 +458,7 @@ div#article_details .delivery_container {margin: 5px 0 0 0;}
 #buybox .accessory_container p {margin: 0;}
 #buybox .accessory_container h2 {width: 228px;}
 #buybox .accessory_container label {width: 200px;cursor:pointer;}
+#buybox .accessory_container input.chkbox {float:right;margin-right: 5px;}
 #buybox .accessory_container label:hover {text-decoration: underline;}
 #buybox .accessory_container .accessory_group {margin:0 0 10px 0;border: 1px solid;border-top: 0 none; padding: 5px 0 10px 10px;position: relative;width: 228px;}
 
@@ -574,9 +575,9 @@ div.comment_block .author, div.comment_block .date {font-weight: 700;}
 
 /* Basket */
 #basket .table .table_row, #notes .table .table_row {position: relative;}
-.table .table_row .action {position: absolute; right: 10px;}
+.table .table_row .action a.del {display: block;position: absolute;right: 10px;}
 .table .table_row .action a:hover {text-decoration: none; }
-.table .table_head .charge_vat {text-align: left;float:left;margin: 0 0 0 25px;}
+.table .table_head .charge_vat {text-align: right;float:left;}
 #basketButton, div.table_foot {width: 225px;}
 #basket .actions a {float:left;}
 #basket .actions a.button-right {position: absolute; right:0;margin: 0;}
@@ -589,7 +590,7 @@ div.comment_block .author, div.comment_block .date {font-weight: 700;}
 .table .table_row .title, #basket .table .table_row .title {font-weight: 700; font-size: 12px; line-height: 16px;}
 .table .table_row select {margin: 0;} 
 .table #aggregation_left .border, .table #aggregation_left .doubleborder {border-color: #fff;}
-.basket_bottom_paypal {position: absolute; right:210px;}
+.basket_bottom_paypal {float: right;background: #fff;margin-right: 205px;}
 
 /* Premium selection */
 .table .table_premium {border: 1px solid;border-top: 0 none;}
@@ -598,7 +599,7 @@ div.comment_block .author, div.comment_block .date {font-weight: 700;}
 .table .table_premium .body {background: url(../images/backgrounds/bg_premium-bottom.png) left bottom repeat-x;}
 .table .table_premium .body .thumbnail {display:block;height: 57px;width: 57px;text-align: center;float:left;margin: 15px 0 0 5px;}
 .table .table_premium .body .article {float: left;height: 105px;margin: 0 10px 10px 10px;width: 235px;background: #fff;border: 1px solid;position: relative;}
-.table .table_premium .body .article .name a {display: block; margin: 10px 0 0 0;}
+.table .table_premium .body .article .name {display: block; margin: 10px 0 0 72px;}
 .table .table_premium .body .article .button-right {margin-top: 10px;padding:0 35px 0 10px;width: 147px;}
 .table .table_premium .body .bonus_price {position: absolute;bottom: 15px;left: 75px;margin: 5px 0 0 0;color: #333;font: bold 11px/14px Arial, sans-serif;float:left;}
 .table .table_premium .body .bonus_price .pr1 {margin-right: 8px;}
@@ -946,8 +947,8 @@ div#commentcontainer div.comment {text-align: justify;margin: 0 !important;paddi
 	------------------------ */
 div#searchcontainer {z-index: 7;text-align: left;height:38px;margin: 1px 0 0 1px;width: 998px;position:static;}
 div#hidesearch {position:relative;z-index: 2000;}
-div.inner_searchcontainer {height: 24px;width: 270px;margin:6px 0 0 350px;}
-div.inner_searchcontainer .ajax_loader {background: url("../images/icons/ico_ajax-loader.gif") no-repeat; position: relative; top: 4px; left: 230px;z-index: 200;}
+div.inner_searchcontainer {height: 24px;width: 270px;margin:6px 0 0 350px;position: relative;}
+div.inner_searchcontainer .ajax_loader {background: url("../images/icons/ico_ajax-loader.gif") no-repeat; position: absolute; top: 4px; left: 230px;z-index: 200;}
 div.inner_searchcontainer #submit_search {padding:0;border: 0 none; height: 24px;float:left;background: url(../images/arrows/bg_arrow_search.gif) no-repeat;width: 14px;}
 div.inner_searchcontainer p {font-size: 11px;line-height: 12px;float: left;padding:4px;text-transform: uppercase;text-align: right;}
 input#searchfield {font-size: 10px;padding: 3px 0 0 30px;width: 220px;height: 19px;display:block;float:left;background: url(../images/backgrounds/bg_search-input.png);margin:0;background-color:#fff;border:1px solid;}
@@ -1079,8 +1080,8 @@ div.ajax_login_form .new_customer p, div.ajax_login_form .existing_customer p {f
 div.ajax_login_form .new_customer input.button-right {width: 130px;}
 div.ajax_login_form .new_customer p {float:left;margin-right:95px;width: 235px;}
 div.ajax_login_form .existing_customer {border-top: 1px solid;}
-div.ajax_login_form .logout {padding: 10px 20px;}
-div.ajax_login_form .logout h2 {font-weight: 500}
+div.ajax_login_form .logout {padding: 10px 20px 10px 25px}
+div.ajax_login_form .logout h2 {font: 700 14px/1.3em Arial, sans-serif;letter-spacing: 0}
 
 /* Add article */
 div.ajax_add_article {background: url(../images/backgrounds/bg_modal.png) left top repeat-x;}
@@ -1096,12 +1097,10 @@ div.ajax_add_article .bottom .listing {padding: 0 0px 5px 15px;width: 660px;}
 div.ajax_add_article .middle{padding: 15px 15px 0 15px;}
 .modal div.ajax_add_article #listing .artbox .inner {height: 270px;}
 div.ajax_add_article .artbox .inner .price, div.ajax_add_article .artbox .inner .price {bottom: 30px;}
-div.ajax_add_article .actions {height:45px;}
+div.ajax_add_article .actions {height:45px; position: relative;}
 div.ajax_add_article .bottom .actions {height:25px;}
 div.ajax_add_article .actions .button-left {float: left;}
-div.akax_add_article .actions .button-right {float: right;}
-div.ajax_add_article .artbox p.pseudoprice {height: 36px;bottom: 31px;}
-div.ajax_add_article .artbox .unit {bottom: 58px;font-weight: 700;}
+div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absolute;}
 
 /* Compare */
 .ajax_compare_container .grid_3 {margin-left:0px; margin-right:0px;width: 160px;}
@@ -1159,21 +1158,21 @@ ul#categories_s ul ul ul a.active {padding:2px 2px 2px 35px;}
 /*	FORM SYSTEM
 	------------------------ */
 .supportrequest .contact_box {padding: 20px;}
-.supportrequest label {width:170px; text-align: left; margin-left: 100px;}
+.supportrequest label {width:170px; text-align: left; margin-left: 100px;display: block; float:left;margin-top: 10px;}
 .supportrequest input.button {width:200px;}
 .supportrequest .captcha img {margin-left: 100px;float:left;}
 .supportrequest .requiredfields {margin-left:280px;}
 .supportrequest .code {float: left; width: 250px;}
 .supportrequest .code label {width: 295px;margin-left:20px;;display: block;}
 .supportrequest .code input {width:295px;margin-left: 20px;}
-.supportrequest p.textarea label {display: block;width:500px;}
-#center.supportrequest form p.textarea textarea {margin-left: 100px;width:475px;}
+.supportrequest div.textarea label {display: block;width:500px;}
+#center.supportrequest form div.textarea textarea {margin-left: 100px;width:475px;}
 #center.supportrequest form p.buttons input {position: relative;left:445px;width:145px;text-align: center;}
 #content .supportrequest {margin-left: 20px;margin-right: 10px; width: 688px;}
 .supportrequest h2, .supportrequest h1 {width: 760px;}
 .supportrequest h1 {width: 700px;}
 .supportrequest p {font-size:12px;} 
-.supportrequest form p {margin:0 0 1em;font-size:inherit;}
+.supportrequest form div {margin:0 0 1em;font-size:inherit;}
 .supportrequest form textarea {height:100px;width:300px;}
 .supportrequest .inner_container {border: 1px solid;padding: 20px;border-top: 0 none;width:730px;}
 #letterForm .button-right {margin: 0 0 15px 250px}
@@ -1184,6 +1183,7 @@ ul#categories_s ul ul ul a.active {padding:2px 2px 2px 35px;}
 .supportrequest .checkbox input {width: auto;}
 .supportrequest select {padding:5px; width: 315px;}
 #letterForm .street, #letterForm .zipcode {margin-right: 3px;}
+
 
 /*	TELL-A-FRIEND
 	------------------------ */
@@ -1402,3 +1402,19 @@ div.ajax_add_article .ajaxSlider .article_box .price {left: auto;top: auto;}
 #footer .bottom .border {border-right: 1px solid #E3E3E3}
 .shopware_footer {width: 1000px; margin: 20px auto 30px auto; text-align: left;}
 .shopware_footer a {background: url(../images/icons/ico_shopware.png) left center no-repeat; padding: 0 0 0 14px;}
+
+/* Tables */
+tbody, tbody tr, thead, thead tr {border: 0 none;}
+table {
+	display: block;
+	border: 1px solid #c7c7c7;
+	width: auto !important;
+}
+table thead tr th {
+	background: #f5f5f5;
+	padding-left: 10px;
+}
+table tbody tr td, table tbody tr th {
+	border-top: 1px dashed #dfdfdf;
+}
+table td, table th {color: #999;}

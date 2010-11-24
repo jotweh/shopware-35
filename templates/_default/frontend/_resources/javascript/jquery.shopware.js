@@ -1539,7 +1539,7 @@ jQuery.fn.liveSearch = function (conf) {
 	}
 
 	return this.each(function () {
-		var input = jQuery(this).attr('autocomplete', 'off');
+		var input = jQuery(this);
 		var liveSearchPaddingBorderHoriz = parseInt(liveSearch.css('paddingLeft'), 10) + parseInt(liveSearch.css('paddingRight'), 10) + parseInt(liveSearch.css('borderLeftWidth'), 10) + parseInt(liveSearch.css('borderRightWidth'), 10);
 		
 		// Re calculates live search's position
@@ -2582,23 +2582,29 @@ jQuery.fn.liveSearch = function (conf) {
     };
     
     //Extends jQuery's function namespace
-    $.fn.checkout = function (settings) {
-        if (settings) $.extend(config, settings);
-        
-        $(config.container + ' form').live('submit', function (event) {
-        	if(!$(this).hasClass('new_customer_form')) {
-        		event.preventDefault();
-        		$.checkout.loginUser(this);
-        	}
-        });
-        
-        this.live('click', function (event) {
-            event.preventDefault();
-            $.checkout.checkUser(this.href);
-        });
-        
-        return this
-    };
+	$.fn.checkout = function (settings) {
+	    if (settings) $.extend(config, settings);
+	    
+	    $(config.container + ' form').live('submit', function (event) {
+	    	if(!$(this).hasClass('new_customer_form')) {
+	    		event.preventDefault();
+	    		$.checkout.loginUser(this);
+	    	}
+	    });
+	    $(config.container + ' .existing_customer input[type^=submit]').live('click', function(event) {
+	    	event.preventDefault();
+	    	var form = $(config.container + ' form[name^=existing_customer]');
+	    	$.checkout.loginUser(form);
+	    });
+	    
+	    this.live('click', function (event) {
+	        event.preventDefault();
+	        $.checkout.checkUser(this.href);
+	    });
+	    
+	    return this
+	};
+
     
     //Extends jQuery's namespace
     $.checkout = {};
@@ -3327,9 +3333,10 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         });
         centerWidth = centerWidth / 2;
         $(closer).css({
-            'top': top,
-            'marginLeft': -centerWidth - 11
-        });
+		    'top': top,
+		    'marginLeft': centerWidth - 11
+		});
+
         
         //Hide Prev and Next picture link
          $.ie6fix.selectHide();
@@ -3641,8 +3648,9 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                         h = appendTo.innerHeight();
                     }
                 }
-               	zoomDiv = appendTo.append($.format('<div id="cloud-zoom-big" class="cloud-zoom-big" style="display:none;position:absolute;left:%0px;top:%1px;width:%2px;height:%3px;background-image:url(\'%4\');z-index:99;"></div>', xPos, yPos, w, h, zoomImage.src)).find(':last');
-               	
+               	var pos = appendTo.offset();
+				zoomDiv = $(document.body).append($.format('<div id="cloud-zoom-big" class="cloud-zoom-big" style="display:none;position:absolute;left:%0px;top:%1px;width:%2px;height:%3px;background-image:url(\'%4\');z-index:99;"></div>', pos.left + sImg.width() + 15, pos.top - 4, w, h, zoomImage.src)).find(':last');
+
                 // Add the title from title tag.
                 if (sImg.attr('title') && opts.showTitle) {
                     zoomDiv.append($.format('<div class="cloud-zoom-title">%0</div>', sImg.attr('title'))).find(':last').css('opacity', opts.titleOpacity);
@@ -3658,18 +3666,6 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                 	zoomDiv.width(zoomImage.width); 
                 }
 				
-                // Fix ie6 select elements wrong z-index bug. Placing an iFrame over the select element solves the issue...		
-                if ($.browser.msie && parseInt($.browser.version) == 6) {
-                    $ie6Fix = $('<iframe frameborder="0" src="#"></iframe>').css({
-                        position: "absolute",
-                        left: xPos,
-                        top: yPos,
-                        zIndex: 99,
-                        width: cw,
-                        height: h
-                    }).insertBefore(zoomDiv);
-                }
-
 				zoomDiv.fadeIn(500);
 				
             	 if (lens) {

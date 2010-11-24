@@ -9,27 +9,26 @@
 {block name='frontend_checkout_cart_item_price'}{/block}
 
 {block name='frontend_checkout_cart_item_quantity'}
-<div class="grid_1">
 {if $sLaststock.articles[$sBasketItem.ordernumber].OutOfStock == true}
+<div class="grid_1">
 	-
+</div>
 {else}
 	{$smarty.block.parent}
 {/if}
-</div>
 {/block}
 
 {block name='frontend_checkout_cart_item_delivery_informations'}
-<div class="grid_3">
-	<div class="delivery">
-	{if $sLaststock.articles[$sBasketItem.ordernumber].OutOfStock == true}
+{if $sLaststock.articles[$sBasketItem.ordernumber].OutOfStock == true}
+	<div class="grid_3">
 		<div class="status4">&nbsp;</div>
 		<p class="deliverable2">{s name="CheckoutItemLaststock"}Nicht lieferbar!{/s}</p>
-	{else}
-		{$smarty.block.parent}
-	{/if}
 	</div>
-</div>
+{else}
+	{$smarty.block.parent}
+{/if}
 {/block}
+
 
 {* Tax price *}
 {block name='frontend_checkout_cart_item_tax_price'}

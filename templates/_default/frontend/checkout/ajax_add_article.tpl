@@ -50,10 +50,10 @@
 				{se name="AjaxAddLinkBack"}{/se}
 			</a>
 			<a href="{url action='cart'}" class="button-middle" title="{s name='AjaxAddLinkCart'}{/s}">
-				{se name="AjaxAddLinkCart"}{/se}<i></i>
+				{se name="AjaxAddLinkCart"}{/se}
 			</a>
 			<a href="{url action='confirm'}" class="button-right large right checkout" title="{s name='AjaxAddLinkConfirm'}{/s}">
-				{se name="AjaxAddLinkConfirm"}{/se}<i></i>
+				{se name="AjaxAddLinkConfirm"}{/se}
 			</a>
 			<div class="clear">&nbsp;</div>
 			{/block}

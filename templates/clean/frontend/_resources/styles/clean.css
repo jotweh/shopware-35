@@ -365,7 +365,7 @@ div#commentcontainer .date {color:#999;}
 
 /*	VIEWLAST
 	------------------------ */
-.viewlast {border-color:#c7c7c7 #c7c7c7 #c7c7c7 #fff;}
+.viewlast {border-color:#c7c7c7;}
 .viewlast .heading {color: #636363;border-color: #e3e3e3}
 .viewlast .article_image {border-color: #e7e7e7;}
 .viewlast .article_description {color:#888}
@@ -554,7 +554,7 @@ border-right:1px solid #c7c7c7;
 .accordion li {width:148px;}
 
 #detail #detailinfo {background: none; }
-ul.categories {border: 1px solid #ddd;}
+ul.categories {border: 1px solid #ddd;display: inline-block;width: 178px}
 #content #left ul li.active {border-left: 0 none; border-right:0 none; }
 #content #left ul li.active a.flag {font-weight:bold; }
 div#searchcontainer {width:200px; position: absolute; top:0px;right:22px;height:24px;background: transparent;}

@@ -43,39 +43,44 @@
 	
 		{* Graduated prices *}
 		{if $sArticle.sBlockPrices && (!$sArticle.sConfigurator || $sArticle.pricegroupActive) && $sArticle.sConfiguratorSettings.type!=2 && !$sArticle.liveshoppingData.valid_to_ts}
-			
-			<div class="clear">&nbsp;</div>
+			{block name='frontend_detail_data_block_prices_start'}
+			<div class="space">&nbsp;</div>
 			<h5 class="bold">{se name="DetailDataHeaderBlockprices"}{/se}</h5>
 				
 			<table width="220"  border="0" cellspacing="0" cellpadding="0" class="text">
-				<tr>
-					<td width="90">
-						<strong>{se name="DetailDataColumnQuantity"}{/se}</strong>
-					</td>
-					<td width='70'>
-						<strong>{se name="DetailDataColumnPrice"}{/se}</strong>
-					</td>
-				</tr>
-				
-				{foreach from=$sArticle.sBlockPrices item=row key=key}
-					{block name='frontend_detail_data_block_prices'}
-					<tr valign="top">
-						<td>
-							{if $row.from=="1"} 
-								{se name="DetailDataInfoUntil"}{/se} {$row.to}
-							{else}
-								{se name="DetailDataInfoFrom"}{/se} {$row.from}
-							{/if}
+				<thead>
+					<tr>
+						<td width="90">
+							<strong>{se name="DetailDataColumnQuantity"}{/se}</strong>
 						</td>
-						<td>
-							<strong>
-								{$row.price|currency}*
-							</strong>
+						<td width='70'>
+							<strong>{se name="DetailDataColumnPrice"}{/se}</strong>
 						</td>
 					</tr>
-					{/block}
-				{/foreach} 
+				</thead>
+				
+				<tbody>
+					{foreach from=$sArticle.sBlockPrices item=row key=key}
+						{block name='frontend_detail_data_block_prices'}
+						<tr valign="top">
+							<td>
+								{if $row.from=="1"} 
+									{se name="DetailDataInfoUntil"}{/se} {$row.to}
+								{else}
+									{se name="DetailDataInfoFrom"}{/se} {$row.from}
+								{/if}
+							</td>
+							<td>
+								<strong>
+									{$row.price|currency}*
+								</strong>
+							</td>
+						</tr>
+						{/block}
+					{/foreach}
+				</tbody>
 			</table>
+			{/block}
 			
 			{* Article price *}
 			{block name='frontend_detail_data_price_info'}
