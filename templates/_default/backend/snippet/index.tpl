@@ -345,6 +345,7 @@ Ext.ns('Shopware.Snippet');
 	    		id: 'snippet_grid',
                 title: 'Textbausteine',
                 height: 400,
+                autoScroll:true,
                 region: 'center',
                 split: true,
                 store: this.store,
@@ -605,7 +606,7 @@ Ext.ns('Shopware.Snippet');
 					]
 				}),
 				height: 350,
-   				minSize: 350,
+	   			autoScroll:true,
    				layout:'form',
 				region: 'south',
                 items: [
