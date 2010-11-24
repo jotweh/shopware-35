@@ -2,7 +2,7 @@
 Ext.ns('Shopware.Plugin');
 (function(){
 	var Upload = Ext.extend(Ext.Panel, {
-	    title: 'Plugins verwalten',
+	    title: 'Plugins hinzufügen',
 	    initComponent: function() {
 	    	
 	    	this.upload = new Ext.FormPanel({
@@ -178,5 +178,7 @@ Ext.ns('Shopware.Plugin');
 	    }
 	});
 	Shopware.Plugin.Upload = Upload;
+	
+
 })();
 </script>

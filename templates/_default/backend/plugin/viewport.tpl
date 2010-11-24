@@ -1,14 +1,56 @@
 <script type="text/javascript">
 Ext.ns('Shopware.Plugin');
+Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
+ onRender : function(ct, position){
+      this.el = ct.createChild({ tag: 'iframe', id: 'framepanel'+this.id, frameBorder: 0, src: this.url});
+ }
+});
 (function(){
 	var Viewport = Ext.extend(Ext.Viewport, {
 	    layout: 'border',
 	    initComponent: function() {
 	    	this.list = new Shopware.Plugin.List;
 	    	this.upload = new Shopware.Plugin.Upload;
-	    	
+			this.communityStore = new Ext.ux.IFrameComponent({ 
+							title:'Shopware CommunityStore',
+							autoScroll:true,
+							id: "iframe", 
+							height:600,
+							width: 1000,
+							url: 'http://www.google.de',
+							tbar: [
+								new Ext.Button  ({
+					            	text: 'Store im neuen Fenster öffnen',
+					            	handler: function(){
+					            		
+					            	},
+					            	scope:this
+				             	})
+							]
+			});
+			
+			this.store = new Ext.Panel(
+			{
+				autoScroll:true,
+				title: 'Shopware CommunityStore',
+				items: [
+					this.communityStore
+				],
+				tbar: [
+					new Ext.Button  ({
+		            	text: 'Store im neuen Fenster öffnen',
+		            	handler: function(){
+		            		
+		            	},
+		            	scope:this
+	             	})
+				]
+			}
+			);
+			
+	
 	    	this.tree = new Ext.tree.TreePanel({
-	    		title: '&nbsp;{*s name="tree_titel"}Plugins{/s*}',
+	    		title: 'Verzeichnisse',
 	    		width: 248,
 	    		region: 'west',
 	    		rootVisible:false,
@@ -26,13 +68,12 @@ Ext.ns('Shopware.Plugin');
                     } }
                 }
 	    	});
-	    	
 	    	this.tabpanel = new Ext.TabPanel({
 	    		activeTab: 0,
 	    		region: 'center',
 	    		enableTabScroll: true,
 	    		items: [
-		    		this.list, this.upload
+		    		this.list, this.upload,this.store
 	    		]
 	    	});
 	        this.items = [

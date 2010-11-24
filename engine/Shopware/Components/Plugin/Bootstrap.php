@@ -35,7 +35,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		$this->deleteForm();
 		$this->deleteConfig();
 		$this->deleteMenuItems();
-		
+		$this->unsubscribeCron();
 		return true;
 	}
 
@@ -163,6 +163,22 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		$form->setSaveHandler($saveHandler);
 		$form->load();
 		return $form;
+	}
+	
+	public function subscribeCron($name,$action,$interval=86400,$active=1,$next="",$start="",$end=""){
+		if (empty($next)) $next = date("Y-m-d H:i:s",time());
+		if (empty($start)) $start = date("Y-m-d H:i:s",time()-86400);
+		if (empty($end)) $end = date("Y-m-d H:i:s",time()-86400);
+		
+		Shopware()->Db()->query("
+		INSERT INTO s_crontab (`name`,`action`,`next`,`start`,`interval`,`active`,`end`,`pluginID`)
+		VALUES (?,?,?,?,?,?,?,?)
+		",array($name,$action,$next,$start,$interval,$active,$end,$this->getId()));	
+	}
+	
+	public function unsubscribeCron(){
+		$sql = 'DELETE FROM `s_crontab` WHERE `pluginID`=?';
+		Shopware()->Db()->query($sql, $this->getId());
 	}
 	
 	public function subscribeEvent(Enlight_Event_EventHandler $handler)

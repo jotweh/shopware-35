@@ -101,10 +101,10 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		if($this->Request()->getParam('path')) {
 			$path = explode('/', $this->Request()->getParam('path'));
 			if(!empty($path[0])) {
-				$select->where('namespace=?', $path[0]);
+				$select->where('namespace=?', $path[1]);
 			}
 			if(!empty($path[1])) {
-				$select->where('source=?', $path[1]);
+				$select->where('source=?', $path[0]);
 			}
 		} elseif($this->Request()->getParam('search')) {
 			$search = trim($this->Request()->getParam('search'));
@@ -176,20 +176,34 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		if(empty($node)) {
 			$this->refreshList();
+			/*
 			$select = $this->db->select()
 				->distinct()
 				->from('s_core_plugins', array('namespace as id', 'namespace as text'))
 				->order(array('namespace'))
 			;
 			$list = $this->db->fetchAll($select);
+			*/
+			$list = array(
+					array('id'=>'Default', 'text'=>'Core Plugins', 'leaf'=>false, 'expended'=>true),
+					array('id'=>'Community', 'text'=>'CommunityStore', 'leaf'=>false, 'expended'=>true),
+					array('id'=>'Local', 'text'=>'Lokale Plugins', 'leaf'=>false, 'expended'=>true));
+					
 			foreach ($list as $key=>$row) {
 				$list[$key]['leaf'] = false;
 				$list[$key]['expanded'] = true;
-				$list[$key]['children'] = array(
-					array('id'=>$row['id'].'/Default', 'text'=>'Default', 'leaf'=>true),
-					array('id'=>$row['id'].'/Community', 'text'=>'Community', 'leaf'=>true),
-					array('id'=>$row['id'].'/Local', 'text'=>'Local', 'leaf'=>true, 'expended'=>true)
-				);
+				$select = $this->db->select()
+				->distinct()
+				->from('s_core_plugins', array('namespace as id', 'namespace as text'))
+				->order(array('namespace'));
+				$children = $this->db->fetchAll($select);
+				foreach ($children as &$child){
+					$child["leaf"] = true;
+					$list[$key]['expanded'] = false;
+					$child["id"] = $list[$key]["id"]."/".$child["id"];
+				}
+				
+				$list[$key]['children'] = $children;
 			}
 			
 		} else {
@@ -365,7 +379,10 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				$message = $upload->getMessages();
 				$message = implode("\n", $message);
 			} else {
-				$this->decompressFile($upload->getFileName());
+				if (!$this->decompressFile($upload->getFileName())){
+					echo htmlspecialchars(Zend_Json::encode(array('success'=>false, 'message'=>"Stellen Sie sicher, dass Schreibrechte auf die Ordner engine/Shopware/Plugins/Community [Frontend|Backend|Core) gesetzt sind.")));
+					exit;
+				}
 			}
 		} catch (Exception $e) {
 			$message = $e->getMessage();
@@ -382,7 +399,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	{
 		$target = Shopware()->AppPath().'Plugins/Community';
 		if(!is_dir($target)||!is_writable($target)) {
-			throw new Enlight_Exception('Target ist not writable');
+			return false;
 		}
 		$filter = new Zend_Filter_Decompress( array(
 			'adapter' => 'Zip',

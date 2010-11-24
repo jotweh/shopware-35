@@ -2,7 +2,8 @@
 Ext.ns('Shopware.Plugin');
 (function(){
 	var List = Ext.extend(Ext.grid.GridPanel, {
-	    title: 'Übersicht',
+	    title: 'Verfügbare Plugins',
+	    stripeRows:true,
 	    initComponent: function() {
 	    	
 	    	var selModel = this.selModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
@@ -52,51 +53,19 @@ Ext.ns('Shopware.Plugin');
 		    		}
 	    		]
 	    	});
-			/*
-	    	this.tbar = [
-	    	{
-	    		text:'Plugin editieren',
-	   				iconCls:'pencil',
-	   				handler: function (el, el2){
-	   					if(!selModel.getSelected()) {
-	   						return;
-	   					}
-	   					var pluginId = selModel.getSelected().id;
-	   					
-	   					Viewport.showDetail(pluginId);
-	
-	   				}
-	   			},'-',{
-	   				text:'Plugin aktvieren/deaktivieren',
-	   				iconCls:'add',
-	   				handler: function (){
-	
-	   				},
-	   			},'-',{
-	   				text: 'Plugin installieren/deinstallieren',
-	   				iconCls:'folders_plus',
-	   				handler: function (a, b, c) {
-	   					var pluginId = selModel.getSelected().id;
-	   					var install = !selModel.getSelected().data.installation_date;
 
-	   					Viewport.installPlugin(pluginId, install);
-	   				}
-	   			},'-',{
-	   				text: 'Plugin aktualisieren',
-	   				iconCls:'refresh',
-	   				disabled: true,
-	   				handler: function (a, b, c){
-	   					Ext.MessageBox.confirm('', 'Wollen Sie wirklich dieses Plugin aktualisieren?', function(r){
-	   						if(r=='yes') {
-	   							
-	   						}
-	   					});
-	   				}
-	   			}
-   			];
-			*/
    			
 	        this.columns = [
+	         	{
+	                xtype: 'gridcolumn',
+	                dataIndex: 'label',
+	                header: 'Name',
+	                sortable: false,
+	                width: 150,
+	                renderer: function (v,p,r){
+	                	return "<span style=\"font-weight:bold\">"+v+"</span";
+	                }
+	            },
 	        	{
 	                xtype: 'gridcolumn',
 	                dataIndex: 'path',
@@ -106,15 +75,8 @@ Ext.ns('Shopware.Plugin');
 	            },
 	            {
 	                xtype: 'gridcolumn',
-	                dataIndex: 'label',
-	                header: 'Name',
-	                sortable: false,
-	                width: 150
-	            },
-	            {
-	                xtype: 'gridcolumn',
 	                dataIndex: 'autor',
-	                header: 'Autor',
+	                header: 'Hersteller',
 	                sortable: false,
 	                width: 100,
 	                renderer: function (value, p, record){
@@ -149,17 +111,10 @@ Ext.ns('Shopware.Plugin');
 	                trueText: 'ja',
 	                falseText: 'nein'
 	            },
-	            /*{
-	                xtype: 'gridcolumn',
-	                dataIndex: 'copyright',
-	                header: 'Copyright',
-	                sortable: true,
-	                width: 100
-	            },*/
 	            {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'support',
-	                header: 'Hilfe',
+	                header: 'Support',
 	                sortable: false,
 	                width: 75,
 	                renderer: function (value, p, record){
