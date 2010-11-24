@@ -51,7 +51,7 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		Shopware()->Db()->query($sql,array(
 			$_SERVER['REMOTE_ADDR'],
 			$_SERVER['PHP_SELF'],
-			empty(Shopware()->Db()->sUserId) ? 0 : (int) Shopware()->Db()->sUserId
+			empty(Shopware()->Session()->sUserId) ? 0 : (int) Shopware()->Session()->sUserId
 		));
 	}
 
