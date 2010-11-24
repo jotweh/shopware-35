@@ -486,20 +486,37 @@ class sArticles
 		
 		$ret = array();
 		
-		$sql_search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sSearch%");
+		$sSearch = explode(" ",$sSearch);
 		
+		if (!is_array($sSearch)){
+			$sSearch = array(0=>$sSearch);
+		}
+		
+		foreach ($sSearch as $sqlSearch){
+			$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
+		}
 		if(!empty($this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]))
 		{
-			$sql_add_where = "
-					OR (
-						'{$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]}'=t.languageID 
-						AND (t.name LIKE '%$sSearch%' OR t.keywords LIKE '%$sSearch%')
-					)
-			";
+			foreach ($sSearch as $search){
+				$search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$search%");
+				$sql_add_where .= "
+						OR (
+							'{$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]}'=t.languageID 
+							AND (t.name LIKE $search OR t.keywords LIKE $search)
+						)
+				";
+			}
 			$sql_add_join = "
 				LEFT JOIN s_articles_translations AS t
 				ON a.id=t.articleID
 			";
+		}
+		
+		$sqlFields = array("s.name","a.name","a.keywords","d.ordernumber");
+		foreach ($sqlFields as $field){
+			foreach ($sql_search as $term){
+				$sql_search_fields .= "OR $field LIKE $term ";
+			}
 		}
 		
 		$sql = "
@@ -515,20 +532,13 @@ class sArticles
 				s_articles_categories ac
 			LEFT JOIN 
 				s_articles_groups_value agv
-			ON agv.ordernumber LIKE $sql_search
+			ON agv.ordernumber LIKE ?
 			AND agv.articleID=a.id
 			$sql_add_join
 			WHERE 
 				(
-						s.name LIKE $sql_search
-					OR
-						a.name LIKE $sql_search
-					OR
-						a.keywords LIKE $sql_search 
-					OR 
-						agv.valueID
-					OR
-						d.ordernumber LIKE $sql_search
+					agv.valueID
+					$sql_search_fields
 					$sql_add_where
 						
 				)
@@ -542,35 +552,29 @@ class sArticles
 		";
 		
 		
-		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql);
+		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
+		
 		
 		$sql = "
 			SELECT 
 				COUNT(DISTINCT a.id)
 			FROM 
-				s_articles as a
+				s_articles a
 			INNER JOIN 
-				s_articles_details as d
+				s_articles_details d
 			INNER JOIN
 				s_articles_supplier s
 			INNER JOIN 
 				s_articles_categories ac
 			LEFT JOIN 
 				s_articles_groups_value agv
-			ON agv.ordernumber LIKE $sql_search
+			ON agv.ordernumber LIKE ?
 			AND agv.articleID=a.id
 			$sql_add_join
 			WHERE 
 				(
-						s.name LIKE $sql_search
-					OR
-						a.name LIKE $sql_search
-					OR
-						a.keywords LIKE $sql_search 
-					OR 
-						agv.valueID
-					OR
-						d.ordernumber LIKE $sql_search
+					agv.valueID
+					$sql_search_fields
 					$sql_add_where
 						
 				)
@@ -581,8 +585,7 @@ class sArticles
 			AND a.id = d.articleID
 		";
 		
-		
-		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql);
+		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
 		
 		if ($sCountArticles >= $limitNew && !empty($mode)){
 			$sCountArticles = $limitNew;
