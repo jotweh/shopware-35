@@ -51,7 +51,7 @@
 	{* Read more button *}
 	{block name='frontend_blog_col_read_more'}	
 	<p>
-		<a href="{$sArticle.linkDetails}" title="{$sArticle.articleName}" class="more_info">{se name="BlogLinkMore"}{/se}</a>
+		<a href="{url controller=detail sArticle=$sArticle.articleID}" title="{$sArticle.articleName}" class="more_info">{se name="BlogLinkMore"}{/se}</a>
 	</p>
 	{/block}
 	{/block}
