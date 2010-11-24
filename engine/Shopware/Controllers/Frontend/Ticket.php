@@ -204,7 +204,7 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 		$userID = empty($userID) ? 0 : $userID;
 		$email = empty($email) ? '' : $email;
 		$subject = empty($subject) ? '' : $subject;
-		$ticket_typeID = empty($ticket_typeID) ? 0 : $ticket_typeID;
+		$ticket_typeID = empty($formData[0]["ticket_typeID"]) ? 0 : $formData[0]["ticket_typeID"];
 		$message = nl2br($message);
 		$additional = serialize($aAdditional);
 		$ticket_iso = !empty($formData[0]["isocode"]) ? $formData[0]["isocode"] : "de";
