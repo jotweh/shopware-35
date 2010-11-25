@@ -25,7 +25,6 @@
 /*	GENERAL
 	------------------------ */
 html, a, a:link, a:active, a:hover, a:visted {color: #333;}
-
 .container_20 { border-color: #cdcdcd}
 h2, h3 {color:#999}
 div.ico_new, div.ico_tipp, div.ico_esd {color: #fff;}
@@ -522,7 +521,7 @@ ul#categories_s ul ul ul a.active {background-color: #fff;color: #000;}
 
 /*	COLOR SPECIFIC IMAGES
 	------------------------ */
-body {background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
+body {background-color:#E9EBED;background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
 #detail #detailinfo {background-image: url("../images/backgrounds/bg_detailinfo.png")}
 /*#shopnavi .icon a {background-image: url("../images/icons/ico_basket.png")}*/
 div.inner_searchcontainer #submit_search {background:transparent url(../images/arrows/bg_arrow_search.gif) no-repeat scroll 0 0;}
@@ -553,14 +552,9 @@ div#breadcrumb {background: transparent;border: 0 none;height:20px; line-height:
 /*	Template SPECIFIC Styles
 	------------------------ */
 
-html {
-background-color:#E9EBED;
-padding-top:0;
-}
+html {padding-top:0;}
 .container_20 {margin:0px auto 0;border:0 none;padding-bottom:20px;position: relative;overflow:visible;background:transparent url(../images/backgrounds/bg_bread.png) no-repeat scroll 0 205px;border:0 none;}
 
-
-#header {}
 #topbar input {border: 0 none; font-size:10px; font-weight: normal; }
 #header #logo a {margin:38px 0 0 0;}
 
@@ -569,13 +563,11 @@ padding-top:0;
 #mainNavigation a.active {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll center -44px; border: transparent;height:43px;}
 #mainNavigation a.first {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll 0 -44px; border: transparent;height:43px;}
 
-
 #mainNavigation {height:43px;margin:0px 0 15px 1px;line-height: 43px;background:transparent url(../images/backgrounds/bg_navi.png) no-repeat scroll 0 0;width:1000px;padding:0 0 0 0px;}
 div#header {height:125px;}
 #shopnavi .display {margin-top:15px;}
 div#header .top a {color:#000;}
 div#header .display_basket {color:#777;}
-
 
 #content .inner {float:none;}
 #shopnavi .display .top {padding-left:5px;}
@@ -586,27 +578,17 @@ div#header .display_basket {color:#777;}
 
 div.ico_tipp {background-image: url("../images/sprite_listing.gif");}
 
-
 div#searchcontainer {width:200px; position: absolute; top:135px;right:0;height:24px;background: transparent;}
 
-div.inner_searchcontainer {
-height:24px;
-margin:0px 0 0 0px;
-width:200px;
-}
+div.inner_searchcontainer {height:24px;margin:0px 0 0 0px;width:200px;}
 input#searchfield {width:140px;}
-
 
 #footer {height:188px;background:#fff url(../images/backgrounds/bg_footer.png) no-repeat scroll 0 0px;padding:1px;}
 #footer .footer_menu {margin-top:20px;}
 #footer .bottom {padding-top:30px;}
 
-
 #content {width:998px;}
 
 div.inner_searchcontainer .ajax_loader{left: 150px;}
 
-div#searchresults {
-	left: 530px;
-	top: 160px;
-}
+div#searchresults {left: 530px;top: 160px;}

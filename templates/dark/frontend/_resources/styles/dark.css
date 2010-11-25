@@ -25,7 +25,6 @@
 /*	GENERAL
 	------------------------ */
 html, a, a:link, a:active, a:hover, a:visted {color: #333;}
-html {background-color:#E9EBED}
 .container_20 {background-color: #fff; border-color: #cdcdcd}
 h2, h3 {color:#999}
 div.ico_new, div.ico_tipp, div.ico_esd {color: #fff;}
@@ -520,7 +519,7 @@ ul#categories_s ul ul ul a.active {background-color: #fff;color: #000;}
 
 /*	COLOR SPECIFIC IMAGES
 	------------------------ */
-body {background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
+body {background-color:#383838;background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
 #detail #detailinfo {background-image: url("../images/backgrounds/bg_detailinfo.png")}
 /*#shopnavi .icon a {background-image: url("../images/icons/ico_basket.png")}*/
 div.inner_searchcontainer #submit_search {background-image: url("../images/arrows/bg_arrow_search.gif")}
@@ -541,11 +540,7 @@ div.ajax_login_form .heading .modal_close, .modal .heading .modal_close, .ajax_c
 
 /*	Template SPECIFIC Styles
 	------------------------ */
-
-html {
-background-color:#383838;
-padding-top:0;
-}
+html {padding-top:0;}
 .container_20 {background-image: url("../images/backgrounds/bg_container20.png");background-repeat: repeat-x;margin:0px auto 0;border:0 none;padding-bottom:20px;}
 
 #header {background-image: url("../images/backgrounds/bg_basket.png");background-repeat: no-repeat; background-position: 510px 0;}
@@ -568,7 +563,6 @@ div#header .display_basket {color:#777;}
 
 div.ico_tipp {background-image: url("../images/sprite_listing.gif");}
 
-
 div#footer {background:#000 url(../images/backgrounds/bg_footer.gif) repeat-x scroll 0 0;padding-top:40px;}
 #footer .footer_menu {background-image: none; border:0 none; color:#555;margin-bottom: 30px;}
 #footer .bottom {background-image: none;width:1000px;margin:0 auto; border-top: 1px solid #333; border-bottom: 1px solid #333;}
@@ -577,5 +571,3 @@ div#footer {background:#000 url(../images/backgrounds/bg_footer.gif) repeat-x sc
 border-right:1px solid #333; padding-right:20px;}
 
 #footer a {color:#888;}
-
-

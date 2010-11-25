@@ -25,7 +25,6 @@
 /*	GENERAL
 	------------------------ */
 html, a, a:link, a:active, a:hover, a:visted {color: #333;}
-html {background-color:#E9EBED}
 .container_20 {background-color: #fff; border-color: #cdcdcd}
 h2, h3 {color:#999}
 div.ico_new, div.ico_tipp, div.ico_esd {color: #fff;}
@@ -520,7 +519,7 @@ ul#categories_s ul ul ul a.active {background-color: #fff;color: #000;}
 
 /*	COLOR SPECIFIC IMAGES
 	------------------------ */
-html {background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
+body {background-image: url("../images/backgrounds/bg_body.png");background-repeat: repeat-x; background-position: left top}
 #detail #detailinfo {background-image: url("../images/backgrounds/bg_detailinfo.png")}
 #shopnavi .icon a {background-image: url("../images/icons/ico_basket.png")}
 div.inner_searchcontainer #submit_search {background-image: url("../images/arrows/bg_arrow_search.gif")}
