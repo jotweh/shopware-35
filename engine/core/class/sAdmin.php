@@ -1985,11 +1985,11 @@ class sAdmin
 	 */
 	public function sGetShippingcosts($countryInfo,$surcharge=0,$surchargestring=""){
 
-		
-		if (!empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG']))
-		{
-			
+		if (!empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG'])){
 			return $this->sGetPremiumShippingcosts($countryInfo);
+		}
+		if(empty($countryInfo)) {
+			return false;
 		}
 		if ($surchargestring){
 			$surchargestring = explode(";",$surchargestring);
