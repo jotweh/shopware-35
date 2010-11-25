@@ -14,11 +14,14 @@
  * @package		default
  * @subpackage	javascript
  * @category	design
- * version		v1.8
+ * version		v1.9
  * @author		stp/shopware AG <info@shopware.de>
  * @copyright	Copyright (c) 2010 Shopware AG (http://www.shopware.de)
  *
  * CHANGELOG
+ * Version 1.9
+ * - removed unnecessary CSS styling
+ *
  * Version 1.8
  * - added ajax slider component
  * - loading indicator plugin
@@ -116,7 +119,7 @@ jQuery(document).ready(function($) {
 		//Topseller
 		if($('.topseller')) $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350});
 		
-		//Suche
+		//Suggest Search
 		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults'});
 		$('#searchfield').focus(function(){
 			if ($('#searchfield').val() == "Suche:"){
@@ -124,22 +127,22 @@ jQuery(document).ready(function($) {
 			}
 			
 		});
-		//Serverzeit fuer Liveshopping
+		
+		//Get's the servertime for liveshopping articles
 		$.server.init(timeNow);
 		
-		//Wechsel bei Variantenartikeln
+		//Changing article informations on variants
 		if(typeof(isVariant) != 'undefined' && isVariant == true) {
 			$.changeDetails(0);
 		}	
-		
 		$('#sAdd.variant').change(function() {
 			$.changeDetails($(this).val())
 		});$
 		
-		//Lightbox Warenkorb
+		//Lightbox basket
 		$('a.zoom_picture[rel^=lightbox]').slimbox();
 		
-		//Ajax basket
+		//AJAX basket
 		$('div.ajax_basket').click(function() {
 			if($('.ajax_basket_result').hasClass('active')) {
 				$('.ajax_basket_result').removeClass('active').slideToggle('fast');
@@ -159,7 +162,6 @@ jQuery(document).ready(function($) {
 				$('div#DIV'+value).fadeIn('fast');
 				lasthover = $('div#DIV'+value);
 			}
-			
 		}, function() {
 			lasthover.fadeOut('fast');
 			lasthover = '';
@@ -183,7 +185,7 @@ jQuery(document).ready(function($) {
 		//Lightbox - Blog
 		$('.blogbox [rel^=lightbox]').slimbox();
 		
-		//Lightbox statt ZoomViewer
+		//Use a lightbox instead of a zoom
 		if(typeof(useZoom) != 'undefined' && useZoom == '0') {
 			$("[rel^='lightbox']").slimbox();
 			$('div.thumb_box a').bind('click', function(event) {
@@ -194,7 +196,7 @@ jQuery(document).ready(function($) {
 			});
 		}
 		
-		//Change Password Account
+		//Change password account
 		if(!$('.account .error').length) {
 			$('.account .password').hide();
 			$('.account .email').hide();
@@ -204,7 +206,7 @@ jQuery(document).ready(function($) {
 			$('.account .password').slideToggle('fast');
 		});
 		
-		//Change Email Account
+		//Change email account
 		$('.account .change_mail').bind('click', function(event) {
 			event.preventDefault();
 			$('.account .email').slideToggle('fast');
@@ -229,46 +231,47 @@ jQuery(document).ready(function($) {
 				$('#'+$(this).attr('rel')).addClass('active').show();
 			}
 		});	
-			//Register Validation
-			$('.register .required:input').validate();
-			
-			if($("#register_personal_customer_type").val()=="private") {
-				$('.register .company_informations').hide();
+		
+		//Register validation
+		$('.register .required:input').validate();
+		
+		if($("#register_personal_customer_type").val()=="private") {
+			$('.register .company_informations').hide();
+		}
+		
+		if($("#register_personal_skipLogin").is(':checked')) {
+			$('.register .fade_password, .register p.description, #birthdate').hide();
+		}
+		
+		$("#register_personal_customer_type").change(function() {
+			if($(this).val() == 'buisness') {
+				$('.register .company_informations').slideDown();
+			} else {
+				$('.register .company_informations').slideUp();
 			}
-			
-			if($("#register_personal_skipLogin").is(':checked')) {
-				$('.register .fade_password, .register p.description, #birthdate').hide();
+		});
+		
+		if(!$("#register_billing_shippingAddress").is(':checked')) {
+			if(!$('.register').hasClass('change_shipping')) {
+				$('.register .alternative_shipping').hide();
 			}
-			
-			$("#register_personal_customer_type").change(function() {
-				if($(this).val() == 'buisness') {
-					$('.register .company_informations').slideDown();
-				} else {
-					$('.register .company_informations').slideUp();
-				}
-			});
-			
-			if(!$("#register_billing_shippingAddress").is(':checked')) {
-				if(!$('.register').hasClass('change_shipping')) {
-					$('.register .alternative_shipping').hide();
-				}
+		}
+		
+		$('#register_billing_shippingAddress').click(function() {
+			if(!$(this).is(':checked')) {
+				$('.register .alternative_shipping').slideUp();
+			} else {
+				$('.register .alternative_shipping').slideDown();
 			}
-			
-			$('#register_billing_shippingAddress').click(function() {
-				if(!$(this).is(':checked')) {
-					$('.register .alternative_shipping').slideUp();
-				} else {
-					$('.register .alternative_shipping').slideDown();
-				}
-			});
-			
-			$('#register_personal_skipLogin').click(function() {
-				if($(this).is(':checked')) {
-					$('.register .fade_password, .register p.description, #birthdate').slideUp();
-				} else {
-					$('.register .fade_password, .register p.description, #birthdate').slideDown();
-				}
-			});
+		});
+		
+		$('#register_personal_skipLogin').click(function() {
+			if($(this).is(':checked')) {
+				$('.register .fade_password, .register p.description, #birthdate').slideUp();
+			} else {
+				$('.register .fade_password, .register p.description, #birthdate').slideDown();
+			}
+		});
 		
 		// Loading Indicator
 		$('form.upprice_config').bind('change', function() {
@@ -318,8 +321,6 @@ jQuery(document).ready(function($) {
 			
 			// Public
 			'layout':           'horizontal',
-			'width':            763,
-			'height':           220,
 			'scrollWidth':      711,
 			'scrollHeight':     711,
 			'scrollSpeed':      400,
@@ -330,7 +331,6 @@ jQuery(document).ready(function($) {
 			'loadingContainer': 'loader',
 			'title':            '',
 			'titleClass':       'headingbox',
-			'outer':            true,
 			'headline':         false,
 			'url':              '',
 			'rotate':           false,
@@ -373,18 +373,12 @@ jQuery(document).ready(function($) {
 			$.ajaxSlider.debugMode('Mode: ' + mode, config);
 			
 			config._this = $(this);
-			config._this.css('width',config.width+'px');
 			
 			$.ajaxSlider.debugMode('Create Container', config);
 			
 			// Create slider outer container and replace selector
 			config._container = $('<div>', {
-				'class': config.containerClass,
-				'css':{
-					'width': config.width+'px',
-					'height': config.height+'px',
-					'position': 'relative'
-				}
+				'class': config.containerClass
 			}).appendTo(config._this);
 			
 			$.ajaxSlider.debugMode('Container created', config);
@@ -392,17 +386,12 @@ jQuery(document).ready(function($) {
 			// Save slider mode
 			config._mode = mode
 			
-			// Sets additional css styles
-			if(!$.isEmptyObject(config.containerCSS)) {
-				$.ajaxSlider.debugMode('Set additional styles', config);
-				config._container.css(config.containerCSS);
-			}
-			
 			// Add layout class
 			config._this.addClass(config.layout+'_slider');
 			
 			if(config.title != '' && config.headline) {
 				$.ajaxSlider.debugMode('Create headline', config);
+				
 				// Create headline
 				config._headline = $('<h2>', {
 					'class': config.titleClass,
@@ -458,9 +447,9 @@ jQuery(document).ready(function($) {
 		
 		// Return this to support jQuery's chaining
 		return this;
-	}
+		}
 		
-	$.ajaxSlider = {
+		$.ajaxSlider = {
 		
 		/**
 		 * $.ajaxSlider.createContainers
@@ -472,11 +461,7 @@ jQuery(document).ready(function($) {
 		createContainers: function(config) {
 			// Create sliding outer container
 			config._slideOuterContainer = $('<div>', {
-				'class': 'sliding_outer',
-				'css': {
-					'position': 'relative',
-					'overflow': 'hidden'
-				}
+				'class': 'sliding_outer'
 			}).appendTo(config._container);
 			
 			// Create actual sliding container
@@ -572,21 +557,6 @@ jQuery(document).ready(function($) {
 							} else {
 								height = config.height - config._headline.outerHeight();
 							}
-							if(config.outer) {
-								// Position the outer container
-								config._slideOuterContainer.css({
-									'left': config._leftArrow.width()+'px',
-									'width': config.width - (config._leftArrow.width() * 2)+'px',
-									'height': height
-								});
-							} else {
-								// Position the outer container
-								config._slideOuterContainer.css({
-									'left': 0,
-									'width': config.width,
-									'height': height
-								});
-							}
 						// vertical slider
 						} else {
 							
@@ -603,7 +573,7 @@ jQuery(document).ready(function($) {
 									'height': config.height - config._headline.outerHeight()+'px'
 								});
 							}
-
+		
 						}
 						
 						// Adding numbers
@@ -657,7 +627,7 @@ jQuery(document).ready(function($) {
 					$.ajaxSlider.getPage(config._activeSlide - 1, config);
 					
 				});
-
+		
 				
 			} else { 
 				
@@ -734,11 +704,7 @@ jQuery(document).ready(function($) {
 			
 			// Create sliding outer container
 			config._slideOuterContainer = $('<div>', {
-				'class': 'sliding_outer',
-				'css': {
-					'position': 'relative',
-					'overflow': 'hidden'
-				}
+				'class': 'sliding_outer'
 			}).appendTo(config._container);
 			
 			// Create actual sliding container
@@ -758,7 +724,7 @@ jQuery(document).ready(function($) {
 			if(config.navigation == true) {
 				$.ajaxSlider.sliderNavigation(config);
 			}
-
+		
 		},
 		
 		/**
@@ -777,21 +743,6 @@ jQuery(document).ready(function($) {
 				height = config.height - config._headline.outerHeight();
 			}
 			
-			if(config.outer) {
-				// Position the outer container
-				config._slideOuterContainer.css({
-					'left': config._leftArrow.width()+'px',
-					'width': config.width - (config._leftArrow.width() * 2)+'px',
-					'height': height
-				});
-			} else {
-				// Position the outer container
-				config._slideOuterContainer.css({
-					'left': 0,
-					'width': config.width,
-					'height': height
-				});
-			}
 			
 			if(config.navigation == true || config.navigation == false && config._mode == 'locale') {
 				
@@ -888,6 +839,7 @@ jQuery(document).ready(function($) {
 			
 			}
 		},
+
 		
 		rightArrow: function(event, config) {
 			event.preventDefault();
@@ -1054,15 +1006,13 @@ jQuery(document).ready(function($) {
 (function($) {
 	
 	$.loadingIndicator = {
-		
+	
 		config: {
 			'overlay': '#lbOverlay',
 			'overlayOpacity': 0.6,
 			'hideOverlayAfterClose': false,
 			'loadingClass': 'loadingIndicator',
 			'loadingText': 'Loading...',
-			'height': 64,
-			'width': 64,
 			'animationSpeed': 500,
 			'additionalCSS': {},
 			'bindEvent': false,
@@ -1078,17 +1028,14 @@ jQuery(document).ready(function($) {
 			$.loadingIndicator.config._loader = $('<div>', {
 				'class': $.loadingIndicator.config.loadingClass,
 				'text': $.loadingIndicator.config.loadingText,
-				'css': {
-					'position': 'fixed',
-					'top': '50%',
-					'left': '50%',
-					'marginTop':  -($.loadingIndicator.config.height/2) +'px',
-					'marginLeft': -($.loadingIndicator.config.width/2) + 'px',
-					'height': $.loadingIndicator.config.height,
-					'width': $.loadingIndicator.config.width,
-					'zIndex': 99999
-				}
 			}).hide().appendTo($(document.body));
+			
+			var height = $.loadingIndicator.config._loader.height(), width = $.loadingIndicator.config._loader.width();
+			
+			$.loadingIndicator.config._loader.css({
+				'marginTop':  -(height/2) +'px',
+				'marginLeft': -(width/2) + 'px',
+			});
 			
 			// Add additionalcss if passed
 			if(!$.isEmptyObject($.loadingIndicator.config.additionalCSS)) {
@@ -1513,9 +1460,10 @@ jQuery.fn.liveSearch = function (conf) {
 		results: {},
 		lastValue: '',
 		timer: null,
-		searchPosition: 'middle',		// left, middle, right
-		searchWidth: 450				// search width
+		_left: null,
+		_top: null
 	}, conf);
+
 
 	var liveSearch    = jQuery('#' + config.id);
 	
@@ -1544,40 +1492,20 @@ jQuery.fn.liveSearch = function (conf) {
 		
 		// Re calculates live search's position
 		var repositionLiveSearch = function () {
+		
 			
-			var tmpOffset	= input.offset();
-			
-			switch(config.searchPosition) {
-				case 'left':
-					leftValue = tmpOffset.left;
-					break;
-				case 'middle':
-					leftValue = (tmpOffset.left + input.outerWidth() / 2) - (config.searchWidth / 2);
-					break;
-				case 'right':
-					leftValue = (tmpOffset.left + input.outerWidth()) - config.searchWidth + 8;
-					break;
+			if(config._left == null || config._top == null) {
+				liveSearch.show();
+				if(config._left == null) { config._left = parseInt(liveSearch.css('left')); }
+				if(config._top == null) { config._top = parseInt(liveSearch.css('top')); }
+				liveSearch.hide();
 			}
 			
-			//console.log(leftValue);
-			
-			var inputDim    = {
-				
-				//setting static offset
-				left:	leftValue,
-				top:	tmpOffset.top,
-				width:	input.outerWidth(),
-				height:	input.outerHeight()
-			};
-
-			inputDim.topPos        = inputDim.top + inputDim.height;
-			inputDim.totalWidth    = inputDim.width - liveSearchPaddingBorderHoriz;
-			
+			var containerOffset = $('.container_20:first').offset();
+						
 			liveSearch.css({
-				position:	'absolute',
-				left:		inputDim.left + 'px',
-				top:		inputDim.topPos + 'px',
-				width:		config.searchWidth + 'px'
+				'left': containerOffset.left + config._left,
+				'top': containerOffset.top + config._top
 			});
 		};
 
@@ -2267,31 +2195,35 @@ jQuery.fn.liveSearch = function (conf) {
     };
     
     //Requests the compare informations
-    $.compare.startComparison = function (url) {
-        $.ajax({
-            'dataType': $.compare.options.dataType,
-            'type': $.compare.options.requestType,
-            'url': url,
-            'complete': function (result) {
-				var width = 160 * $.compare.options.compareCount + 160;
-					var position = 'fixed';
+	$.compare.startComparison = function (url) {
+	    $.ajax({
+	        'dataType': $.compare.options.dataType,
+	        'type': $.compare.options.requestType,
+	        'url': url,
+	        'complete': function (result) {
+	        	
+	        	var container = $('<div>', {'class':'ajax_compare_container'}).appendTo(document.body);
+	        	var div = $('<div>', {'class': 'grid_3'}).appendTo(container);
+	        	
+	        	var tmpWidth = parseInt(div.css('width'));
+	        	container.remove();
+	        	
+				var width = tmpWidth * $.compare.options.compareCount + tmpWidth;
 				
 				if($.browser.msie && parseInt($.browser.version) == 6) {
 					width += 2;
-					position = 'absolute';
 				}
-                
+	            
 				$.modal(result.responseText, '', {
-               		'position': position,
-               		'width': width+'px',
-               		'top': '30px',
-               		'textContainer': '<div>',
-               		'textClass': 'ajax_compare_container'
-               });
-            }
-        })
-    };
-    
+	           		'width': width+'px',
+	           		'top': '30px',
+	           		'textContainer': '<div>',
+	           		'textClass': 'ajax_compare_container'
+	           });
+	        }
+	    })
+	};
+$.aj
     //Adds an article with it's article id
     //to the current compare list
     $.compare.addCompare = function (url) {
@@ -2369,84 +2301,83 @@ jQuery.fn.liveSearch = function (conf) {
 (function ($) {
 	
 	//Default settings
-    var config = {
-        position: 'absolute',
-        left: '50%',
-        top: '10%',
-        width: '560px',
-        border: '1px solid #333',
-        background: '#fff',
-        animationSpeed: 500,
-        frameHeight: '500px',
-        textClass: '',
-        textContainer: '<p>',
-        overlay: '#lbOverlay',
-        overlayOpacity: '0.6',
-        useOverlay: true
-    };
-    
-    //creates an modal window with text and headline
-    $.modal = function (text, headline, settings) {
-        if (settings) $.extend(config, settings);
-        if ($('.modal')) $('.modal').remove();
-        var modal = $('<div>', {
-            'class': 'modal',
-            'css': {
-                'width': config.width,
-                'left': '50%',
-                'border': config.border,
-                'background': config.background,
-                'display': 'none',
-                'margin-left': -(parseInt(config.width) / 2)
-            }
-        });
-        
-        if (headline.length) {
-            var h2 = $('<h2>', {
-                'html': headline
-            }).appendTo(modal)
-        }
-        if (text.length) {
-            var container = $(config.textContainer, {
-                'html': text
-            });
-            
-            if (config.textClass.length) {
-                container.addClass(config.textClass)
-            }
-            container.appendTo(modal);
-        }
-        var close = $('<a>', {
-            'text': 'Schlieﬂen',
-            'class': 'close'
-        }).appendTo(modal);
-        close.bind('click', function (event) {
-            event.preventDefault();
-            if (config.useOverlay == true) {
-                $.modal.overlay.fadeOut()
-            }
-            if (config.position == 'absolute') {
-                modal.fadeOut(config.animationSpeed)
-            } else if (config.position == 'fixed') {
-                modal.animate({
-                    'top': -(modal.height() + 100) + 'px'
-                }, config.animationSpeed)
-            }
-        });
-        modal.appendTo('body');
-        if (config.useOverlay == true) {
-            $.modal.overlay.fadeIn();
-            
-            $(config.overlay).bind('click', function (event) {
-                $.modalClose();
-            })
-        }
-        if($.browser.msie && parseInt($.browser.version) == 6) {
-     		$.ie6fix.open(modal, config);
-     	} else {
+	var config = {
+	    animationSpeed: 500,
+	    frameHeight: '500px',
+	    textClass: '',
+	    textContainer: '<p>',
+	    overlay: '#lbOverlay',
+	    overlayOpacity: '0.6',
+	    useOverlay: true
+	};
+	
+	//creates an modal window with text and headline
+	$.modal = function (text, headline, settings) {
+	    if (settings) $.extend(config, settings);
+	    if ($('.modal')) $('.modal').remove();
+	    var modal = $('<div>', {
+	        'class': 'modal'
+	    });
+	    
+	    if(settings.width) { modal.css('width', settings.width); }
+	    
+	    if (headline.length) {
+	        var h2 = $('<h2>', {
+	            'html': headline
+	        }).appendTo(modal)
+	    }
+	    if (text.length) {
+	        var container = $(config.textContainer, {
+	            'html': text
+	        });
+	        
+	        if (config.textClass.length) {
+	            container.addClass(config.textClass)
+	        }
+	        container.appendTo(modal);
+	    }
+	    
+	    //get css properties
+	    modal.show();
+	    if(!config.position) {
+	   		config.position = modal.css('position');
+	    }
+	    config.top = modal.css('top');
+	    modal.hide();
+	    
+	    var close = $('<a>', {
+	        'text': 'Schlieﬂen',
+	        'class': 'close'
+	    }).appendTo(modal);
+	    close.bind('click', function (event) {
+	        event.preventDefault();
+	        if (config.useOverlay == true) {
+	            $.modal.overlay.fadeOut()
+	        }
+	        if (config.position == 'absolute') {
+	            modal.fadeOut(config.animationSpeed)
+	        } else if (config.position == 'fixed') {
+	            modal.animate({
+	                'top': -(modal.height() + 100) + 'px'
+	            }, config.animationSpeed)
+	        }
+	    });
+	    modal.appendTo('body');
+	    
+	    modal.show().css('marginLeft', -(modal.width()/2)).hide();
+	    
+	    if (config.useOverlay == true) {
+	        $.modal.overlay.fadeIn();
+	        
+	        $(config.overlay).bind('click', function (event) {
+	            $.modalClose();
+	        })
+	    }
+	    if($.browser.msie && parseInt($.browser.version) == 6) {
+	 		$.ie6fix.open(modal, config);
+	 	} else {
 	        if (config.position == 'absolute') {
 	            modal.css({
-	                'top': config.top,
 	                'position': config.position,
 	                'bottom': 'auto'
 	            }).fadeIn(config.animationSpeed);
@@ -2459,10 +2390,10 @@ jQuery.fn.liveSearch = function (conf) {
 	                'top': '40px'
 	            }, config.animationSpeed)
 	        }
-        }
-        
-        return modal
-    };
+	    }
+	    
+	    return modal
+	};
     
     //Cloeses the current modal window
     $.modalClose = function () {
