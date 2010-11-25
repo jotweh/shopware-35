@@ -11,3 +11,5 @@ ALTER TABLE `s_core_plugin_configs` ADD UNIQUE (
 `shopID`
 );
 
+# Snippet Changes
+UPDATE `s_core_snippets` SET `value` = 'Ich habe die <a href="{url controller=custom sCustom=4 forceSecure}" title="AGB"><span style="text-decoration:underline;">AGB</span></a> Ihres Shops gelesen und bin mit deren Geltung einverstanden.' WHERE `s_core_snippets`.`name` = 'ConfirmTerms';
