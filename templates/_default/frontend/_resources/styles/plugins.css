@@ -317,3 +317,43 @@ a.searchthumb {
     height: 57px;
     text-align: center;
 }
+
+.modal .ajaxSlider .sliding_container .slide {width: 578px;}
+
+/*	BANNER SLIDER CSS
+	------------------------ */
+
+/* Bannerslider */
+#center .slider_banner {width: 630px;}
+#center .slider_banner .bannerSlider {width: 630px;height: 386px; position: relative; margin-bottom: 15px;}
+#center .slider_banner .bannerSlider .sliding_outer {position: relative; overflow: hidden; left: 0px; width: 630px; height: 386px;}
+
+/* Similar article slider */
+#center .slider2 {width: 628px;}
+#center .slider2 .ajaxSlider {width: 628px; height: 220px; position: relative; margin-top: 12px; margin-bottom: 15px;}
+#center .slider2 .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 190px;}
+
+/* New articles slider */
+#center .slider {width: 628px;}
+#center .slider .ajaxSlider {width: 628px; height: 220px; position: relative; margin-top: 0px; margin-bottom: 15px;}
+#center .slider .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 190px;}
+
+/* Supplier slider */
+#center .supplier_slider {width:628px;}
+#center .supplier_slider .ajaxSlider {width: 628px; height: 130px; position: relative; margin-top: 20px; margin-bottom: 20px;}
+#center .supplier_slider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 101px;}
+
+/* Customers bought too slider */
+#detailinfo .slider {width: 763px;}
+#detailinfo .slider .ajaxSlider {width: 763px; height: 220px; position: relative; margin-bottom: 20px;}
+#detailinfo .slider .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 711px; height: 190px;}
+
+/* Customers similar slider */
+#detailinfo .slider2 {width: 763px;}
+#detailinfo .slider2 .ajaxSlider {width: 763px; height: 220px; position: relative; margin-bottom: 20px;}
+#detailinfo .slider2 .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 711px; height: 190px;} 
+
+/* Ajax add article slider */
+.ajax_add_article .slider_modal {width: 630px;}
+.ajax_add_article .slider_modal .ajaxSlider {width: 630px; height: 210px; position: relative; margin: 0px 0px 15px 15px;}
+.ajax_add_article .slider_modal .ajaxSlider .sliding_outer {position: relative; overflow: hodden; left: 26px; width: 578px; height: 210px;}
