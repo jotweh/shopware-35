@@ -150,10 +150,10 @@
 			</div>
 			{/if}
 			{/block}
-			
+			{block name='frontend_checkout_confirm_footer'}
 			{* AGB checkbox *}
 			<div class="agb">
-				{se name="ConfirmTextRightOfRevocation" class="revocation"}{/se}
+				{s name="ConfirmTextRightOfRevocation" class="revocation"}{/s}
 				{block name='frontend_checkout_confirm_agb'}
 				{if !$this->config('IGNOREAGB')}
 					<div>
@@ -164,31 +164,35 @@
 				    	<div class="space">&nbsp;</div>
 				    
 				    	<div class="agb_info">
-				    		{se name="ConfirmTextOrderDefault"}{/se}
+				    		{s name="ConfirmTextOrderDefault"}{/s}
 				    	</div>
 			    	</div>
 		    	{/if}
 		    	{/block}
-		    	
 		    	{if !$sLaststock.hideBasket}
-		    	{* Submit order button *}
-		    	<div class="actions">
-		    		{if !$sUserData.additional.payment.embediframe}
-		    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmActionSubmit'}{/s}" />
-		    		{else}
-		    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmDoPayment'}Zahlung durchführen{/s}" />
-		    		{/if}
-		    	</div>
+			    	{block name='frontend_checkout_confirm_submit'}
+			    	{* Submit order button *}
+			    	<div class="actions">
+			    		{if !$sUserData.additional.payment.embediframe}
+			    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmActionSubmit'}{/s}" />
+			    		{else}
+			    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmDoPayment'}Zahlung durchführen{/s}" />
+			    		{/if}
+			    	</div>
+			    	{/block}
 		    	{else}
-		    	<div class="error">
-					<div class="center">
-						<strong>
-							{s name='ConfirmErrorStock'}Ein Artikel aus Ihrer Bestellung ist nicht mehr verfügbar! Bitte entfernen Sie die Position aus dem Warenkorb!{/s}
-						</strong>
+			    	{block name='frontend_checkout_confirm_stockinfo'}
+			    	<div class="error">
+						<div class="center">
+							<strong>
+								{s name='ConfirmErrorStock'}Ein Artikel aus Ihrer Bestellung ist nicht mehr verfügbar! Bitte entfernen Sie die Position aus dem Warenkorb!{/s}
+							</strong>
+						</div>
 					</div>
-				</div>
+					{/block}
 		    	{/if}
 		    	<div class="clear">&nbsp;</div>
+	    	{/block}
 			</div>
 		</form>
 	</div>
