@@ -4,6 +4,7 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 	protected $results = array();
 	protected $start_time = null;
 	protected $start_memory = null;
+	public $customBenchmark;
 	
 	public function init()
 	{
@@ -23,9 +24,23 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 			'onStartDispatch'
 		);
 		$this->subscribeEvent($event);
+		$event = $this->createEvent(
+			'Enlight_Bootstrap_InitResource_Benchmark',
+			'onInitResourceBenchmark'
+		);
+		$this->subscribeEvent($event);
 		return true;
 	}
-		
+	
+	
+	public static function onInitResourceBenchmark(Enlight_Event_EventArgs $args)
+	{
+		$instance = Shopware()->Plugins()->Core()->Benchmark();
+		$benchmark = new Shopware_Components_Benchmark_Container();
+		$instance->customBenchmark = $benchmark;
+		return $benchmark;
+	}
+	
 	public static function onStartDispatch(Enlight_Event_EventArgs $args)
     {
     	Shopware()->Plugins()->Core()->Benchmark();
@@ -33,6 +48,7 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 	
 	public function onBenchmarkEvent(Enlight_Event_EventArgs $args)
     {
+    	
     	if(empty($this->results))
     	{
     		$this->results[] = array('name', 'memory', 'time');
@@ -50,9 +66,34 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
     	{
     		$this->logTemplate();
     		$this->logController();
+    		$this->logCustom();
     	}
     }
     
+    public function logCustom(){
+    	$results = array();
+    	$benchmarks = $this->customBenchmark->getBenchmarks();
+    	$results[] = array('name', 'memory', 'time');
+		if (!empty($benchmarks)){
+    		foreach ($benchmarks as $bench){
+	    		if (($bench->stopped==true)){
+	    			$totalRam += $bench->stop_ram-$bench->start_ram;
+	    			$totalTime += $bench->end-$bench->start;
+	    			$results[] = array(
+			    		0 => $bench->label,
+			    		1 => $this->formatMemory($bench->stop_ram-$bench->start_ram),
+			    		2 => $this->formatTime($bench->end-$bench->start)
+			    	);
+	    		}
+    		}
+    		$results[] = array(
+	    		0 => "Total",
+	    		1 => $this->formatMemory($totalRam),
+	    		2 => $this->formatTime($totalTime)
+	    	);
+	    	Shopware()->Log()->table(array("Benchmark Custom",$results));
+		}
+    }
     public function logTemplate()
     {
     	$rows = array(array('name', 'compile_time', 'render_time', 'cache_time'));
