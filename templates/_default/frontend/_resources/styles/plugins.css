@@ -356,4 +356,4 @@ a.searchthumb {
 /* Ajax add article slider */
 .ajax_add_article .slider_modal {width: 630px;}
 .ajax_add_article .slider_modal .ajaxSlider {width: 630px; height: 210px; position: relative; margin: 0px 0px 15px 15px;}
-.ajax_add_article .slider_modal .ajaxSlider .sliding_outer {position: relative; overflow: hodden; left: 26px; width: 578px; height: 210px;}
+.ajax_add_article .slider_modal .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 578px; height: 210px;}
