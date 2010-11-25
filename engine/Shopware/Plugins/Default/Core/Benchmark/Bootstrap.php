@@ -72,6 +72,7 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
     
     public function logCustom(){
     	$results = array();
+    	if (empty($this->customBenchmark)) return;
     	$benchmarks = $this->customBenchmark->getBenchmarks();
     	$results[] = array('name', 'memory', 'time');
 		if (!empty($benchmarks)){
