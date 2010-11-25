@@ -605,3 +605,8 @@ input#searchfield {width:140px;}
 #content {width:998px;}
 
 div.inner_searchcontainer .ajax_loader{left: 150px;}
+
+div#searchresults {
+	left: 530px;
+	top: 160px;
+}

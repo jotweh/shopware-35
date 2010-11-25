@@ -584,3 +584,7 @@ div.supplier_filter {border-right: 1px solid #ccc; width:149px;}
 
 div.inner_searchcontainer .ajax_loader {left: 175px;}
 
+div#searchresults {
+	left: 535px;
+	top: 25px;
+}
