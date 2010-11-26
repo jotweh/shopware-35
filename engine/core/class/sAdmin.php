@@ -3286,7 +3286,7 @@ class sAdmin
 			FROM s_core_customergroups_discounts
 			WHERE groupID=?
 			AND basketdiscountstart<=?
-			ORDER BY basketdiscountstart ASC
+			ORDER BY basketdiscountstart DESC
 		';
 		$basket_discount = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql,array($this->sSYSTEM->sUSERGROUPDATA['id'], $amount));
 				
