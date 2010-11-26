@@ -1798,6 +1798,9 @@ jQuery.fn.liveSearch = function (conf) {
         } catch(e) {}
         
         if (!ordernumber) {
+        	// Hide Pseudoprice
+        	$('#PseudoPrice').hide();
+        
         	// Hide all other thumbnails
             if (isVariant) {
                 var thumbs = $('.thumb_box').children('a:[id]');
@@ -1808,6 +1811,9 @@ jQuery.fn.liveSearch = function (conf) {
             // Hide basket
             $('#basketButton').css('opacity', '0.4')
         } else {
+        	// Show Pseudo price
+        	$('#PseudoPrice').show();
+        	
         	// Change informations
             $('#article_details').html($('#' + ordernumber).html());
             
