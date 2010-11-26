@@ -17,7 +17,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 							id: "iframe", 
 							height:600,
 							width: 1000,
-							url: 'http://www.google.de',
+							url: 'http://store.shopware.de',
 							tbar: [
 								new Ext.Button  ({
 					            	text: 'Store im neuen Fenster öffnen',
@@ -40,7 +40,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 					new Ext.Button  ({
 		            	text: 'Store im neuen Fenster öffnen',
 		            	handler: function(){
-		            		
+		            		window.open("http://store.shopware.de/");
 		            	},
 		            	scope:this
 	             	})
