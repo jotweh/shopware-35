@@ -191,6 +191,7 @@ class Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 		if ($this->_compatibilityMode == true){
 			//var_dump($this->_view);
 			$data = $this->_template->fetch("base.tpl",$this->_view);
+			$data = str_replace("<!--NewPage-->","<pagebreak/>",$data);
 			$data = preg_replace('#(<script[^>]*?>.*?</script>)|(<style[^>]*?>.*?</style>)|<!--[^\[].*?-->#msi' ,'$1$2', $data);
 			$data = str_replace("-->","",$data);
 				
