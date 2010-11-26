@@ -17,7 +17,7 @@
 {block name='frontend_index_header'}
 {include file='frontend/index/header.tpl'}
 {/block}
-<body {if $Controller}class="{$Controller}"{/if}>
+<body {if $Controller}class="ctl_{$Controller}"{/if}>
 
 {* Message if javascript is disabled *}
 {block name="frontend_index_no_script_message"}
