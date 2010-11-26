@@ -1439,15 +1439,15 @@ class sBasket
 					}
 				}
 			
-				
-				$sql = "
-				UPDATE s_order_basket SET $sqlLive quantity=$quantity, price=$brutto, netprice=$netprice, currencyFactor=".$this->sSYSTEM->sCurrency["factor"]." WHERE id=$id AND
-				sessionID='".$this->sSYSTEM->sSESSION_ID."' AND modus=0
-				";
-				$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlDefault',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
-				
-				eval($this->sSYSTEM->sCallHookPoint("sBasket.php_sUpdateArticle_Start6"));
-				$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);	
+				if($this->sSYSTEM->_GET["sViewport"] == 'basket' || empty($queryNewPrice['liveshoppingData'])){
+					$sql = "
+					UPDATE s_order_basket SET $sqlLive quantity=$quantity, price=$brutto, netprice=$netprice, currencyFactor=".$this->sSYSTEM->sCurrency["factor"]." WHERE id=$id AND
+					sessionID='".$this->sSYSTEM->sSESSION_ID."' AND modus=0
+					";
+					$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlDefault',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
+					eval($this->sSYSTEM->sCallHookPoint("sBasket.php_sUpdateArticle_Start6"));
+					$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);	
+				}
 				
 			} 
 		
@@ -1553,14 +1553,14 @@ class sBasket
 				
 			$queryNewPrice = true;
 			if (empty($this->sSYSTEM->sCurrency["factor"])) $this->sSYSTEM->sCurrency["factor"] = 1;
-				
-			$sql = "
-			UPDATE s_order_basket SET $sqlLive quantity=$quantity,price=$brutto, netprice=$netprice, currencyFactor=".$this->sSYSTEM->sCurrency["factor"]." WHERE id=$id AND
-			sessionID='".$this->sSYSTEM->sSESSION_ID."' AND modus=0
-			";
-			$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlConfigurator',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
-				
-			$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);
+			if($this->sSYSTEM->_GET["sViewport"] == 'basket' || empty($queryNewPrice['liveshoppingData'])){
+				$sql = "
+				UPDATE s_order_basket SET $sqlLive quantity=$quantity,price=$brutto, netprice=$netprice, currencyFactor=".$this->sSYSTEM->sCurrency["factor"]." WHERE id=$id AND
+				sessionID='".$this->sSYSTEM->sSESSION_ID."' AND modus=0
+				";
+				$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlConfigurator',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
+				$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);
+			}
 				
 		}
 		$this->sUpdateVoucher();
