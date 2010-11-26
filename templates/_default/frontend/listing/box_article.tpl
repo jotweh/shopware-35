@@ -1,4 +1,4 @@
-<div class="artbox{if $sArticle@last} last{/if}{if $sArticle@first} first{/if}">
+<div class="artbox{if $lastitem} last{/if}{if $firstitem} first{/if}">
 	<div class="inner">
 		
 		{* Top *}

@@ -35,8 +35,8 @@
 <div class="listing" id="{$sTemplate}">
 {block name="frontend_listing_list_inline"}
 		{* Actual listing *}
-		{foreach from=$sArticles item=sArticle}
-			{include file="frontend/listing/box_article.tpl" sTemplate=$sTemplate lastitem=$lastitem firstitem=$firstitem}
+		{foreach $sArticles as $sArticle}
+			{include file="frontend/listing/box_article.tpl" sTemplate=$sTemplate lastitem=$sArticle@last firstitem=$sArticle@first}
 		{/foreach}
 {/block}
 </div>
