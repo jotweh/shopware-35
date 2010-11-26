@@ -180,6 +180,7 @@ div.supplier ul li.image {background-color: #fff;}
 .article_overview {color:#9c9c9c}
 .article_overview a {color:#7a7a7a;}
 #detail .article_details_price2 strong {color: #990000}
+#detail .article_details_price2 strong.starting_price {color: #333;}
 #content #detail #detailbox_middle .article_details_price strong {color: #333;}
 .cloud-zoom-big, #cloud-zoom-big, #thumbs a, .thumb_box a:hover, ul#menu_right {border-color:#dedede}
 #thumbs a:hover, #thumbs a.active {border-color:#555}

@@ -1799,7 +1799,7 @@ jQuery.fn.liveSearch = function (conf) {
         
         if (!ordernumber) {
         	// Hide Pseudoprice
-        	$('#PseudoPrice').hide();
+        	$('.PseudoPrice').hide();
         
         	// Hide all other thumbnails
             if (isVariant) {
@@ -1812,7 +1812,7 @@ jQuery.fn.liveSearch = function (conf) {
             $('#basketButton').css('opacity', '0.4')
         } else {
         	// Show Pseudo price
-        	$('#PseudoPrice').show();
+        	$('#'+ordernumber).find('.PseudoPrice').show();
         	
         	// Change informations
             $('#article_details').html($('#' + ordernumber).html());

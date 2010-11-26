@@ -95,8 +95,8 @@
 				<div {if $sArticle.pseudoprice} class='article_details_price2'>{else} class='article_details_price'>{/if}
 					{block name='frontend_detail_data_pseudo_price'}
 					{if $sArticle.pseudoprice}
-					{if $sArticle.priceStartingFrom && $sArticle.sVariants}
-					<div style="display:none" id="PseudoPrice">
+					{* if $sArticle.sVariants || $sArticle.priceStartingFrom*}
+					<div class="PseudoPrice displaynone">
 		            	<em>{$sArticle.pseudoprice|currency}</em>
 		            	{if $sArticle.pseudopricePercent.float}
 		            		<span>
@@ -104,13 +104,13 @@
 		            		</span>
 		            	{/if}
 		            </div>
-		          	{/if}
+		          	{*/if*}
 		            {/if}
 		            {/block}
 		            
 		          	{* Article price configurator *}
 		            {block name='frontend_detail_data_price_configurator'}
-					<strong>
+					<strong {if $sArticle.priceStartingFrom && $sView} class="starting_price"{/if}>
 						{if $sArticle.priceStartingFrom && !$sArticle.sConfigurator && $sView}
 							<span id="DetailDataInfoFrom">{se name="DetailDataInfoFrom"}{/se}</span>
 							{$sArticle.priceStartingFrom|currency}
