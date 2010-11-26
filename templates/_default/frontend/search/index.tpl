@@ -67,7 +67,6 @@
 	</div>
 </div>
 {/if}
-</div>
 {/block}
 
 {block name="frontend_listing_actions_class"}

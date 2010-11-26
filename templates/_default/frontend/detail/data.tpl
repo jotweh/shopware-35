@@ -95,12 +95,16 @@
 				<div {if $sArticle.pseudoprice} class='article_details_price2'>{else} class='article_details_price'>{/if}
 					{block name='frontend_detail_data_pseudo_price'}
 					{if $sArticle.pseudoprice}
+					{if $sArticle.priceStartingFrom && $sArticle.sVariants}
+					<div style="display:none" id="PseudoPrice">
 		            	<em>{$sArticle.pseudoprice|currency}</em>
 		            	{if $sArticle.pseudopricePercent.float}
 		            		<span>
 		            			({$sArticle.pseudopricePercent.float} % {se name="DetailDataInfoSavePercent"}{/se})
 		            		</span>
 		            	{/if}
+		            </div>
+		          	{/if}
 		            {/if}
 		            {/block}
 		            
