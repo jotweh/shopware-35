@@ -205,14 +205,14 @@ class Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 			
 			if ($this->_compatibilityMode == false){
 				if ($this->_preview == true || !$this->_documentHash){
-					include("engine/Enlight/Vendor/mpdf/mpdf.php");
+					include_once(Shopware()->OldPath()."engine/Enlight/Vendor/mpdf/mpdf.php");
 					$mpdf = new mPDF("win-1252","A4","","",$this->_document["left"],$this->_document["right"],$this->_document["top"],$this->_document["bottom"]); 
 					$mpdf->WriteHTML(utf8_encode($data));
 					$mpdf->Output();
 					exit;
 				}else {
 					$path = Shopware()->OldPath()."files/documents"."/".$this->_documentHash.".pdf";
-					include("engine/Enlight/Vendor/mpdf/mpdf.php");
+					include_once(Shopware()->OldPath()."engine/Enlight/Vendor/mpdf/mpdf.php");
 					$mpdf = new mPDF("win-1252","A4","","",$this->_document["left"],$this->_document["right"],$this->_document["top"],$this->_document["bottom"]); 
 					$mpdf->WriteHTML(utf8_encode($data));
 					$mpdf->Output($path,"F");

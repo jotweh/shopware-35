@@ -21,11 +21,12 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 			return;
 		}
 		
+		
 		$view = $args->getSubject()->View();
 		$plugin = Shopware()->Plugins()->Core()->ControllerBase();
 		
 		$view->setNoCache(true);
-		
+		$view->Controller = $args->getSubject()->Request()->getControllerName();
 		$view->sBasketQuantity = $plugin->getBasketQuantity();
 		$view->sBasketAmount = $plugin->getBasketAmount();
 		$view->sNotesQuantity = $plugin->getNotesQuantity();

@@ -3280,7 +3280,7 @@ class sAdmin
 		
 		$sql = 'SELECT SUM((CAST(price as DECIMAL(10,2))*quantity)/currencyFactor) as amount FROM s_order_basket WHERE sessionID=? GROUP BY sessionID';
 		$amount = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql, array($this->sSYSTEM->sSESSION_ID));
-				
+		
 		$sql = '
 			SELECT basketdiscount
 			FROM s_core_customergroups_discounts
@@ -3291,7 +3291,7 @@ class sAdmin
 		$basket_discount = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql,array($this->sSYSTEM->sUSERGROUPDATA['id'], $amount));
 				
 		if(!empty($basket_discount)){
-			
+
 			$percent = $basket_discount;
 			$basket_discount = round($basket_discount/100*$amount, 2);
 						
