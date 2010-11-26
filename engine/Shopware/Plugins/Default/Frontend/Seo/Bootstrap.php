@@ -28,10 +28,10 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 		}
 		
 		$config = Shopware()->Config();
-		if(empty($config['sTEMPLATEOLD'])) {
-			$snippet = Shopware()->Snippets()->getSnippet('frontend/index/header');
+		if(!empty($config['sTEMPLATEOLD'])) {
+			$snippet = Shopware()->Config()->Snippets();
 		}
-		
+			
 		$view = $args->getSubject()->View();
 		
 		$viewport_blacklist = preg_replace('#\s#', '', $config['sSEOVIEWPORTBLACKLIST']);
@@ -67,16 +67,18 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 				$meta_description = htmlentities(strip_tags(html_entity_decode($meta_description)));
 				$meta_description = trim(preg_replace('/\s\s+/', ' ', $meta_description));
 				if($snippet!==null) {
-					$snippet->set('IndexMetaDescriptionStandard', $meta_description, false);
+					$snippet->set('sIndexMetaDescriptionStandard', $meta_description, false);
 				} else {
 					$view->SEOMetaDescription = $meta_description;
 				}
 			}
 		}
 		
-		if(!empty($viewport_blacklist)&&in_array($request->getControllerName(), $viewport_blacklist))
+		$viewport = $request->getControllerName()=='viewport' ? $request->getParam('sViewport') : $request->getControllerName();
+				
+		if(!empty($viewport_blacklist)&&in_array($viewport, $viewport_blacklist))
 		{
-			$meta_robots = 'noindex,nofollow';
+			$meta_robots = 'noindex,follow';
 		}
 		elseif(!empty($query_blacklist))
 		{
@@ -84,17 +86,17 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 			{
 				if($request->getQuery($query_key)!==null)
 				{
-					$meta_robots = 'noindex,nofollow';
+					$meta_robots = 'noindex,follow';
 				}
 			}
 		}
 		if(!empty($meta_robots))
 		{
 			if($snippet!==null) {
-				$snippet->set('IndexMetaRobots', $meta_robots, false);
+				$snippet->set('sIndexMetaRobots', $meta_robots, false);
 			}
 		}
-		
+				
 		if(empty($config['sTEMPLATEOLD'])) {
 			$view->addTemplateDir(dirname(__FILE__).'/templates/');
 			$view->extendsTemplate('frontend/plugins/seo/index.tpl');
