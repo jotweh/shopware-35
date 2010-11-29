@@ -7,6 +7,6 @@ class Shopware_Models_Snippet extends Shopware_Components_Config_DbTable
 
 	public function getNamespace()
 	{
-		return $this->_section[0];
+		return $this->_sectionColum[0]=='namespace' ? $this->_section[0] : null;
 	}
 }

@@ -168,7 +168,6 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	
     	$snippet->setCache($this->getResource('Cache'));
     	$snippet->setShop($this->getResource('Shop'));
-    	$snippet->setNamespace('frontend');
     	
     	return $snippet;
     }

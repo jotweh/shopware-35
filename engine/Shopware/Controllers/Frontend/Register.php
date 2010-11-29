@@ -58,8 +58,10 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			{
 				$this->saveShippingAction();
 			}
-			$this->savePaymentAction();
-						
+			if(isset($this->post['payment']))
+			{
+				$this->savePaymentAction();
+			}
 			if(empty($this->error))
 			{	
 				$this->saveRegister();
