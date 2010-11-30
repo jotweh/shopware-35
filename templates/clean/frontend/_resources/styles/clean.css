@@ -164,7 +164,7 @@ div.supplier ul li.image {background-color: #fff;}
 .artbox .inner {border-color:#fff;}
 .artbox p.desc {color: #777;}
 .artbox .actions a, #related .listing .artbox .actions a, .listing_actions .offers {color: #696969;border-color: #e3e3e3;}
-.artbox .actions a.buynow, #related .listing .artbox .actions a.buynow, .listing_actions .offers:hover {color: #be0a30;}
+.artbox .actions a.more, #related .listing .artbox .actions a.buynow, .listing_actions .offers:hover {color: #be0a30;}
 .artbox p.pseudoprice span.price {color:#990000;}
 .artbox span.pseudo {color: #777;}
 

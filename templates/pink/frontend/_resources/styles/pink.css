@@ -25,7 +25,9 @@
 /*	GENERAL
 	------------------------ */
 html, a, a:link, a:active, a:hover, a:visted {color: #333;}
-.container_20 {background-color: #fff; border-color: #cdcdcd}
+html {padding-top: 0px;}
+body {padding-top: 30px;}
+.container_20 {background-color: #fff; border-color: #cdcdcd;margin-top: 0;}
 h2, h3 {color:#999}
 div.ico_new, div.ico_tipp, div.ico_esd {color: #fff;}
 input.text {border-color: #bbb;}
@@ -163,7 +165,7 @@ div.supplier ul li.image {background-color: #fff;}
 .artbox .inner {border-color:#fff;}
 .artbox p.desc {color: #777;}
 .artbox .actions a, #related .listing .artbox .actions a, .listing_actions .offers {color: #696969;border-color: #e3e3e3;}
-.artbox .actions a.buynow, #related .listing .artbox .actions a.buynow, .listing_actions .offers:hover {color: #d31e81;}
+.artbox .actions a.more, #related .listing .artbox .actions a.buynow, .listing_actions .offers:hover {color: #d31e81;}
 .artbox p.pseudoprice span.price {color:#990000;}
 .artbox span.pseudo {color: #777;}
 
