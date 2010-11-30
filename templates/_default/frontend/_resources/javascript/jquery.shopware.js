@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
 		$('.hide_script').removeClass('hide_script');
 		
 		//IE 6 Drop down menu fallback
-		if($.browser.msie && parseInt($.browser.version) == 6) {
+		if($.browser.msie === true && parseInt($.browser.version, 10) == 6) {
 			$('#mainNavigation li').hover(function(){ $(this).addClass('hover'); }, function() { $(this).removeClass('hover'); });
 		}
 		
@@ -117,7 +117,7 @@ jQuery(document).ready(function($) {
 		});
 				
 		//Topseller
-		if($('.topseller')) $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350});
+		if($('.topseller')) { $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350}); }
 		
 		//Suggest Search
 		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults'});
@@ -132,12 +132,12 @@ jQuery(document).ready(function($) {
 		$.server.init(timeNow);
 		
 		//Changing article informations on variants
-		if(typeof(isVariant) != 'undefined' && isVariant == true) {
+		if(typeof(isVariant) != 'undefined' && isVariant === true) {
 			$.changeDetails(0);
 		}	
 		$('#sAdd.variant').change(function() {
-			$.changeDetails($(this).val())
-		});$
+			$.changeDetails($(this).val());
+		});
 		
 		//Lightbox basket
 		$('a.zoom_picture[rel^=lightbox]').slimbox();
@@ -216,8 +216,8 @@ jQuery(document).ready(function($) {
 		$('.logout').bind('click', function(event) {
 			event.preventDefault();
 			$.post($.controller.ajax_logout, function(data) {
-				var position = 'fixed'
-				if($.browser.msie && parseInt($.browser.version) == 6) {position = 'absolute';}
+				var position = 'fixed';
+				if($.browser.msie && parseInt($.browser.version, 10) == 6) {position = 'absolute';}
 				$.modal(data, '', {'position':position}).find('.close').remove();			
 			});
 		});
@@ -362,11 +362,11 @@ jQuery(document).ready(function($) {
 		};
 		
 		// Override default config with user settings
-		if (settings) $.extend(config, settings);
+		if (settings) { $.extend(config, settings); }
 		
 		this.each(function() {
 			
-			if(config.debug == true) {
+			if(config.debug === true) {
 				console.group('Slider: .' + $(this).attr('class'));
 			}
 			
@@ -384,12 +384,12 @@ jQuery(document).ready(function($) {
 			$.ajaxSlider.debugMode('Container created', config);
 			
 			// Save slider mode
-			config._mode = mode
+			config._mode = mode;
 			
 			// Add layout class
 			config._this.addClass(config.layout+'_slider');
 			
-			if(config.title != '' && config.headline) {
+			if(config.title !== '' && config.headline) {
 				$.ajaxSlider.debugMode('Create headline', config);
 				
 				// Create headline
@@ -435,19 +435,19 @@ jQuery(document).ready(function($) {
 					return false;
 			}
 			
-			if(config.rotate == true) {
+			if(config.rotate === true) {
 				$.ajaxSlider.debugMode('Create rotation', config);
 				$.ajaxSlider.rotateSlider(config);
 			}
 		});
 		
-		if(config.debug == true) {
+		if(config.debug === true) {
 			console.groupEnd();
 		}
 		
 		// Return this to support jQuery's chaining
 		return this;
-		}
+		};
 		
 		$.ajaxSlider = {
 		
@@ -467,7 +467,7 @@ jQuery(document).ready(function($) {
 			// Create actual sliding container
 			config._slideContainer = $('<div>', {
 				'class': 'sliding_container'
-			}).prependTo(config._slideOuterContainer).hide()
+			}).prependTo(config._slideOuterContainer).hide();
 		},
 		
 		/**
@@ -486,7 +486,7 @@ jQuery(document).ready(function($) {
 				'method': config.ajaxMethod,
 				'data': {'pages': slideNumber},
 				'beforeSend': function() {
-					if(config._loader == null) {
+					if(config._loader === null) {
 					
 						// Create AJAX Loader
 						config._loader = $('<div>', {
@@ -539,12 +539,12 @@ jQuery(document).ready(function($) {
 							config._rightArrow.show();
 						}
 						
-						if(parseInt(config._slidesCount) == 1) {
+						if(parseInt(config._slidesCount, 10) === 1) {
 							config._leftArrow.hide();
 							config._rightArrow.hide();
 						}
 						
-						if(parseInt(config._slidesCount) == 0) {
+						if(parseInt(config._slidesCount, 10) === 0) {
 							config._container.hide();
 							return;
 						}
@@ -577,8 +577,8 @@ jQuery(document).ready(function($) {
 						}
 						
 						// Adding numbers
-						if(config.showNumbers == true) {
-							if(config._numbers == null) { 
+						if(config.showNumbers === true) {
+							if(config._numbers === null) { 
 								config._numbers = $('<div>', {
 									'class': 'slide_numbers'
 								}).insertAfter(config._headline);
@@ -598,7 +598,7 @@ jQuery(document).ready(function($) {
 						return true;
 					}
 				}
-			})
+			});
 		},
 		
 		/**
@@ -611,7 +611,7 @@ jQuery(document).ready(function($) {
 		 */
 		ajaxMode: function(config) {
 			
-			if(config.navigation == false) {
+			if(config.navigation === false) {
 				$.ajaxSlider.createContainers(config);
 				config._activeSlide = 1;
 				$.ajaxSlider.getPage(config._activeSlide, config);
@@ -721,7 +721,7 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Create slider navigation
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				$.ajaxSlider.sliderNavigation(config);
 			}
 		
@@ -744,14 +744,14 @@ jQuery(document).ready(function($) {
 			}
 			
 			
-			if(config.navigation == true || config.navigation == false && config._mode == 'locale') {
+			if(config.navigation === true || config.navigation === false && config._mode == 'locale') {
 				
 				// Setting the width of the slide container
 				var slides = config._slideContainer.find('.slide');
 				config._slideContainerWidth = 0;
 				
 				$.each(slides,function(i, el) { config._slideContainerWidth += $(el).width();});
-				config._slideContainer.width(config._slideContainerWidth)
+				config._slideContainer.width(config._slideContainerWidth);
 				
 				// Getting the number of slides
 				config._slidesCount = slides.length;
@@ -805,7 +805,7 @@ jQuery(document).ready(function($) {
 				});
 			}
 			
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				// Setting containerHeight
 				var slides = config._slideContainer.find('.slide');
 				config._slideContainerHeight = 0;
@@ -835,8 +835,6 @@ jQuery(document).ready(function($) {
 				config._leftArrow.bind('click', function(event) {
 					$.ajaxSlider.leftArrow(event, config);
 				});
-			} else {
-			
 			}
 		},
 
@@ -889,10 +887,10 @@ jQuery(document).ready(function($) {
 			var links = config._slideNavigation.find('a');
 			
 			links.bind('click', function(event) {
-				config._activeSlide = parseInt($(this).text());
+				config._activeSlide = parseInt($(this).text(), 10);
 				window.clearInterval(config._rotateInterval);
 				$.ajaxSlider.animateContainerTo(config._activeSlide -1, config);
-			})
+			});
 			
 		},
 		
@@ -959,7 +957,7 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Set navigation point to active
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				
 				// Set this navigation point as active
 				config._activeNavigation.removeClass('active');
@@ -990,11 +988,11 @@ jQuery(document).ready(function($) {
 			}
 		},
 		debugMode: function(text, config) {
-			if(config.debug == true) {
+			if(config.debug === true) {
 				console.log(text);
 			}
 		}
-	}
+	};
 })(jQuery);
 
 /**
@@ -1022,19 +1020,19 @@ jQuery(document).ready(function($) {
 		open: function(settings) {
 			
 			// settings
-			if (settings) $.extend($.loadingIndicator.config, settings);
+			if (settings) { $.extend($.loadingIndicator.config, settings); }
 		
 			// Create loader
 			$.loadingIndicator.config._loader = $('<div>', {
 				'class': $.loadingIndicator.config.loadingClass,
-				'text': $.loadingIndicator.config.loadingText,
+				'text': $.loadingIndicator.config.loadingText
 			}).hide().appendTo($(document.body));
 			
 			var height = $.loadingIndicator.config._loader.height(), width = $.loadingIndicator.config._loader.width();
 			
 			$.loadingIndicator.config._loader.css({
 				'marginTop':  -(height/2) +'px',
-				'marginLeft': -(width/2) + 'px',
+				'marginLeft': -(width/2) + 'px'
 			});
 			
 			// Add additionalcss if passed
@@ -1043,17 +1041,17 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Overlay handling
-			if($.loadingIndicator.config.hideOverlayAfterClose == true) {
+			if($.loadingIndicator.config.hideOverlayAfterClose === true) {
 				$($.loadingIndicator.config.overlay).fadeTo($.loadingIndicator.config.animationSpeed, $.loadingIndicator.config.overlayOpacity);
 			}
-			if($.loadingIndicator.config.bindEvent == true) {
+			if($.loadingIndicator.config.bindEvent === true) {
 				$($.loadingIndicator.config.overlay).css({'cursor': 'pointer'}).bind('click', function() {
 					$.loadingIndicator.close();
 				});
 			} else {
 				$($.loadingIndicator.config.overlay).css({'cursor': 'default'});
 			}
-			if($.browser.msie && parseInt($.browser.version) == 6) {
+			if($.browser.msie && parseInt($.browser.version, 10) == 6) {
 				$.ie6fix.open($.loadingIndicator.config._loader);
 			} else {
 				$.loadingIndicator.config._loader.fadeIn($.loadingIndicator.config.animationSpeed);
@@ -1064,7 +1062,7 @@ jQuery(document).ready(function($) {
 		close: function() {
 			if($.loadingIndicator.config._loader) {
 				$($.loadingIndicator.config.overlay).fadeOut($.loadingIndicator.config.animationSpeed);
-				if($.browser.msie && parseInt($.browser.version) == 6) {
+				if($.browser.msie && parseInt($.browser.version, 10) == 6) {
 					$.ie6fix.close($.loadingIndicator.config._loader);
 				} else {
 					$.loadingIndicator.config._loader.animate({
@@ -1095,7 +1093,7 @@ jQuery(document).ready(function($) {
 
 	$.fn.validate = function(settings) {
 		
-		if (settings) $.extend(config, settings);
+		if (settings) { $.extend(config, settings); }
 		
 		this.bind('blur', function(event) {
 			validate($(this));
@@ -1132,7 +1130,7 @@ jQuery(document).ready(function($) {
 			setSuccess(el);
 			return;
 		}
-	}
+	};
 	
 	ajaxValidate = function(el, action) {
 		var data = 'action='+action+'&'+$('.register form').serialize(); 
@@ -1143,13 +1141,14 @@ jQuery(document).ready(function($) {
             'url': $.controller.ajax_validate,
             'success': function (result, data) {
             	if(result && result.error_flags) 
-            	{
-            		for (var error_flag in result.error_flags)
-            		{  
-            			if(result.error_flags[error_flag])
-            				setError($('.register .'+error_flag));
-            			else
-            				setSuccess($('.register .'+error_flag));
+				{
+					for (var error_flag in result.error_flags)
+					{  
+						if(result.error_flags[error_flag]) {
+							setError($('.register .'+error_flag));
+						} else {
+							setSuccess($('.register .'+error_flag));
+						}
             		}
             	}
             	
@@ -1230,7 +1229,7 @@ jQuery(document).ready(function($) {
 				'max_quantity_enable': $(this).find('input.max_quantity_enable').val(),
 				'max_quantity': $(this).find('input.max_quantity').val(),
 				'sells': $(this).find('input.sells').val(),
-				'typeID': parseInt($(this).find('input.typeID').val()),
+				'typeID': parseInt($(this).find('input.typeID').val(), 10),
 				'price': eval($(this).find('input.price').val()),
 				'minPrice': eval($(this).find('input.minPrice').val())
 				//'stints': $(this).find('input.stints').val().split(';')
@@ -1496,8 +1495,8 @@ jQuery.fn.liveSearch = function (conf) {
 			
 			if(config._left == null || config._top == null) {
 				liveSearch.show();
-				if(config._left == null) { config._left = parseInt(liveSearch.css('left')); }
-				if(config._top == null) { config._top = parseInt(liveSearch.css('top')); }
+				if(config._left == null) { config._left = parseInt(liveSearch.css('left'), 10); }
+				if(config._top == null) { config._top = parseInt(liveSearch.css('top'), 10); }
 				liveSearch.hide();
 			}
 			
@@ -1640,7 +1639,7 @@ jQuery.fn.liveSearch = function (conf) {
     // and the missing position fixed
     $.ie6fix ={
     	_init: function() {
-    		if($.browser.msie && parseInt($.browser.version) == 6) {
+    		if($.browser.msie && parseInt($.browser.version, 10) == 6) {
      			$.ie6fix.open(modal, config);
      		} else {
      			return false;
@@ -2230,7 +2229,7 @@ jQuery.fn.liveSearch = function (conf) {
 	        }
 	    })
 	};
-$.aj
+	
     //Adds an article with it's article id
     //to the current compare list
     $.compare.addCompare = function (url) {
