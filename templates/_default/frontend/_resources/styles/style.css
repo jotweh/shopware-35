@@ -1096,7 +1096,7 @@ div.ajax_add_article .actions .button-left {float: left;}
 div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absolute;}
 
 /* Compare */
-.ajax_compare_container .grid_3 {margin-left:0px; margin-right:0px;}
+.ajax_compare_container .grid_3 {margin-left:0px; margin-right:0px;position: static;}
 .ajax_compare_container .grid_3 div {padding: 10px 10px 5px 10px;border-top: 1px solid;}
 .ajax_compare_container .grid_3 div div {border-top: 0 none;padding-top:0px;padding-bottom:0px;}
 .ajax_compare_container .grid_3 {width: 150px;}
