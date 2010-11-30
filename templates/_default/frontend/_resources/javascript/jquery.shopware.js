@@ -2211,6 +2211,7 @@ jQuery.fn.liveSearch = function (conf) {
 	        	var container = $('<div>', {'class':'ajax_compare_container'}).appendTo(document.body);
 	        	var div = $('<div>', {'class': 'grid_3'}).appendTo(container);
 	        	
+	        	container.show();	
 	        	var tmpWidth = parseInt(div.css('width'));
 	        	container.remove();
 	        	
