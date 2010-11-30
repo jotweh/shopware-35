@@ -7,7 +7,7 @@
 				<div class="grid_15 method method_hide">
 					{block name='frontend_checkout_payment_fieldset_input_radio'}
 					<div class="grid_5 first">
-					<input type="radio" name="register[payment]" class="radio" value="{$payment_mean.id}" id="payment_mean{$payment_mean.id}"{if $payment_mean.id eq $sUserData.additional.payment.id} checked="checked"{/if} /> <label class="description" for="payment_mean{$payment_mean.id}">{$payment_mean.description}</label>
+					<input type="radio" name="register[payment]" class="radio" value="{$payment_mean.id}" id="payment_mean{$payment_mean.id}"{if $payment_mean.id eq $sPayment.id} checked="checked"{/if} /> <label class="description" for="payment_mean{$payment_mean.id}">{$payment_mean.description}</label>
 					</div>
 					{/block}
 					
@@ -22,7 +22,11 @@
 					{if "frontend/plugins/payment/`$payment_mean.template`"|template_exists}
 						<div class="space">&nbsp;</div>
 						<div class="grid_8 bankdata method_hide">
-							{include file="frontend/plugins/payment/`$payment_mean.template`"}
+							{if $payment_mean.id eq $sPayment.id}
+								{include file="frontend/plugins/payment/`$payment_mean.template`" form_data=$sPayment.data}
+							{else}
+								{include file="frontend/plugins/payment/`$payment_mean.template`"}
+							{/if}
 						</div>
 					{/if}
 					{/block}
@@ -37,11 +41,11 @@
 			
 			<div class="grid_15 method method_selected">
 				<div class="grid_5 first">
-					<input type="radio" name="" class="radio" value="{$sUserData.additional.payment.id}" checked="checked" />
-					<label class="description">{$sUserData.additional.payment.description}</label>
+					<input type="radio" name="" class="radio" value="{$sPayment.id}" checked="checked" />
+					<label class="description">{$sPayment.description}</label>
 				</div>
 				<div class="grid_10 last">
-					{$sUserData.additional.payment.additionaldescription}
+					{$sPayment.additionaldescription}
 				</div>
 			</div>
 			

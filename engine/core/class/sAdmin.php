@@ -292,6 +292,34 @@ class sAdmin
 			$resetPayment = $this->sSYSTEM->sCONFIG["sPAYMENTDEFAULT"];
 		}
 		
+		if(!empty($user['additional']['countryShipping']['id'])) {
+			$sql = "
+				SELECT 1
+				FROM s_core_paymentmeans p
+				
+				LEFT JOIN s_core_paymentmeans_subshops ps
+				ON ps.subshopID=?
+				AND ps.paymentID=p.id
+				
+				LEFT JOIN s_core_paymentmeans_countries pc
+				ON pc.countryID=?
+				AND pc.paymentID=p.id
+				
+				WHERE (ps.paymentID IS NOT NULL OR (SELECT paymentID FROM s_core_paymentmeans_subshops WHERE paymentID=p.id LIMIT 1) IS NULL)
+				AND (pc.paymentID IS NOT NULL OR (SELECT paymentID FROM s_core_paymentmeans_countries WHERE paymentID=p.id LIMIT 1) IS NULL)
+				
+				AND id=?
+			";
+			$active = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql, array(
+				$this->sSYSTEM->sSubShop['id'],
+				$user['additional']['countryShipping']['id'],
+				$id
+			));
+			if(empty($active)) {
+				$resetPayment = $this->sSYSTEM->sCONFIG["sPAYMENTDEFAULT"];
+			}
+		}
+		
 		if ($resetPayment && $user["additional"]["user"]["id"]){
 			$updateAccount =  $this->sSYSTEM->sDB_CONNECTION->Execute("
 			UPDATE s_user SET paymentID = ? WHERE id = ?

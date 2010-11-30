@@ -673,14 +673,18 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			$payment = $this->View()->sUserData['additional']['payment'];
 		} elseif(!empty($this->session['sPaymentID'])) {
 			$payment = $this->admin->sGetPaymentMeanById($this->session['sPaymentID'], $this->View()->sUserData);
-			if($payment)
-			{
-				return $payment;
+		}
+		if (!empty($payment['table'])) {
+			$paymentClass = $this->admin->sInitiatePaymentClass($payment);
+			if (!empty($paymentClass)) {
+				$payment['data'] = $paymentClass->getData();
 			}
 		}
+		if(!empty($payment)) {
+			return $payment;
+		}
 		$payments = $this->getPayments();
-		if(empty($payments))
-		{
+		if(empty($payments)) {
 			unset($this->session['sPaymentID']);
 			return false;
 		}
