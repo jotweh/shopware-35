@@ -49,9 +49,12 @@
 			
 			{include file="frontend/register/error_message.tpl" error_messages=$register->shipping->error_messages}
 			{include file="frontend/register/shipping_fieldset.tpl" form_data=$register->shipping->form_data error_flags=$register->shipping->error_flags country_list=$register->shipping->country_list}
-					
+			
+			<div class="payment_method register_last"></div>
+			{*
 			{include file="frontend/register/error_message.tpl" error_messages=$register->payment->error_messages}
 			{include file="frontend/register/payment_fieldset.tpl" form_data=$register->payment->form_data error_flags=$register->payment->error_flags payment_means=$register->payment->payment_means}
+			*}
 			
 			{* Privacy checkbox *}
 			{if !$update}

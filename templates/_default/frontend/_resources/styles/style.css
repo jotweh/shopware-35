@@ -704,7 +704,7 @@ div#notes .table_row .action a.basket {margin-bottom: 20px;}
 .register label.normal {font-weight:500;}
 .register .salutation span input {float:left;}
 .register .payment_method label {width:100px; margin: 0px 0 0 5px;}
-.register .payment_method .debit label {margin: 0 0 0 0;}
+.register .payment_method .debit label {margin:0.5em 0;}
 .register select {width:310px;padding: 5px;}
 .register .personal_settings, .register .shipping_address, .register .payment_method, .register .company_informations, .register .alternative_shipping {border: 1px solid;border-bottom: 0 none;margin: 0;padding: 0 0 15px 0}
 #content .register h2.headingbox_dark {border: 0 none;}
@@ -718,12 +718,16 @@ div#notes .table_row .action a.basket {margin-bottom: 20px;}
 .register .zipcode {width: 100px;}
 .register .city {width:185px;}
 .register #shippingAddress {left:-8px; width: 16px;height:16px;}
-.register .payment_method {border-bottom: 1px solid;margin-bottom:20px;}
+
+.register .payment_method {border-bottom: 1px solid;margin-bottom:20px;padding:0;}
 .register .payment_method .radio {float:left;top:0;}
 .register .payment_method .method, .register .payment_method .method_last {margin: 0 0 10px; padding: 0 0 10px 40px; border-bottom: 1px solid;}
+.register .payment_method .method div, .register .payment_method .method_last div {margin: 0;}
 .register .payment_method .method .first, .register .payment_method .method_last .first {width: 165px;}
 .register .payment_method .method .bankdata, .register .payment_method .method_last .bankdata {margin-left: 160px;}
 .register .payment_method .method_last {border-bottom: 0 none;}
+
+.register .register_last {border-bottom: 0px solid}
 .register .chklabel {width: 450px;}
 .register .check {margin-left: 205px;}
 .register #birthdate select {width: 60px;}
@@ -734,6 +738,14 @@ div#notes .table_row .action a.basket {margin-bottom: 20px;}
 .register .error {margin: 0;border-bottom: 0 none;}
 #registerbutton {width: 241px;display:block; background: url(../images/backgrounds/bg_basketbutton.png) no-repeat;border: 0 none; height: 40px;color: #fff; font-size: 14px;}
 #registerbutton {position: relative !important; z-index:20;cursor:pointer}
+
+#confirm .payment_method {margin: 0}
+#confirm .method_hide {display: none}
+#confirm .payment_method .method, #confirm .payment_method .method_last {padding:0 0 10px 0;width:100%;}
+#confirm .payment_method .grid_5 {padding:0 0 0 40px;}
+#confirm .payment .change {margin: 0;float:right;}
+#confirm .payment .change a {margin: 10px}
+#confirm .payment .actions input {margin: 0 20px 20px 0}
 
 /* Shipping Calucator */
 #content #left.basket {width: 171px;border-left: 0 none;margin: 0 10px 0 1px;}

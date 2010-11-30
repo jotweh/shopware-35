@@ -53,9 +53,28 @@
 	{include file="frontend/checkout/confirm_left.tpl"}
 {/block}
 
+{block name="frontend_index_header_javascript" append}
+<script type="text/javascript">
+//<![CDATA[
+	jQuery(document).ready(function($) {
+		$('.payment_method .change a').click(function(){
+			$('.method_hide').fadeIn();
+			$(this).css('display', 'none');
+			$('.method_selected').css('display', 'none');
+			return false;
+		});
+	});
+//]]>
+</script>
+{/block}
+
 {* Main content *}
 {block name="frontend_index_content"}
 <div id="confirm" class="grid_16 first">
+
+	{block name='frontend_checkout_confirm_payment'}
+	{include file='frontend/checkout/confirm_payment.tpl'}
+	{/block}
 	
 	{* Error messages *}
 	{block name='frontend_checkout_confirm_error_messages'}

@@ -10,7 +10,7 @@ return array(
 	),
 	'front' => array(
 		'noErrorHandler' => false,
-		'throwExceptions' => false,
+		'throwExceptions' => true,
 		'useDefaultControllerAlways' => true,
 		'disableOutputBuffering' => false,
 		'showException' => true,
