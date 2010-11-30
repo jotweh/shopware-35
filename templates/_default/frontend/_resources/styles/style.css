@@ -641,7 +641,7 @@ div#notes .table_row .delivery {position: absolute;right: 85px;top: 20px;text-al
 div#notes .table_row a.zoom_picture {background: url(../images/icons/ico_zoom-picture.png) no-repeat; padding: 0 0 0 30px; height: 21px; line-height: 21px; display: block; top: 140px; left: 5px; position: absolute;}
 div#notes .table_row .price {font-size:14px;font-weight: 700;position: absolute;right:70px;text-align: left;width:100px;}
 div#notes .table_row .delete {display: block; height: 21px; width: 24px; background: url(../images/icons/ico_delete.png) no-repeat; text-indent: -9999px; position: absolute; top: 10px;right:10px;}
-div#notes .table_row .action {position: absolute;top: 45px;}
+div#notes .table_row .action {position: absolute;top: 45px;right: 10px;}
 div#notes .table_row .action a {background-repeat: repeat-x; display: block; height:16px; border: 1px solid #e7e7e7; width: 162px;padding: 4px 0 0 10px; margin: 0 0 2px;}
 div#notes .table_row .action a.basket {margin-bottom: 20px;}
 
