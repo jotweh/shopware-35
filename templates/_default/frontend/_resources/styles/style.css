@@ -1084,7 +1084,7 @@ div.ajax_add_article .actions .button-left {float: left;}
 div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absolute;}
 
 /* Compare */
-.ajax_compare_container .grid_3 {margin-left:0px; margin-right:0px;width: 160px;}
+.ajax_compare_container .grid_3 {margin-left:0px; margin-right:0px;}
 .ajax_compare_container .grid_3 div {padding: 10px 10px 5px 10px;border-top: 1px solid;}
 .ajax_compare_container .grid_3 div div {border-top: 0 none;padding-top:0px;padding-bottom:0px;}
 .ajax_compare_container .compare_desc {padding-left:0;}
@@ -1093,6 +1093,8 @@ div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absol
 .ajax_compare_container .compare_article .desc {font-weight: normal;} 
 .ajax_compare_container .property {padding: 5px 0 5px 15px;}
 .ajax_compare_container .compare_article .property {padding-left: 5px;}
+.modal .ajax_compare_container .inner_container {overflow: scroll;}
+.ajax_compare_container .grid_3 {width: 154px;}
 
 /* Custom */
 /*.ajax_modal_custom {padding: 20px; height: 400px; overflow-y: scroll;}*/
