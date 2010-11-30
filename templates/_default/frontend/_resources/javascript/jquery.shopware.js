@@ -1829,7 +1829,7 @@ jQuery.fn.liveSearch = function (conf) {
             	//Wenn ZoomViewer ist aktiv
             	useZoom = parseInt(useZoom);
             	if(useZoom) {
-            		$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
+            		$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src')).attr('title', $('#img' + ordernumber).children('a').attr('title'));
             		$('#img' + ordernumber).find('a').trigger('click');
             	} else {
             		 //Lightboxlink wechseln

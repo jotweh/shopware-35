@@ -13,5 +13,5 @@
 	{foreach from=$sComparisonsList.articles item=sComparison key=key name="counter"}
 		{include file="frontend/compare/col.tpl" sArticle=$sComparison sProperties=$sComparison.properties}
 	{/foreach}
-	<div class="clear">&nbsp;</div>
 </div>
+<div class="clear">&nbsp;</div>
