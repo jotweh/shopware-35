@@ -22,7 +22,6 @@
 	var compareMaxCount = '{config name="MaxComparisons"}';
 {literal}
 	jQuery(document).ready(function() {
-		//alert(typeof jQuery.compare);
 		jQuery.compare.setup();
 	});
 {/literal}

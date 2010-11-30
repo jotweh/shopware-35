@@ -1140,7 +1140,7 @@ jQuery(document).ready(function($) {
             'dataType': 'json',
             'url': $.controller.ajax_validate,
             'success': function (result, data) {
-            	if(result && result.error_flags) 
+				if(result && result.error_flags) 
 				{
 					for (var error_flag in result.error_flags)
 					{  
@@ -1149,33 +1149,32 @@ jQuery(document).ready(function($) {
 						} else {
 							setSuccess($('.register .'+error_flag));
 						}
-            		}
-            	}
-            	
-            	$('#'+action+'_error').remove();
-            	
-            	
-            	if(result && result.error_messages&& result.error_messages.length)
-            	{            		            		
-            		var error_css = {
-            			'top': el.offset().top-5,
-            			'left': el.offset().left+el.outerWidth()+15,
-            			'position': 'absolute',
-            			'z-index': 100
-            		};
-            		
-            		var error_el = $('<div>').attr('id', action+'_error').addClass('error').prependTo($('body')).css(error_css);
-            		
-            		for (var error_key in result.error_messages)
-            		{
-            			var error_message = result.error_messages[error_key];
-            			
-            			error_el.append(error_message+'<br />');
-            		}
-            	}
+					}
+				}
+				
+				$('#'+action+'_error').remove();
+				
+				if(result && result.error_messages&& result.error_messages.length)
+				{
+					var error_css = {
+						'top': el.offset().top-5,
+						'left': el.offset().left+el.outerWidth()+15,
+						'position': 'absolute',
+						'z-index': 100
+					};
+					
+					var error_el = $('<div>').attr('id', action+'_error').addClass('error').prependTo($('body')).css(error_css);
+					
+					for (var error_key in result.error_messages)
+					{
+						var error_message = result.error_messages[error_key];
+
+						error_el.append(error_message+'<br />');
+					}
+				}
             }
         });
-	}
+	};
 	
 	//Sets error class
 	setError = function(el) {
@@ -1187,7 +1186,7 @@ jQuery(document).ready(function($) {
 			$(el).removeClass(config.successClass).addClass(config.errorClass);
 		}
 		return el;
-	}
+	};
 	
 	//Sets success class
 	setSuccess = function(el) {
@@ -1199,7 +1198,7 @@ jQuery(document).ready(function($) {
 			$(el).removeClass(config.errorClass).addClass(config.successClass);
 		}
 		return el;
-	}
+	};
 
 })(jQuery);
 
@@ -1249,7 +1248,7 @@ jQuery(document).ready(function($) {
 			
 			// article limitation
 			var stints = $(obj).find('input.stints');
-			if($.isEmptyObject(stints) == true) {
+			if($.isEmptyObject(stints) === true) {
 				article.stints = $(stints).val().split(';');
 			}
 			
@@ -1265,7 +1264,7 @@ jQuery(document).ready(function($) {
 				var diff = $.timestampDiff(article.target.getTime(), now.getTime());
 				
 				// liveshopping is running 
-				if(diff != false) {
+				if(diff !== false) {
 				
 					$.liveshopping.refreshDates(article, diff);
 					
@@ -1274,7 +1273,7 @@ jQuery(document).ready(function($) {
 						$.liveshopping.refreshBarChart(article,diff);
 						
 						if(article.max_quantity_enable) {
-							$.liveshopping.refreshQuantity(article)
+							$.liveshopping.refreshQuantity(article);
 						}
 						
 					// Minutes decrease
@@ -1289,8 +1288,6 @@ jQuery(document).ready(function($) {
 					}
 					
 				// liveshopping is finished
-				} else {
-					//window.location.reload();
 				}
 			}, 1000);
 		},
@@ -1310,7 +1307,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_days_doubledigit').each(function(index, item) {
 				tmp = diff.d;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0' + tmp); else	$(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0' + tmp); } else { $(item).html(tmp); }
 			});
 			
 			// hours
@@ -1322,7 +1319,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_hours_doubledigit').each(function(index, item) {
 				tmp = diff.h;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 			
 			// minutes
@@ -1334,7 +1331,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_min_doubledigit').each(function(index, item) {
 				tmp = diff.m;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 			
 			// seconds
@@ -1346,7 +1343,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_sec_doubledigit').each(function(index, item) {
 				tmp = diff.s;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 
 		},
@@ -1360,7 +1357,7 @@ jQuery(document).ready(function($) {
 			// days process bar
 			$('div.live'+key+'_days_process').each(function(index, item) {
 				var proz = eval(diff.d)*100/31;
-				if(proz > 100) proz = 100;
+				if(proz > 100) { proz = 100; }
 				proz = 100 - proz;
 				$(item).css('width', proz+'%');
 			});
@@ -1391,7 +1388,7 @@ jQuery(document).ready(function($) {
 		// necessary for minutes increase and decrease
 		refreshPrices: function(article, diff) {
 		
-			if (diff.s == 0) {
+			if (diff.s === 0) {
 				
 				var key = article.uniquekey + article.ordernumber;
 				// calulating new price
@@ -1493,10 +1490,10 @@ jQuery.fn.liveSearch = function (conf) {
 		var repositionLiveSearch = function () {
 		
 			
-			if(config._left == null || config._top == null) {
+			if(config._left === null || config._top === null) {
 				liveSearch.show();
-				if(config._left == null) { config._left = parseInt(liveSearch.css('left'), 10); }
-				if(config._top == null) { config._top = parseInt(liveSearch.css('top'), 10); }
+				if(config._left === null) { config._left = parseInt(liveSearch.css('left'), 10); }
+				if(config._top === null) { config._top = parseInt(liveSearch.css('top'), 10); }
 				liveSearch.hide();
 			}
 			
@@ -1531,7 +1528,7 @@ jQuery.fn.liveSearch = function (conf) {
 		
 		var doLiveSearch = function () {
 			
-			if(input.val() == config.lastValue) return;
+			if(input.val() == config.lastValue) { return; }
 
 			input.addClass(config.loadingClass);
 		
@@ -1554,7 +1551,7 @@ jQuery.fn.liveSearch = function (conf) {
 	                'cancelExisting': true,
 	                'data': $(input.attr('form')).serialize(),
 	                'beforeSend': function() {
-	                	$('div.inner_searchcontainer .ajax_loader').show();
+						$('div.inner_searchcontainer .ajax_loader').show();
 	                },
 	                'success': function (request) {
 	                   $('div.inner_searchcontainer .ajax_loader').hide();
@@ -1580,7 +1577,7 @@ jQuery.fn.liveSearch = function (conf) {
 			if (this.value !== '') {
 				
 				// Perform a new search if there are no search results
-				if (liveSearch.html() == '') {
+				if (liveSearch.html() === '') {
 					config.lastValue = '';
 					doLiveSearch();
 				}
@@ -1638,16 +1635,16 @@ jQuery.fn.liveSearch = function (conf) {
 	 // Methods to fix the select box bug
     // and the missing position fixed
     $.ie6fix ={
-    	_init: function() {
-    		if($.browser.msie && parseInt($.browser.version, 10) == 6) {
-     			$.ie6fix.open(modal, config);
-     		} else {
-     			return false;
-     		}
-    	},
-    	open: function(obj) {
-    		// Hide select boxes
-    		$('select:visible').css('visibility', 'hidden');
+		_init: function() {
+			if($.browser.msie && parseInt($.browser.version, 10) == 6) {
+				$.ie6fix.open(modal, config);
+			} else {
+				return false;
+			}
+		},
+		open: function(obj) {
+			// Hide select boxes
+			$('select:visible').css('visibility', 'hidden');
     		
     		// Fix missing 'position: fixed'
     		obj.css({
@@ -1679,18 +1676,18 @@ jQuery.fn.liveSearch = function (conf) {
 			$('select, #detail .liveshopping_detail, .accessory_container').css('visibility', 'visible');
     	},
     	selectOnlyShow: function() {
-    		$('select').css('visibility', 'visible')
+    		$('select').css('visibility', 'visible');
     	}
     }; 
 
 	// Formats a string
 	// Syntax: $.format('<div class="%0"'>%1</div>, [value for %0], [value for %1], ...)
 	$.format = function(str) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            str = str.replace('%' + (i - 1), arguments[i]);
-	        }
-	        return str;
-	    }
+        for (var i = 1; i < arguments.length; i++) {
+            str = str.replace('%' + (i - 1), arguments[i]);
+        }
+        return str;
+    };
 
 	//Extends jQuery's namespace
     $.server = {
@@ -1703,12 +1700,12 @@ jQuery.fn.liveSearch = function (conf) {
         $.server.dateObj = new Date();
         $.server.dateObj.setTime(servertime * 1000);
         window.setInterval(function () {
-            $.server.increment()
-        }, 1000)
+            $.server.increment();
+        }, 1000);
     };
     $.server.increment = function () {
         var crntTime = $.server.dateObj.getTime() + 1000;
-        $.server.dateObj = new Date(crntTime)
+        $.server.dateObj = new Date(crntTime);
     };
     
     //Formats floats
@@ -1717,7 +1714,7 @@ jQuery.fn.liveSearch = function (conf) {
             prec = decimals;
         var toFixedFix = function (n, prec) {
             var k = Math.pow(10, prec);
-            return (Math.round(n * k) / k).toString()
+            return (Math.round(n * k) / k).toString();
         };
         n = !isFinite(+n) ? 0 : +n;prec = !isFinite(+prec) ? 0 : Math.abs(prec);
         var sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep;
@@ -1729,27 +1726,27 @@ jQuery.fn.liveSearch = function (conf) {
             _ = abs.split(/\D/);
             i = _[0].length % 3 || 3;
             _[0] = s.slice(0, i + (n < 0)) + _[0].slice(i).replace(/(\d{3})/g, sep + '$1');
-            s = _.join(dec)
+            s = _.join(dec);
         } else {
-            s = s.replace('.', dec)
+            s = s.replace('.', dec);
         }
         var decPos = s.indexOf(dec);
         if (prec >= 1 && decPos !== -1 && (s.length - decPos - 1) < prec) {
-            s += new Array(prec - (s.length - decPos - 1)).join(0) + '0'
+            s += new Array(prec - (s.length - decPos - 1)).join(0) + '0';
         } else if (prec >= 1 && decPos === -1) {
-            s += dec + new Array(prec).join(0) + '0'
+            s += dec + new Array(prec).join(0) + '0';
         }
-        return s
+        return s;
     };
             
     //Changes the state of the related articles which is
     //used by the bundle module
     $.changeRelatedArticleState = function (ordernumber, active) {
         var tmpContainerName = '#' + ordernumber + '_related_container';
-        if (false == active) {
-            $(tmpContainerName).hide()
+        if (false === active) {
+            $(tmpContainerName).hide();
         } else {
-            $(tmpContainerName).show()
+            $(tmpContainerName).show();
         }
     };
     
@@ -1757,7 +1754,7 @@ jQuery.fn.liveSearch = function (conf) {
     //which is used by the live shopping module
     $.timestampDiff = function (d1, d2) {
         if (d1 < d2) {
-            return false
+            return false;
         }
         var d = Math.floor((d1 - d2) / (24 * 60 * 60 * 1000));
         var h = Math.floor(((d1 - d2) - (d * 24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
@@ -1768,7 +1765,7 @@ jQuery.fn.liveSearch = function (conf) {
             'h': h,
             'm': m,
             's': s
-        }
+        };
     };
     
     //Changes the displayed informations on the
@@ -1804,11 +1801,11 @@ jQuery.fn.liveSearch = function (conf) {
             if (isVariant) {
                 var thumbs = $('.thumb_box').children('a:[id]');
                 thumbs.each(function (i, el) {
-                    if ($(el).attr('id') != 'thumb' + $.ordernumber) $(el).hide()
-                })
+                    if ($(el).attr('id') != 'thumb' + $.ordernumber) { $(el).hide(); }
+                });
             }
             // Hide basket
-            $('#basketButton').css('opacity', '0.4')
+            $('#basketButton').css('opacity', '0.4');
         } else {
         	// Show Pseudo price
         	$('#'+ordernumber).find('.PseudoPrice').show();
@@ -2314,7 +2311,8 @@ jQuery.fn.liveSearch = function (conf) {
 	    textContainer: '<p>',
 	    overlay: '#lbOverlay',
 	    overlayOpacity: '0.6',
-	    useOverlay: true
+	    useOverlay: true,
+	    width: 500
 	};
 	
 	//creates an modal window with text and headline
@@ -2322,7 +2320,10 @@ jQuery.fn.liveSearch = function (conf) {
 	    if (settings) $.extend(config, settings);
 	    if ($('.modal')) $('.modal').remove();
 	    var modal = $('<div>', {
-	        'class': 'modal'
+	        'class': 'modal',
+	        'css': {
+	        	'width': config.width
+	        } 
 	    });
 	    
 	    if(settings.width) { modal.css('width', settings.width); }
@@ -2379,6 +2380,8 @@ jQuery.fn.liveSearch = function (conf) {
 	            $.modalClose();
 	        })
 	    }
+	    $('.modal').fadeIn('fast');
+	    
 	    if($.browser.msie && parseInt($.browser.version) == 6) {
 	 		$.ie6fix.open(modal, config);
 	 	} else {
@@ -2388,6 +2391,7 @@ jQuery.fn.liveSearch = function (conf) {
 	                'bottom': 'auto'
 	            }).fadeIn(config.animationSpeed);
 	        } else if (config.position == 'fixed') {
+	        	$('.modal').fadeIn();
 	            modal.css({
 	                'position': config.position,
 	                'top': -(modal.height() + 100) + 'px',
@@ -2417,6 +2421,7 @@ jQuery.fn.liveSearch = function (conf) {
 	                'top': -($('.modal').height() + 100) + 'px'
 	            }, config.animationSpeed)
 	        }
+	        $('.modal').fadeOut();
         }
     };
     
