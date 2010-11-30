@@ -6,11 +6,11 @@ return array(
 		'username' => $DB_USER,
 		'password' => $DB_PASSWORD,
 		'dbname' => $DB_DATABASE,
-		//'host' => $DB_HOST
+		'host' => $DB_HOST
 	),
 	'front' => array(
 		'noErrorHandler' => false,
-		'throwExceptions' => true,
+		'throwExceptions' => false,
 		'useDefaultControllerAlways' => true,
 		'disableOutputBuffering' => false,
 		'showException' => true,

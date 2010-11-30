@@ -28,9 +28,6 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 		}
 		
 		$config = Shopware()->Config();
-		if(!empty($config['sTEMPLATEOLD'])) {
-			$snippet = Shopware()->Config()->Snippets();
-		}
 			
 		$view = $args->getSubject()->View();
 		
@@ -66,37 +63,21 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 			{
 				$meta_description = htmlentities(strip_tags(html_entity_decode($meta_description)));
 				$meta_description = trim(preg_replace('/\s\s+/', ' ', $meta_description));
-				if($snippet!==null) {
-					$snippet->set('sIndexMetaDescriptionStandard', $meta_description, false);
-				} else {
-					$view->SEOMetaDescription = $meta_description;
-				}
 			}
 		}
 		
 		$viewport = $request->getControllerName()=='viewport' ? $request->getParam('sViewport') : $request->getControllerName();
 				
-		if(!empty($viewport_blacklist)&&in_array($viewport, $viewport_blacklist))
-		{
+		if(!empty($viewport_blacklist)&&in_array($viewport, $viewport_blacklist)) {
 			$meta_robots = 'noindex,follow';
-		}
-		elseif(!empty($query_blacklist))
-		{
-			foreach ($query_blacklist as $query_key)
-			{
-				if($request->getQuery($query_key)!==null)
-				{
+		} elseif(!empty($query_blacklist)) {
+			foreach ($query_blacklist as $query_key) {
+				if($request->getQuery($query_key)!==null) {
 					$meta_robots = 'noindex,follow';
 				}
 			}
 		}
-		if(!empty($meta_robots))
-		{
-			if($snippet!==null) {
-				$snippet->set('sIndexMetaRobots', $meta_robots, false);
-			}
-		}
-				
+		
 		if(empty($config['sTEMPLATEOLD'])) {
 			$view->addTemplateDir(dirname(__FILE__).'/templates/');
 			$view->extendsTemplate('frontend/plugins/seo/index.tpl');
@@ -104,8 +85,17 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 			if(!empty($meta_robots)) {
 				$view->SeoMetaRobots = $meta_robots;
 			}
-			if(!empty($meta_robots)) {
+			if(!empty($meta_description)) {
 				$view->SeoMetaDescription = $meta_description;
+			}
+		} else {
+			$snippet = Shopware()->Config()->Snippets();
+			
+			if(!empty($meta_robots)) {
+				$snippet->set('sIndexMetaRobots', $meta_robots, false);
+			}
+			if(!empty($meta_description)) {
+				$snippet->set('sIndexMetaDescriptionStandard', $meta_description, false);
 			}
 		}
 	}
