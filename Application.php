@@ -27,6 +27,7 @@ return array(
     		'automatic_cleaning_factor' => 0,
     		'lifetime' => 3600
     	),
+    	'backend' => 'File',
     	'backendOptions' => array(
 			'hashed_directory_umask' => 0771,
 			'cache_file_umask' => 0644,

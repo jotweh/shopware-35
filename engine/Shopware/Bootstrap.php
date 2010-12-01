@@ -271,6 +271,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 	    	);
     	}
     	
+    	if(!empty($config['backend'])) {
+    		$backend = $config['backend'];
+    	} else {
+    		$backend = 'File';
+    	}
+    	
     	if(!empty($config['backendOptions'])) {
     		$backendOptions = $config['backendOptions'];
     	} else {
@@ -287,15 +293,32 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 		/*
 		$backendOptions = array(
 			'slow_backend' => 'File',
-			'fast_backend' => 'Apc',
+			'fast_backend' => 'Memcached',
 			'slow_backend_options' => $backendOptions,
 			'fast_backend_options' => array()
 		);
 		$cache = Zend_Cache::factory('Core', 'Two Levels', $frontendOptions, $backendOptions);
+		$backendOptions = array(
+			'servers' => array(
+				array(
+					'host' => 'localhost',
+					'port' => 11211,
+					'persistent' => true,
+					'weight' => 1,
+					'timeout' => 5,
+					'retry_interval' => 15,
+					'status' => true,
+					//'failure_callback' => ''
+				)
+			),
+			'compression' => false,
+			'compatibility' => false
+		);
+		$cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, $backendOptions);
 		*/
-		
-		$cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);    	
     	
+		$cache = Zend_Cache::factory('Core', $backend, $frontendOptions, $backendOptions);
+		
     	Shopware_Models_Shop::setCache($cache);
 		Zend_Db_Table_Abstract::setDefaultMetadataCache($cache);
 		Zend_Locale_Data::setCache($cache);
