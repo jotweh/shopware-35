@@ -1110,7 +1110,7 @@ div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absol
 
 /* Custom */
 /*.ajax_modal_custom {padding: 20px; height: 400px; overflow-y: scroll;}*/
-.ajax_modal_custom {width:560px;} 
+.ajax_modal_custom {width:500px;} 
 .ajax_modal_custom .inner_container {margin-top:10px;padding: 0 25px 15px; height:300px; overflow-y: scroll;}
 
 /*	TOPSELLER ACCORDION
