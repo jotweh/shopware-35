@@ -88,13 +88,10 @@ function sTranslations(element, key, id, object, language,secondkey){
 			$('sTranslationsValue').setProperty('value',skeleton);
 		
 			// Dynamic convert to tiny, if original one is tiny
-			
-			
 			if ($(element).getProperty('mce_editable')){
 				enableTiny(tinyMCE,'sTranslationsValue');
 			}
-							
-			
+
 			// Pass element information
 			$('sTranslationsId').setProperty('value',id);
 			$('sTranslationsKey').setProperty('value',key);
@@ -142,6 +139,7 @@ function sTranslations(element, key, id, object, language,secondkey){
 					
 				},}).request();
 			});
+		
 		}}
 		).request();
 }
@@ -156,8 +154,12 @@ function disableTiny(tinyMCE,sEditorID) {
     }
 }
 function enableTiny(tinyMCE,sEditorID){
-	 window.setTimeout("tinyMCE.execCommand('mceAddControl', false,'"+sEditorID+"')",250);
-     
+	 tinyMCE.execCommand('mceAddControl', false,sEditorID);
+	 var textControl = tinyMCE.get(sEditorID);
+	 var tempContent = textControl.getContent();
+	 textControl.setContent(tempContent);
+
+	//window.setTimeout("",250);
 }
 
 <?php if (1!=1) { ?> </script> <?php } ?>
