@@ -603,10 +603,10 @@ class sBasket
 	 * @return array
 	 */
 	public function sInsertSurcharge(){
-		if (!empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG']))
+		/*if (!empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG']))
 		{
 			return true;
-		}
+		}*/
 		
 		$name = isset($this->sSYSTEM->sCONFIG['sSURCHARGENUMBER']) ? $this->sSYSTEM->sCONFIG['sSURCHARGENUMBER']: "SURCHARGE";
 		
