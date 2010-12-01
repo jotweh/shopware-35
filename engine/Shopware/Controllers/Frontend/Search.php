@@ -13,7 +13,7 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 	public function searchAction(){
 		
 		if ($this->request()->sSearchMode=="supplier"){
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesBySupplier();
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->request()->sSearch));
 			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
 		}else {
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->request()->sSearch));

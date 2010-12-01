@@ -447,6 +447,10 @@ class sArticles
 			return false;
 		}
 		
+		if ($mode=="supplier"){
+			$search = intval($search);
+		}
+		
 		$sCategory = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"] ? $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"] : $this->sSYSTEM->sCONFIG["sCATEGORYPARENT"];
 		if (!empty($category)) $sCategory = $category;		
 		$sSearch = trim(stripslashes(html_entity_decode($search)));
@@ -485,42 +489,49 @@ class sArticles
 		
 		$ret = array();
 		
-		$sSearch = explode(" ",$sSearch);
-		
-		if (!is_array($sSearch)){
-			$sSearch = array(0=>$sSearch);
-		}
-		
-		foreach ($sSearch as $sqlSearch){
-			$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
-		}
-		if(!empty($this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]))
-		{
-			foreach ($sSearch as $search){
-				$search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$search%");
-				$sql_add_where .= "
-						OR (
-							'{$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]}'=t.languageID 
-							AND (t.name LIKE $search OR t.keywords LIKE $search)
-						)
+		if ($mode!="supplier"){
+			$sSearch = explode(" ",$sSearch);
+			if (!is_array($sSearch)){
+				$sSearch = array(0=>$sSearch);
+			}
+			
+			foreach ($sSearch as $sqlSearch){
+				$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
+			}
+			if(!empty($this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]))
+			{
+				foreach ($sSearch as $search){
+					$search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$search%");
+					$sql_add_where .= "
+							OR (
+								'{$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]}'=t.languageID 
+								AND (t.name LIKE $search OR t.keywords LIKE $search)
+							)
+					";
+				}
+				$sql_add_join = "
+					LEFT JOIN s_articles_translations AS t
+					ON a.id=t.articleID
 				";
 			}
-			$sql_add_join = "
-				LEFT JOIN s_articles_translations AS t
-				ON a.id=t.articleID
-			";
-		}
-		
-		$sqlFields = array("s.name","a.name","a.keywords","d.ordernumber");
-		$sql_search_fields .= " OR (";
-		foreach ($sql_search as $term){
-			$sql_search_fields .= " (";
-			foreach ($sqlFields as $field){
-					$sql_search_fields .= "$field LIKE $term OR ";
+			
+			$sqlFields = array("s.name","a.name","a.keywords","d.ordernumber");
+			$sql_search_fields .= " OR (";
+			foreach ($sql_search as $term){
+				$sql_search_fields .= " (";
+				foreach ($sqlFields as $field){
+						$sql_search_fields .= "$field LIKE $term OR ";
+				}
+				$sql_search_fields .= " 1 != 1) AND ";
 			}
-			$sql_search_fields .= " 1 != 1) AND ";
+			$sql_search_fields .= "1 = 1 ) ";
+		}else {
+			unset($sql_add_join);
+			unset($sql_add_where);
+			unset($sql_search_fields);
+			$sql_search_fields = "OR a.supplierID = $search";
+			$sql_search[0] = "";
 		}
-		$sql_search_fields .= "1 = 1 ) ";
 		$sql = "
 			SELECT DISTINCT
 				a.id as id
@@ -552,7 +563,6 @@ class sArticles
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
-		
 		
 		
 		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
