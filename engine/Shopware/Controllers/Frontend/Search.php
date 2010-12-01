@@ -15,7 +15,12 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 		if ($this->request()->sSearchMode=="supplier"){
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->request()->sSearch));
 			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
-		}else {
+		}
+		elseif ($this->request()->sSearchMode=="newest"){
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest",urldecode($this->request()->sSearch));
+			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
+		}
+		else {
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->request()->sSearch));
 		}
 		foreach ($variables["sPerPage"] as $perPageKey => &$perPage){

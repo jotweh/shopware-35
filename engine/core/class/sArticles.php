@@ -489,7 +489,7 @@ class sArticles
 		
 		$ret = array();
 		
-		if ($mode!="supplier"){
+		if (empty($mode)){
 			$sSearch = explode(" ",$sSearch);
 			if (!is_array($sSearch)){
 				$sSearch = array(0=>$sSearch);
@@ -525,11 +525,17 @@ class sArticles
 				$sql_search_fields .= " 1 != 1) AND ";
 			}
 			$sql_search_fields .= "1 = 1 ) ";
-		}else {
+		}elseif($mode=="supplier") {
 			unset($sql_add_join);
 			unset($sql_add_where);
 			unset($sql_search_fields);
 			$sql_search_fields = "OR a.supplierID = $search";
+			$sql_search[0] = "";
+		}elseif($mode=="newest"){
+			unset($sql_add_join);
+			unset($sql_add_where);
+			unset($sql_search_fields);
+			$sql_search_fields = "OR 1 = 1";
 			$sql_search[0] = "";
 		}
 		$sql = "
@@ -4267,6 +4273,11 @@ class sArticles
 				}
 			}else {
 				$referenceImages = array_flip(explode("$$",$sCombination));
+				foreach ($referenceImages as $key => $v){
+					$keyNew = str_replace("/","",$key);
+					unset($referenceImages[$key]);
+					$referenceImages[$keyNew] = $v;
+				}
 				$sArticle = array("images"=>$sArticle,"image"=>array());
 				foreach ($sArticle["images"] as $k => $value){
 					if (preg_match("/(.*){(.*)}/",$value["relations"])){
@@ -4299,8 +4310,9 @@ class sArticles
 					$string = $image["relations"];
 					// Parsing string
 					$stringParsed = array();
-//					$string = str_replace(" ","",$string);
+
 					preg_match("/(.*){(.*)}/",$string,$stringParsed);
+					
 					$relation = $stringParsed[1];
 					$available = explode("/",$stringParsed[2]);
 					

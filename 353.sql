@@ -38,3 +38,7 @@ ALTER TABLE `s_filter_values` DROP INDEX `optionID_2`;
 ALTER TABLE `s_filter_values` DROP INDEX `groupID` ;
 ALTER TABLE `s_filter_values` ADD INDEX ( `groupID` );
 ALTER TABLE `s_filter_values` ADD INDEX ( `optionID` , `articleID` , `value` ) ;
+
+UPDATE `s_core_snippets` SET `value` = 'Nachdem Sie die erste Bestellung durchgeführt haben, können Sie hier auf vorherige Rechnungsadressen zugreifen.' WHERE `name` = 'SelectBillingInfoEmpty';
+
+DELETE FROM `s_core_config_groups` WHERE `name` = `Debugging`;
