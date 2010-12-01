@@ -156,7 +156,8 @@ function disableTiny(tinyMCE,sEditorID) {
     }
 }
 function enableTiny(tinyMCE,sEditorID){
-	 tinyMCE.execCommand('mceAddControl', false, sEditorID);
+	 window.setTimeout("tinyMCE.execCommand('mceAddControl', false,'"+sEditorID+"')",250);
+     
 }
 
 <?php if (1!=1) { ?> </script> <?php } ?>
