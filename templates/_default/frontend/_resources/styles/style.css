@@ -631,7 +631,7 @@ div.table_foot .box .vouchers, .div.table_foot .box .add_article {height:30px;}
 div#notes .table_row {height: 155px;}
 div#notes .table_row .title, div#notes .table_row .supplier, div#notes .table_row .ordernumber, div#notes .table_row .desc {width: 260px;}
 div#notes .table_row .desc {width:415px;}
-div#notes .table_row .title {position: absolute;top: 0px;font-family: Arial, sans-serif;font-size: 14px; width: 260px;}
+div#notes .table_row .title {position: absolute;top: 0px;font-family: Arial, sans-serif;font-size: 14px; width: 310px;}
 div#notes .table_row .supplier {position: absolute;top: 20px;background: transparent;border: 0 none;}
 div#notes .table_row a.thumb_image {width: 105px;height: 105px;top: 15px;position: relative;}
 div#notes .table_row .ordernumber {margin: 0;position: absolute;top: 35px;}
