@@ -700,7 +700,9 @@ if (isset($_POST["validate"])){
 		
 		
 		
-	} // End of result
+	}else {
+		$_POST["txtlangbeschreibung"] = stripslashes($_POST["txtlangbeschreibung"]);
+	}
 } // Form-Submit
 
 // =======================================================================================================
