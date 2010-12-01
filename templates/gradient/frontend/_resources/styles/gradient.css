@@ -538,7 +538,7 @@ div.supplier_filter div.active {background-image: url("../images/backgrounds/bg_
 div.ajax_login_form .heading .modal_close, .modal .heading .modal_close, .ajax_compare_container .heading .modal_close, .ajax_compare_max_container .heading .modalClose {background-image: url("../images/icons/ico_modal-close.png")}
 #shopnavi .ajax_basket_container {background-image: url("../images/backgrounds/bg_ajaxbasket.png");}
 .ajaxSlider .leftArrow, .ajaxSlider .rightArrow, .bannerSlider .leftArrow, .bannerSlider .rightArrow {background-image: url("../images/sprite_slider_arrows.png");}
-#buybox #basketButton, #registerbutton  {background-image: url("../images/backgrounds/bg_basketbutton.png"); cursor:pointer}
+#content #detail #basketButton, #registerbutton  {background-image: url("../images/backgrounds/bg_basketbutton.png") !important; cursor:pointer}
 
 div#breadcrumb {background: transparent;border: 0 none;height:20px; line-height: 16px;padding-left:0;}
 
