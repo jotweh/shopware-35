@@ -157,47 +157,43 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			return;
 		}
 		
-		if(!empty(Shopware()->Config()->RouterUrlCache))
-		{
+		unset($params['sCoreId'], $params['sUseSSL'], $params['title'], $params['module']);
+		if(!empty($params['sAction'])&&$params['sAction']=='index') {
+			unset($params['sAction']);
+		}
+		if(!empty($params['sViewport'])&&$params['sViewport']=='index'&&!empty(Shopware()->Config()->RouterRemoveCategory)) {
+			unset($params['sCategory']);
+		}
+		/*
+		if(!empty(Shopware()->Config()->RouterUrlCache)) {
 			$id = 'Shopware_RouterRewrite_'.Shopware()->Shop()->getId().'_'.md5(serialize($params));
 			$cache = Shopware()->Cache();
-			
-			if(!$cache->test($id))
-			{
+			if(!$cache->test($id)) {
 				$url = $this->assemble($params);
 				$cache->save($url, $id, array('Shopware_RouterRewrite'), Shopware()->Config()->RouterUrlCache);
-			}
-			else
-			{
+			} else {
 				$url = $cache->load($id);
 			}
 			return $url;
-		}
-		else
-		{
+		} else {
+		*/
 			return $this->assemble($params);
+		/*
 		}
+		*/
 	}
 	
 	public function assemble($query)
 	{
-		unset($query['sCoreId'], $query['sUseSSL'], $query['title'], $query['module']);
-		if(!empty($query['sAction'])&&$query['sAction']=='index')
-		{
-			unset($query['sAction']);
-		}
 		$org_query = array ();
-		if(!empty($query['sViewport']))
-		{
-			$org_query = array ('sViewport' => $query['sViewport'] );
-			switch ($query ['sViewport']){
+		if(!empty($query['sViewport'])) {
+			$org_query = array ('sViewport' => $query['sViewport']);
+			switch ($query['sViewport']) {
 				case 'detail':
-					
 					$org_query['sArticle'] = $query['sArticle'];
-					if(!empty(Shopware()->Config()->RouterRemoveCategory))
-					{
-						unset ($query ['sCategory']);
-					}
+					//if(!empty(Shopware()->Config()->RouterRemoveCategory)) {
+					//	unset ($query['sCategory']);
+					//}
 					break;
 				case 'cat':
 					$org_query ['sCategory'] = $query['sCategory'];
@@ -208,8 +204,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 				case 'support':
 				case 'ticket':
 					$org_query ['sFid'] = $query ['sFid'];
-					if($query['sFid']==Shopware()->Config()->InquiryID)
-					{
+					if($query['sFid']==Shopware()->Config()->InquiryID) {
 						$org_query['sInquiry'] = $query['sInquiry'];
 					}
 					break;
@@ -227,23 +222,32 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 					}
 					break;
 			}
-			$org_path = http_build_query( $org_query, '', '&' );
-			$sql = 'SELECT path FROM s_core_rewrite_urls WHERE org_path=? AND subshopID=? AND main=1 ORDER BY id DESC';
-			$path = Shopware()->Db()->fetchOne($sql, array($org_path, Shopware()->Shop()->getId()));
-		}
-		else
-		{
+			$org_path = http_build_query($org_query, '', '&');
+			
+			if(!empty(Shopware()->Config()->RouterUrlCache)) {
+				$id = 'Shopware_RouterRewrite_'.Shopware()->Shop()->getId().'_'.md5($org_path);
+				$cache = Shopware()->Cache();
+				if(!$cache->test($id)) {
+					$sql = 'SELECT path FROM s_core_rewrite_urls WHERE org_path=? AND subshopID=? AND main=1 ORDER BY id DESC';
+					$path = Shopware()->Db()->fetchOne($sql, array($org_path, Shopware()->Shop()->getId()));
+					$cache->save($path, $id, array('Shopware_RouterRewrite'), Shopware()->Config()->RouterUrlCache);
+				} else {
+					$path = $cache->load($id);
+				}
+			} else {
+				$sql = 'SELECT path FROM s_core_rewrite_urls WHERE org_path=? AND subshopID=? AND main=1 ORDER BY id DESC';
+				$path = Shopware()->Db()->fetchOne($sql, array($org_path, Shopware()->Shop()->getId()));
+			}
+			
+		} else {
 			$path = '';
 		}
-		if(!empty($path)&&!empty(Shopware()->Config()->RouterToLower))
-		{
+		if(!empty($path)&&!empty(Shopware()->Config()->RouterToLower)) {
 			$path = strtolower($path);
 		}
-		if (!empty($path))
-		{
+		if (!empty($path)) {
 			$query = array_diff_key($query, $org_query);
-			if (!empty($query))
-			{
+			if (!empty($query)) {
 				$path .= '?'.$this->sRewriteQuery($query);
 			}
 			return $path;
