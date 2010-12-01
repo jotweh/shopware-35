@@ -1447,6 +1447,8 @@ class sBasket
 					$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlDefault',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
 					eval($this->sSYSTEM->sCallHookPoint("sBasket.php_sUpdateArticle_Start6"));
 					$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);	
+				}else {
+					$update = true;
 				}
 				
 			} 
@@ -1560,6 +1562,8 @@ class sBasket
 				";
 				$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_UpdateArticle_FilterSqlConfigurator',$sql, array('subject'=>$this,'id'=>$id,"quantity"=>$quantity,"price"=>$brutto,"netprice"=>$netprice,"currencyFactor"=>$this->sSYSTEM->sCurrency["factor"]));
 				$update = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);
+			}else {
+				$update = true;
 			}
 				
 		}
