@@ -172,7 +172,7 @@
 			{block name='frontend_checkout_confirm_footer'}
 			{* AGB checkbox *}
 			<div class="agb">
-				{s name="ConfirmTextRightOfRevocation" class="revocation"}{/s}
+				<div class="revocation">{s name="ConfirmTextRightOfRevocation"}{/s}</div>
 				{block name='frontend_checkout_confirm_agb'}
 				{if !$this->config('IGNOREAGB')}
 					<div>
