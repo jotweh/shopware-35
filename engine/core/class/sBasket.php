@@ -1439,6 +1439,7 @@ class sBasket
 					}
 				}
 			
+				
 				if($this->sSYSTEM->_GET["sViewport"] == 'basket' || empty($queryNewPrice['liveshoppingData'])){
 					$sql = "
 					UPDATE s_order_basket SET $sqlLive quantity=$quantity, price=$brutto, netprice=$netprice, currencyFactor=".$this->sSYSTEM->sCurrency["factor"]." WHERE id=$id AND
