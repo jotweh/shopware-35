@@ -16,7 +16,7 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesBySupplier();
 			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
 		}else {
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",$this->request()->sSearch);
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->request()->sSearch));
 		}
 		foreach ($variables["sPerPage"] as $perPageKey => &$perPage){
 			$perPage["link"] = str_replace("sPage=".$this->request()->sPage,"sPage=1",$perPage["link"]);
@@ -38,7 +38,7 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 	
 		$this->View()->sSearchResults = $articles;
 		$this->View()->sSearchResultsNum = empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"];
-		$this->View()->sSearchTerm = $this->request()->sSearch;
+		$this->View()->sSearchTerm = urldecode($this->request()->sSearch);
 		$this->View()->sPages = $variables["sPages"];
 		$this->View()->sPerPage = $variables["sPerPage"];
 		$this->View()->sNumberPages = $variables["sNumberPages"];

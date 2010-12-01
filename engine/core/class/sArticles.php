@@ -440,7 +440,6 @@ class sArticles
 	 */
 	public function sGetArticlesByName ($orderBy="a.topseller DESC",$category=0,$mode="",$search="")
 	{		
-		
 		if (empty($search) && !empty($this->sSYSTEM->_GET['sSearch'])){
 			$search = $this->sSYSTEM->_GET['sSearch'];
 		}
@@ -607,6 +606,8 @@ class sArticles
 		
 		// Make Array with page-structure to render in template
 		$pages = array();
+		
+		$this->sSYSTEM->_GET["sSearch"] = urlencode(urldecode($this->sSYSTEM->_GET["sSearch"]));
 		if($numberPages>1)
 		{
 			for ($i=1;$i<=$numberPages;$i++){
@@ -658,7 +659,6 @@ class sArticles
 				//echo $arrayArticlesToShow[$articlesToShowKey]["link"]."<br />";
 			} // -- for every possible value
 		} // -- Bulding array 
-		
 		$ret['sPages'] = $pages;			
 		$ret['sPerPage'] = $arrayArticlesToShow;
 		$ret['sNumberArticles'] = $sCountArticles;
