@@ -513,12 +513,15 @@ class sArticles
 		}
 		
 		$sqlFields = array("s.name","a.name","a.keywords","d.ordernumber");
-		foreach ($sqlFields as $field){
-			foreach ($sql_search as $term){
-				$sql_search_fields .= "OR $field LIKE $term ";
+		$sql_search_fields .= " OR (";
+		foreach ($sql_search as $term){
+			$sql_search_fields .= " (";
+			foreach ($sqlFields as $field){
+					$sql_search_fields .= "$field LIKE $term OR ";
 			}
+			$sql_search_fields .= " 1 != 1) AND ";
 		}
-		
+		$sql_search_fields .= "1 = 1 ) ";
 		$sql = "
 			SELECT DISTINCT
 				a.id as id
@@ -550,6 +553,7 @@ class sArticles
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
+		
 		
 		
 		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
