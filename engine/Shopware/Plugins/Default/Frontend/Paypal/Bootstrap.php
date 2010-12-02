@@ -40,7 +40,6 @@ class Shopware_Plugins_Frontend_Paypal_Bootstrap extends Shopware_Components_Plu
 			return;
 		}
 					
-		$view->addTemplateDir(dirname(__FILE__).'/templates/');	
 		$view->extendsTemplate('frontend/plugins/paypal/index.tpl');
 	}
 	

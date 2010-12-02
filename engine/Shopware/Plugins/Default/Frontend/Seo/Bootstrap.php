@@ -79,7 +79,6 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 		}
 		
 		if(empty($config['sTEMPLATEOLD'])) {
-			$view->addTemplateDir(dirname(__FILE__).'/templates/');
 			$view->extendsTemplate('frontend/plugins/seo/index.tpl');
 			
 			if(!empty($meta_robots)) {

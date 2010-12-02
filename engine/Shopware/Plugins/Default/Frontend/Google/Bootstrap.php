@@ -44,8 +44,7 @@ class Shopware_Plugins_Frontend_Google_Bootstrap extends Shopware_Components_Plu
 
 		$view = $args->getSubject()->View();
 		
-		$view->addTemplateDir(dirname(__FILE__).'/templates/');
-		$view->extendsTemplate('frontend/widgets/google/index.tpl');
+		$view->extendsTemplate('frontend/plugins/google/index.tpl');
 		
 		if(!empty($config->conversion_code)) {
 			$view->GoogleConversionID = $config->conversion_code;

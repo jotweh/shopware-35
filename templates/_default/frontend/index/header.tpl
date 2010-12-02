@@ -20,7 +20,7 @@
 {block name='frontend_index_header_meta_tags_ie9'}
 	<meta name="msapplication-navbutton-color" content="{s name='IndexMetaMsNavButtonColor'}#dd4800{/s}" />{* Navbutton color *}
 	<meta name="application-name" content="{$this->config('sShopname')}" />{* Pinned name *}
-	<meta name="msapplication-starturl" content="{url}" />{* Start url to launch from the shortcut *}
+	<meta name="msapplication-starturl" content="{url controller='index'}" />{* Start url to launch from the shortcut *}
 	<meta name="msapplication-window" content="width=1024;height=768" />{* Size of the window to launch *}
 {/block}
 

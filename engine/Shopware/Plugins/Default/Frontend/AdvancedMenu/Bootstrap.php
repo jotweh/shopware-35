@@ -50,7 +50,6 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 				$category,
 				(int) $config->levels
 			));
-			$view->addTemplateDir(dirname(__FILE__).'/templates/');	
 			$view->extendsTemplate('frontend/plugins/advanced_menu/index.tpl');
 		//}
 	}
