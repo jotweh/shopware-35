@@ -1,3 +1,3 @@
 RewriteEngine on
 
-RewriteRule (.*?)/(.*?)/.*? shopware.php?feedID=$1&hash=$2
+RewriteRule (.*)/(.*)/.* shopware.php?feedID=$1&hash=$2

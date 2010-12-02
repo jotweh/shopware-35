@@ -111,6 +111,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 		    	'lifetimeColumn' => 'expiry'
 	    	);
 	    	Enlight_Components_Session::setSaveHandler(new Enlight_Components_Session_SaveHandler_DbTable($config_save_handler));
+	    	unset($config_session['save_handler']);
     	}
     	    	
     	Enlight_Components_Session::start($config_session);

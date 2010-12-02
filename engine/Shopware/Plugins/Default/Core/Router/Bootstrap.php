@@ -131,6 +131,8 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 		{
 			$useSSL = false;
 		}
+		
+		$url = '';
 	
 		if(!isset($userParams['fullPath'])||!empty($userParams['fullPath']))
 		{

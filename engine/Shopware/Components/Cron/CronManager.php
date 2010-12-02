@@ -5,11 +5,9 @@ class Shopware_Components_Cron_CronManager
 	{
 		$job->previous = $job->next;
 		$job->next = strtotime($job->next);
-		do
-		{
+		do {
 			$job->next += $job->interval;
-		}
-		while($job->next<time());
+		} while($job->next<time());
 		$job->next = $job->next;
 		$job->start = time();
 		
@@ -49,12 +47,12 @@ class Shopware_Components_Cron_CronManager
 	public function runCronJob(Shopware_Components_Cron_CronJob $job)
 	{
 		try {
-			$this->startCronJob($job);
-			Shopware()->Events()->notifyUntil($job->getName(), $job);
-			$this->endCronJob($job);
+			if($this->startCronJob($job)) {
+				Shopware()->Events()->notifyUntil($job->getName(), $job);
+				$this->endCronJob($job);
+			}
 		} catch (Exception $e) {
-			
-			$job->data = array('error'=>$e->__toString());
+			$job->data = array('error'=>(string) $e);
 			$this->stopCronJob($job);
 		}
 	}
@@ -88,7 +86,9 @@ class Shopware_Components_Cron_CronManager
 			ORDER BY next 
 		';
 		$job = Shopware()->Db()->fetchRow($sql, array(date('Y-m-d H:i:s', time())));
-		if(!$job) return null;
+		if(!$job) {
+			return null;
+		}
 		$name = 'Shopware_CronJob_'.str_replace(' ','',ucwords(str_replace('_',' ',$job['name'])));
 		
 		$job = new Shopware_Components_Cron_CronJob($name, $job);

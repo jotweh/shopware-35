@@ -214,9 +214,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 					break;
 				case 'support':
 				case 'ticket':
-					$org_query ['sFid'] = $query ['sFid'];
-					if($query['sFid']==Shopware()->Config()->InquiryID) {
-						$org_query['sInquiry'] = $query['sInquiry'];
+					if(!empty($query['sFid'])) {
+						$org_query['sFid'] = $query['sFid'];
+						if($query['sFid']==Shopware()->Config()->InquiryID) {
+							$org_query['sInquiry'] = $query['sInquiry'];
+						}
 					}
 					break;
 				case 'custom':
