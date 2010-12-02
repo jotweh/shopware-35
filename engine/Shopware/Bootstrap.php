@@ -74,11 +74,35 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	if(!empty($session_id)) {
     		Enlight_Components_Session::setId($session_id);
     	}
+    	    	
+    	if($this->hasResource('Front')&&Shopware()->Front()->Request()) {
+    		$request = Shopware()->Front()->Request();
+    		$path = rtrim($request->getBasePath(),'/').'/';
+    		$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
+    	} else {
+    		$path = rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/';
+    		$host = $config->get('Host')=='localhost' ? null : '.'.$config->get('Host');
+    	}
     	
-    	$config = $this->getResource('Config');
+    	$config_session = Shopware()->getOption('session') ? Shopware()->getOption('session') : array();
     	
-    	if(!empty($config->SessionByDb)) {
-	    	$config_save_handler = array(
+    	$config_session['cookie_path'] = $path;
+    	$config_session['cookie_domain'] = $host;
+    	
+    	if(empty($config_session['name'])) {
+    		$config_session['name'] = 'SHOPWARESID';
+    	}
+    	if(!isset($config_session['cookie_lifetime'])) {
+    		$config_session['cookie_lifetime'] = 0;
+    	}
+    	if(!isset($config_session['use_trans_sid'])) {
+    		$config_session['use_trans_sid'] = 0;
+    	}
+    	if(!isset($config_session['gc_probability'])) {
+    		$config_session['gc_probability'] = 1;
+    	}
+    	if(!isset($config_session['save_handler']) || $config_session['save_handler'] == 'db') {
+    		$config_save_handler = array(
 	    		'db'			 => $this->getResource('Db'),
 		    	'name'           => 's_core_sessions',
 		    	'primary'        => 'id',
@@ -88,24 +112,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 	    	);
 	    	Enlight_Components_Session::setSaveHandler(new Enlight_Components_Session_SaveHandler_DbTable($config_save_handler));
     	}
-    	
-    	if($this->hasResource('Front')&&Shopware()->Front()->Request()) {
-    		$request = Shopware()->Front()->Request();
-    		$path = rtrim($request->getBasePath(),'/').'/';
-    		$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
-    	} else {
-    		$path = rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/';
-    		$host = $config->get('Host')=='localhost' ? null : '.'.$config->get('Host');
-    	}    	
-    	
-    	$config_session = array(
-	    	'name'            => 'SHOPWARESID',
-	    	'cookie_lifetime' => 0,
-	    	//'cookie_path'     => rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/',
-	    	//'cookie_domain'   => '.'.$config->get('Host')
-	    	'cookie_path' => $path,
-			'cookie_domain'   => $host
-    	);
+    	    	
     	Enlight_Components_Session::start($config_session);
     	
     	$this->registerResource('SessionID', Enlight_Components_Session::getId());
@@ -160,7 +167,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
         
     protected function initSnippets()
     {
-    	if(!$this->issetResource('Db')) {
+    	if(!$this->issetResource('Db')||!$this->issetResource('Shop')) {
     		return null;
     	}
     	

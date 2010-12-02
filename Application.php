@@ -34,8 +34,46 @@ return array(
 			'hashed_directory_level' => 0,
 			'cache_dir' => $this->DocPath().'cache/database',
 			'file_name_prefix' => 'shopware'
-    	)
+    	),
+    	/*
+    	'backend' => 'Memcached',
+    	'backendOptions' => array(
+			'servers' => array(
+				array(
+					'host' => 'localhost',
+					'port' => 11211,
+					'persistent' => true,
+					'weight' => 1,
+					'timeout' => 5,
+					'retry_interval' => 15,
+					'status' => true,
+					'failure_callback' => null
+				)
+			),
+			'compression' => false,
+			'compatibility' => false
+		)
+    	*/
 	),
+	'session' => array(
+		'name' => 'SHOPWARESID',
+		'cookie_lifetime' => 0,
+		'use_trans_sid' => false,
+		'gc_probability' => 1,
+		'gc_divisor' => 100,
+		'save_handler' => 'db'
+	),
+	/*
+	'session' => array(
+		...
+		'save_handler' => 'memcache',
+		'save_path' => 'tcp://localhost:11211?persistent=1&weight=1&timeout=1&retry_interval=15'
+	),
+	'session' => array(
+		...
+		'save_handler' => 'files'
+	),
+	*/
 	'backend' => array(
 		'refererCheck' => true,
 	),

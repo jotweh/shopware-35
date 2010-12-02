@@ -59,10 +59,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	{		
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
-						
-		if($request->getModuleName()&&$request->getModuleName()!='frontend'){
-			return;
+		
+		if(!$request->isDispatched()||$response->isException()||$request->getModuleName()!='frontend') {
+			return;	
 		}
+		
 		if(!$request->getParam('sRedirect')) {
 			return;
 		}
@@ -85,6 +86,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		if($request->getModuleName()!='frontend'){
 			return;
 		}
+		
+		if(!Shopware()->Bootstrap()->issetResource('Db')
+			|| !Shopware()->Bootstrap()->issetResource('Shop')) {
+    		return;
+    	}
 		
 		$sql = 'SELECT value FROM s_core_config WHERE name=?';
 		$last_update = Shopware()->Db()->fetchOne($sql, array('sROUTERLASTUPDATE'));
@@ -157,6 +163,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			return;
 		}
 		
+		if(!Shopware()->Bootstrap()->issetResource('Db')
+			|| !Shopware()->Bootstrap()->issetResource('Shop')) {
+    		return;
+    	}
+    	
 		unset($params['sCoreId'], $params['sUseSSL'], $params['title'], $params['module']);
 		if(!empty($params['sAction'])&&$params['sAction']=='index') {
 			unset($params['sAction']);

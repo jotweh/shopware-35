@@ -14,13 +14,12 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 			
 	public static function onPostDispatch(Enlight_Event_EventArgs $args)
 	{				
-		if(!$args->getSubject()->Request()->isDispatched()){
-			return;
-		}
-		if($args->getSubject()->Request()->getModuleName()!='frontend'){
-			return;
-		}
+		$request = $args->getSubject()->Request();
+		$response = $args->getSubject()->Response();
 		
+		if(!$request->isDispatched()||$response->isException()||$request->getModuleName()!='frontend') {
+			return;	
+		}
 		
 		$view = $args->getSubject()->View();
 		$plugin = Shopware()->Plugins()->Core()->ControllerBase();
