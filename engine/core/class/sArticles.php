@@ -1561,11 +1561,11 @@ class sArticles
 	 * @access public
 	 * @return array
 	 */
-	public function sGetAffectedSuppliers ($id = null,$limit=30)
+	public function sGetAffectedSuppliers ($id=null, $limit=null)
 	{
-		if(empty($id))
-			$id = $this->sSYSTEM->_GET["sCategory"];
-		$id = (int) $id;
+		$id = empty($id) ? (int) $this->sSYSTEM->_GET["sCategory"] : (int) $id;
+		$limit = empty($limit) ? 30 : (int) $limit;
+		
 		$sql = "
 			SELECT s.id AS id, COUNT(*) AS countSuppliers, s.name AS name, s.img AS image
 			FROM 

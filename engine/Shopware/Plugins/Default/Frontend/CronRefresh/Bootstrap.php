@@ -53,6 +53,8 @@ class Shopware_Plugins_Frontend_CronRefresh_Bootstrap extends Shopware_Component
 	
 	public static function onCronJobSearch(Shopware_Components_Cron_CronJob $job)
 	{
+		@ini_set("memory_limt","265M");
+		@set_time_limit(0);
 		Shopware()->Modules()->Search()->sCreateIndex();
 	}
 }
