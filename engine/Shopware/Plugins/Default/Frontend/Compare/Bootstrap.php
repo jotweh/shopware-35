@@ -21,8 +21,7 @@ class Shopware_Plugins_Frontend_Compare_Bootstrap extends Shopware_Components_Pl
 			return;
 		}
 								
-		$view->addTemplateDir(dirname(__FILE__).'/templates/');
-		$view->extendsTemplate('frontend/widgets/compare/index.tpl');
+		$view->extendsTemplate('frontend/plugins/compare/index.tpl');
 		
 		$view->assign('sComparisons', Shopware()->Modules()->Articles()->sGetComparisons(), true);
 	}
