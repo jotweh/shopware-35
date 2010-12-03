@@ -11,9 +11,10 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 
 		$form = $this->Form();
 		
+		$form->setElement('checkbox', 'show', array('label'=>'Menu zeigen', 'value'=>1, 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		$form->setElement('checkbox', 'caching', array('label'=>'Caching aktivieren', 'value'=>0));
 		$form->setElement('text', 'cachetime', array('label'=>'Cachezeit', 'value'=>86400));
-		$form->setElement('text', 'levels', array('label'=>'Anzahl Ebenen', 'value'=>2));
+		$form->setElement('text', 'levels', array('label'=>'Anzahl Ebenen', 'value'=>2, 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		
 		$form->save();
 
@@ -34,6 +35,10 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		$category = empty(Shopware()->System()->_GET['sCategory']) ? $parent : Shopware()->System()->_GET['sCategory'];
 		$usergroup = Shopware()->System()->sUSERGROUPDATA['id'];
 		$config = Shopware()->Plugins()->Frontend()->AdvancedMenu()->Config();
+		
+		if(empty($config->show) && $config->show!==null) {
+			return;
+		}
 		
 		$compile_id = $view->Template()->compile_id;
 		$cache_id = 'frontend|index|plugins|advanced_menu|'.$category.'|'.$usergroup;

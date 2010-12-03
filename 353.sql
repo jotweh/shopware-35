@@ -45,3 +45,6 @@ DELETE FROM `s_core_config_groups` WHERE `name` = `Debugging`;
 
 # Seo Changes
 UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,register') WHERE `name` = 'sSEOVIEWPORTBLACKLIST' AND `value` NOT LIKE '%checkout%';
+
+# PayPal Changes
+UPDATE `s_core_config` SET `multilanguage` = '1' WHERE `name` IN ('sXPRESS', 'sPaypalLogo');
