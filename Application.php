@@ -27,7 +27,6 @@ return array(
     		'automatic_cleaning_factor' => 0,
     		'lifetime' => 3600
     	),
-    	/*
     	'backend' => 'File',
     	'backendOptions' => array(
 			'hashed_directory_umask' => 0771,
@@ -36,7 +35,7 @@ return array(
 			'cache_dir' => $this->DocPath().'cache/database',
 			'file_name_prefix' => 'shopware'
     	),
-    	*/
+    	/*
     	'backend' => 'Memcached',
     	'backendOptions' => array(
 			'servers' => array(
@@ -54,6 +53,7 @@ return array(
 			'compression' => false,
 			'compatibility' => false
 		)
+		*/
 	),
 	'session' => array(
 		'name' => 'SHOPWARESID',
