@@ -2731,30 +2731,29 @@ class sArticles
 				// If the user doesn´t come from category-system, get related category
 				// SHOPWARE 2.1 //
 				// =================================================.
-				  $sArticleID = intval($this->sSYSTEM->_GET['sArticle']);
-				  $sCategoryID = intval($this->sSYSTEM->_GET['sCategory']);
-				  if(empty($sCategoryID)||$sCategoryID==$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"])
-				  {
-				  
-				   $sCategoryParent = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"];
-				   while (!empty($sCategoryParent))
-				   {
-				    $sCategoryID = $sCategoryParent;
-				    $sql = "
-				    SELECT c.id FROM s_articles_categories a, s_categories c
-					WHERE a.articleID=$sArticleID 
-					AND c.parent=$sCategoryParent 
-					AND a.categoryID = c.id
-					ORDER BY a.id ASC LIMIT 1
-				    ";
-				    $sCategoryParent = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql,false,"article_".$getArticle["articleID"]);
-				   }
-				   
-				  
-				   $this->sSYSTEM->_GET['sCategory'] = $sCategoryID;
-				  }
+				$sArticleID = intval($this->sSYSTEM->_GET['sArticle']);
+				$sCategoryID = intval($this->sSYSTEM->_GET['sCategory']);
+				if(empty($sCategoryID)||$sCategoryID==$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"])
+				{
+					$sCategoryParent = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"];
+					while (!empty($sCategoryParent))
+					{
+						$sCategoryID = $sCategoryParent;
+						$sql = "
+						    SELECT c.id FROM s_articles_categories a, s_categories c
+							WHERE a.articleID=$sArticleID 
+							AND c.parent=$sCategoryParent 
+							AND a.categoryID = c.id
+							ORDER BY a.id ASC LIMIT 1
+					    ";
+						$sCategoryParent = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql,false,"article_".$getArticle["articleID"]);
+					}
+					$this->sSYSTEM->_GET['sCategory'] = $sCategoryID;
+				}
+				if(!empty($sCategoryID)) {
+					$getArticle["categoryID"] = $sCategoryID;
+				}
 
-				
 				// Get article accessories 
 				// =================================================.
 				$getRelatedArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],"
@@ -3155,7 +3154,10 @@ class sArticles
 				// =================================================.
 				$getArticle["linkBasket"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$getArticle["ordernumber"];
 				$getArticle["linkDetails"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle=".$getArticle["articleID"];
-				$getArticle["linkDetailsRewrited"] = $this->sSYSTEM->sMODULES['sCore']->sRewriteLink($this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sDetails=".$getArticle["articleID"],$getArticle["articleName"]);
+				if(!empty($sCategoryID)) {
+					$getArticle["linkDetails"] .= '&sCategory='.$sCategoryID;
+				}
+				$getArticle["linkDetailsRewrited"] = $this->sSYSTEM->sMODULES['sCore']->sRewriteLink($getArticle["linkDetails"], $getArticle["articleName"]);
 				
 				$getArticle["linkNote"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=note&sAdd=".$getArticle["ordernumber"];
 				$getArticle["linkTellAFriend"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=tellafriend&sDetails=".$getArticle["articleID"];

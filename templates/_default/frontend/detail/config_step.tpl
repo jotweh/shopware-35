@@ -1,4 +1,4 @@
-<form method="post" action="{url sArticle=$sArticle.articleID}" class="config_select">
+<form method="post" action="{url sArticle=$sArticle.articleID sCategory=$sArticle.categoryID}" class="config_select">
 	{foreach from=$sArticle.sConfigurator item=sConfigurator name=group key=groupID}
 	
 		{* Group name *}

@@ -8,7 +8,7 @@
 					{se name="DetailCommentInfoFillOutFields"}{/se}
 				</div>
 			{else}
-				{if $this->config('OptinVote') && !$_GET.sConfirmation}
+				{if {config name="OptinVote"} && !$_GET.sConfirmation}
 					<div class="success bold center">
 						{se name="DetailCommentInfoSuccessOptin"}{/se}
 					</div>
@@ -99,7 +99,7 @@
 		<h2 class="headingbox_dark">
 			{se name="DetailCommentHeaderWriteReview"}{/se}
 		</h2>
-		<form method="post" action="{url action='rating' sArticle=$sArticle.articleID}">	
+		<form method="post" action="{url action='rating' sArticle=$sArticle.articleID sCategory=$sArticle.categoryID}">	
 			<div>
 				<a name="tabbox"></a>
 				
