@@ -4308,7 +4308,9 @@ class sArticles
 				$debug = false;
 				
 				foreach ($sArticle["images"] as $imageKey => $image){
-					if (empty($image["src"]["original"])) continue;
+					if (empty($image["src"]["original"]) || empty($image["relations"])) {
+						continue;
+					}
 					$string = $image["relations"];
 					// Parsing string
 					$stringParsed = array();
