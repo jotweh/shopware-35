@@ -3,28 +3,26 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 {	
 	public function indexAction()
 	{
-		if (Shopware()->System()->sCheckLicense("","",Shopware()->System()->sLicenseData["sFUZZY"]) == false || $this->request()->sSearchMode=="supplier"){
+		if (!Shopware()->License()->checkLicense('sFUZZY') || !empty($this->Request()->sSearchMode)) {
 			return $this->forward("search");			
-		}else {
+		} else {
 			return $this->forward("searchFuzzy");
 		}
 	}
 	
-	public function searchAction(){
-		
-		if ($this->request()->sSearchMode=="supplier"){
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->request()->sSearch));
-			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
-		}
-		elseif ($this->request()->sSearchMode=="newest"){
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest",urldecode($this->request()->sSearch));
-			$this->request()->setParam('sSearch',urldecode(Shopware()->System()->_GET['sSearchText']));			
-		}
-		else {
-			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->request()->sSearch));
+	public function searchAction()
+	{
+		if ($this->Request()->sSearchMode=="supplier"){
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.name ASC","","supplier",urldecode($this->Request()->sSearch));
+			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));			
+		} elseif ($this->Request()->sSearchMode=="newest"){
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.datum DESC","","newest",urldecode($this->Request()->sSearch));
+			$this->Request()->setParam('sSearch',urldecode($this->Request()->sSearchText));			
+		} else {
+			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName("a.topseller DESC","","",urldecode($this->Request()->sSearch));
 		}
 		foreach ($variables["sPerPage"] as $perPageKey => &$perPage){
-			$perPage["link"] = str_replace("sPage=".$this->request()->sPage,"sPage=1",$perPage["link"]);
+			$perPage["link"] = str_replace("sPage=".$this->Request()->sPage,"sPage=1",$perPage["link"]);
 		}
 		if (!empty($variables["sArticles"])){
 			$searchResults = $variables["sArticles"];
@@ -43,16 +41,17 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 	
 		$this->View()->sSearchResults = $articles;
 		$this->View()->sSearchResultsNum = empty($variables["sNumberArticles"]) ? count($articles) : $variables["sNumberArticles"];
-		$this->View()->sSearchTerm = urldecode($this->request()->sSearch);
+		$this->View()->sSearchTerm = urldecode($this->Request()->sSearch);
 		$this->View()->sPages = $variables["sPages"];
 		$this->View()->sPerPage = $variables["sPerPage"];
 		$this->View()->sNumberPages = $variables["sNumberPages"];
 	
-		$this->View()->sPage = $this->request()->sPage;
+		$this->View()->sPage = $this->Request()->sPage;
 		$this->view->loadTemplate('frontend/search/index.tpl');
 	}
 	
-	public function searchFuzzyAction(){
+	public function searchFuzzyAction()
+	{
 		// Load configuration
 		
 		$Config = $this->searchFuzzyInit();
@@ -211,19 +210,17 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 			}
 		}
 		
-		
 		foreach (array("price","category","supplier","propertygroup") as $property){
 			$sLinks['sFilter'][$property] .= $sLinks['sFilter']['__'];
 		}
 		
-		//$sLinks['sSort'] = Shopware()->System()->rewriteLink(array(2=>$sLinks['sSort']),true);
 		$sLinks['sSupplier'] = $sLinks['sSort'];
 		
 		return $sLinks;
 	}
 	
-	protected function searchFuzzyCheck($Config){
-		
+	protected function searchFuzzyCheck($Config)
+	{
 		if(!empty($Config['sSearch'])&&strlen($Config['sSearch'])>=(empty(Shopware()->Config()->sMINSEARCHLENGHT) ? 2 : (int) Shopware()->Config()->sMINSEARCHLENGHT))
 		{
 			$sql = "
@@ -281,31 +278,33 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 		}
 	}
 	
-	protected function searchFuzzyInit(){
-		$Config["sMainCategoryID"] = Shopware()->System()->sLanguageData[Shopware()->System()->sLanguage]["parentID"] ? Shopware()->System()->sLanguageData[Shopware()->System()->sLanguage]["parentID"] : Shopware()->Config()->sCATEGORYPARENT;
-		$Config['sFilter']['supplier'] = (int) $this->request()->sFilter_supplier;
-		$Config['sFilter']['category'] = (int) $this->request()->sFilter_category;
-		$Config['sFilter']['price'] =  (int) $this->request()->sFilter_price;
-		$Config['sFilter']['propertygroup'] = $this->request()->sFilter_propertygroup;
+	protected function searchFuzzyInit()
+	{
+		$Config["sMainCategoryID"] = Shopware()->Shop()->get('parentID');
+		$Config['sFilter']['supplier'] = (int) $this->Request()->sFilter_supplier;
+		$Config['sFilter']['category'] = (int) $this->Request()->sFilter_category;
+		$Config['sFilter']['price'] =  (int) $this->Request()->sFilter_price;
+		$Config['sFilter']['propertygroup'] = $this->Request()->sFilter_propertygroup;
 		
-		$Config['sSort'] = (int) $this->request()->sSort;
+		$Config['sSort'] = (int) $this->Request()->sSort;
 		
-		if(!empty($this->request()->sPage))
-			$Config['sPage'] = (int) $this->request()->sPage;
+		if(!empty($this->Request()->sPage))
+			$Config['sPage'] = (int) $this->Request()->sPage;
 		else
 			$Config['sPage'] = 0;
 			
-		if(!empty($this->request()->sPerPage))
-			$Config['sPerPage'] = (int) $this->request()->sPerPage;
+		if(!empty($this->Request()->sPerPage))
+			$Config['sPerPage'] = (int) $this->Request()->sPerPage;
 		elseif(!empty(Shopware()->Config()->sFUZZYSEARCHRESULTSPERPAGE))
 			$Config['sPerPage'] = (int) Shopware()->Config()->sFUZZYSEARCHRESULTSPERPAGE;
 		else
 			$Config['sPerPage'] = 8;
 						
-		$Config['sOrder'] = intval($this->request()->sOrder);
-		$Config['sSearch'] = urldecode(trim(str_replace("+"," ",strip_tags(htmlspecialchars_decode(html_entity_decode(stripslashes($this->request()->sSearch),ENT_QUOTES))))));
+		$Config['sOrder'] = intval($this->Request()->sOrder);
+		$Config['sSearch'] = urldecode(trim(strip_tags(htmlspecialchars_decode(stripslashes($this->Request()->sSearch)))));
 		
-		if(function_exists('mb_detect_encoding')&&function_exists('mb_check_encoding') && mb_detect_encoding($Config['sSearch'])=='UTF-8'&&mb_check_encoding($Config['sSearch'], 'UTF-8')){
+		if(function_exists('mb_detect_encoding') && function_exists('mb_check_encoding')
+			&& mb_detect_encoding($Config['sSearch'])=='UTF-8' && mb_check_encoding($Config['sSearch'], 'UTF-8')) {
 			$Config['sSearch'] = utf8_decode($Config['sSearch']);
 		}
 		return $Config;
