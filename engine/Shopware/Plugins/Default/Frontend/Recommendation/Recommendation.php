@@ -6,10 +6,10 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 			throw new Enlight_Exception("Missing article-id");
 		}
 		$config = Shopware()->Plugins()->Frontend()->Recommendation()->Config();
-		// Configuration
-		$page = $this->Request()->pages ? $this->Request()->pages : 1;
-		$maxArticles = $config->max_seen_articles;
-		$perPage = $config->page_seen_articles;
+		
+		$page = empty($this->Request()->pages) ? 1 : (int) $this->Request()->pages;
+		$maxArticles = empty($config->max_seen_articles) ? 40 : (int) $config->max_seen_articles;
+		$perPage = empty($config->page_seen_articles) ? 4 : (int) $config->page_seen_articles;
 		
 		// Ignore articles that are already in shopping cart 
 		Shopware()->Modules()->Crossselling()->sBlacklist = Shopware()->Modules()->Basket()->sGetBasketIds();
@@ -35,15 +35,16 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 		$this->View()->loadTemplate("frontend/plugins/recommendation/slide_articles.tpl");
 	}
 	
-	public function boughtAction(){ 
+	public function boughtAction()
+	{ 
 		if (empty($this->Request()->article)){
 			throw new Enlight_Exception("Missing article-id");
 		}
 		$config = Shopware()->Plugins()->Frontend()->Recommendation()->Config();
-		// Configuration
-		$page = $this->Request()->pages ? $this->Request()->pages : 1;
-		$maxArticles = $config->max_bought_articles;
-		$perPage = $config->page_bought_articles;
+
+		$page = empty($this->Request()->pages) ? 1 : (int) $this->Request()->pages;
+		$maxArticles = empty($config->max_bought_articles) ? 40 : (int) $config->max_bought_articles;
+		$perPage = empty($config->page_bought_articles) ? 4 : (int) $config->page_bought_articles;
 		
 		// Ignore articles that are already in shopping cart 
 		
@@ -69,15 +70,16 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 		$this->View()->loadTemplate("frontend/plugins/recommendation/slide_articles.tpl");
 	}
 	
-	public function similaryViewedAction(){
+	public function similaryViewedAction()
+	{
 		if (empty($this->Request()->category)){
 			throw new Enlight_Exception("Missing category-id");
 		}
 		$config = Shopware()->Plugins()->Frontend()->Recommendation()->Config();
-		// Configuration
-		$page = $this->Request()->pages ? $this->Request()->pages : 1;
-		$maxArticles = $config->max_simlar_articles;
-		$perPage = $config->page_similar_articles;
+
+		$page = empty($this->Request()->pages) ? 1 : (int) $this->Request()->pages;
+		$maxArticles = empty($config->max_simlar_articles) ? 20 : (int) $config->max_simlar_articles;
+		$perPage = empty($config->page_similar_articles) ? 3 : (int) $config->page_similar_articles;
 		
 		$getLastViewed = Shopware()->Modules()->Articles()->sGetLastArticles();
 		foreach ($getLastViewed as $v){
@@ -110,13 +112,13 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 			ORDER BY hits DESC
 			LIMIT $maxArticles
 		";
-		$articles = Shopware()->Db()->fetchAll($sql,array($this->Request()->category));
+		$articles = Shopware()->Db()->fetchAll($sql, array($this->Request()->category));
 		$articles = array_chunk($articles,$perPage);
 		$pages = count($articles);
 		$articles = $articles[$page-1];
 		
 		foreach ($articles as $article){
-			$tmpContainer =  Shopware()->Modules()->Articles()->sGetPromotionById("fix",0,$article['id']);
+			$tmpContainer =  Shopware()->Modules()->Articles()->sGetPromotionById("fix", 0, (int) $article['id']);
 			if (!empty($tmpContainer["articleName"])){
 				$result[] = $tmpContainer;
 			}
@@ -126,15 +128,16 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 		$this->View()->loadTemplate("frontend/plugins/recommendation/slide_articles.tpl");
 	}
 	
-	public function newAction(){
+	public function newAction()
+	{
 		if (empty($this->Request()->category)){
 			throw new Enlight_Exception("Missing category-id");
 		}
 		$config = Shopware()->Plugins()->Frontend()->Recommendation()->Config();
-		// Configuration
-		$page = $this->Request()->pages ? $this->Request()->pages : 1;
-		$maxArticles = $config->max_new_articles;
-		$perPage = $config->page_new_articles;
+
+		$page = empty($this->Request()->pages) ? 1 : (int) $this->Request()->pages;
+		$maxArticles = empty($config->max_new_articles) ? 20 : (int) $config->max_new_articles;
+		$perPage = empty($config->page_new_articles) ? 3 : (int) $config->page_new_articles;
 		
 		$sql = "
 			SELECT s_articles.id AS id
@@ -147,7 +150,8 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 			) IS NULL
 			AND s_articles.id=s_articles_categories.articleID
 			AND s_articles_categories.categoryID=?
-			ORDER BY datum DESC LIMIT $maxArticles";
+			ORDER BY datum DESC LIMIT $maxArticles
+		";
 		$articles = Shopware()->Db()->fetchAll($sql,array($this->Request()->category));
 		$articles = array_chunk($articles,$perPage);
 		// Count pages
@@ -155,8 +159,8 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 		// Define current scope
 		$articles = $articles[$page-1];
 		
-		foreach ($articles as $article){
-			$tmpContainer =  Shopware()->Modules()->Articles()->sGetPromotionById("fix",0,$article['id']);
+		foreach ($articles as $article) {
+			$tmpContainer =  Shopware()->Modules()->Articles()->sGetPromotionById("fix", 0, (int) $article['id']);
 			if (!empty($tmpContainer["articleName"])){
 				$result[] = $tmpContainer;
 			}
@@ -165,16 +169,12 @@ class Shopware_Controllers_Frontend_Recommendation extends Enlight_Controller_Ac
 		$this->View()->pages = $pages;
 		$this->View()->loadTemplate("frontend/plugins/recommendation/slide_articles.tpl");
 	}
-	
-
-	
-	public function suppliersAction(){
+		
+	public function suppliersAction()
+	{
 		if (empty($this->Request()->category)){
 			throw new Enlight_Exception("Missing category-id");
 		}
 		$getSuppliers = Shopware()->Modules()->Articles()->sGetAffectedSuppliers($this->Request()->category);
-		
 	}
-	
-
 }
