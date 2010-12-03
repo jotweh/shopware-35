@@ -221,13 +221,16 @@ function initSkeleton(module, skeleton){
 	var temp = new sWindow("Fenster", skeleton.init);
 	var sCreatedNewWindow = true;
 	
+	var url = '<?php echo $sBASEPATH?>/engine/backend/js/include.php?module='+module+'&include='+skeleton.init.url;
+	
 	// Check how to load the wished content
 	switch (skeleton.init.loader){
 		case "ajax":
 		/*
 		Load content via ajax from an existing file 
 		*/
-			var myAjax = new Request.HTML({url: '<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/modules/'+module+'/'+skeleton.init.url, method: 'get', 
+			
+			var myAjax = new Request.HTML({url: url, method: 'get', 
 			onFailure: function (el){
 				window.Growl("Modul konnte nicht gefunden werden");
 			},
@@ -242,20 +245,20 @@ function initSkeleton(module, skeleton){
 		/*
 		Display content within an iframe
 		*/
-			sWindows.focus.setContent("<iframe id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class='contentFrame' src='<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/modules/"+module+"/"+skeleton.init.url+"'></iframe>");
+			sWindows.focus.setContent("<iframe id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class=\"contentFrame\" src=\""+url+"\"></iframe>");
 			break;
 		case "iframe2":
 		/*
 		Display content within an iframe
 		*/
-			sWindows.focus.setContent("<iframe scrolling=\"No\" id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class='contentFrame' src='<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/modules/"+module+"/"+skeleton.init.url+"'></iframe>");
+			sWindows.focus.setContent("<iframe scrolling=\"No\" id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class=\"contentFrame\" src=\""+url+"\"></iframe>");
 			break;
 		case "extern":
 		case "action":
 		/*
 		Display content within an iframe
 		*/
-			sWindows.focus.setContent("<iframe id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class='contentFrame' src='"+skeleton.init.url+"'></iframe>");
+			sWindows.focus.setContent("<iframe id='contentFrame' style=\"border: 1px solid #707070;\" border=\"0\" frameborder=\"0\" class=\"contentFrame\" src=\""+skeleton.init.url+"\"></iframe>");
 			break;
 	}
 	
@@ -381,7 +384,7 @@ function loadSkeleton(module,forceNewWindow, options){
 		options.module = module;
 		
 		var jSonRequest = new Request.JSON({
-			url: '<?php echo $sBASEPATH ?>/engine/backend/js/getSkeleton.php',
+			url: '<?php echo $sBASEPATH ?>/engine/backend/js/include.php',
 			onStart: function(el){
 				
 			},
