@@ -19,7 +19,7 @@ DELETE FROM `s_core_config_groups` WHERE `name` = 'Debugging';
 
 # Changes to Crontab Table
 ALTER TABLE `s_crontab` ADD `pluginID` INT NOT NULL;
-DELETE FROM `s_crontab` WHERE `action` IN ('clearing','translation','search');
+-- DELETE FROM `s_crontab` WHERE `action` IN ('clearing','translation','search');
 UPDATE `s_crontab` SET `interval` = 86400 WHERE `interval` IN (1,10,100);
 
 # Changes to Plugin Tables
@@ -42,3 +42,6 @@ ALTER TABLE `s_filter_values` ADD INDEX ( `optionID` , `articleID` , `value` ) ;
 UPDATE `s_core_snippets` SET `value` = 'Nachdem Sie die erste Bestellung durchgeführt haben, können Sie hier auf vorherige Rechnungsadressen zugreifen.' WHERE `name` = 'SelectBillingInfoEmpty';
 
 DELETE FROM `s_core_config_groups` WHERE `name` = `Debugging`;
+
+# Seo Changes
+UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,register') WHERE `name` = 'sSEOVIEWPORTBLACKLIST' AND `value` NOT LIKE '%checkout%';
