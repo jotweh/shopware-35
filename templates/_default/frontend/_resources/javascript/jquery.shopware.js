@@ -3076,8 +3076,9 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         overlay, center, image, thumbs, closer, sizer, prevLink, nextLink, bottomContainer, bottom, caption, number;
     $(function () {
         $("body").append($([overlay = $('<div id="lbOverlay" />').click(close)[0], center = $('<div id="lbCenter" />')[0], bottomContainer = $('<div id="lbBottomContainer" />')[0], closer = $('<div id="lbCloser" />').click(close)[0], ]).css("display", "none"));
-        image = $('<div id="lbImage" />').appendTo(center).append(sizer = $('<div style="position: relative;" />').append([prevLink = $('<a id="lbPrevLink" href="#" />').click(previous)[0], nextLink = $('<a id="lbNextLink" href="#" />').click(next)[0]])[0])[0];
-        thumbs = $('<div id="lbThumbs" />').appendTo(center)
+        image = $('<div id="lbImage" />').appendTo(center).click(close).append(sizer = $('<div style="position: relative;" />').append([prevLink = $('<a id="lbPrevLink" href="#" />').click(previous)[0], nextLink = $('<a id="lbNextLink" href="#" />').click(next)[0]])[0])[0];
+        thumbs = $('<div id="lbThumbs" />').appendTo(center);
+        $('#lbImage').css('cursor', 'pointer');
     });
     $.slimbox = function (_images, startImage, thumbList, video, _options) {
         options = $.extend({
