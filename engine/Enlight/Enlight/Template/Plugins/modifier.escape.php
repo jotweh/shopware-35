@@ -21,37 +21,20 @@
  * @param string $char_set character set
  * @return string escaped input string
  */
-function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null)
+function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $double_encode = false)
 {
-	if(!isset($char_set))
-	{
+	if(!isset($char_set)) {
 		$char_set = mb_internal_encoding();
 	}
-    if (!function_exists('mb_str_replace')) {
-        // simulate the missing PHP mb_str_replace function
-        function mb_str_replace($needles, $replacements, $haystack)
-        {
-            $rep = (array)$replacements;
-            foreach ((array)$needles as $key => $needle) {
-                $replacement = $rep[$key];
-                $needle_len = mb_strlen($needle);
-                $replacement_len = mb_strlen($replacement);
-                $pos = mb_strpos($haystack, $needle, 0);
-                while ($pos !== false) {
-                    $haystack = mb_substr($haystack, 0, $pos) . $replacement
-                     . mb_substr($haystack, $pos + $needle_len);
-                    $pos = mb_strpos($haystack, $needle, $pos + $replacement_len);
-                } 
-            } 
-            return $haystack;
-        } 
-    } 
     switch ($esc_type) {
         case 'html':
-            return htmlspecialchars($string, ENT_QUOTES, $char_set);
+            return htmlspecialchars($string, ENT_QUOTES, $char_set, $double_encode);
 
         case 'htmlall':
-            return htmlentities($string, ENT_QUOTES, $char_set);
+        	if(function_exists('mb_convert_encoding')) {
+        		$string = mb_convert_encoding($string, 'HTML-ENTITIES', $char_set);
+        	}
+            return htmlentities($string, ENT_QUOTES, $char_set, $double_encode);
 
         case 'url':
             return rawurlencode($string);
@@ -89,7 +72,26 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null)
             // escape quotes and backslashes, newlines, etc.
             return strtr($string, array('\\' => '\\\\', "'" => "\\'", '"' => '\\"', "\r" => '\\r', "\n" => '\\n', '</' => '<\/'));
 
-        case 'mail': 
+        case 'mail':
+        	if (!function_exists('mb_str_replace')) {
+				// simulate the missing PHP mb_str_replace function
+				function mb_str_replace($needles, $replacements, $haystack)
+				{
+					$rep = (array)$replacements;
+					foreach ((array)$needles as $key => $needle) {
+						$replacement = $rep[$key];
+						$needle_len = mb_strlen($needle);
+						$replacement_len = mb_strlen($replacement);
+						$pos = mb_strpos($haystack, $needle, 0);
+						while ($pos !== false) {
+							$haystack = mb_substr($haystack, 0, $pos) . $replacement
+							. mb_substr($haystack, $pos + $needle_len);
+							$pos = mb_strpos($haystack, $needle, $pos + $replacement_len);
+						}
+					}
+					return $haystack;
+				}
+			}
             // safe way to display e-mail address on a web page
             if (function_exists('mb_substr')) {
                 return mb_str_replace(array('@', '.'), array(' [AT] ', ' [DOT] '), $string);

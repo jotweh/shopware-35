@@ -188,7 +188,7 @@ class Shopware_Plugins_Frontend_RouterOld_Bootstrap extends Shopware_Components_
 			'"'=>'-',
 			' '=>'-',
 			'+'=>'-',
-			'&'=>'-',
+			//'&'=>'-',
 			'à'=>'a',
 			'á'=>'a',
 			'è'=>'e',
@@ -196,11 +196,20 @@ class Shopware_Plugins_Frontend_RouterOld_Bootstrap extends Shopware_Components_
 			'ù'=>'u',
 			'ú'=>'u',
 			'ë'=>'e',
+			'ç'=>'c',
+			'Ç'=>'C',
+			'&#351;'=>'s',
+			'&#350;'=>'S',
+			'&#287;'=>'g',
+			'&#286;'=>'G',
+			'&#304;'=>'i',
 		);
 		$path = html_entity_decode($path);
 		$path = str_replace(array_keys($replace), array_values($replace), $path);
-		if($remove_ds)
+		if($remove_ds) {
 			$path = str_replace('/', '-', $path);
+		}
+		$path = preg_replace('/&[a-z0-9#]+;/i', '', $path);
 		$path = preg_replace('#[^0-9a-z-_./]#i','',$path);
 		$path = preg_replace('/-+/','-',$path);
 		return trim($path,'-');

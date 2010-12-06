@@ -3692,7 +3692,7 @@ class sArticles
 		$text = preg_replace('!<[^>]*?>!', ' ', $text);
 		$text = str_replace(chr(0xa0), " ", $text);
 		$text = preg_replace('/\s\s+/', ' ', $text);
-		$text = htmlspecialchars($text);
+		$text = htmlspecialchars($text, ENT_COMPAT, 'ISO-8859-1', false);
 		$text = trim($text);
 		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sOptimizeText_BeforeEnd"));
 		return $text;

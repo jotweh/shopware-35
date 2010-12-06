@@ -83,32 +83,26 @@ class Enlight_Hook_HookManager extends Enlight_Class
     public function executeHooks(Enlight_Hook_HookArgs $args)
 	{
         $hooks = $this->getHooks($args->getName(), $args->getMethod(), Enlight_Hook_HookHandler::TypeBefore);
-        if($hooks)
-        {
-	        foreach ($hooks as $hook)
-	    	{
+        if($hooks) {
+	        foreach ($hooks as $hook) {
 	    		$hook->execute($args);
 	    	}
         }
     	
     	$hooks = $this->getHooks($args->getName(), $args->getMethod(), Enlight_Hook_HookHandler::TypeReplace);
-        if($hooks)
-        {
-	        foreach ($hooks as $hook)
-	    	{
+        if($hooks) {
+	        foreach ($hooks as $hook) {
 	    		$args->setReturn($hook->execute($args));
 	    	}
-        }
-        else
-        {
+        } elseif(method_exists($args->getSubject(), 'executeParent')) {
+        	$args->setReturn($args->getSubject()->executeParent($args->getMethod(), $args->getArgs()));
+        } elseif(method_exists($args->getSubject(), 'excuteParent')) {
         	$args->setReturn($args->getSubject()->excuteParent($args->getMethod(), $args->getArgs()));
         }
     	
         $hooks = $this->getHooks($args->getName(), $args->getMethod(), Enlight_Hook_HookHandler::TypeAfter);
-        if($hooks)
-        {
-	        foreach ($hooks as $hook)
-	    	{
+        if($hooks) {
+	        foreach ($hooks as $hook) {
 	    		$hook->execute($args);
 	    	}
         }
