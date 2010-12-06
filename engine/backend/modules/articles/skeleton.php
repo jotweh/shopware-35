@@ -34,7 +34,7 @@ $_GET["article"] = $_REQUEST["article"];
 	} else {
 		$title = $sLang["articles"]["skeleton_new_article"];
 	}
-	$title = htmlentities($title, ENT_COMPAT, 'ISO-8859-1', false);
+	$title = htmlentities($title, null, null, false);
 	
 }else {
 		$title = $sLang["articles"]["skeleton_new_article"];
