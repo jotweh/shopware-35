@@ -144,7 +144,7 @@ class shopware_forms
 				}
 				if (!empty($disabled)) $disabled = "style=\"opacity:0.6;\" readonly='readonly'";
 			
-				$data = htmlentities(htmlspecialchars_decode($data));
+				$data = htmlentities(htmlspecialchars_decode($data), null, null, false);
 				$element = "<input name=\"$name\" id=\"$nameId\" value=\"$data\" class=\"$class\" $disabled>";
 				if ($multilanguage){
 					$element.= "<div style=\"margin-left:20px;margin-top:5px;float:left\">";

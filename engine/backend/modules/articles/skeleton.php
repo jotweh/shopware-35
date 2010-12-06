@@ -31,11 +31,10 @@ $_GET["article"] = $_REQUEST["article"];
 		}else {
 			$title = $sLang["articles"]["skeleton_article"]." ".mysql_result($getProduct,0,"name")." ".$sLang["articles"]["skeleton_edit"];
 		}
-	}else {
+	} else {
 		$title = $sLang["articles"]["skeleton_new_article"];
 	}
-	
-	$title = htmlentities($title);
+	$title = htmlentities($title, ENT_COMPAT, 'ISO-8859-1', false);
 	
 }else {
 		$title = $sLang["articles"]["skeleton_new_article"];

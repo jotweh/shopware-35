@@ -738,9 +738,6 @@ if ($edit && $_REQUEST["variante"]!=-1){
 			die("Blog-Artikel können nicht im Artikel-Modus bearbeitet werden!");
 		}
 		eval($sCore->sCallHookPoint("articles_artikeln1.inc.php_Post13"));
-		$_SHOPWARE["EDIT"]["name"] = htmlspecialchars($_SHOPWARE["EDIT"]["name"]);
-		$_SHOPWARE["EDIT"]["name"] = str_replace("&quot;","\"",$_SHOPWARE["EDIT"]["name"]);
-		$_SHOPWARE["EDIT"]["name"] = str_replace("&amp;","&",$_SHOPWARE["EDIT"]["name"]);
 		$_SHOPWARE["EDIT"]["description_long"] = nl2br($_SHOPWARE["EDIT"]["description_long"]);
 		
 		// Query Supplier
