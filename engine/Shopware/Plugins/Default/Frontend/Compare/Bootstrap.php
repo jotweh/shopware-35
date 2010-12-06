@@ -8,6 +8,11 @@ class Shopware_Plugins_Frontend_Compare_Bootstrap extends Shopware_Components_Pl
 			'onPostDispatch'
 		);
 		$this->subscribeEvent($event);
+		
+		$form = $this->Form();
+		$form->setElement('checkbox', 'show', array('label'=>'Vergleich zeigen', 'value'=>1, 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
+		$form->save();
+		
 		return true;
 	}
 	
@@ -16,6 +21,11 @@ class Shopware_Plugins_Frontend_Compare_Bootstrap extends Shopware_Components_Pl
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 		$view = $args->getSubject()->View();
+		$config = Shopware()->Plugins()->Frontend()->Compare()->Config();
+		
+		if(empty($config->show) && $config->show!==null) {
+			return;
+		}
 					
 		if(!$request->isDispatched()||$response->isException()||$request->getModuleName()!='frontend'){
 			return;

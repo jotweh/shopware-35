@@ -37,7 +37,7 @@ class Shopware_Plugins_Frontend_Facebook_Bootstrap extends Shopware_Components_P
 		}
 		
 		$article = $view->sArticle;
-		$view->unique_id = Shiopware()->Shop()->getId().'_'.$article['articleID'];
+		$view->unique_id = Shopware()->Shop()->getId().'_'.$article['articleID'];
 		$view->extendsTemplate('frontend/plugins/facebook/blocks_detail.tpl');
 	}
 }
