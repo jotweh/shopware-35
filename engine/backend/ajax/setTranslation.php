@@ -27,9 +27,10 @@ if ($_POST["sTranslationsId"]
 	$_POST["sTranslationsKey"] = mysql_real_escape_string(utf8_decode($_POST["sTranslationsKey"]));
 	$_POST["sTranslationsObject"] = mysql_real_escape_string(utf8_decode($_POST["sTranslationsObject"])); 
 	$_POST["sTranslationsLanguage"] = mysql_real_escape_string(utf8_decode($_POST["sTranslationsLanguage"]));
-	//$_POST["sTransationsValue"] = htmlspecialchars(utf8_decode($_POST["sTransationsValue"]), ENT_NOQUOTES);
-	$_POST["sTransationsValue"] = mb_convert_encoding($_POST["sTransationsValue"], 'HTML-ENTITIES', 'UTF-8');
-		
+	if(method_exists('mb_convert_encoding')) {
+		$_POST["sTransationsValue"] = mb_convert_encoding($_POST["sTransationsValue"], 'HTML-ENTITIES', 'UTF-8');
+	}
+	$_POST["sTransationsValue"] = htmlspecialchars(utf8_decode($_POST["sTransationsValue"]), ENT_NOQUOTES, 'ISO-8859-1', false);
 	// Get available data
 	$getObject = mysql_query("
 		SELECT * FROM s_core_translations

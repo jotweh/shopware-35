@@ -39,8 +39,10 @@ if (@mysql_num_rows($getObject)){
 	$value = str_replace("\n","",$value);
 	$value = str_replace("\r","",$value);
 	*/
-	$value = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
-	//$value = utf8_encode($value);
+	if(method_exists('mb_convert_encoding')) {
+		$value = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
+	}
+	$value = utf8_encode($value);
 } else {
 	$value = "";
 }
