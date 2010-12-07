@@ -378,7 +378,7 @@ if (!$systemcategory||!empty($numberArticles)){
 	<ul>
 	
 	<li><label for="name">Kategorie-Bezeichnung:</label>
-	<input name="description" type="text" class="w150 h24" value="<?php echo htmlentities($category["description"]) ?>" />
+	<input name="description" type="text" class="w150 h24" value="<?php echo htmlentities($category["description"], null, null, false) ?>" />
 	</li><li class="clear"/>
 	<li><label for="name">Aktiv:</label>
 	<input name="active" type="checkbox"  value="1" <?php echo $category["active"] ? "checked" : ""?> />
@@ -407,7 +407,7 @@ if (!$systemcategory||!empty($numberArticles)){
 	</li>
 	<li class="clear"/>
 	<li><label for="name"><?php echo $sLang["categories"]["categoryedit_Meta-Keywords"] ?></label>
-	<input name="metakeywords" type="text" class="w150 h24" value="<?php echo htmlentities($category["metakeywords"]) ?>" />
+	<input name="metakeywords" type="text" class="w150 h24" value="<?php echo htmlentities($category["metakeywords"], null, null, false) ?>" />
 	</li>
 	<li class="clear"/>
 	<li><label for="name"><?php echo $sLang["categories"]["categoryedit_Meta-Description"] ?></label></li><li class="clear"/>
@@ -416,7 +416,7 @@ if (!$systemcategory||!empty($numberArticles)){
 	</li>
 	<li class="clear"/>
 	<li><label for="name"><?php echo $sLang["categories"]["categoryedit_title"] ?></label>
-	<input name="cmsheadline" type="text" id="txtName" class="w200 h24" value="<?php echo htmlentities($category["cmsheadline"]) ?>" />
+	<input name="cmsheadline" type="text" id="txtName" class="w200 h24" value="<?php echo htmlentities($category["cmsheadline"], null, null, false) ?>" />
 	</li>
 	<li class="clear"/>
 	
@@ -430,7 +430,7 @@ if (!$systemcategory||!empty($numberArticles)){
 	for ($i=1;$i<=6;$i++){
 	?>
 	<li><label for="name">Freitext <?php echo $i ?></label>
-	<input name="attr<?php echo $i ?>" type="text" id="txtName" class="w150 h24" value="<?php echo htmlentities($category["ac_attr$i"]) ?>" />
+	<input name="attr<?php echo $i ?>" type="text" id="txtName" class="w150 h24" value="<?php echo htmlentities($category["ac_attr$i"], null, null, false) ?>" />
 	</li>
 	<li class="clear"/>
 	<?php

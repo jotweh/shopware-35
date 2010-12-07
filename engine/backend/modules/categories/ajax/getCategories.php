@@ -43,9 +43,12 @@ $getCategories = mysql_query($sql);
 if ($getCategories&&mysql_num_rows($getCategories)){
 	while ($category=mysql_fetch_assoc($getCategories)){
 
-		$category["description"] = utf8_encode(html_entity_decode($category["description"]));
-		//Add CategoryID
-		//$category["description"] = sprintf("%s [%s]", $category["description"], $category["id"]);
+		if(function_exists('mb_convert_encoding')) {
+			$category["description"] = mb_convert_encoding($category["description"], 'UTF-8', 'HTML-ENTITIES');
+		} else {
+			$category["description"] = utf8_encode($category["description"]);
+		}
+		$category["description"] = html_entity_decode($category["description"]);
 		
 		if (!empty($category["count"])){
 			$nodes[] = array('text'=>$category["description"], 'id'=>$category["id"], 'parentId'=>$category["parent"], 'cls'=>'folder', 'child'=>false);

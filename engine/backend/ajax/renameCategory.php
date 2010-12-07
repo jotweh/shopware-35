@@ -8,27 +8,23 @@ if ($result!="SUCCESS"){
 echo "FAIL";
 	die();
 }
-// *****************
-?>
-<?php
-if ($result!="SUCCESS"){
-	//echo $result;
-	//header("location: auth.php");
-	//die();
-}
 
 if ($_POST["newValue"] && $_POST["oldValue"] && $_POST["id"])
 {
 	$_POST["id"] = intval($_POST["id"]);
-	$_POST["newValue"] = htmlspecialchars(html_entity_decode($_POST["newValue"]));
+	if(function_exists('mb_convert_encoding')) {
+		$_POST["newValue"] = mb_convert_encoding($_POST["newValue"], 'HTML-ENTITIES', 'UTF-8');
+	} else {
+		$_POST["newValue"] = utf8_decode($_POST["newValue"]);
+	}
+	$_POST["newValue"] = htmlspecialchars(html_entity_decode($_POST["newValue"]), null, null, false);
 	$_POST["newValue"] = mysql_real_escape_string($_POST["newValue"]);
 	$_POST["oldValue"] = mysql_real_escape_string($_POST["oldValue"]);
 	
 	if ($_POST["newValue"]!=$_POST["oldValue"]){
-		$_POST["newValue"] = utf8_decode($_POST["newValue"]);
 		$updateCategory = mysql_query("
-		UPDATE s_categories SET description='{$_POST["newValue"]}'
-		WHERE id={$_POST["id"]}
+			UPDATE s_categories SET description='{$_POST["newValue"]}'
+			WHERE id={$_POST["id"]}
 		");
 	}
 }

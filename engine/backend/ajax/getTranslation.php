@@ -41,6 +41,8 @@ if (@mysql_num_rows($getObject)){
 	*/
 	if(function_exists('mb_convert_encoding')) {
 		$value = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
+	} else {
+		$value = utf8_encode($value);
 	}
 } else {
 	$value = "";
