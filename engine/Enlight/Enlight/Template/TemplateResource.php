@@ -19,7 +19,9 @@ class Enlight_Template_TemplateResource extends Smarty_Internal_Resource_Extends
     	$_rdl = preg_quote($this->smarty->right_delimiter);
 		$_ldl = preg_quote($this->smarty->left_delimiter);
 		
-		if(preg_match("!{$this->_ldl}namespace(\s.+?)?{$this->_rdl}!msi", $source, $_namespace_match)) {
+		if(!empty($this->smarty->ignore_namespace)) {
+			$_block_namespace = null;
+		} elseif(preg_match("!{$this->_ldl}namespace(\s.+?)?{$this->_rdl}!msi", $source, $_namespace_match)) {
 			$source = str_replace($_namespace_match[0], '', $source);
 			if (preg_match("!.?name=(.*?)(?=(\s|$))!", $_namespace_match[1], $_name_match)) {
 	            $_block_namespace = $_name_match[1];

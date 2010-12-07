@@ -6,6 +6,7 @@ class Enlight_Template_TemplateManager extends Smarty
     public $block_manager;
     public $template_old = false;
     public $default_resource_type = 'extends'; 
+    public $ignore_namespace = true;
     
     public function __construct()
     {

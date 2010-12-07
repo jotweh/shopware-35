@@ -19,7 +19,8 @@ return array(
 		'compileCheck' => true,
 		'compileLocking' => true,
 		'useSubDirs' => false,
-		'forceCompile' => false
+		'forceCompile' => false,
+		'ignoreNamespace' => false
 	),
 	'cache' => array(
 		'frontendOptions' => array(
