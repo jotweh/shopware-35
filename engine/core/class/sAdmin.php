@@ -794,7 +794,7 @@ class sAdmin
 		$sErrorMessages = array();
 		$sErrorFlag = array();
 		
-		list($sErrorMessages,$sErrorFlag) = Enlight()->Events()->filter('Shopware_Modules_Admin_ValidateStep2_FilterResult', array($sErrorMessages,$sErrorFlag), array('edit'=>$edit,'rules'=>$rules,'subject'=>$this,"post"=>$this->sSYSTEM->_POST));
+		list($sErrorMessages,$sErrorFlag) = Enlight()->Events()->filter('Shopware_Modules_Admin_ValidateStep2_FilterStart', array($sErrorMessages,$sErrorFlag), array('edit'=>$edit,'rules'=>$rules,'subject'=>$this,"post"=>$this->sSYSTEM->_POST));
 
 		$p = $this->sSYSTEM->_POST;
 

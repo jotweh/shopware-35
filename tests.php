@@ -1,7 +1,7 @@
 <?php
 
 
-phpinfo();
+//phpinfo();
 
 //print_r($test->parse());
 /*
