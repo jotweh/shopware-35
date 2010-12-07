@@ -1,21 +1,22 @@
-{block name='frontend_index_header_javascript_inline' prepend}
+{block name='frontend_index_header_javascript' append}
+	<script type="text/javascript">
+	//<![CDATA[
 	jQuery(document).ready(function($) {
 		{if $new_active}
 			$('.slider').ajaxSlider('ajax', {
-			'url': '{url controller=recommendation action=new category=$sCategoryContent.id}',
-			'title': '{s name="IndexNewArticlesSlider"}Neu im Sortiment:{/s}',
-			'headline': true,
-			'navigation': false,
-			'scrollSpeed': 800,
-			'rotate': false,
-			'width':628,
-			'containerCSS': { 'marginTop': '0px', 'marginBottom': '15px' }
+				'url': unescape('{"{url controller=recommendation action=new category=$sCategoryContent.id}"|escape:url}'),
+				'title': '{s name="IndexNewArticlesSlider"}Neu im Sortiment:{/s}',
+				'headline': true,
+				'navigation': false,
+				'scrollSpeed': 800,
+				'rotate': false,
+				'width':628,
+				'containerCSS': { 'marginTop': '0px', 'marginBottom': '15px' }
 			});
 		{/if}
-		
 		{if $bought_active}
 			$('.slider2').ajaxSlider('ajax', {
-				'url': '{url controller=recommendation action=similaryViewed category=$sCategoryContent.id}',
+				'url': unescape('{"{url controller=recommendation action=similaryViewed category=$sCategoryContent.id}"|escape:url}'),
 				'title': '{s name="IndexSimilaryArticlesSlider"}Ähnliche Artikel wie die, die Sie sich angesehen haben:{/s}',
 				'headline': true,
 				'navigation': false,
@@ -25,7 +26,6 @@
 				'containerCSS': { 'marginTop': '12px', 'marginBottom': '15px' }
 			});
 		{/if}
-		
 		{if $banner_active}
 			$('.slider_banner').ajaxSlider('locale', {
 				'width':630,
@@ -56,6 +56,8 @@
 			});	
 		{/if}
 	});
+	//]]>
+	</script>
 {/block}
 
 
@@ -98,26 +100,22 @@
 
 {block name="frontend_home_index_blog" prepend}
 	{if $supplier_active}
-		<!-- Supplier slider -->
 		<div class="supplier_slider">
 		{foreach from=$suppliers item=slide}
-			<!-- Slide container -->
 			<div class="slide">
 				{foreach from=$slide item=supplier}
-				<!-- Hersteller Logo -->
 				<div {if $supplier.image}class="logo"{else}class="text"{/if}>
-					<a href="{$supplier.link}" title="{$supplier.name}" {if $supplier.image}style="background-image:url({$supplier.image});"{/if}>
+					<a href="{$supplier.link}" title="{$supplier.name}"{if $supplier.image} style="background-image:url({$supplier.image});"{/if}>
 						{if $supplier.image}
 							<img src="{$supplier.image}" alt="{$supplier.name}" />
 						{else}
 							{$supplier.name}
 						{/if}
-						
 					</a>
 				</div>	
 				{/foreach}
-			</div> <!-- //Slide container -->
+			</div>
 		{/foreach}
-		</div> <!-- //Supplier slider -->
+		</div>
 	{/if}
 {/block}
