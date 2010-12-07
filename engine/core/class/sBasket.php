@@ -1144,8 +1144,10 @@ class sBasket
 			// Reformating data, add additional datafields to array
 			foreach ($getArticles as $key => $value){
 				// Article-Image
-				$getArticles[$key] =  $this->sSYSTEM->sMODULES['sArticles']->sGetPromotionById("fix", 0, (int) $value["articleID"]);
+				$getArticles[$key] = $this->sSYSTEM->sMODULES['sArticles']->sGetPromotionById("fix", 0, (int) $value["articleID"]);
 				if(empty($getArticles[$key])) {
+					$this->sDeleteNote($value["id"]);
+					unset($getArticles[$key]);
 					continue;
 				}
 				$getArticles[$key]["articlename"] = $getArticles[$key]["articleName"];

@@ -1,19 +1,22 @@
 <?php
 class Shopware_Controllers_Frontend_Note extends Enlight_Controller_Action
 {
-	public function indexAction(){
+	public function indexAction()
+	{
 		$this->View()->sNotes = Shopware()->Modules()->Basket()->sGetNotes();
 	}
 	
-	public function deleteAction(){
-		if (!empty($this->request()->sDelete)){
-			Shopware()->Modules()->Basket()->sDeleteNote($this->request()->sDelete);
+	public function deleteAction()
+	{
+		if (!empty($this->Request()->sDelete)){
+			Shopware()->Modules()->Basket()->sDeleteNote($this->Request()->sDelete);
 		}
-		$this->forward("Index");
+		$this->forward('index');
 	}
 	
-	public function addAction(){
-		$ordernumber = $this->request()->ordernumber;
+	public function addAction()
+	{
+		$ordernumber = $this->Request()->ordernumber;
 		if (!empty($ordernumber)){
 			$articleID = Shopware()->Modules()->Articles()->sGetArticleIdByOrderNumber($ordernumber);
 			$articleName = Shopware()->Modules()->Articles()->sGetArticleNameByOrderNumber($ordernumber);
@@ -22,6 +25,6 @@ class Shopware_Controllers_Frontend_Note extends Enlight_Controller_Action
 				Shopware()->Modules()->Basket()->sAddNote($articleID, $articleName, $ordernumber);
 			}
 		}
-		$this->forward("Index");
+		$this->forward('index');
 	}
 }
