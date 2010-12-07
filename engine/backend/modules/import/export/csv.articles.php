@@ -240,7 +240,7 @@ while (!$result->EOF)
 	if(!empty($result->fields['attributegroupID']))
 	{
 		$sql = "
-			SELECT REPLACE(GROUP_CONCAT(v.value ORDER BY r.position SEPARATOR '|'),',','.') as attributevalues
+			SELECT REPLACE(v.value,',','.') as value
 			FROM s_filter_relations r
 			INNER JOIN s_filter_options o
 			LEFT JOIN s_filter_values v
@@ -249,8 +249,10 @@ while (!$result->EOF)
 			AND v.articleID={$result->fields['articleID']}
 			WHERE r.optionID = o.id
 			AND r.groupID={$result->fields['attributegroupID']}
+			GROUP BY o.id
 		";
-		$result->fields['attributevalues'] = $api->sDB->GetOne($sql);
+		$result->fields['attributevalues'] = $api->sDB->GetCol($sql);
+		$result->fields['attributevalues'] = implode('|', $result->fields['attributevalues']);
 	}
 	if(!empty($result->fields['categories'])&&$_REQUEST["typID"]==7)
 	{
