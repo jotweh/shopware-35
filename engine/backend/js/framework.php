@@ -221,7 +221,7 @@ function initSkeleton(module, skeleton){
 	var temp = new sWindow("Fenster", skeleton.init);
 	var sCreatedNewWindow = true;
 	
-	var url = '<?php echo $sBASEPATH?>/engine/backend/js/include.php?module='+module+'&include='+skeleton.init.url;
+	var url = '<?php echo $sBASEPATH?>/engine/backend/js/include.php?module='+escape(module)+'&include='+escape(skeleton.init.url);
 	
 	// Check how to load the wished content
 	switch (skeleton.init.loader){

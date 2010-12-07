@@ -8,6 +8,8 @@ $base_dir = dirname(dirname(dirname(__FILE__))).'/';
 $module = basename($_REQUEST['module']);
 $module = preg_replace('/[^a-z0-9_.:-]/i', '', $module);
 $include = empty($_REQUEST['include']) ? 'skeleton.php' : (string) $_REQUEST['include'];
+$query = parse_url($include, PHP_URL_QUERY);
+$include = parse_url($include, PHP_URL_PATH);
 $include = preg_replace('/[^a-z0-9\\/\\\\_.:-]/i', '', $include);
 
 if(file_exists($base_dir.'local_old/modules/'.$module.'/'.$include)) {
@@ -17,7 +19,9 @@ if(file_exists($base_dir.'local_old/modules/'.$module.'/'.$include)) {
 }
 
 if(!empty($location)) {
-	if(!empty($_POST)) {
+	if(!empty($query)) {
+		$location .= '?'.$query;
+	} elseif(!empty($_POST)) {
 		$location .= '?'.http_build_query($_POST, '', '&');
 	}
 	header('Location: '.$location);
