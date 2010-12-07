@@ -184,7 +184,9 @@ class sViewportSupport{
 		$mail->Body = str_replace("{sDateTime}",date("d.m.Y h:i:s"),$mail->Body);
 		$mail->Body = html_entity_decode($mail->Body);
 		$mail->Body = htmlspecialchars_decode($mail->Body);
-		if (empty($mail->Body)) $mail->Body = " ";
+		if (strlen($mail->Body)<=1){
+			$mail->Body = " ";
+		}
 		
 		$mail->ClearAddresses();
 		
