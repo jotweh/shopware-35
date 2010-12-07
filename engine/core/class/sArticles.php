@@ -4007,20 +4007,26 @@ class sArticles
 							
 							break;
 							case "liverand":
-								$promotion = $this->sGetLiveShopping('random', 0, $promotion, true);
-								
-								
-								
-								$promotion['liveshoppingData'] = $promotion['liveshoppingData'][0];
-								if (count($promotion)>1 && !empty($promotion['liveshoppingData'])) $promote[] = $promotion; 
-							
+								$cacheSQL = null;
+								if (!empty($this->sCachePromotions)){
+									$cacheSQL = 'AND lv.articleID NOT IN ('.implode(', ',$this->sCachePromotions).')';
+								}
+								$promotion = $this->sGetLiveShopping('random', 0, $promotion, true, $cacheSQL);
+								if (!empty($promotion['liveshoppingData'][0])) {
+									$promotion['liveshoppingData'] = $promotion['liveshoppingData'][0];
+									$promote[] = $promotion; 
+								}
 							break;
 							case "liverandcat":
-								$promotion = $this->sGetLiveShopping('random', $category, $promotion, true);
-								
-								$promotion['liveshoppingData'] = $promotion['liveshoppingData'][0];
-								if (count($promotion)>1 && !empty($promotion['liveshoppingData'])) $promote[] = $promotion; 
-							
+								$cacheSQL = null;
+								if (!empty($this->sCachePromotions)){
+									$cacheSQL = 'AND lv.articleID NOT IN ('.implode(', ',$this->sCachePromotions).')';
+								}
+								$promotion = $this->sGetLiveShopping('random', $category, $promotion, true, $cacheSQL);
+								if (!empty($promotion['liveshoppingData'][0])) {
+									$promotion['liveshoppingData'] = $promotion['liveshoppingData'][0];
+									$promote[] = $promotion; 
+								}
 							break;
 					} // end switch
 					
