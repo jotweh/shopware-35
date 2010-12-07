@@ -48,3 +48,6 @@ UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,r
 
 # PayPal Changes
 UPDATE `s_core_config` SET `multilanguage` = '1' WHERE `name` IN ('sXPRESS', 'sPaypalLogo');
+
+# Max. Suppliers Config
+INSERT INTO `s_core_config` (`group`,`name`,`value`,`description`) VALUES ('30','sMAXSUPPLIERSCATEGORY','30','Max. Anzahl Hersteller in Sidebar');

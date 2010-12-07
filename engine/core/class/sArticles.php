@@ -1564,7 +1564,8 @@ class sArticles
 	public function sGetAffectedSuppliers ($id=null, $limit=null)
 	{
 		$id = empty($id) ? (int) $this->sSYSTEM->_GET["sCategory"] : (int) $id;
-		$limit = empty($limit) ? 30 : (int) $limit;
+		$configLimit = $this->sSYSTEM->sCONFIG['sMAXSUPPLIERSCATEGORY'] ? $this->sSYSTEM->sCONFIG['sMAXSUPPLIERSCATEGORY'] : 30;
+		$limit = empty($limit) ? $configLimit : (int) $limit;
 		
 		$sql = "
 			SELECT s.id AS id, COUNT(*) AS countSuppliers, s.name AS name, s.img AS image
