@@ -247,6 +247,10 @@ div.blog_navi {margin-left:10px;}
 #content .custom {margin-right: 40px;}
 #content .custom {width: 560px;}
 #content .custom h1 {font-size: 18px; font-weight: 700;}
+#content .custom ol {margin-left: 25px;}
+#content .custom ul {margin-left: 20px;}
+#content .custom ul li, #content .custom ol li {list-style: disc;float:none;}
+#content .custom ol li {list-style: decimal}
 #supplierfilter {padding: 10px; border: 2px solid;}
 #supplierfilter .text {display:block;float:left;margin-top:6px;}
 #content .cat_text, #content .register .supplier_register {padding: 0 0 8px;margin: 0 0 12px;background: url(../images/backgrounds/bg_cat_text.png) left bottom no-repeat;}
