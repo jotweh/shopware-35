@@ -1,29 +1,37 @@
 <?php
 class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 {
+	public function preDispatch()
+	{
+		if(!in_array($this->Request()->getActionName(), array('index', 'skeleton'))) {
+			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
+		}
+	}
+	
 	public function indexAction()
 	{
+		$this->View()->CacheInformation = $this->getCacheInformation();
 	}
 	
 	public function skeletonAction()
 	{
 	}
 	
-	public function snippetsAction(){
-		$this->View()->setTemplate();
+	public function snippetsAction()
+	{
 		$this->clearTemplateCache();
 		$this->clearConfigCache();
 		$this->clearCompilerCache();
 	}
 	
-	public function articlesAction(){
-		$this->View()->setTemplate();
+	public function articlesAction()
+	{
 		$this->clearAdodbCache();
 		$this->clearPluginCache();
 	}
 	
-	public function configAction(){
-		$this->View()->setTemplate();
+	public function configAction()
+	{
 		$this->clearTemplateCache();
 		$this->clearConfigCache();
 		$this->clearCompilerCache();
@@ -32,7 +40,6 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 	
 	public function clearCacheAction()
 	{
-		$this->View()->setTemplate();
 		$cache = $this->Request()->getPost('cache');
 		
 		if ($cache["template"] == "on") $this->clearTemplateCache();
@@ -45,7 +52,6 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 	
 	public function clearStaticCacheAction()
 	{
-		$this->View()->setTemplate();
 		$cache = $this->Request()->getPost('cache');
 		
 		if ($cache["compiler"] == "on") $this->clearCompilerCache();
@@ -91,5 +97,42 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 	protected function clearAdodbCache()
 	{
 		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_Adodb'));
+	}
+	
+	public function getCacheInformation()
+	{
+		$cache = Shopware()->Cache();
+		$cache_config = Shopware()->getOption('cache');
+		$info['backend'] = empty($cache_config['backend']) ? 'File' : $cache_config['backend'];
+		if(!empty($cache_config['backendOptions']['cache_dir'])){
+			$info['cache_dir'] = $cache_config['backendOptions']['cache_dir'];
+		} elseif(!empty($cache_config['backendOptions']['slow_backend_options']['cache_dir'])){
+			$info['cache_dir'] = $cache_config['backendOptions']['slow_backend_options']['cache_dir'];
+		}
+		if(!empty($info['cache_dir'])) {
+			$info['cache_size'] = 0;
+			$info['cache_files'] = 0;
+			$dir_iterator = new RecursiveDirectoryIterator($info['cache_dir']);
+			$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
+			foreach ($iterator as $entry) {
+				if(!$entry->isFile()) {
+					continue;
+				}
+				$info['cache_size'] += $entry->getSize();
+				$info['cache_files']++;
+			}
+			$info['cache_size'] = $this->encodeSize($info['cache_size']);
+			$info['free_space'] = disk_free_space($info['cache_dir']);
+			$info['free_space'] = $this->encodeSize($info['free_space']);
+			$info['cache_dir'] = str_replace(Shopware()->DocPath(), '', $info['cache_dir']);
+		}
+		return $info;
+	}
+	
+	public static function encodeSize($bytes)
+	{
+	    $types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
+	    for( $i = 0; $bytes >= 1024 && $i < ( count( $types ) -1 ); $bytes /= 1024, $i++ );
+	    return( round( $bytes, 2 ) . ' ' . $types[$i] );
 	}
 }

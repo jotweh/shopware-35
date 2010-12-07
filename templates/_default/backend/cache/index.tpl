@@ -2,13 +2,12 @@
 {block name="backend_index_body_inline"}
 <script>
 	Ext.ns('Shopware.Cache');	
-	
 	(function(){
 		View = Ext.extend(Ext.Viewport, {
-			layout: 'border',
+			autoScroll: true,
+			layout:'fit',
 			initComponent: function() {
-				this.panelTop = new Ext.Panel (
-				{
+				this.panelTop = new Ext.Panel ({
 					region: 'north',
 					padding: '10px 10px 10px 10px',
 					height:80,
@@ -16,16 +15,31 @@
 					html: 'Bitte beachten Sie, dass der Cache sich in bestimmten Abständen selbstständig generiert und nur in Ausnahmefällen manuell gelöscht werden sollte. Nach dem Leeren des Cache kann es einige Sekunden dauern, bis das Shop-Frontend wieder erreichbar ist!',
 					style: 'font-family: tahoma,arial,verdana,sans-serif;font-size:11px;font-weight:bold'
 				});
-				this.panelBottom = new Ext.Panel (
-				{
+				this.panelBottom = new Ext.Panel ({
+					//padding: '10px 10px 10px 10px',
+					title: 'Cache-Informationen',
+					preventBodyReset: true,
+					html: {"
+						<ul>
+							<li><strong>Backend:</strong> {$CacheInformation.backend}</li>
+							<li><strong>Verzeichnis:</strong> {$CacheInformation.cache_dir}</li>
+							<li><strong>Dateien:</strong> {$CacheInformation.cache_files}</li>
+							<li><strong>Größe:</strong> {$CacheInformation.cache_size}</li>
+							<li><strong>Freier Speicher:</strong> {$CacheInformation.free_space}</li>
+						</ul>
+					"|utf8_encode|json_encode},
+					style: 'font-family: tahoma,arial,verdana,sans-serif;font-size:11px;font-weight:normal'
+				});
+				/*
+				this.panelBottom = new Ext.Panel ({
 					region: 'south',
 					padding: '10px 10px 10px 10px',
 					title: 'Automatisierung',
 					height:70,
 					html: 'Viele Caching-Routinen, wie z.B. die Erzeugung der SEO-Urls, können Sie über Cronjobs automatisieren. Beachten Sie die Einstellungsmöglichkeiten in der Cronjob-Konfiguration!',
 					style: 'font-family: tahoma,arial,verdana,sans-serif;font-size:11px;font-weight:normal'
-				}
-				);				
+				});	
+				*/			
 				this.cacheForm = new Ext.form.FormPanel({
 					title: 'Welche Bereiche sollen geleert werden?',
 					padding: '10px 10px 10px 10px',
@@ -122,11 +136,10 @@
 					],
 					buttons: [{
 			            text: 'Alle markieren',
-			            handler: function (){
-			            	 Ext.each(Ext.getCmp('cacheForm2').items.items,function(item){
+			            handler: function () {
+			            	Ext.each(Ext.getCmp('cacheForm2').items.items,function(item){
 				                item.setValue(true);
-			                }
-			                );
+			                });
 			            }
 			        }, {
 			            text: 'Leeren',
@@ -134,15 +147,12 @@
 			            	Ext.getCmp('cacheForm2').getForm().submit({ url:'{url action="clearStaticCache"}', waitMsg:'Cache leeren...', submitEmptyText: false});	
 			            }
 			        }]
-				});
-				
-				this.center  = new Ext.Panel ({
-					region: 'center',
-					autoScroll: true,
-					items: [this.cacheForm, this.cacheForm2]
-				});
-				
-				this.items = [this.panelTop,this.center,this.panelBottom];
+				});				
+				this.items = new Ext.Panel({
+			    	border: false,
+			    	autoScroll: true,
+		    		items: [this.panelTop,this.cacheForm, this.cacheForm2, this.panelBottom]
+		    	});
 		        View.superclass.initComponent.call(this);
 			}
 		});
