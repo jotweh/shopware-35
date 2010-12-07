@@ -3,11 +3,12 @@ if(empty($_REQUEST['module'])) {
 	exit();
 }
 $base_path = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS'])!='off') ? 'https://' : 'http://';
-$base_path .= $_SERVER['HTTP_HOST'].dirname(dirname(dirname($_SERVER['REQUEST_URI'])));
+$base_path .= $_SERVER['HTTP_HOST'].dirname(dirname(dirname($_SERVER['PHP_SELF'])));
 $base_dir = dirname(dirname(dirname(__FILE__))).'/';
 $module = basename($_REQUEST['module']);
+$module = preg_replace('/[^a-z0-9_.:-]/i', '', $module);
 $include = empty($_REQUEST['include']) ? 'skeleton.php' : (string) $_REQUEST['include'];
-$include = preg_replace('/[^a-z0-9\\/\\\\_.:-]|\.\.+/i', '', $include);
+$include = preg_replace('/[^a-z0-9\\/\\\\_.:-]/i', '', $include);
 
 if(file_exists($base_dir.'local_old/modules/'.$module.'/'.$include)) {
 	$location = $base_path.'/local_old/modules/'.$module.'/'.$include;

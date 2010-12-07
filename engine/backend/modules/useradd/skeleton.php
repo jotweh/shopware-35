@@ -19,7 +19,7 @@ if ($result!="SUCCESS"){
 		"minheight": "600",
 		"content": "",
 		"loader": "iframe",
-		"url": "main.php?id=1",
+		"url": "main.php",
 		"help":"http://www.hamann-media.de/dev/wiki/Hilfe:Kunden#Anlegen"
 	}	
 }
