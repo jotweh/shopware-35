@@ -18,7 +18,7 @@
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.Grid.RowExpander.js'}" charset="utf-8"></script>
 {/block}
 {block name='backend_index_header_title'}
-	Shopware {config name='Version'} - 29.11.2010 - Backend (c) 2010,2011 shopware AG
+	Shopware {config name='Version'} - 08.12.2010 - Backend (c) 2010,2011 shopware AG
 {/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
@@ -130,7 +130,7 @@
 	{/block}
 	
 	{block name="backend_index_index_ticket"}
-		<div id="ticketCount-div">
+		<div id="ticketCount-div" style="display:none">
 			<div id="ticketCountText" style="float:left;"></div>
 			<div id="ticketCountSkeleton" style="float:right;">
 				<a class="ico pencil_arrow" style="cursor:pointer" onclick="loadSkeleton('ticket_system');">&nbsp;</a>
