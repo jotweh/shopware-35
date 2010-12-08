@@ -74,9 +74,9 @@
 		{block name='frontend_listing_box_article_price'}
 		<p class="{if $sArticle.pseudoprice}pseudoprice{else}price{/if}">
 	        {if $sArticle.pseudoprice}
-	        	<span class="pseudo">{$sArticle.pseudoprice|currency}</span>
+	        	<span class="pseudo">{s name="reducedPrice"}Statt: {/s}{$sArticle.pseudoprice|currency} {s name="Star"}*{/s}</span>
 	        {/if}
-	        <span class="price">{if $sArticle.priceStartingFrom && !$sArticle.liveshoppingData}{s name='ListingBoxArticleStartsAt'}{/s} {/if}{$sArticle.price|currency} *</span>
+	        <span class="price">{if $sArticle.priceStartingFrom && !$sArticle.liveshoppingData}{s name='ListingBoxArticleStartsAt'}{/s} {/if}{$sArticle.price|currency} {s name="Star"}*{/s}</span>
         </p>
         {/block}
        	
