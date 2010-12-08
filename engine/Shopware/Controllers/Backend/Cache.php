@@ -78,8 +78,25 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array());
 	}
 	
-	protected function clearRewriteCache(){
-		Shopware()->Db()->query("UPDATE s_core_config SET value = '' WHERE name = 'sROUTERLASTUPDATE'");
+	protected function clearRewriteCache()
+	{
+		//Shopware()->Db()->query("UPDATE s_core_config SET value = '' WHERE name = 'sROUTERLASTUPDATE'");
+		
+		$cache = (empty(Shopware()->Config()->RouterCache)||Shopware()->Config()->RouterCache<360) ? 86400 : (int) Shopware()->Config()->RouterCache;
+		$sql = 'SELECT value FROM s_core_config WHERE name=?';
+		$last_update = Shopware()->Db()->fetchOne($sql, array('sROUTERLASTUPDATE'));
+		if(!empty($last_update)) {
+			$last_update = unserialize($last_update);
+		}
+		if(empty($last_update)||!is_array($last_update)) {
+			$last_update = array();
+		}
+		foreach ($last_update as $shopId=>$time) {
+			$last_update[$shopId] = date('Y-m-d H:i:s', min(strtotime($time), time()-$cache));
+		}
+		$sql = 'UPDATE `s_core_config` SET `value`=? WHERE `name`=?';
+	    Shopware()->Db()->query($sql, array(serialize($last_update), 'sROUTERLASTUPDATE'));
+			
 		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_RouterRewrite'));	
 	}
 	

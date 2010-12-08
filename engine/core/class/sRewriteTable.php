@@ -32,7 +32,7 @@ class sRewriteTable
 			'"'=>'-',
 			' '=>'-',
 			'+'=>'-',
-			'&'=>'-',
+			//'&'=>'-',
 			'à'=>'a',
 			'á'=>'a',
 			'è'=>'e',
@@ -40,11 +40,20 @@ class sRewriteTable
 			'ù'=>'u',
 			'ú'=>'u',
 			'ë'=>'e',
+			'ç'=>'c',
+			'Ç'=>'C',
+			'&#351;'=>'s',
+			'&#350;'=>'S',
+			'&#287;'=>'g',
+			'&#286;'=>'G',
+			'&#304;'=>'i',
 		);
 		$path = html_entity_decode($path);
 		$path = str_replace(array_keys($replace), array_values($replace), $path);
-		if($remove_ds)
+		if($remove_ds) {
 			$path = str_replace('/', '-', $path);
+		}
+		$path = preg_replace('/&[a-z0-9#]+;/i', '', $path);
 		$path = preg_replace('#[^0-9a-z-_./]#i','',$path);
 		$path = preg_replace('/-+/','-',$path);
 		return trim($path,'-');
@@ -69,6 +78,7 @@ class sRewriteTable
 		$this->sCreateRewriteTableArticles();
 		$this->sCreateRewriteTableContent();
 	}
+	
 	protected function sCreateRewriteTableCleanup()
 	{
 		$sql = "
@@ -95,7 +105,7 @@ class sRewriteTable
 		$sql = "
 			DELETE ru FROM s_core_rewrite_urls ru
 			LEFT JOIN s_categories c
-			ON ru.org_path LIKE CONCAT('sViewport=cat&sCategory=', c.id)
+			ON c.id = REPLACE(ru.org_path, 'sViewport=cat&sCategory=', '')
 			AND c.external=''
 			WHERE ru.org_path LIKE 'sViewport=cat&sCategory=%'
 			AND c.id IS NULL
@@ -105,7 +115,7 @@ class sRewriteTable
 		$sql = "
 			DELETE ru FROM s_core_rewrite_urls ru
 			LEFT JOIN s_articles a
-			ON ru.org_path LIKE CONCAT('sViewport=detail&sArticle=', a.id)
+			ON a.id = REPLACE(ru.org_path, 'sViewport=detail&sArticle=', '')
 			WHERE ru.org_path LIKE 'sViewport=detail&sArticle=%'
 			AND a.id IS NULL
 		";
@@ -181,19 +191,24 @@ class sRewriteTable
 	protected function sCreateRewriteTableArticles()
 	{
 		if(empty($this->sSYSTEM->sCONFIG['sROUTERARTICLETEMPLATE'])) continue;
-					
-		if(!empty($this->sSYSTEM->sCONFIG['sROUTERLASTUPDATE'])) {
+		
+		$sql = 'SELECT value FROM s_core_config WHERE name=?';
+		$last_update = Shopware()->Db()->fetchOne($sql, array('sROUTERLASTUPDATE'));	
+		if(!empty($last_update)) {
 			$last_update = unserialize($last_update);
 		}
 		if(empty($last_update)||!is_array($last_update)) {
 			$last_update = array();
 		}
 		if(!empty($last_update[$this->sSYSTEM->sSubShop['id']])) {
-			$lastupdate = $last_update[$this->sSYSTEM->sSubShop['id']];
+			$last_update = $last_update[$this->sSYSTEM->sSubShop['id']];
 		} else {
-			$lastupdate = '0000-00-00 00:00:00';
+			$last_update = '0000-00-00 00:00:00';
 		}
-    	
+		
+		$sql = 'UPDATE `s_articles` SET `changetime`= NOW() WHERE `changetime`=?';
+	    Shopware()->Db()->query($sql, array('0000-00-00 00:00:00'));
+		    	
     	$sql = '
 			SELECT a.id, IFNULL(atr.name, a.name) as name, d.ordernumber, d.suppliernumber, s.name as supplier, datum as date, releasedate,
 				at.attr1, at.attr2, at.attr3, at.attr4, at.attr5, at.attr6, at.attr7, at.attr8, at.attr9, at.attr10,
@@ -218,7 +233,7 @@ class sRewriteTable
 		$result = $this->sSYSTEM->sDB_CONNECTION->Execute($sql, array(
 			$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"],
 			$this->sSYSTEM->sSubShop['id'],
-			$lastupdate
+			$last_update
 		));
 		if($result!==false)
     	{

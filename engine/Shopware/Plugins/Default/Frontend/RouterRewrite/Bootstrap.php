@@ -103,11 +103,10 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		$cache = (empty(Shopware()->Config()->RouterCache)||Shopware()->Config()->RouterCache<360) ? 86400 : (int) Shopware()->Config()->RouterCache;
 		$current_time = Shopware()->Db()->fetchOne('SELECT NOW()');
 		$cached_time = empty($last_update[$shopId]) ? false : $last_update[$shopId];
-		
+				
 		if(empty($cached_time)||strtotime($cached_time)<strtotime($current_time)-$cache)
 		{
-			$sql = 'UPDATE `s_articles` SET `changetime`= NOW() WHERE `changetime`=?';
-	    	Shopware()->Db()->query($sql, array('0000-00-00 00:00:00'));
+			Shopware()->Modules()->RewriteTable()->sCreateRewriteTable();
 	    	
 	    	$data = $last_update;
 			$data[$shopId] = $current_time;
@@ -115,8 +114,6 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			
 	    	$sql = 'UPDATE `s_core_config` SET `value`=? WHERE `name`=?';
 	    	Shopware()->Db()->query($sql, array($data,'sROUTERLASTUPDATE'));
-			
-			Shopware()->Modules()->RewriteTable()->sCreateRewriteTable();
 		}
 	}
 	
