@@ -99,7 +99,7 @@
 						<label for="sQuantity">{s name="DetailBuyLabelQuantity"}{/s}:</label>
 						<select id="sQuantity" name="sQuantity">
 							{section name="i" start=$sArticle.minpurchase loop=$maxQuantity step=$sArticle.purchasesteps}
-								<option value="{$smarty.section.i.index}">{$smarty.section.i.index}{if $sArticle.packunit} {$sArticle.packunit}{elseif $sArticle.sUnit.description} {$sArticle.sUnit.description}{/if}</option>
+								<option value="{$smarty.section.i.index}">{$smarty.section.i.index}{if $sArticle.packunit} {$sArticle.packunit}{/if}</option>
 							{/section}
 						</select>
 				{/block}
