@@ -344,6 +344,7 @@ var myExt = function(){
 	    });
 		    
 	    {if $TicketSystemActive}
+	    	Ext.get('ticketCount-div').setStyle('display','block');
 		    var ticketCount = new Ext.BoxComponent({
 			    el: 'ticketCount-div'
 			});
@@ -353,7 +354,8 @@ var myExt = function(){
 				title: 'Ticket System',
 				items: [ticketCount]
 			});
-			
+		{else}
+			Ext.get('ticketCount-div').setStyle('display','none');
 		{/if}
 		myExt.reload();
 	    var userForm = [[-1,'An alle'],{$BackendUsers}];
