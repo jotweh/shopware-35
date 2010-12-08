@@ -1,4 +1,4 @@
-#352 changes
+# 351 Changes
 DELETE FROM `s_core_config_mails` WHERE `name` LIKE 'sSERVICE%';
 DELETE FROM `s_core_config_mails` WHERE `name` LIKE 'sCHEAPER';
 
@@ -16,32 +16,17 @@ UPDATE `s_core_snippets` SET `value` = '{link file=''frontend/_resources/favicon
 DELETE FROM `s_core_snippets` WHERE `namespace` LIKE 'templates/_default/%';
 DELETE FROM `s_core_config_groups` WHERE `name` = 'Debugging';
 
-
-# Changes to Crontab Table
+# Crontab Changes
 ALTER TABLE `s_crontab` ADD `pluginID` INT NOT NULL;
--- DELETE FROM `s_crontab` WHERE `action` IN ('clearing','translation','search');
-UPDATE `s_crontab` SET `interval` = 86400 WHERE `interval` IN (1,10,100);
-
-# Changes to Plugin Tables
-ALTER TABLE `s_core_plugin_configs` ADD UNIQUE (
-`name` ,
-`pluginID` ,
-`localeID` ,
-`shopID`
-);
+UPDATE `s_crontab` SET `interval` = 86400 WHERE `interval` IN (1, 10, 100);
 
 # Snippet Changes
-UPDATE `s_core_snippets` SET `value` = 'Ich habe die <a href="{url controller=custom sCustom=4 forceSecure}" title="AGB"><span style="text-decoration:underline;">AGB</span></a> Ihres Shops gelesen und bin mit deren Geltung einverstanden.' WHERE `s_core_snippets`.`name` = 'ConfirmTerms';
-
-ALTER TABLE `s_filter_values` DROP INDEX `optionID`;
-ALTER TABLE `s_filter_values` DROP INDEX `optionID_2`;
-ALTER TABLE `s_filter_values` DROP INDEX `groupID` ;
-ALTER TABLE `s_filter_values` ADD INDEX ( `groupID` );
-ALTER TABLE `s_filter_values` ADD INDEX ( `optionID` , `articleID` , `value` ) ;
-
+UPDATE `s_core_snippets` SET `value` = 'Ich habe die <a href="{url controller=custom sCustom=4 forceSecure}" title="AGB"><span style="text-decoration:underline;">AGB</span></a> Ihres Shops gelesen und bin mit deren Geltung einverstanden.' WHERE `name` = 'ConfirmTerms';
 UPDATE `s_core_snippets` SET `value` = 'Nachdem Sie die erste Bestellung durchgeführt haben, können Sie hier auf vorherige Rechnungsadressen zugreifen.' WHERE `name` = 'SelectBillingInfoEmpty';
 
-DELETE FROM `s_core_config_groups` WHERE `name` = `Debugging`;
+INSERT IGNORE INTO `s_core_snippets` (`namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
+('frontend/listing/box_article', 1, 1, 'Star', '*', '2010-12-08 02:51:26', '2010-12-08 02:51:26'),
+('frontend/listing/box_article', 1, 1, 'reducedPrice', 'Statt: ', '2010-12-08 02:52:32', '2010-12-08 02:52:32');
 
 # Seo Changes
 UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,register') WHERE `name` = 'sSEOVIEWPORTBLACKLIST' AND `value` NOT LIKE '%checkout%';
@@ -50,4 +35,45 @@ UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,r
 UPDATE `s_core_config` SET `multilanguage` = '1' WHERE `name` IN ('sXPRESS', 'sPaypalLogo');
 
 # Max. Suppliers Config
-INSERT INTO `s_core_config` (`group`,`name`,`value`,`description`) VALUES ('30','sMAXSUPPLIERSCATEGORY','30','Max. Anzahl Hersteller in Sidebar');
+SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'Kategorien / Listen');
+INSERT INTO `s_core_config` (`group`,`name`,`value`,`description`)
+VALUES (@parent, 'sMAXSUPPLIERSCATEGORY', '30', 'Max. Anzahl Hersteller in Sidebar');
+
+# Plugin Changes
+CREATE TABLE IF NOT EXISTS `s_core_plugin_configs_copy` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `pluginID` int(11) unsigned NOT NULL,
+  `localeID` int(11) unsigned NOT NULL,
+  `shopID` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`,`pluginID`,`localeID`,`shopID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+INSERT IGNORE INTO `s_core_plugin_configs_copy` (`name`, `value`, `pluginID`, `localeID`, `shopID`)
+SELECT `name`, `value`, `pluginID`, `localeID`, `shopID`
+FROM `s_core_plugin_configs`
+ORDER BY `pluginID`, `shopID`, `name`, `id` DESC;
+
+DROP TABLE IF EXISTS `s_core_plugin_configs`;
+RENAME TABLE `s_core_plugin_configs_copy` TO `s_core_plugin_configs`;
+
+# Filter Changes
+CREATE TABLE IF NOT EXISTS `s_filter_values_copy` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupID` int(11) NOT NULL,
+  `optionID` int(11) NOT NULL,
+  `articleID` int(11) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `groupID` (`groupID`),
+  KEY `optionID` (`optionID`,`articleID`,`value`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+INSERT IGNORE INTO `s_filter_values_copy` (`id`, `groupID`, `optionID`, `articleID`, `value`)
+SELECT `id`, `groupID`, `optionID`, `articleID`, `value`
+FROM `s_filter_values`;
+
+DROP TABLE IF EXISTS `s_filter_values`;
+RENAME TABLE `s_filter_values_copy` TO `s_filter_values`;
