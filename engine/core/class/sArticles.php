@@ -3260,9 +3260,6 @@ class sArticles
 			}
 			$getArticle = $tmpArticle;
 		}
-		if (isset($getArticle["liveshoppingData"]["max_quantity_enable"]) &&  $getArticle["liveshoppingData"]["max_quantity_enable"] == true && $getArticle["liveshoppingData"]["max_quantity"]>0){
-			$getArticle["maxpurchase"] = $getArticle["liveshoppingData"]["max_quantity"];
-		}
 		/**
 		 * LIVE-SHOPPING - END
 		 */
