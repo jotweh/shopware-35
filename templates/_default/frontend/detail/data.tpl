@@ -1,4 +1,5 @@
 {block name="frontend_detail_data"}
+
 	{* Caching instock status *}
 	{if !$sView}
 		<input id='instock_{$sArticle.ordernumber}'type='hidden' value='{$sArticle.instock}' /> 
@@ -96,7 +97,7 @@
 					{block name='frontend_detail_data_pseudo_price'}
 					{if $sArticle.pseudoprice}
 					{* if $sArticle.sVariants || $sArticle.priceStartingFrom*}
-					<div class="PseudoPrice displaynone">
+					<div class="PseudoPrice{if $sArticle.sVariants} displaynone{/if}">
 		            	<em>{$sArticle.pseudoprice|currency}</em>
 		            	{if $sArticle.pseudopricePercent.float}
 		            		<span>
