@@ -503,18 +503,20 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		if(function_exists('mb_convert_encoding')) {
 			$string = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
 		}
-		$string = str_replace(array('&nbsp;', '&amp'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), $string);
+		$string = str_replace(array('&nbsp;', '&amp;'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), $string);
 		$string = html_entity_decode(utf8_decode($string), ENT_NOQUOTES);
-		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), array('&nbsp;', '&amp'), $string);
+		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), array('&nbsp;', '&amp;'), $string);
 		return $string;
 	}
 	
 	private function getFormatSnippetForGrid($string) {
+		$string = str_replace(array('&nbsp;', '&amp;'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), $string);
 		if(function_exists('mb_convert_encoding')) {
 			$string = mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
 		} else {
 			$string = utf8_encode(html_entity_decode($string, ENT_NOQUOTES));
 		}
+		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), array('&nbsp;', '&amp;'), $string);
 		return $string;
 	}
 	
