@@ -81,11 +81,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		
 		$this->View()->sShowEsdNote = $this->getEsdNote();
 		$this->View()->sDispatchNoOrder = $this->getDispatchNoOrder();
+		$this->View()->sRegisterFinished = !empty($this->session['sRegisterFinished']);
 		
 		$this->saveTemporaryOrder();
 		
-		if($this->getMinimumCharge())
-		{
+		if($this->getMinimumCharge()) {
 			return $this->forward('cart');
 		}
 		

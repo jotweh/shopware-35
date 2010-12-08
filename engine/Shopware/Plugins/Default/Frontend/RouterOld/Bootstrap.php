@@ -99,7 +99,7 @@ class Shopware_Plugins_Frontend_RouterOld_Bootstrap extends Shopware_Components_
 			$sql = 'SELECT description FROM s_categories WHERE id=?';
 			$title = Shopware()->Db()->fetchOne($sql, array($query['sCategory']));
 		}
-		unset($query['sCoreId'], $query['sUseSSL'], $query['title'], $query['module']);
+		unset($query['title'], $query['module']);
 		if(!empty($query['sAction'])&&$query['sAction']=='index') {
 			unset($query['sAction']);
 		}

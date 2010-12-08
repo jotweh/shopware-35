@@ -1,4 +1,24 @@
 <div id="left" class="grid_4 first info">
+
+	{block name='frontend_checkout_confirm_left_payment_method'}
+	{if !$sRegisterFinished}
+	<h2 class="headingbox largesize">{s name="ConfirmHeaderPayment"}{/s}</h2>
+	<div class="payment_method">
+		<div class="inner_container">
+			<p>
+				<strong>{$sUserData.additional.payment.description}</strong><br />
+	            
+	            {if !$sUserData.additional.payment.esdactive}
+	                {s name="ConfirmInfoInstantDownload"}{/s}
+	            {/if}
+	        </p>
+	        <a href="{$this->url(['controller'=>'account', 'action'=>'payment', 'sTarget'=>'checkout'])}" class="button-middle small">
+				{s name="ConfirmLinkChangePayment"}{/s}
+			</a>
+		</div>
+	</div>
+	{/if}
+	{/block}
 	
 	{block name='frontend_checkout_confirm_left_billing_address'}
 	<h2 class="headingbox largesize">{s name="ConfirmHeaderBilling"}{/s}</h2>
@@ -59,22 +79,5 @@
 		</div>
 	</div>
 	{/block}
-	
-	{block name='frontend_checkout_confirm_left_payment_method'}
-	<h2 class="headingbox largesize">{s name="ConfirmHeaderPayment"}{/s}</h2>
-	<div class="payment_method">
-		<div class="inner_container">
-			<p>
-				<strong>{$sUserData.additional.payment.description}</strong><br />
-	            
-	            {if !$sUserData.additional.payment.esdactive}
-	                {s name="ConfirmInfoInstantDownload"}{/s}
-	            {/if}
-	        </p>
-	        <a href="{$this->url(['controller'=>'account', 'action'=>'payment', 'sTarget'=>'checkout'])}" class="button-middle small">
-				{s name="ConfirmLinkChangePayment"}{/s}
-			</a>
-		</div>
-	</div>
-	{/block}
+
 </div>

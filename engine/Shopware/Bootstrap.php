@@ -80,6 +80,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     		$path = rtrim($request->getBasePath(),'/').'/';
     		$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
     	} else {
+    		$config = $this->getResource('Config');
     		$path = rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/';
     		$host = $config->get('Host')=='localhost' ? null : '.'.$config->get('Host');
     	}

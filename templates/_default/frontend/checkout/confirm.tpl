@@ -53,27 +53,15 @@
 	{include file="frontend/checkout/confirm_left.tpl"}
 {/block}
 
-{block name="frontend_index_header_javascript" append}
-<script type="text/javascript">
-//<![CDATA[
-	jQuery(document).ready(function($) {
-		$('.payment_method .change a').click(function(){
-			$('.method_hide').fadeIn();
-			$(this).css('display', 'none');
-			$('.method_selected').css('display', 'none');
-			return false;
-		});
-	});
-//]]>
-</script>
-{/block}
-
 {* Main content *}
 {block name="frontend_index_content"}
 <div id="confirm" class="grid_16 first">
 
 	{block name='frontend_checkout_confirm_payment'}
-	{include file='frontend/checkout/confirm_payment.tpl'}
+		{include file='frontend/checkout/confirm_payment.tpl'}
+	{/block}
+	{block name='frontend_checkout_confirm_dispatch'}
+		{include file='frontend/checkout/confirm_dispatch.tpl'}
 	{/block}
 	
 	{* Error messages *}
@@ -96,7 +84,7 @@
 		
 		{* Dispatch method *}
 		{block name='frontend_checkout_confirm_shipping'}
-		{if $sDispatches}
+		{*if $sDispatches}
 			<div class="shipping_select">
 				<h4 class="bold">{se name="ConfirmHeadDispatch"}{/se}</h4>
 				<p>
@@ -132,7 +120,7 @@
 				{/if}
 				
 			</div>
-		{/if}
+		{/if*}
 		{/block}
 				
 		{* Table footer *}
@@ -174,7 +162,7 @@
 			<div class="agb">
 				<div class="revocation">{s name="ConfirmTextRightOfRevocation"}{/s}</div>
 				{block name='frontend_checkout_confirm_agb'}
-				{if !$this->config('IGNOREAGB')}
+				{if !{config name='IgnoreAGB'}}
 					<div>
 				    	<div class="agb_accept">
 				    		<input type="checkbox" class="left" name="sAGB" id="sAGB" value="1" />

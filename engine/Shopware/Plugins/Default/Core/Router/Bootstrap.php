@@ -83,26 +83,30 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 			}
 		}
 		
-		if (!empty($params['sDetails'])&&!empty($params['sViewport'])&&$params['sViewport']=='detail')
-		{
+		if (!empty($params['sDetails'])&&!empty($params['sViewport'])&&$params['sViewport']=='detail'){
 			$params['sArticle'] = $params['sDetails'];
 			unset($params['sDetails']);
 		}
-		if(empty($params['module']))
-		{
+		
+		if(empty($params['module'])) {
 			$params['module'] = $request->getModuleName() ? $request->getModuleName() : '';
-			if(empty($params['sViewport']))
-			{
+			if(empty($params['sViewport'])) {
 				$params['sViewport'] = $request->getControllerName() ? $request->getControllerName() : 'index';
-				if(empty($params['sAction']))
-				{
+				if(empty($params['sAction'])) {
 					$params['sAction'] = $request->getActionName() ? $request->getActionName() : 'index';
 				}
 			}
 		}
+
+		if(isset($params['sAction'])) {
+			$params = array_merge(array('sAction'=>null), $params);
+		}
+		if(isset($params['sViewport'])) {
+			$params = array_merge(array('sViewport'=>null), $params);
+		}
 		
-		unset($params['sUseSSL'], $params['fullPath'], $params['appendSession'], $params['forceSecure']);		
-		
+		unset($params['sUseSSL'], $params['fullPath'], $params['appendSession'], $params['forceSecure'], $params['sCoreId']);		
+				
 		return $params;
 	}
 	
