@@ -516,7 +516,6 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		} else {
 			$string = utf8_encode(html_entity_decode($string, ENT_NOQUOTES));
 		}
-		htmlspecialchars();
 		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'), array('&nbsp;', '&amp;', '&lt;', '&gt;'), $string);
 		return $string;
 	}
