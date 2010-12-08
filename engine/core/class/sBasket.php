@@ -776,14 +776,14 @@ class sBasket
 			$updateBasketStatus = $this->sSYSTEM->sDB_CONNECTION->Execute(
 			"UPDATE s_order_basket 
 			SET 
-			lastviewport = '".$sViewport."',
-			useragent = '".$_SERVER["HTTP_USER_AGENT"]."',
+			lastviewport = ?,
+			useragent = ?,
 			userID = '".intval($this->sSYSTEM->_SESSION['sUserId'])."'
-			WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."'");
+			WHERE sessionID=?",array($sViewport,$_SERVER["HTTP_USER_AGENT"],array($this->sSYSTEM->sSESSION_ID)));
 			// Refresh basket-prices
 			$basketData = $this->sSYSTEM->sDB_CONNECTION->GetAll("
 			SELECT id,modus, quantity FROM s_order_basket
-			WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."'");
+			WHERE sessionID=?",array($this->sSYSTEM->sSESSION_ID));
 			foreach ($basketData as $basketContent){
 				if (empty($basketContent["modus"])){
 					$this->sSYSTEM->sMODULES['sBasket']->sUpdateArticle ($basketContent["id"],$basketContent["quantity"]);
@@ -798,8 +798,8 @@ class sBasket
 		if (empty($this->sSYSTEM->sCONFIG['sPREMIUMSHIPPIUNG']))
 		{
 			$rs = $this->sSYSTEM->sDB_CONNECTION->Execute("
-			DELETE FROM s_order_basket WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."' AND modus=3
-			");
+			DELETE FROM s_order_basket WHERE sessionID=? AND modus=3
+			",array($this->sSYSTEM->sSESSION_ID));
 		}
 		// Check for surcharges 
 		$this->sInsertSurcharge();
@@ -820,9 +820,7 @@ class sBasket
 		ORDER BY id ASC, datum DESC
 		";	// Modified 3.0.2 - 07.01.2009 - STH
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Basket_GetBasket_FilterSQL', $sql, array('subject'=>$this));
-		
-		
-		
+
 		eval($this->sSYSTEM->sCallHookPoint("sBasket.php_sGetBasket_AfterSQL"));
 		$getArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql,array($this->sSYSTEM->sSESSION_ID));
 		$countItems = count($getArticles);

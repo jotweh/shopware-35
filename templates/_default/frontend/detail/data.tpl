@@ -144,7 +144,7 @@
 						{if $sArticle.purchaseunit != $sArticle.referenceunit}
 							<span class="smallsize">
 			 				{if $sArticle.referenceunit}
-			 					{se name="DetailDataInfoBaseprice"}{/se} {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice} {s name="Star" namespace="frontend/listing/box_article"}{/s} {$this->config('CURRENCYHTML')}
+			 					{se name="DetailDataInfoBaseprice"}{/se} {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
 			 				{/if}
 			 				</span>
 						{/if}

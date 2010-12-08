@@ -64,7 +64,7 @@
 		{if $sArticle.purchaseunit}
 			{if $sArticle.purchaseunit == $sArticle.referenceunit} {else}
 				<div class="unit">
-					{if $sArticle.referenceunit}{$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency}{/if}
+					{if $sArticle.referenceunit}{$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}{/if}
 				</div>
 			{/if}
 		{/if}
