@@ -37,7 +37,7 @@
 			
 			{block name="frontend_checkout_payment_action_buttons"}
 				<div class="actions">
-					<input type="submit" value="{s name='CheckoutPaymentLinkSend'}Ändern{/s}" class="button-right large right" />
+					<input type="submit" value="{s name='CheckoutPaymentLinkSend'}Ändern{/s}" class="button-right small_right right" />
 				</div>
 			{/block}
 			

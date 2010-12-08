@@ -17,7 +17,7 @@ echo "
 // *****************
 foreach ($_POST as $pKey => $pValue){
 	if (!is_array($_POST[$pKey])){
-		$_POST[$pKey] = htmlspecialchars(mysql_real_escape_string($pValue));
+		$_POST[$pKey] = htmlspecialchars(mysql_real_escape_string($pValue), null, null, false);
 	}
 }
 

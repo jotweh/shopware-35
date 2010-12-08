@@ -749,7 +749,7 @@ div#notes .table_row .action a.basket {margin-bottom: 20px;}
 #confirm .payment_method .grid_5 {padding:0 0 0 40px;}
 #confirm .payment .change {margin: 0;float:right;}
 #confirm .payment .change a {margin: 10px}
-#confirm .payment .actions input {margin: 0 20px 20px 0}
+#confirm .payment .actions input {margin: 0 20px 10px 0}
 
 /* Shipping Calucator */
 #content #left.basket {width: 171px;border-left: 0 none;margin: 0 10px 0 1px;}
