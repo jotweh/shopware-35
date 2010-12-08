@@ -2,8 +2,8 @@
 	<div class="relatedbox_container{if $sArticle.sVariant} displaynone{/if}">
 		
 		{* Needed informations *}
-		<div class="bundle_related_articles displaynone">{$sRelatedArticles|json_encode|htmlentities}</div>
-		<div class="bundle_article_details displaynone">{$sArticle|json_encode|htmlentities}</div>
+		<div class="bundle_related_articles displaynone">{$sRelatedArticles|json_encode|escape}</div>
+		<div class="bundle_article_details displaynone">{$sArticle|json_encode|escape}</div>
 		
 		{* Heading *}
 		<h2 class="heading">{s name="BundleHeader"}{/s}:</h2>

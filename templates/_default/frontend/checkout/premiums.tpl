@@ -30,7 +30,7 @@
 	        	{* Article name *}
 	        	<div class="name">
 	        		<a href="{$premium.sArticle.linkDetails}" title="{$premium.sArticle.articleName}">
-	        			{$premium.sArticle.articleName|wordwrap:39:true}
+	        			{$premium.sArticle.articleName}
 	        		</a>
 	        	</div>
 				{/block}
@@ -49,7 +49,7 @@
 				<div class="name">
 					{block name='frontend_checkout_premium_article_name'}
 					<a href="{$premium.sArticle.linkDetails}" title="{$premium.sArticle.articleName}">
-						<strong>{$premium.sArticle.articleName|wordwrap:39:true}</strong>
+						<strong>{$premium.sArticle.articleName}</strong>
 					</a>
 					{/block}
 					

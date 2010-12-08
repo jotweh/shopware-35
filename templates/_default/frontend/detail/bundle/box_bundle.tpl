@@ -2,9 +2,9 @@
 	<div class="bundle_container{if $sArtile.sVariant} displaynone{/if}">
 		
 		{* Needed informations *}
-		<div class="bundle_bundles_details displaynone">{$sBundles|json_encode|htmlentities}
+		<div class="bundle_bundles_details displaynone">{$sBundles|json_encode|escape}
 		</div>
-		<div class="bundle_article_details displaynone">{$sArticle|json_encode|htmlentities}</div>
+		<div class="bundle_article_details displaynone">{$sArticle|json_encode|escape}</div>
 				
 		{* Headline *}
 		<h2 class="heading">{s name="BundleHeader"}{/s}:</h2>

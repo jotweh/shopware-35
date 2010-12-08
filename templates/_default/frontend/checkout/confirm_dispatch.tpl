@@ -14,11 +14,11 @@
 					{/block}
 					
 					{block name='frontend_checkout_dispatch_fieldset_description'}
+					{if $dispatch.description}
 					<div class="grid_10 last">
-						{if $sDispatch.description}
-							{$sDispatch.description}
-						{/if}
+						{$dispatch.description}
 					</div>
+					{/if}
 					{/block}
 				</div>
 			{/foreach}
