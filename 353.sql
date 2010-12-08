@@ -28,6 +28,8 @@ INSERT IGNORE INTO `s_core_snippets` (`namespace`, `shopID`, `localeID`, `name`,
 ('frontend/listing/box_article', 1, 1, 'Star', '*', '2010-12-08 02:51:26', '2010-12-08 02:51:26'),
 ('frontend/listing/box_article', 1, 1, 'reducedPrice', 'Statt: ', '2010-12-08 02:52:32', '2010-12-08 02:52:32');
 
+UPDATE `s_core_snippets` SET `value` = 'Prüfen und Bestellen' WHERE `value` = 'Bestellung abschließen';
+
 # Seo Changes
 UPDATE `s_core_config` SET `value` = CONCAT(`value`, ',search,account,checkout,register') WHERE `name` = 'sSEOVIEWPORTBLACKLIST' AND `value` NOT LIKE '%checkout%';
 
