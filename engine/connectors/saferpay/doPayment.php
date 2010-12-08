@@ -283,6 +283,13 @@ $userData = $payment->sUser;
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// **************************************************
 
-	header("Location: $payment_url");
-
+	//header("Location: $payment_url");
 ?>
+<html>
+	<head>
+		<meta http-equiv="REFRESH" content="1;url=<?php echo htmlspecialchars($payment_url);?>">
+	</head>
+	<body onload="document.getElementById('moneybookers_form').submit();">
+		<form target="_top" id="moneybookers_form" name="moneybookers_form" method="post" action="<?php echo htmlspecialchars($payment_url);?>"></form>
+	</body>
+</html>
