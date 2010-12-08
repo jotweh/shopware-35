@@ -166,7 +166,7 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		$data["oldName"] = $name;
 		$data["oldNamespace"] = $namespace;
 		foreach ($getSnippets as $snippet) {
-			$data[$snippet["locale"]."-".$snippet["id"]] = utf8_encode(($snippet["value"]));
+			$data[$snippet["locale"]."-".$snippet["id"]] = $this->getFormatSnippetForGrid(($snippet["value"]));
 		}
 		echo json_encode(array("snippet"=>array($data)));
 	}
@@ -500,16 +500,21 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 	// Helper
 	/////////////////////////////////////////
 	private function getFormatSnippetForSave($string) {
-		$cur_encoding = mb_detect_encoding($string);
-		if($cur_encoding == "UTF-8" && mb_check_encoding($in_str,"UTF-8")){
-			$string = utf8_decode($string);
+		if(function_exists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
 		}
-		$string = html_entity_decode($string);
+		$string = str_replace(array('&nbsp;', '&amp'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), $string);
+		$string = html_entity_decode(utf8_decode($string), ENT_NOQUOTES);
+		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%'), array('&nbsp;', '&amp'), $string);
 		return $string;
 	}
 	
 	private function getFormatSnippetForGrid($string) {
-		$string = utf8_encode($string); // will do htmlentities in js renderer
+		if(function_exists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
+		} else {
+			$string = utf8_encode(html_entity_decode($string, ENT_NOQUOTES));
+		}
 		return $string;
 	}
 	
