@@ -8,7 +8,7 @@
 				<div class="grid_15 method">
 					{block name='frontend_checkout_payment_fieldset_input_radio'}
 					<div class="grid_5 first">
-						<input type="radio" name="register[payment]" class="radio" value="{$payment_mean.id}" id="payment_mean{$payment_mean.id}"{if $payment_mean.id eq $sPayment.id} checked="checked"{/if} />
+						<input type="radio" name="register[payment]" class="radio auto_submit" value="{$payment_mean.id}" id="payment_mean{$payment_mean.id}"{if $payment_mean.id eq $sPayment.id} checked="checked"{/if} />
 						<label class="description" for="payment_mean{$payment_mean.id}">{$payment_mean.description}</label>
 					</div>
 					{/block}
