@@ -30,17 +30,17 @@
 					</div>
 				{/block}
 			{else}
-				<div class="grid_15 method">
+				<div class="grid_15 method_last">
 					{block name='frontend_checkout_dispatch_fieldset_input_radio'}
 					<div class="grid_5 first">
-						<label class="description" for="confirm_dispatch{$dispatch.id}">{$dispatch.name}</label>
+						<label class="description">{$sDispatch.name}</label>
 					</div>
 					{/block}
 					
 					{block name='frontend_checkout_dispatch_fieldset_description'}
-					{if $dispatch.description}
+					{if $sDispatch.description}
 					<div class="grid_10 last">
-						{$dispatch.description}
+						{$sDispatch.description}
 					</div>
 					{/if}
 					{/block}
