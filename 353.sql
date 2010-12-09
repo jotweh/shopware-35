@@ -17,7 +17,6 @@ DELETE FROM `s_core_snippets` WHERE `namespace` LIKE 'templates/_default/%';
 DELETE FROM `s_core_config_groups` WHERE `name` = 'Debugging';
 
 # Crontab Changes
-ALTER TABLE `s_crontab` ADD `pluginID` INT NOT NULL;
 UPDATE `s_crontab` SET `interval` = 86400 WHERE `interval` IN (1, 10, 100);
 
 # Snippet Changes
@@ -79,3 +78,7 @@ FROM `s_filter_values`;
 
 DROP TABLE IF EXISTS `s_filter_values`;
 RENAME TABLE `s_filter_values_copy` TO `s_filter_values`;
+
+# Table Changes
+
+ALTER TABLE `s_crontab` ADD `pluginID` INT( 11 ) UNSIGNED NULL;
