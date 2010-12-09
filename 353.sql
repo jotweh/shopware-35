@@ -37,7 +37,7 @@ UPDATE `s_core_config` SET `multilanguage` = '1' WHERE `name` IN ('sXPRESS', 'sP
 
 # Max. Suppliers Config
 SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'Kategorien / Listen');
-INSERT INTO `s_core_config` (`group`,`name`,`value`,`description`)
+INSERT IGNORE INTO `s_core_config` (`group`,`name`,`value`,`description`)
 VALUES (@parent, 'sMAXSUPPLIERSCATEGORY', '30', 'Max. Anzahl Hersteller in Sidebar');
 
 # Plugin Changes
