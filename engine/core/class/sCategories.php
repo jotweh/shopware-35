@@ -406,7 +406,7 @@ class sCategories
 				$link = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=cat&sCategory=$id";
 			}
 			
-			$getCategoriesArray[] = array("link"=>$link,"name"=>$name,"sub"=>$subCategories);
+			$getCategoriesArray[] = array("id"=>$id,"link"=>$link,"name"=>$name,"sub"=>$subCategories);
 			
 			eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetWholeCategoryTree_LoopEnd"));
 		}

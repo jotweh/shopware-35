@@ -1,6 +1,8 @@
 <?php
 class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 {
+	protected $result;
+	
 	public function init()
 	{
 		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
@@ -41,30 +43,23 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 				$url .= "\r\n";
 				echo $url;
 			}
-			
-			$sql= "
-				SELECT
-					c.id,
-					c.description as title,
-					MAX(DATE(a.changetime)) as `lastmod`
-				FROM 
-					s_categories c,
-					s_articles_categories ac,
-					s_articles a
-				WHERE c.id=ac.categoryID
-				AND a.id=ac.articleID
-				AND c.parent!=1
-				GROUP BY ac.categoryID
-			";
-			$result = Shopware()->Db()->fetchAll($sql);
+			unset($result);
+			foreach (Shopware()->Modules()->sCategories()->sGetMainCategories() as $category){
+				$id = $category["id"];
+				$this->result[] = array("id"=>$id,"link"=>$category["link"],"name"=>$category["description"]);
+				$subs = Shopware()->Modules()->sCategories()->sGetWholeCategoryTree($id);
+				
+				$this->filter($subs);
+				
+				$result = $this->result;
+			}
 			if($result){
 				foreach ($result as $category){
 					
 					$category["loc"] = $this->Front()->Router()->assemble(array('sViewport'=>'cat','sCategory'=>$category["id"]));
 					$url = '<url>';
 					$url .= '<loc>'.$category['loc'].'</loc>';
-					if(!empty($category['lastmod']))
-						$url .= '<lastmod>'.$category['lastmod'].'</lastmod>';
+					$url .= '<lastmod>'.date("Y-m-d").'</lastmod>';
 					$url .= '<changefreq>weekly</changefreq><priority>0.5</priority>';
 					$url .= '</url>';
 					$url .= "\r\n";
@@ -72,6 +67,15 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 				}
 			}
 			echo "</urlset>\r\n";
+		}
+	}
+	
+	public function filter($categories){
+		foreach ($categories as $category){
+			$this->result[] = array("id"=>$category["id"],"link"=>$category["link"],"name"=>$category["description"] ? $category["description"] : $category["name"]);
+			if ($category["subs"]){
+				$this->filter($category["subs"]);
+			}
 		}
 	}
 }
