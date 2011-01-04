@@ -23,11 +23,11 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 			$this->View()->Logo = "logoCE";
 		}
 		
-		$this->View()->rssData = $this->_getRssFeed();
+		$this->View()->rssData = $this->getRssFeed();
 		$this->View()->Scheme = $this->Request()->getScheme();
-		$this->View()->BackendUsers = implode(',',$this->_getUsers());
+		$this->View()->BackendUsers = implode(',',$this->getUsers());
 		$this->View()->SidebarActive = $_SESSION['sSidebar'];
-		$this->View()->Amount = $this->_getAmount();
+		$this->View()->Amount = $this->getAmount();
 		$this->View()->UserName = $_SESSION['sName'];
 		$connectString = "?domain=".Shopware()->Config()->Host."&pairing=".Shopware()->Config()->AccountId;
 		$this->View()->accountUrl = "https://support.shopware2.de/account2/index.php$connectString";
@@ -42,7 +42,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		return $this->redirect('backend/auth');
 	}
 	
-	protected function _getUsers()
+	protected function getUsers()
 	{
 		$getUsers = Shopware()->Db()->fetchAll('SELECT id, username FROM s_core_auth ORDER BY username ASC');
 		$users = array();
@@ -52,7 +52,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		return $users;
 	}
 	
-	protected function _getRssFeed()
+	protected function getRssFeed()
 	{
     	$data = array();
     	try {
@@ -66,47 +66,8 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
     	} catch (Exception $e) { }
 	    return Zend_Json::encode($data);;
 	}
-	
-	protected function _getMenu(){
-		$sql = '
-			SELECT 
-				id,	parent, hyperlink, name, onclick, style, class, position, ul_properties
-			FROM 
-				s_core_menu
-			WHERE
-				active=1 AND parent = 0
-			ORDER BY position ASC 
-		';
-		$entrys = Shopware()->Db()->fetchAll($sql);
 		
-		if (!$entrys){
-			throw new Enlight_Exception('Could not load backend menu');
-		}
-		
-		$entrys = $this->_getChilds($entrys);
-		return $entrys;
-	}
-
-	protected function _getChilds($entrys)
-	{
-		foreach ($entrys as &$entry){
-			$getChilds = Shopware()->Db()->fetchAll('
-				SELECT 
-					id,	parent, hyperlink, name, onclick, style, class, position, ul_properties
-				FROM 
-					s_core_menu
-				WHERE
-					active=1 AND parent = ?
-				ORDER BY position ASC 
-			',array($entry['id']));
-			if (!empty($getChilds)){
-				$entry['childs'] = $this->_getChilds($getChilds);
-			}
-		}
-		return $entrys;
-	}
-	
-	protected function _getAmount()
+	protected function getAmount()
 	{
 		$post = array();
 		

@@ -20,6 +20,15 @@ class Shopware_Plugins_Backend_Menu_Bootstrap extends Shopware_Components_Plugin
 		
 		$menu->load();
 				
+		if(isset($_SESSION['sRights']) && empty($_SESSION['sAdmin'])) {
+			$iterator = new RecursiveIteratorIterator($menu, RecursiveIteratorIterator::SELF_FIRST);
+	        foreach ($iterator as $page) {
+	        	if(!$page->getParent() instanceof Shopware_Components_Menu && !in_array($page->getId(), $_SESSION['sRights'])) {
+	        		$page->setVisible(false);
+	        	}
+	        }
+		}
+				
         return $menu;
 	}
 }

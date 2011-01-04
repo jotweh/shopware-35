@@ -26,18 +26,20 @@
 {block name="backend_index_body_inline"}
 	<div id="header">
 		{block name="backend_index_index_menu_function"}
-			{function name=categories level=0}
-				{foreach from=$categories item=category}
-				    <li {if !$level}class="main"{/if}>
-						<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
-							{$category->label} 
-						</a>
-				    	{if $category->hasChildren()}
-				    		<ul {if $level}style="margin-left:100%;width:100%"{/if}>
-					     		{call name=categories categories=$category level=$level+1}
-					     	</ul>
-					    {/if}
-				    </li>
+			{function name=menu level=0}
+				{foreach from=$items item=item}
+					{if $item->isVisible()}
+					    <li {if !$level}class="main"{/if}>
+							<a class="{$item->class}" style="{$item->style};cursor:pointer" {if $item->onclick}onclick="{$item->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
+								{$item->label} 
+							</a>
+					    	{if $item->hasChildren()}
+					    		<ul {if $level} style="margin-left:100%;width:100%"{/if}>
+						     		{call name=menu items=$item level=$level+1}
+						     	</ul>
+						    {/if}
+					    </li>
+					{/if}
 				{/foreach}
 			{/function}
 		{/block}
@@ -45,7 +47,7 @@
 		{block name="backend_index_index_menu"}
 			{if $Menu}
 				<ul id="nav">
-					{call name=categories categories=$Menu}
+					{call name=menu items=$Menu}
 				</ul>
 			{/if}
 		{/block}
