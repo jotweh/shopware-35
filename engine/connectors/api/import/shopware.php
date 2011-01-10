@@ -273,7 +273,9 @@ class sShopwareImport
 			if ($article['kind']==1) {
 				$article['articleID'] = $row['articleID'];
 			}
-			$article['taxID'] = $row['taxID'];
+			if(empty($article['taxID']) && empty($article['tax'])) {
+				$article['taxID'] = $row['taxID'];
+			}
 		}
 		
 		if($article['kind']==2 && !empty($article['ordernumber']))
@@ -886,7 +888,7 @@ class sShopwareImport
 					$sql = "
 						UPDATE s_user_shippingaddress 
 						SET $upset
-						WHERE id = {$article['shippingaddressID']}
+						WHERE id = {$customer['shippingaddressID']}
 					";
 					$this->sDB->Execute($sql);
 				}
@@ -3355,7 +3357,7 @@ class sShopwareImport
 	
 	function sArticleTranslation($article)
 	{
-		$sql = "SELECT DISTINCT isocode FROM s_core_multilanguage WHERE skipbackend=0 AND isocode!='de'";
+		$sql = "SELECT DISTINCT isocode FROM s_core_multilanguage WHERE skipbackend=0";
 		$languages = $this->sDB->GetCol($sql);
 		if(empty($languages)) return true;
 
