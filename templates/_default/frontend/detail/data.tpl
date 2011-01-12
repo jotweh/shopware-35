@@ -1,7 +1,7 @@
 {block name="frontend_detail_data"}
 
 	{* Caching instock status *}
-	{if !$sView}
+	{if $sView}
 		<input id='instock_{$sArticle.ordernumber}'type='hidden' value='{$sArticle.instock}' /> 
 	{/if}
 	
@@ -37,7 +37,9 @@
 	{block name="frontend_detail_data_delivery"}
 	
 		{* Delivery informations *}
-		{include file="frontend/plugins/index/delivery_informations.tpl" sArticle=$sArticle}
+		{if $sView}
+			{include file="frontend/plugins/index/delivery_informations.tpl" sArticle=$sArticle}
+		{/if}
 	{/block}
 	
 	{if !$sArticle.liveshoppingData.valid_to_ts}

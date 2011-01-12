@@ -42,7 +42,7 @@
 				{* Caching article details for future use *}
 				{if $sArticle.sBundles || $sArticle.sRelatedArticles && $sArticle.crossbundlelook || $sArticle.sVariants}
 					<div id="{$sArticle.ordernumber}" class="displaynone">
-				        {include file="frontend/detail/data.tpl" sArticle=$sArticle}
+				        {include file="frontend/detail/data.tpl" sArticle=$sArticle sView=1}
 				    </div>
 				{/if}
 				
@@ -51,7 +51,7 @@
 					
 					{foreach name=line from=$sArticle.sVariants item=sVariant}
 					    <div id="{$sVariant.ordernumber}" class="displaynone">
-					        {include file="frontend/detail/data.tpl" sArticle=$sVariant}
+					        {include file="frontend/detail/data.tpl" sArticle=$sVariant sView=1}
 					    </div>
 					{/foreach}
 				{/if}
@@ -59,7 +59,7 @@
 				{* Article data *}
 				<div id="article_details">
 					{block name='frontend_detail_index_data'}
-						{include file="frontend/detail/data.tpl" sArticle=$sArticle sView=1}
+						{include file="frontend/detail/data.tpl" sArticle=$sArticle sView=0}
 					{/block}
 				</div>
 				{block name='frontend_detail_index_after_data'}{/block}
