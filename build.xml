@@ -40,6 +40,7 @@
             <fileset dir="${basedir}/engine">
                 <include name="**/*.php" />
                 <exclude name="vendor/html2ps/**/*.*" />
+                <exclude name="Enlight/Enlight/View/ViewJson.php" />
             </fileset>
         </apply>
     </target>
