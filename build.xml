@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Shopware" basedir="." default="build-nightly">
+
+    <property name="builddir" location="${basedir}/../build" />
+    <property name="logdir" location="${builddir}/logs" />
+    
+    <target name="build-nightly"
+            depends="test-static" />
+
+    <target name="clean" description="-> Deletes all temporary build artifacts">
+        <delete dir="${builddir}" />
+    </target>
+    
+    <target name="prepare" depends="clean" description="-> Creates the temporary build directory.">
+        <mkdir dir="${builddir}" />
+        <mkdir dir="${logdir}" />
+    </target>
+
+    <target name="svn-update" 
+            depends="prepare"
+            description="-> Performs an update on the projects's sources">
+        <exec executable="svn" failonerror="on">
+            <arg value="up" />
+            <arg value="${basedir}" />
+        </exec>
+    </target>
+    
+    <target name="test-static" 
+            depends="svn-update"
+            description="-> Performs all static tests against the project source">
+        <parallel>
+            <antcall target="-test-syntax" />
+            <antcall target="-test-cpd" />
+        </parallel>
+    </target>
+    
+    <target name="-test-syntax">
+        <apply executable="php" failonerror="on" output="${logdir}/syntax.log">
+            <arg value="-l" />
+            <fileset dir="${basedir}/engine">
+                <include name="**/*.php" />
+                <exclude name="vendor/html2ps/**/*.*" />
+            </fileset>
+        </apply>
+    </target>
+    
+    <target name="-test-cpd">
+        <exec executable="phpcpd" output="/dev/null" errorproperty="phpcpd-failed">
+            <arg value="--log-pmd" />
+            <arg value="${logdir}/cpd.xml" />
+            <arg value="--exclude" />
+            <arg value="${basedir}/engine/Enlight/Vendor" />
+            <arg value="--exclude" />
+            <arg value="${basedir}/engine/vendor" />
+            <arg value="${basedir}/engine" />
+        </exec>
+        
+        <!--<fail if="phpcpd-failed">Es gab kopierten code</fail>-->
+    </target>
+</project>
