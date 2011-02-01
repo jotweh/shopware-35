@@ -31,6 +31,7 @@
         <parallel>
             <antcall target="-test-syntax" />
             <antcall target="-test-cpd" />
+            <antcall target="-test-pmd" />
         </parallel>
     </target>
     
@@ -58,5 +59,15 @@
         </exec>
         
         <!--<fail if="phpcpd-failed">Es gab kopierten code</fail>-->
+    </target>
+    
+    <target name="-test-pmd">
+        <exec executable="phpmd">
+            <arg value="${basedir}/engine" />
+            <arg value="xml" />
+            <arg value="unusedcode,codesize" />
+            <arg value="--reportfile" />
+            <arg value="${logdir}/pmd.xml" />
+        </exec>
     </target>
 </project>
