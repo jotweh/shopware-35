@@ -41,6 +41,7 @@
                 <include name="**/*.php" />
                 <exclude name="vendor/html2ps/**/*.*" />
                 <exclude name="Enlight/Enlight/View/ViewJson.php" />
+                <exclude name="connectors/api/convert" />
             </fileset>
         </apply>
     </target>
