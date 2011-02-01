@@ -4,6 +4,8 @@
     <property name="builddir" location="${basedir}/../build" />
     <property name="logdir" location="${builddir}/logs" />
     
+    <target name="build" />
+    
     <target name="build-nightly"
             depends="test-static" />
 
@@ -32,6 +34,7 @@
             <antcall target="-test-syntax" />
             <antcall target="-test-cpd" />
             <antcall target="-test-pmd" />
+            <antcall target="-test-checkstyle" />
         </parallel>
     </target>
     
@@ -70,6 +73,16 @@
             <arg value="${logdir}/pmd.xml" />
             <arg value="--exclude" />
             <arg value="vendor,Enlight/Vendor" />
+        </exec>
+    </target>
+    
+    <target name="-test-checkstyle">
+        <exec executable="phpcs">
+            <arg value="--standard=Zend" />
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${logdir}/checkstyle.xml" />
+            <arg value="--ignore=Enlight/Vendor,Enlight/Enlight/Zend,vendor" />
+            <arg value="${basedir}/engine"/>
         </exec>
     </target>
 </project>
