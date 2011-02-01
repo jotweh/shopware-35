@@ -78,7 +78,7 @@
     
     <target name="-test-checkstyle">
         <exec executable="phpcs">
-            <arg value="--standard=Zend" />
+            <arg value="--standard=Shopware" />
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${logdir}/checkstyle.xml" />
             <arg value="--ignore=Enlight/Vendor,Enlight/Enlight/Zend,vendor" />
