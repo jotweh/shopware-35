@@ -3,6 +3,7 @@
 
     <property name="builddir" location="${basedir}/../build" />
     <property name="logdir" location="${builddir}/logs" />
+    <property name="sourcedir" location="${basedir}/engine/Shopware" />
     
     <target name="build" />
     
@@ -41,7 +42,7 @@
     <target name="-test-syntax">
         <apply executable="php" failonerror="on" output="${logdir}/syntax.log">
             <arg value="-l" />
-            <fileset dir="${basedir}/engine">
+            <fileset dir="${sourcedir}">
                 <include name="**/*.php" />
                 <exclude name="vendor/html2ps/**/*.*" />
                 <exclude name="Enlight/Enlight/View/ViewJson.php" />
@@ -55,10 +56,10 @@
             <arg value="--log-pmd" />
             <arg value="${logdir}/cpd.xml" />
             <arg value="--exclude" />
-            <arg value="${basedir}/engine/Enlight/Vendor" />
+            <arg value="engine/Enlight/Vendor" />
             <arg value="--exclude" />
-            <arg value="${basedir}/engine/vendor" />
-            <arg value="${basedir}/engine" />
+            <arg value="engine/vendor" />
+            <arg value="${sourcedir}" />
         </exec>
         
         <!--<fail if="phpcpd-failed">Es gab kopierten code</fail>-->
@@ -66,7 +67,7 @@
     
     <target name="-test-pmd">
         <exec executable="phpmd">
-            <arg value="${basedir}/engine" />
+            <arg value="${sourcedir}" />
             <arg value="xml" />
             <arg value="unusedcode,codesize" />
             <arg value="--reportfile" />
@@ -82,7 +83,7 @@
             <arg value="--report=checkstyle" />
             <arg value="--report-file=${logdir}/checkstyle.xml" />
             <arg value="--ignore=Enlight/Vendor,Enlight/Enlight/Zend,vendor" />
-            <arg value="${basedir}/engine"/>
+            <arg value="${sourcedir}"/>
         </exec>
     </target>
 </project>
