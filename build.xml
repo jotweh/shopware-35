@@ -5,6 +5,8 @@
     <property name="logdir" location="${builddir}/logs" />
     <property name="sourcedir" location="${basedir}/engine/Shopware" />
     
+    
+    
     <target name="build" />
     
     <target name="build-nightly"
@@ -14,9 +16,75 @@
         <delete dir="${builddir}" />
     </target>
     
-    <target name="prepare" depends="clean" description="-> Creates the temporary build directory.">
+    <target name="prepare" 
+            depends="clean,
+                     -load-properties,
+                     -prepare-application-directories,
+                     -prepare-application-config-file" 
+            description="-> Creates the temporary build directory.">
         <mkdir dir="${builddir}" />
         <mkdir dir="${logdir}" />
+        
+        <!-- Create required application directories -->
+    </target>
+    
+    <target name="-load-properties"
+            depends="-load-properties-local-settings">
+            
+    	<property file="${basedir}/build.properties.default" />
+    </target>
+    
+    <target name="-load-properties-local-settings"
+            depends="-load-properties-test-local-settings"
+            if="load-properties-test-local-settings">
+            
+        <property file="${basedir}/build.properties" />
+    </target>
+            
+    
+    <target name="-load-properties-test-local-settings">
+        <available file="${basedir}/build.properties"
+                   property="load-properties-test-local-settings" />
+    </target>
+    
+    <target name="-prepare-application-directories">
+        <mkdir dir="${basedir}/cache/database" />
+        <mkdir dir="${basedir}/cache/templates" />
+        <chmod dir="${basedir}/cache" includes="**" perm="777"/>
+
+        
+        <mkdir dir="${basedir}/files/552211cce724117c3178e3d22bec532ec" />
+        <mkdir dir="${basedir}/files/cms" />
+        <mkdir dir="${basedir}/files/documents" />
+        <mkdir dir="${basedir}/files/downloads" />
+        <chmod dir="${basedir}/files/" includes="**" perm="777"/>
+        
+        <mkdir dir="${basedir}/images/articles" />
+        <mkdir dir="${basedir}/images/banner" />
+        <mkdir dir="${basedir}/images/cms" />
+        <mkdir dir="${basedir}/images/supplier" />
+        <chmod dir="${basedir}/images/" includes="**" perm="777"/>
+        
+        <mkdir dir="${basedir}/uploads" />
+        <chmod dir="${basedir}/uploads/" includes="**" perm="777"/>
+        
+        <chmod dir="${basedir}/engine/Shopware/Plugins/Community" includes="**" perm="777" />
+        <chmod dir="${basedir}/engine/Shopware/Proxies" includes="**" perm="777" />
+        <chmod dir="${basedir}/engine/Enlight/Vendor/mpdf/tmp" includes="**" perm="777" />
+        <chmod dir="${basedir}/engine/Enlight/Vendor/mpdf/ttfontdata" includes="**" perm="777" />
+    </target>
+    
+    <target name="-prepare-application-config-file">
+        <copy file="${basedir}/config.php.template"
+              tofile="${basedir}/config.php"
+              overwrite="true">
+			<filterset begintoken="@@" endtoken="@@">
+				<filter token="hostname" value="${shopware.db.hostname}"/>
+				<filter token="username" value="${shopware.db.username}"/>
+				<filter token="password" value="${shopware.db.password}"/>
+				<filter token="database" value="${shopware.db.database}"/>
+			</filterset>
+        </copy>
     </target>
 
     <target name="svn-update" 
