@@ -68,6 +68,8 @@
             <arg value="unusedcode,codesize" />
             <arg value="--reportfile" />
             <arg value="${logdir}/pmd.xml" />
+            <arg value="--exclude" />
+            <arg value="vendor,Enlight/Vendor" />
         </exec>
     </target>
 </project>
