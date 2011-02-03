@@ -1,0 +1,359 @@
+/* This is the moving lens square underneath the mouse pointer. */
+.cloud-zoom-lens {
+	border: 4px solid #888;
+	margin:-4px;	/* Set this to minus the border thickness. */
+	background-color:#fff;	
+	cursor:move;		
+}
+
+/* This is for the title text. */
+.cloud-zoom-title {
+	font-family:Arial, Helvetica, sans-serif;
+	position:absolute !important;
+	background-color:#000;
+	color:#fff;
+	padding:3px;
+	width:100%;
+	text-align:center;	
+	font-weight:bold;
+	font-size:10px;
+	top:0px;
+	left:0px;
+}
+
+/* This is the zoom window. */
+.cloud-zoom-big {
+	border:0px solid #ccc;
+	overflow:hidden;
+}
+
+/* This is the loading message. */
+.cloud-zoom-loading {
+	color:white;	
+	background:#222;
+	padding:3px;
+	border:1px solid #000;
+}
+
+/*	SLIMBOX2
+	------------------------ */
+#lbOverlay {
+	position: fixed;
+	z-index: 8000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: #555;
+	opacity: 0.8;
+	cursor: pointer;
+}
+
+#lbCenter, #lbBottomContainer {
+	position: absolute;
+	z-index: 8500;
+	overflow: hidden;
+	background-color: #fff;
+}
+
+#lbCenter {
+	-webkit-box-shadow: 0px 0px 15px rgba(22, 22, 22, 0.9);
+	-moz-box-shadow: 0px 0px 15px rgba(22, 22, 22, 0.9);
+}
+
+.lbLoading {
+	background: #fff url(../images/loading.gif) no-repeat center;
+}
+
+#lbImage {
+	position: absolute;
+	left: 0;
+	top: 0;
+	border: 10px solid #fff;
+	background-repeat: no-repeat;
+}
+
+#lbPrevLink, #lbNextLink {
+	display: block;
+	position: absolute;
+	top: 0;
+	width: 50%;
+	outline: none;
+}
+
+#lbPrevLink {
+	left: 0;
+}
+
+#lbPrevLink:hover {
+	background: transparent url(../images/prevlabel.gif) no-repeat 0 15%;
+}
+
+#lbNextLink {
+	right: 10px;
+}
+
+#lbNextLink:hover {
+	background: transparent url(../images/nextlabel.gif) no-repeat 100% 15%;
+}
+
+#lbBottom {
+	font-family: Verdana, Arial, Geneva, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #666;
+	line-height: 1.4em;
+	text-align: left;
+	border: 10px solid #fff;
+	border-top-style: none;
+}
+
+#lbCloseLink {
+	display: block;
+	float: right;
+	width: 66px;
+	height: 22px;
+	background: transparent url(../images/closelabel.gif) no-repeat center;
+	margin: 5px 0;
+	outline: none;
+}
+
+#lbCloser {
+	width: 22px;
+	height: 22px;
+	background: url(../images/icons/ico_closebutton.gif) no-repeat;
+	position: absolute;
+	top:0;
+	margin: -11px 0 0 -11px;
+	z-index: 9000;
+	cursor: pointer;
+}
+#lbThumbs {
+	padding: 15px 0 0 0;
+	display: none;
+	background: #efefef;
+	width: 165px;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	overflow: scroll;
+	display: none;
+}
+#lbThumbs a img {
+	display: block;
+	max-width: 128px;
+	max-height: 68px;
+	border: 5px solid #dfe6eb;
+	margin: 5px auto;
+}
+#lbThumbs a img:hover, #lbThumbs a img.active {
+	border: 5px solid #10A0DE;
+}
+
+/*	MODAL BOX
+	------------------------ */
+.modal {
+	z-index: 9000;
+	border: 1px solid #333;
+	top: 10%;
+	left: 50%;
+	width: 560px;
+	background: #fff;
+	position: fixed;
+}
+.modal h2 {
+	font-family: Arial, Helvetica, 'Helvetica Neue', Verdana, sans-serif;
+	color: #333;
+	letter-spacing: -1px;
+	line-height: 1;
+	font-size: 21px;
+}
+.modal p {
+	font: 13px/18px Arial, Helvetica, 'Helvetica Neue', Verdana, sans-serif;
+	color: #555;
+	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
+}
+.modal .table_foot p, .modal .table_row p {
+	font: 11px/1.3em "Lucida Grande",Tahoma,Verdana,Arial,sans-serif;
+	margin: 0 0 0.5em;
+}
+.modal div.listing {
+	font-size: 11px;
+}
+.modal .close {
+	display: block;
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+	text-indent: -9999em;
+	background: url(../images/modal_close_button.png) no-repeat 0 0;
+	width: 52px;
+	height: 27px;
+}
+.modal iframe {
+	border: 0 none;
+	width: 100%;
+}
+.modal .close:active {
+	bottom: 14px;
+}
+
+/*	LOADING INDICATOR
+	------------------------ */
+.loadingIndicator {
+	background: #fff url(../images/icons/ico_ajax-loader.gif) center center no-repeat;
+	text-indent: -9999px;
+	border: 1px solid #333;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	height: 64px;
+	width: 64px;
+	z-index: 99999;
+}
+
+/*	SUGGEST SEARCH
+	------------------------ */
+div#searchresults {
+    display: none;
+    width: 450px;
+    padding: 0px 0px 40px;
+    border: 3px solid #c7c7c7;
+    z-index: 8000;
+    position: absolute;
+    top: 200px;
+    left: 255px;
+    font-size: 10px;
+    line-height: 12px;
+}
+a.resultall {
+    position: absolute;
+    bottom: 0;
+    cursor: pointer;
+    padding: 14px 0;
+    font-size: 11px;
+    font-weight: 700;
+    width: 100%;
+    text-align: center;
+    display: block;
+    width: 450px;
+    left: 0;
+}
+a.resultlink { cursor: pointer }
+li.searchresult {
+    padding: 8px 5px;
+    margin: 0 0 0 0;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    clear: both;
+    text-align: left;
+    border-bottom: 1px solid #E3E3E3;
+}
+li.searchresult ul li {
+    border-bottom: 1px solid;
+    padding: 10px 5px 10px 5px;
+    margin: 0;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    clear: both;
+    height: 55px;
+}
+li.searchresult ul {
+    margin: 0;
+    padding: 0;
+}
+li.searchresult_supplier div.header { padding: 5px }
+li.searchresult_supplier {
+    border-bottom: 1px solid;
+    padding: 10px 5px 10px 5px;
+    margin: 0 0 0 0;
+}
+li.searchresult_supplier h2 {
+    font-size: 11px;
+    font-weight: 700;
+}
+li.searchresult_supplier a.resultlink {
+    float: left;
+    padding: 5px;
+    display: block;
+    height: 25px;
+    font-size: 10px;
+    font-weight: normal;
+    width: 80px;
+    border: 1px solid;
+    text-align: center;
+    margin: 0 5px 5px 0;
+}
+li.searchresult_supplier a.resultlink h3 {
+    font-size: 10px;
+    font-weight: normal;
+}
+li.searchresult_supplier a.searchthumb {
+    float: left;
+    margin: 0 5px 5px 0;
+    width: 90px;
+    height: 35px;
+    text-align: center;
+    border: 1px solid;
+}
+li.searchresult a:hover { text-decoration: underline }
+li.searchresult h3 {
+    font-weight: normal;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+    z-index: -1;
+    height: 15px;
+}
+a.searchthumb {
+    border: none;
+    float: left;
+    margin: 0 5px 0 0;
+    width: 57px;
+    height: 57px;
+    text-align: center;
+}
+
+.modal .ajaxSlider .sliding_container .slide {width: 578px;}
+
+/*	BANNER SLIDER CSS
+	------------------------ */
+
+/* Bannerslider */
+#center .slider_banner {width: 630px;}
+#center .slider_banner .bannerSlider {width: 630px;height: 386px; position: relative; margin-bottom: 15px;}
+#center .slider_banner .bannerSlider .sliding_outer {position: relative; overflow: hidden; left: 0px; width: 630px; height: 386px;}
+
+/* Similar article slider */
+#center .slider2 {width: 628px;}
+#center .slider2 .ajaxSlider {width: 628px; height: 220px; position: relative; margin-top: 12px; margin-bottom: 15px;}
+#center .slider2 .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 190px;}
+
+/* New articles slider */
+#center .slider {width: 628px;}
+#center .slider .ajaxSlider {width: 628px; height: 220px; position: relative; margin-top: 0px; margin-bottom: 15px;}
+#center .slider .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 190px;}
+
+/* Supplier slider */
+#center .supplier_slider {width:628px;}
+#center .supplier_slider .ajaxSlider {width: 628px; height: 130px; position: relative; margin-top: 20px; margin-bottom: 20px;}
+#center .supplier_slider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 576px; height: 101px;}
+
+/* Customers bought too slider */
+#detailinfo .slider {width: 763px;}
+#detailinfo .slider .ajaxSlider {width: 763px; height: 220px; position: relative; margin-bottom: 20px;}
+#detailinfo .slider .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 711px; height: 190px;}
+
+/* Customers similar slider */
+#detailinfo .slider2 {width: 763px;}
+#detailinfo .slider2 .ajaxSlider {width: 763px; height: 220px; position: relative; margin-bottom: 20px;}
+#detailinfo .slider2 .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 711px; height: 190px;} 
+
+/* Ajax add article slider */
+.ajax_add_article .slider_modal {width: 630px;}
+.ajax_add_article .slider_modal .ajaxSlider {width: 630px; height: 210px; position: relative; margin: 0px 0px 15px 15px;}
+.ajax_add_article .slider_modal .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 578px; height: 210px;}

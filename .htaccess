@@ -1,0 +1,40 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+#RewriteBase /shopware/
+
+RewriteRule shopware.dll shopware.php
+RewriteRule files/documents/.* engine [NC,L]
+RewriteRule application.yaml engine [NC,L]
+RewriteRule images/ayww/(.*) images/banner/$1
+RewriteRule sitemap.xml(.*) shopware.php?controller=SitemapXml
+RewriteRule templates/.*(css|js)$ engine/backend/php/sCacheTemplate.php?file=$0 [NC,L]
+RewriteRule engine/core/php/sAjaxSearch.php$ engine/backend/php/sAjaxSearch.php [NC,L]
+RewriteRule engine/core/php/campaigns.php$ engine/backend/php/campaigns.php [NC,L]
+
+RewriteCond %{REQUEST_URI} !(engine\/|images\/|files\/|templates\/|\.js$|\.css$|\.jpg$|\.png$)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ shopware.php [PT,L,QSA]
+</IfModule>
+
+DirectoryIndex index.php
+DirectoryIndex shopware.php
+
+<Files *.tpl>
+Deny from all
+</Files>
+
+Options -Indexes
+
+#   Options -MultiViews
+
+#   php_value memory_limit 128M
+#   php_value max_execution_time 18000
+#   php_flag magic_quotes_gpc off
+#   php_flag session.auto_start off
+#   php_flag suhosin.session.cryptua off
+#   php_flag zend.ze1_compatibility_mode Off
+
+#   AddType x-mapp-php5 .php
+#   AddHandler x-mapp-php5 .php

@@ -1,0 +1,26 @@
+/**
+	Shopware 3.5 Internet Explorer 6
+	http://shopware.de
+	
+	@package		default
+	@subpackage		css
+	@category		design
+	@version		v1 
+	@author			stp/Shopware AG <info@shopware.ag>
+	@copyright		Copyright (c) 2010 Shopware AG (http://www.shopware.de)
+	
+	
+	This stylesheets contains all Internet Explorer 6 related
+	styles which forces the Internet Explorer to display the template
+	correctly.
+	
+	If you're changing things in your style.css, please check your site
+	in the Internet Explorer and place all your Internet Explorer related
+	styles into this file.
+
+*/
+
+/* Centering site */
+
+html {}
+div#searchcontainer {z-index: 500;}

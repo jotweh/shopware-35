@@ -1,0 +1,217 @@
+/* 
+	Zuletzt bearbeitet:		Sebastian Hamann
+	Datum:					04.05.2006
+------------------------------------------------------------------*/
+
+/* Suckerfish dropdowns 
+------------------------------------------------------------------*/
+
+div#header ul#nav { /*
+	position: absolute;
+	top: 10px;
+	left: 110px;
+	z-index:10000;*/
+	padding:10px 10px 10px 12px;
+	margin: 0;
+	float: left;
+	list-style: none;
+	font-size: 11px;
+}
+ul#nav, #nav ul {
+	z-index:18009;
+	padding: 0;
+	margin: 0;
+	list-style: none; 
+}
+ul#nav li { /* all list items */
+	display: block;
+	float: left;
+	position: relative;
+	padding: 0;
+	white-space:nowrap;
+	background: url(../img/default/bg_nav.gif) left center repeat-y;
+	background-color: #f3f3f3;
+	z-index:18009;
+}
+ul#nav li ul li {
+	float: none;
+	display: block;
+	width: auto;
+	padding: 1px 1px 1px 1px;
+	height: 26px;
+	z-index:18009;
+	opacity: 0.94;
+}
+#header li.main { /* Nav topics */
+	margin: 0 10px 0 0;
+
+	height: 15px;
+	padding: 5px;
+	
+	border: 1px solid #8C8C8C;
+	background: url(../img/default/bg_nav_main.gif) left center no-repeat;
+	background-color: #E9E9E9;
+	z-index:18009;
+}
+
+#header li.main2 { /* Nav topics */
+	margin: 0 10px 0 0;
+
+	height: 15px;
+	padding: 5px;
+	
+	border: 1px solid #FF0000;
+	background: url(../img/default/bg_nav_main.gif) left center no-repeat;
+	background-color: #E9E9E9;
+	z-index:18009;
+}
+
+#nav ul { /* position of second-level ul */
+	position: absolute;
+	top: 25px;
+	left: -1px;
+	width: auto;
+	margin: 0;
+	padding: 0;
+	background: #f3f3f3 url(../img/default/bg_nav.gif) left center repeat-y;
+	padding-bottom: 2px;
+	border: 1px solid #8C8C8C;
+	z-index:18009;
+}
+#nav li ul ul { /* position of third-level ul */
+	margin: -26px 0 0 0;
+	z-index:18009;
+}
+
+
+li ul { /* second-level lists*/ 
+	display: none;
+	z-index:18009;
+} 
+li>ul { /* to override top and left in browsers other than IE, which will position to the top right of the containing li, rather than bottom left*/ 
+	top: auto;
+	left: auto;
+	z-index:18009;
+} 
+/*
+Das macht sichtbar
+*/
+li:hover ul, #nav li:hover ul ul, li.sfHover ul, #nav li.sfHover ul ul { /* lists nested under hovered list items */
+	display: block;
+	z-index:18009;
+}
+#nav li:hover ul ul, #nav li:hover ul ul ul, #nav li.sfhover ul ul, #nav li.sfhover ul ul ul {
+	display: none;
+	z-index:18009;
+}
+#nav li li:hover ul, #nav li li li:hover ul, #nav li li.sfhover ul, #nav li li li.sfhover ul {
+	display: block;
+	z-index:18009;
+
+}
+#nav li.main:hover {
+	background: #59b8e6;
+	border: 1px solid #388fbf;
+	z-index:18009;
+}
+#nav li.main:hover a.ico {
+	color: #fff;
+}
+#nav li.main:hover a.ico2 {
+	color: #fff;
+}
+#nav li.main:hover ul li a.ico2 {
+	color: #3B3B3B;
+}
+#nav li li:hover {
+	font-weight: bold;
+	z-index:118009;
+}  
+#nav a {
+	display: block;
+	color: #3B3B3B;
+	text-decoration: none;
+}
+#nav a:hover {
+	display: block;
+	color: #fff;
+	text-decoration: none;
+}
+#nav a.ico:hover {
+	display: block;
+	color: #fff;
+	text-decoration: none;
+	z-index:18009;
+}
+#nav a.ico:hover {
+	display: block;
+	color: #fff;
+	text-decoration: none;
+	z-index:18009;
+}
+
+#nav li li a {
+	display: block;
+	padding: 3px 30px 3px 35px;
+	font-weight: normal;
+	border:1px solid transparent;
+	margin:1px;
+}
+#nav li li a:hover {
+	display: block;
+	color: #15428B;
+	background-color: #DDEEFF;
+	border:1px solid #59B8E6;
+	
+	z-index:118009;
+}
+
+#nav a.daddy {
+	background: url(../img/default/ico_arrow.gif) center right no-repeat;
+}
+
+/* icons
+------------------------------------------------------------------*/
+a.ico {
+	padding: 1px 0 1px 30px;
+	display: block;
+}
+a.article {
+	background: url(../img/default/ico_article2.gif) center left no-repeat;
+}
+a.article_new {
+	background: url(../img/default/ico_page.gif) 3px 3px no-repeat;
+}
+a.category {
+	background: url(../img/default/ico_category.gif) center left no-repeat;
+}
+a.customer {
+	background: url(../img/default/ico_customer.gif) center left no-repeat;
+}
+a.order {
+	background: url(../img/default/ico_order.gif) center left no-repeat;
+}
+a.help {
+	background: url(../img/default/icons/help.gif) center left no-repeat;
+}
+a.window {
+	background: url(../img/default/icons/application.gif) center left no-repeat;
+}
+a.marketing {
+	background: url(../img/default/icons/marketing.gif) center left no-repeat;
+}
+a.setup {
+	background: url(../img/default/icons/setup.gif) center left no-repeat;
+}
+a.report {
+	background: url(../img/default/icons/report.gif) center left no-repeat;
+}
+#header li.head1 {
+	
+}
+#header li.head3 {
+	
+}
+#header li.head4 {
+
+}

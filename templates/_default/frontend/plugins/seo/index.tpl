@@ -1,0 +1,2 @@
+{block name='frontend_index_header_meta_robots'}{if $SeoMetaRobots}{$SeoMetaRobots}{else}{$smarty.block.parent}{/if}{/block}
+{block name='frontend_index_header_meta_description'}{if $SeoMetaDescription}{$SeoMetaDescription}{else}{$smarty.block.parent}{/if}{/block}
