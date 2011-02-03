@@ -1,5 +1,0 @@
-<?php
-class Enlight_Controller_Response_ResponseHttp extends Zend_Controller_Response_Http implements Enlight_Controller_Response_Response
-{
-	
-}
