@@ -7,38 +7,34 @@ class Shopware extends Enlight
 	
 	public function __construct($environment='production', $options=null)
 	{
-		$this->old_path = dirname(dirname(dirname(__FILE__))).DIRECTORY_SEPARATOR;
+		Shopware($this);
+		
+		$this->ds = DIRECTORY_SEPARATOR;
+		$this->old_path = dirname(dirname(dirname(__FILE__))).$this->ds;
 				
 		if($options===null) {
-			/*
-			$options = array(
-				'phpsettings'=>array(
-					'error_reporting'=>E_ALL | E_STRICT,
-					'display_errors'=>1,
-					'date.timezone'=>'Europe/Berlin'
-				)
-			);
-			*/
 			$options = $this->old_path.'Application.php';
 		}
 		$options = $this->loadConfig($options);
 		
 		$options['app'] = __CLASS__;
 		$options['app_path'] = dirname(__FILE__);
-		
+				
 		parent::__construct($environment, $options);
-		
-
 	}
 	
-	public function OldPath()
+	public function OldPath($path=null)
 	{
+		if($path!==null) {
+			$path = str_replace('_', $this->ds, $path);
+			return $this->old_path.$path.$this->ds;
+		}
 		return $this->old_path;
 	}
 	
-	public function DocPath()
+	public function DocPath($path=null)
 	{
-		return $this->old_path;
+		return $this->OldPath($path);
 	}
 	
 	/**
@@ -75,11 +71,15 @@ class Shopware extends Enlight
  *
  * @return Shopware
  */
-function Shopware()
+function Shopware($newInstance=null)
 {
 	static $instance;
-	if(!isset($instance))
-	{
+	if(isset($newInstance)) {
+		$oldInstance = $instance;
+		$instance = $newInstance;
+		return $oldInstance;
+	}
+	elseif(!isset($instance)) {
 		$instance = Shopware::Instance();
 	}
 	return $instance;

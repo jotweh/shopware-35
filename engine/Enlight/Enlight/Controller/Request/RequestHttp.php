@@ -3,8 +3,7 @@ class Enlight_Controller_Request_RequestHttp extends Zend_Controller_Request_Htt
 {
 	public function setQuery($spec, $value = null)
     {
-    	if(!is_array($spec) && $value===null)
-    	{
+    	if(!is_array($spec) && $value===null) {
     		unset($_GET[$spec]);
     		return $this;
     	}

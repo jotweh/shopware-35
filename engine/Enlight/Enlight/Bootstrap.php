@@ -17,6 +17,8 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     
     protected function initFront()
     {
+    	$this->loadResource('Zend');
+    	
     	$front = Enlight_Class::Instance('Enlight_Controller_Front');
    	    $front->Dispatcher()->addModuleDirectory(Enlight()->AppPath('Controllers'));
         return $front;
@@ -39,6 +41,15 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     {
    	    $helpers = new Enlight_Helper_HelperManager();
         return $helpers;
+    }
+    
+    protected function initZend()
+    {
+    	Enlight()->Loader()->registerNamespace('Zend', Shopware()->CorePath('Zend'));
+    	Enlight()->Loader()->addIncludePath(Shopware()->CorePath());
+    	Enlight()->Loader()->registerNamespace('Zend', Shopware()->VendorPath('Zend_library_Zend'));
+    	Enlight()->Loader()->addIncludePath(Shopware()->VendorPath('Zend_library'));
+    	return true;
     }
     	
     public function registerResource($name, $resource)

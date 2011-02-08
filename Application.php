@@ -33,28 +33,39 @@ return array(
 			'hashed_directory_umask' => 0771,
 			'cache_file_umask' => 0644,
 			'hashed_directory_level' => 0,
-			'cache_dir' => $this->DocPath().'cache/database',
+			'cache_dir' => $this->DocPath('cache_database'),
 			'file_name_prefix' => 'shopware'
     	),
     	/*
-    	'backend' => 'Memcached',
+    	'backend' => 'Two Levels',
     	'backendOptions' => array(
-			'servers' => array(
-				array(
-					'host' => 'localhost',
-					'port' => 11211,
-					'persistent' => true,
-					'weight' => 1,
-					'timeout' => 5,
-					'retry_interval' => 15,
-					'status' => true,
-					'failure_callback' => null
-				)
-			),
-			'compression' => false,
-			'compatibility' => false
-		)
-		*/
+			'slow_backend' => 'File',
+			'slow_backend_options' =>  array(
+				'hashed_directory_umask' => 0771,
+				'cache_file_umask' => 0644,
+				'hashed_directory_level' => 2,
+				'cache_dir' => $this->DocPath('cache_database'),
+				'file_name_prefix' => 'shopware'
+	    	),
+			'fast_backend' => 'Memcached',
+			'fast_backend_options' => array(
+				'servers' => array(
+					array(
+						'host' => 'localhost',
+						'port' => 11211,
+						'persistent' => true,
+						'weight' => 1,
+						'timeout' => 5,
+						'retry_interval' => 15,
+						'status' => true,
+						'failure_callback' => null
+					)
+				),
+				'compression' => false,
+				'compatibility' => false
+			)
+    	),
+    	*/
 	),
 	'session' => array(
 		'name' => 'SHOPWARESID',
@@ -81,6 +92,8 @@ return array(
 	'phpsettings'=>array(
 		'error_reporting'=>E_ALL | E_STRICT,
 		'display_errors'=>1,
-		'date.timezone'=>'Europe/Berlin'
+		'date.timezone'=>'Europe/Berlin',
+		'include_path'=>'.',
+		'zend.ze1_compatibility_mode'=>0
 	)
 );

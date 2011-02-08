@@ -12,10 +12,13 @@ class Enlight_Controller_Front extends Enlight_Class implements Enlight_Hook, En
 	protected $_returnResponse;
 	protected $_invokeParams = array();
 	
-	public function dispatch()
+	public function init()
 	{
 		Enlight()->Plugins()->Controller()->addPrefixPath('Enlight_Controller_Plugins', Enlight()->CorePath('Controller_Plugins'));
-		
+	}
+	
+	public function dispatch()
+	{
 		if (!$this->getParam('noErrorHandler')) {
             Enlight()->Plugins()->Controller()->ErrorHandler();
         }

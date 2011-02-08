@@ -3,9 +3,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 {
 	public function run()
     {
-    	$this->loadResource('Zend');
-    	
-        $front = $this->getResource('Front');
+    	$front = $this->getResource('Front');
         
         try {
         	$this->loadResource('Cache');
@@ -201,16 +199,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     {
     	return $this->getResource('Front')->Router();
     }
-    
-    protected function initZend()
-    {
-    	Shopware()->Loader()->registerNamespace('Zend', Shopware()->CorePath('Zend'));
-    	Shopware()->Loader()->addIncludePath(Shopware()->CorePath());
-    	Shopware()->Loader()->registerNamespace('Zend', Shopware()->VendorPath('Zend_library_Zend'));
-    	Shopware()->Loader()->addIncludePath(Shopware()->VendorPath('Zend_library'));
-    	return true;
-    }
-    
+        
     protected function initSubscriber()
     {
     	if(!$this->issetResource('Db')) {

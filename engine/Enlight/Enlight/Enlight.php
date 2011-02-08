@@ -2,7 +2,11 @@
 require_once(dirname(__FILE__).'/Application.php');
 class Enlight extends Enlight_Application
 {
-
+	public function __construct($environment, $options = null)
+	{
+		Enlight($this);
+		parent::__construct($environment, $options);
+	}
 }
 
 /**
@@ -10,12 +14,17 @@ class Enlight extends Enlight_Application
  *
  * @return Enlight
  */
-function Enlight()
+
+function Enlight($newInstance=null)
 {
 	static $instance;
-	if(!isset($instance))
-	{
-		$instance = Enlight::Instance();
+	if(isset($newInstance)) {
+		$oldInstance = $instance;
+		$instance = $newInstance;
+		return $oldInstance;
+	}
+	elseif(!isset($instance)) {
+		$instance = Shopware::Instance();
 	}
 	return $instance;
 }
