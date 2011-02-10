@@ -23,13 +23,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
    	    $front->Dispatcher()->addModuleDirectory(Enlight()->AppPath('Controllers'));
         return $front;
     }
-    
-    protected function initView()
-    {
-    	$view = Enlight_Class::Instance('Enlight_View_ViewDefault');
-        return $view;
-    }
-    
+        
     protected function initTemplate()
     {
     	$template = Enlight_Class::Instance('Enlight_Template_TemplateManager');
@@ -54,13 +48,8 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     	
     public function registerResource($name, $resource)
     {
-    	if($resource===null) {
-    		unset($this->resource_list[$name]);
-    		unset($this->resource_status[$name]);
-    	} else {
-    		$this->resource_list[$name] = $resource;
-    		$this->resource_status[$name] = self::StatusAssigned;
-    	}
+    	$this->resource_list[$name] = $resource;
+    	$this->resource_status[$name] = self::StatusAssigned;
     }
     
     public function hasResource($name)
@@ -75,12 +64,10 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     
     public function getResource($name)
     {
-        if(!isset($this->resource_status[$name]))
-        {
+        if(!isset($this->resource_status[$name])) {
         	$this->loadResource($name);
         }
-    	if($this->resource_status[$name]===self::StatusNotFound)
-    	{
+    	if($this->resource_status[$name]===self::StatusNotFound) {
     		throw new Enlight_Exception('Resource "'.$name.'" not found failure');
     	}
     	return $this->resource_list[$name];
@@ -124,6 +111,15 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
 	    }
     }
     
+    public function resetResource($name)
+    {
+    	if(isset($this->resource_list[$name])) {
+	    	unset($this->resource_list[$name]);
+	    	unset($this->resource_status[$name]);
+    	}
+    	return $this;
+    }
+
     public function __call ($name, $arguments=null)
     {
     	return $this->getResource($name);

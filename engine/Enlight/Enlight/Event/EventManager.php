@@ -134,4 +134,10 @@ class Enlight_Event_EventManager extends Enlight_Class
 			$this->registerListener($listener);
 		}
 	}
+	
+	public function resetEvents()
+	{
+		$this->listeners = array();
+		return $this;
+	}
 }

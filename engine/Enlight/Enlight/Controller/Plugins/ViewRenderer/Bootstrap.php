@@ -73,11 +73,9 @@ class Enlight_Controller_Plugins_ViewRenderer_Bootstrap extends Enlight_Plugin_B
     
     public function initView()
     {
-    	if (!$this->view)
-    	{
-			$view = Enlight_Class::Instance('Enlight_View_ViewDefault');
-			$this->setView(new $view());
-    	}
+    	$view = Enlight::Instance()->Bootstrap()->getResource('View');
+		$this->setView($view);
+		
     	$this->View()->setTemplate();
     	$this->Action()->setView($this->view);
     }

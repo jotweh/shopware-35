@@ -47,4 +47,10 @@ class Enlight_Plugin_PluginManager extends Enlight_Class implements Countable, I
     {
     	return $this->getNamespace($name);
     }
+    
+    public function resetPlugins()
+	{
+		$this->list = array();
+		return $this;
+	}
 }

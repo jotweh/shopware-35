@@ -2,22 +2,24 @@
 class Shopware_Bootstrap extends Enlight_Bootstrap
 {
 	public function run()
-    {
-    	$front = $this->getResource('Front');
-        
-        try {
-        	$this->loadResource('Cache');
-        	$this->loadResource('Db');
-        	$this->loadResource('Plugins');
-        } catch (Exception $e) {
-        	if ($front->throwExceptions()) {
-                throw $e;
-            }
-            $front->Response()->setException($e);
-        }
-        
-        $front->dispatch();
-    }
+	{
+		$front = $this->getResource('Front');
+
+		try {
+			$this->loadResource('Cache');
+			$this->loadResource('Db');
+			$this->loadResource('Plugins');
+		} catch (Exception $e) {
+			if ($front->throwExceptions()) {
+				throw $e;
+			}
+			$front->Response()->setException($e);
+		}
+
+		$front->Response()->setHeader('Content-Type', 'text/html; charset=iso-8859-1');
+
+		return $front->dispatch();
+	}
             
 	protected function initTemplate()
     {
@@ -36,6 +38,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 		}
 			
         return $template;
+    }
+    
+    public function initView()
+    {
+    	return Enlight_Class::Instance('Enlight_View_ViewDefault');
     }
     
     protected function initDb()
@@ -67,7 +74,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	if(Enlight_Components_Session::isStarted())	{
     		Enlight_Components_Session::writeClose();
     	}
-    	
+    	    	
     	$session_id = $this->getResource('SessionID');
     	if(!empty($session_id)) {
     		Enlight_Components_Session::setId($session_id);
@@ -84,6 +91,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	}
     	
     	$config_session = Shopware()->getOption('session') ? Shopware()->getOption('session') : array();
+    	
+    	if(!empty($config_session['unitTestEnabled'])) {
+    		Enlight_Components_Session::$_unitTestEnabled = true;
+    	}
+    	unset($config_session['unitTestEnabled']);
     	
     	$config_session['cookie_path'] = $path;
     	$config_session['cookie_domain'] = $host;
@@ -186,11 +198,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	$config = Shopware()->getOption('Front');
     	
     	$front->setParams($config);
-    	
-    	$front->Response()->setHeader('Content-Type', 'text/html; charset=iso-8859-1');
-    	
+    	    	
     	if(!empty($config['throwExceptions'])) {
     		$front->throwExceptions(true);
+    	}
+    	if(!empty($config['returnResponse'])) {
+    		$front->returnResponse(true);
     	}
     	return $front;
     }
@@ -259,7 +272,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     {
     	$config = Shopware()->getOption('cache');
     	
-    	if(!empty($config['frontendOptions'])) {
+    	if(isset($config['frontendOptions'])) {
     		$frontendOptions = $config['frontendOptions'];
     	} else {
     		$frontendOptions = array(
@@ -269,13 +282,13 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 	    	);
     	}
     	
-    	if(!empty($config['backend'])) {
+    	if(isset($config['backend'])) {
     		$backend = $config['backend'];
     	} else {
     		$backend = 'File';
     	}
     	
-    	if(!empty($config['backendOptions'])) {
+    	if(isset($config['backendOptions'])) {
     		$backendOptions = $config['backendOptions'];
     	} else {
     		$backendOptions = array(
@@ -287,33 +300,6 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 				'file_name_prefix' => 'shopware'
 			);
     	}
-    	    	
-		/*
-		$backendOptions = array(
-			'slow_backend' => 'File',
-			'fast_backend' => 'Memcached',
-			'slow_backend_options' => $backendOptions,
-			'fast_backend_options' => array()
-		);
-		$cache = Zend_Cache::factory('Core', 'Two Levels', $frontendOptions, $backendOptions);
-		$backendOptions = array(
-			'servers' => array(
-				array(
-					'host' => 'localhost',
-					'port' => 11211,
-					'persistent' => true,
-					'weight' => 1,
-					'timeout' => 5,
-					'retry_interval' => 15,
-					'status' => true,
-					//'failure_callback' => ''
-				)
-			),
-			'compression' => false,
-			'compatibility' => false
-		);
-		$cache = Zend_Cache::factory('Core', 'Memcached', $frontendOptions, $backendOptions);
-		*/
     	
 		$cache = Zend_Cache::factory('Core', $backend, $frontendOptions, $backendOptions);
 		

@@ -121,6 +121,9 @@ abstract class Enlight_Controller_Action extends Enlight_Class implements Enligh
 	 */
 	public function View()
 	{
+		if($this->view===null) {
+			$this->view = Enlight::Instance()->Bootstrap()->getResource('View');
+		}
 		return $this->view;
 	}
 	
@@ -131,8 +134,7 @@ abstract class Enlight_Controller_Action extends Enlight_Class implements Enligh
 	 */
 	public function Front()
 	{
-		if(!$this->front)
-		{
+		if($this->front===null){
 			$this->front = Enlight_Class::Instance('Enlight_Controller_Front');
 		}
 		return $this->front;

@@ -120,4 +120,11 @@ class Enlight_Hook_HookManager extends Enlight_Class
     {
         return isset($this->_aliases[$name]) ? $this->_aliases[$name] : null;
     }
+    
+    public function resetHooks()
+	{
+		$this->list = array();
+		$this->aliases = array();
+		return $this;
+	}
 }

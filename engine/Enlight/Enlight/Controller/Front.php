@@ -28,10 +28,18 @@ class Enlight_Controller_Front extends Enlight_Class implements Enlight_Hook, En
 		
 		Enlight()->Events()->notify('Enlight_Controller_Front_StartDispatch', array('subject'=>$this));
 	
-		if(!$this->_router) $this->setRouter('Enlight_Controller_Router_RouterDefault');
-		if(!$this->_dispatcher) $this->setDispatcher('Enlight_Controller_Dispatcher_DispatcherDefault');
-		if(!$this->_request) $this->setRequest('Enlight_Controller_Request_RequestHttp');
-		if(!$this->_response) $this->setResponse('Enlight_Controller_Response_ResponseHttp');
+		if(!$this->_router) {
+			$this->setRouter('Enlight_Controller_Router_RouterDefault');
+		}
+		if(!$this->_dispatcher) {
+			$this->setDispatcher('Enlight_Controller_Dispatcher_DispatcherDefault');
+		}
+		if(!$this->_request) {
+			$this->setRequest('Enlight_Controller_Request_RequestHttp');
+		}
+		if(!$this->_response) {
+			$this->setResponse('Enlight_Controller_Response_ResponseHttp');
+		}
 		
 		try {
 			
@@ -132,8 +140,7 @@ class Enlight_Controller_Front extends Enlight_Class implements Enlight_Hook, En
             return $this->_response;
         }
 
-        if(!Enlight()->Events()->notifyUntil('Enlight_Controller_Front_SendResponse', array('subject'=>$this, 'response'=>$this->Response(), 'request'=>$this->Request())))
-	    {
+        if(!Enlight()->Events()->notifyUntil('Enlight_Controller_Front_SendResponse', array('subject'=>$this, 'response'=>$this->Response(), 'request'=>$this->Request()))) {
 	    	$this->Response()->sendResponse();
 	    }
         

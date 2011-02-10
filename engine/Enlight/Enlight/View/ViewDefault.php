@@ -39,8 +39,7 @@ class Enlight_View_ViewDefault extends Enlight_Class implements Enlight_View_Vie
     
     protected function resolveTemplateEngine()
 	{
-		if(!$this->engine)
-		{
+		if($this->engine===null) {
 			$this->setTemplateEngine(Enlight::Instance()->Bootstrap()->getResource('Template'));
 		}
 	}

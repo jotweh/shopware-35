@@ -27,8 +27,10 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 			return;
 		}
 		
+		$request = $args->getSubject();
 		$config = Shopware()->Plugins()->Core()->Debug()->Config();
-		if (!empty($config->AllowIP) && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
+		
+		if (!empty($config->AllowIP) && strpos($config->AllowIP, $request->getClientIp(false))===false){
 			return;
 		}
 

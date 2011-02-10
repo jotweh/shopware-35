@@ -25,15 +25,14 @@ abstract class Enlight_Class
             }
         }
 	}
-
+	
 	/**
 	 * Enter description here...
 	 *
-	 * @param unknown_type $class
-	 * @param unknown_type $args
-	 * @return Enlight_Class
+	 * @param string $class
+	 * @return string
 	 */
-	static public function Instance($class=null, $args=null)
+	public static function getClassName($class=null)
 	{
 		if(empty($class)) {
 			if(function_exists('get_called_class')) {
@@ -46,7 +45,19 @@ abstract class Enlight_Class
 		if(in_array('Enlight_Hook', class_implements($class))) {
     		$class = Enlight::Instance()->Hooks()->getProxy($class);
     	}
-    	
+    	return $class;
+	}
+
+	/**
+	 * Enter description here...
+	 *
+	 * @param string $class
+	 * @param array $args
+	 * @return Enlight_Class
+	 */
+	static public function Instance($class=null, $args=null)
+	{
+		$class = self::getClassName($class);
     	if(isset(self::$instances[$class])) {
 			return self::$instances[$class];
 		}		
@@ -59,6 +70,12 @@ abstract class Enlight_Class
 			$instance = $rc->newInstance();
 		}
 		return $instance;
+	}
+	
+	static public function resetInstance($class=null)
+	{
+		$class = self::getClassName($class);
+		unset(self::$instances[$class]);
 	}
 	
 	public function __call($name, $value=null)

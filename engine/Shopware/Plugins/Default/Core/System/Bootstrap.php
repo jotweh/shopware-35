@@ -102,16 +102,18 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 	public static function getUserIsBot()
 	{
 		static $result;
-		if(isset($result))
-		{
+		if($result !== null){
 			return $result;
 		}
 		$result = false;
-		$useragent = preg_replace('/[^a-z]/', '', strtolower($_SERVER['HTTP_USER_AGENT']));
+		if(!empty($_SERVER['HTTP_USER_AGENT'])) {
+			$useragent = preg_replace('/[^a-z]/', '', strtolower($_SERVER['HTTP_USER_AGENT']));
+		} else {
+			$useragent = '';
+		}
 		$bots = preg_replace('/[^a-z;]/', '', strtolower(Shopware()->Config()->BotBlackList));
 		$bots = explode(';',$bots);
-		if(!empty($useragent) && str_replace($bots, '', $useragent)!=$useragent)
-		{
+		if(!empty($useragent) && str_replace($bots, '', $useragent)!=$useragent) {
 			$result = true;
 		}
 		return $result;
