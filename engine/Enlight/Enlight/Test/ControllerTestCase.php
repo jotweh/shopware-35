@@ -33,9 +33,9 @@ abstract class Enlight_Test_ControllerTestCase extends Enlight_Test_TestCase
 	public function setUp()
     {
         $this->reset();
-        $this->Front()
-             ->setRequest($this->Request())
-             ->setResponse($this->Response());
+        //$this->Front()
+        //     ->setRequest($this->Request())
+        //     ->setResponse($this->Response());
     }
     
     public function dispatch($url = null)
@@ -64,7 +64,6 @@ abstract class Enlight_Test_ControllerTestCase extends Enlight_Test_TestCase
         
         Enlight::Instance()->Hooks()->resetHooks();
         Enlight::Instance()->Events()->resetEvents();
-        Enlight::Instance()->Plugins()->resetPlugins();
         
         $ressources = array(
         	'Plugins' => 'Enlight_Plugin_PluginManager',

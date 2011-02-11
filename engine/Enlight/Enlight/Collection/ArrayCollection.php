@@ -15,6 +15,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
     public function set($key, $value)
     {
         $this->_elements[$key] = $value;
+        return $this;
     }
     public function get($key)
     {
@@ -70,19 +71,19 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
     }
     function __call($name, $args = null)
     {
-        static $camel_func;
-        if(!isset($camel_func))
-            $camel_func = create_function('$c', 'return "_" . strtolower($c[1]);'); 
-        switch (substr($name, 0, 3))
-        {
+        static $camelFunc;
+        if(!isset($camelFunc)) {
+            $camelFunc = create_function('$c', 'return "_" . strtolower($c[1]);');
+        }
+        switch (substr($name, 0, 3)) {
             case 'get':
-            case 'set':
-                $key = strtolower(substr($name, 3, 1)) . substr($name, 4);
-                $key = preg_replace_callback('/([A-Z])/', $camel_func, $key);
-            case 'get':
+            	$key = strtolower(substr($name, 3, 1)).substr($name, 4);
+                $key = preg_replace_callback('/([A-Z])/', $camelFunc, $key);
                 return $this->get($key);
             case 'set':
-                return $this->set($key, iseet($args[0]) ? $args[0] : null);
+            	$key = strtolower(substr($name, 3, 1)).substr($name, 4);
+                $key = preg_replace_callback('/([A-Z])/', $camelFunc, $key);
+                return $this->set($key, isset($args[0]) ? $args[0] : null);
             default:
                 return parent::__call($name, $args);
         }
