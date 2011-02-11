@@ -3,7 +3,7 @@
  * Enter description here...
  *
  */
-abstract class Enlight_Test_ControllerTestCase extends Enlight_Test_TestCase
+abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
 {
 	/**
      * @var Zend_Controller_Front
