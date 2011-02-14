@@ -42,6 +42,7 @@ class sArticles
 	 * @access public
 	 */
 	 public function sDeleteComparisons (){
+	 	
 	 	$sql = "
 		DELETE FROM s_order_comparisons WHERE sessionID=?
 		";
