@@ -233,12 +233,8 @@ class sArticles
 		return $getProperties;
 		
 	 }
-	 /**
-	 * Get the average rating from one article
-	 * @param int $article - s_articles.id
-	 * @access public
-	 * @return array
-	 */
+	
+	 
 	public function sGetArticlesAverangeVote ($article,$realtime=false){
 		
 		$sql = "
