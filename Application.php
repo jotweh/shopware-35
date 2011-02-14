@@ -1,4 +1,4 @@
-<?php
+<?hp
 
 include(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
 
