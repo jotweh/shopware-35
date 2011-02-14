@@ -233,8 +233,12 @@ class sArticles
 		return $getProperties;
 		
 	 }
-	
-	 
+	 /**
+	 * Get the average rating from one article
+	 * @param int $article - s_articles.id
+	 * @access public
+	 * @return array
+	 */ 
 	public function sGetArticlesAverangeVote ($article,$realtime=false){
 		
 		$sql = "
@@ -3887,6 +3891,12 @@ class sArticles
 		}
 	}
 	
+	/**
+	 * Get article name by s_articles.id
+	 * @param $id article id
+	 * @access public
+	 * @return string name
+	 */
 	public function sGetArticleNameByArticleId($articleId, $returnAll = false)
 	{
 		$ordernumber = $this->sSYSTEM->sDB_CONNECTION->GetOne("
