@@ -47,7 +47,7 @@ return array(
 				'cache_dir' => $this->DocPath('cache_database'),
 				'file_name_prefix' => 'shopware'
 	    	),
-			'fast_backend' => 'Memcached',
+			'fast_backend'  => 'Memcached',
 			'fast_backend_options' => array(
 				'servers' => array(
 					array(
