@@ -1,6 +1,18 @@
 <?php
+/**
+ * Bootstrap
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Bootstrap extends Enlight_Bootstrap
 {
+	/**
+	 * Run application 
+	 *
+	 * @return unknown
+	 */
 	public function run()
 	{
 		$front = $this->getResource('Front');
@@ -20,7 +32,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 
 		return $front->dispatch();
 	}
-            
+    
+	/**
+	 * Init template
+	 *
+	 * @return unknown
+	 */
 	protected function initTemplate()
     {
    	    $template = parent::initTemplate();
@@ -40,11 +57,21 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
         return $template;
     }
     
+    /**
+	 * Init view
+	 *
+	 * @return Enlight_View_ViewDefault
+	 */
     public function initView()
     {
     	return Enlight_Class::Instance('Enlight_View_ViewDefault');
     }
     
+    /**
+	 * Init db
+	 *
+	 * @return Zend_Db_Adapter_Pdo_Abstract
+	 */
     protected function initDb()
     {   
     	$config = Shopware()->getOption('db');
@@ -57,7 +84,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 
     	return $db;
     }
-      
+    
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initSessionID()
     {
     	if (!empty($_GET['sCoreId'])){
@@ -68,7 +100,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 			return false;
 		}
     }
-      
+    
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initSession()
     {
     	if(Enlight_Components_Session::isStarted())	{
@@ -134,6 +171,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return $namespace;
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initMail()
     {
     	if(!$this->issetResource('Db')) {
@@ -167,16 +209,34 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return $mail;
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initConfig()
     {
     	if(!$this->issetResource('Db')) {
     		return null;
     	}
     	
-    	$config = new Shopware_Models_Config(array('cache'=>$this->getResource('Cache')));
-    	return $config;
+    	$config = Shopware()->getOption('config');
+    	if(empty($config)) {
+    		$config = array();
+    	}
+    	if(!isset($config['cache'])) {
+	    	$config['cache'] = $this->getResource('Cache');
+    	}
+    	
+    	$modelConfig = new Shopware_Models_Config($config);
+    	return $modelConfig;
     }
-        
+    
+    /**
+     * Init
+     *
+     * @return unknown
+     */ 
     protected function initSnippets()
     {
     	if(!$this->issetResource('Db')||!$this->issetResource('Shop')) {
@@ -190,7 +250,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	
     	return $snippet;
     }
-        
+    
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initFront()
     {
     	$front = parent::initFront();
@@ -208,11 +273,21 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return $front;
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initRouter()
     {
     	return $this->getResource('Front')->Router();
     }
-        
+    
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initSubscriber()
     {
     	if(!$this->issetResource('Db')) {
@@ -221,6 +296,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return new Shopware_Components_Subscriber();
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initPlugins()
     {
     	foreach (array('Core', 'Frontend', 'Backend') as $namespace) {
@@ -244,6 +324,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return Shopware()->Plugins();
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initLocale()
     {
     	if($this->hasResource('Db')) {
@@ -253,6 +338,11 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	}
     }
     
+    /**
+     * Init
+     *
+     * @return unknown
+     */
     protected function initCurrency()
     {
     	if($this->hasResource('Db')) {
@@ -262,12 +352,22 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	}
     }
     
+    /**
+     * Init date
+     *
+     * @return unknown
+     */
     protected function initDate()
     {
     	$date = new Zend_Date($this->getResource('Locale'));
     	return $date;
     }
     
+    /**
+     * Init cache
+     *
+     * @return unknown
+     */
     protected function initCache()
     {
     	$config = Shopware()->getOption('cache');
