@@ -1,6 +1,13 @@
 <?php
 /**
- * Enlight database test case
+ * Database test case
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
+ * @subpackage Test
+ * 
  */
 abstract class Enlight_Test_Database_TestCase extends PHPUnit_Extensions_Database_TestCase
 {

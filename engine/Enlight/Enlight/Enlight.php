@@ -1,7 +1,19 @@
 <?php
 require_once(dirname(__FILE__).'/Application.php');
+
+/**
+ * Enlight
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
+ */
 class Enlight extends Enlight_Application
 {
+	/**
+	 * Constructor
+	 */
 	public function __construct($environment, $options = null)
 	{
 		Enlight($this);
@@ -10,11 +22,14 @@ class Enlight extends Enlight_Application
 }
 
 /**
- * Enter description here...
- *
+ * Enlight
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
  * @return Enlight
  */
-
 function Enlight($newInstance=null)
 {
 	static $instance;
@@ -24,7 +39,7 @@ function Enlight($newInstance=null)
 		return $oldInstance;
 	}
 	elseif(!isset($instance)) {
-		$instance = Shopware::Instance();
+		$instance = Enlight::Instance();
 	}
 	return $instance;
 }

@@ -1,7 +1,6 @@
 <?php
 /**
- * Enter description here...
- *
+ * Controller test case
  */
 abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
 {
@@ -29,7 +28,10 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
      * @var Zend_Controller_Response_Abstract
      */
     protected $_response;
-    	
+    
+    /**
+     * Set up
+     */
 	public function setUp()
     {
         $this->reset();
@@ -38,6 +40,12 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
         //     ->setResponse($this->Response());
     }
     
+    /**
+     * Dispatch the request
+     *
+     * @param unknown_type $url
+     * @return unknown
+     */
     public function dispatch($url = null)
     {
         $request    = $this->Request();
@@ -53,6 +61,9 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
         return Enlight::Instance()->run();
     }
     
+    /**
+     * Reset all instances
+     */
     public function reset()
     {		
     	$this->resetRequest();
@@ -81,8 +92,6 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
             
     /**
      * Reset the request object
-     *
-     * Useful for test cases that need to test multiple trips to the server.
      *
      * @return Enlight_Test_ControllerTestCase
      */
@@ -122,7 +131,7 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
     }
     
     /**
-     * Retrieve front controller instance
+     * Retrieve template instance
      *
      * @return Enlight_Template_TemplateManager
      */
@@ -135,7 +144,7 @@ abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
     }
     
     /**
-     * Retrieve front controller instance
+     * Retrieve view instance
      *
      * @return Enlight_View_ViewDefault
      */
