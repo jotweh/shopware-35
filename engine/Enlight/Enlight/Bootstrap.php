@@ -1,20 +1,48 @@
 <?php
+/**
+ * Bootstrap
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
 {		
-	const StatusBootstrap = 0;
-	const StatusLoaded = 1;
-	const StatusNotFound = 2;
-	const StatusAssigned = 3;
+	const STATUS_BOOTSTRAP = 0;
+	const STATUS_LOADED = 1;
+	const STATUS_NOT_FOUND = 2;
+	const STATUS_ASSIGNED = 3;
 	
-    protected $resource_list = array();
-    protected $resource_status = array();
+	/**
+	 * Resource list
+	 *
+	 * @var array
+	 */
+    protected $resourceList = array();
     
+    /**
+     * Resource status list
+     *
+     * @var array
+     */
+    protected $resourceStatus = array();
+    
+    /**
+     * Run application
+     * 
+     * @return mixed
+     */
     public function run()
     {
     	$front = $this->getResource('Front');
-        $front->dispatch();
+        return $front->dispatch();
     }
     
+    /**
+     * Init front
+     *
+     * @return Enlight_Controller_Front
+     */
     protected function initFront()
     {
     	$this->loadResource('Zend');
@@ -23,7 +51,12 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
    	    $front->Dispatcher()->addModuleDirectory(Enlight()->AppPath('Controllers'));
         return $front;
     }
-        
+       
+    /**
+     * Init template
+     *
+     * @return Enlight_Template_TemplateManager
+     */ 
     protected function initTemplate()
     {
     	$template = Enlight_Class::Instance('Enlight_Template_TemplateManager');
@@ -37,6 +70,11 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
         return $helpers;
     }
     
+    /**
+     * Init zend
+     *
+     * @return bool
+     */
     protected function initZend()
     {
     	Enlight()->Loader()->registerNamespace('Zend', Shopware()->CorePath('Zend'));
@@ -45,44 +83,76 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     	Enlight()->Loader()->addIncludePath(Shopware()->VendorPath('Zend_library'));
     	return true;
     }
-    	
+    
+    /**
+     * Enter description here...
+     *
+     * @param string $name
+     * @param mixed $resource
+     * @return Enlight_Bootstrap
+     */
     public function registerResource($name, $resource)
     {
-    	$this->resource_list[$name] = $resource;
-    	$this->resource_status[$name] = self::StatusAssigned;
+    	$this->resourceList[$name] = $resource;
+    	$this->resourceStatus[$name] = self::STATUS_ASSIGNED;
+    	return $this;
     }
     
+    /**
+     * Enter description here...
+     *
+     * @param string $name
+     * @return bool
+     */
     public function hasResource($name)
     {
-    	return isset($this->resource_list[$name])||$this->loadResource($name);
+    	return isset($this->resourceList[$name])||$this->loadResource($name);
     }
     
+    /**
+     * Returns resource
+     *
+     * @param string $name
+     * @return bool
+     */
     public function issetResource($name)
     {
-    	return isset($this->resource_list[$name]);
+    	return isset($this->resourceList[$name]);
     }
     
+    /**
+     * Returns resource
+     *
+     * @param string $name
+     * @return Enlight_Class
+     */
     public function getResource($name)
     {
-        if(!isset($this->resource_status[$name])) {
+        if(!isset($this->resourceStatus[$name])) {
         	$this->loadResource($name);
         }
-    	if($this->resource_status[$name]===self::StatusNotFound) {
+    	if($this->resourceStatus[$name]===self::STATUS_NOT_FOUND) {
     		throw new Enlight_Exception('Resource "'.$name.'" not found failure');
     	}
-    	return $this->resource_list[$name];
+    	return $this->resourceList[$name];
     }
 
+    /**
+     * Load resource
+     *
+     * @param string $name
+     * @return bool
+     */
     public function loadResource($name)
     {
-    	if(isset($this->resource_status[$name])) {
-    		switch ($this->resource_status[$name]) {
-    			case self::StatusBootstrap:
+    	if(isset($this->resourceStatus[$name])) {
+    		switch ($this->resourceStatus[$name]) {
+    			case self::STATUS_BOOTSTRAP:
     				throw new Enlight_Exception('Resource "'.$name.'" can\'t resolve all dependencies');
-    			case self::StatusNotFound:
+    			case self::STATUS_NOT_FOUND:
     				return false;
-    			case self::StatusAssigned:
-    			case self::StatusLoaded:
+    			case self::STATUS_ASSIGNED:
+    			case self::STATUS_LOADED:
     				return true;
     			default:
     				break;
@@ -90,36 +160,49 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     	}
     	
     	try {
-	    	$this->resource_status[$name] = self::StatusBootstrap;
+	    	$this->resourceStatus[$name] = self::STATUS_BOOTSTRAP;
 	    	if($event = Enlight()->Events()->notifyUntil('Enlight_Bootstrap_InitResource_'.$name, array('subject'=>$this))) {
-		    	$this->resource_list[$name] = $event->getReturn();
+		    	$this->resourceList[$name] = $event->getReturn();
 		    } elseif(method_exists($this, 'init'.$name)) {
-		    	$this->resource_list[$name] = call_user_func(array($this, 'init'.$name));
+		    	$this->resourceList[$name] = call_user_func(array($this, 'init'.$name));
 		    }
 		    Enlight()->Events()->notify('Enlight_Bootstrap_AfterInitResource_'.$name, array('subject'=>$this));
     	} catch (Exception $e) {
-    		$this->resource_status[$name] = self::StatusNotFound;
+    		$this->resourceStatus[$name] = self::STATUS_NOT_FOUND;
 	    	throw $e;
     	}
 	    
-	    if(isset($this->resource_list[$name])&&$this->resource_list[$name]!==null) {
-	    	$this->resource_status[$name] = self::StatusLoaded;
+	    if(isset($this->resourceList[$name])&&$this->resourceList[$name]!==null) {
+	    	$this->resourceStatus[$name] = self::STATUS_LOADED;
 	    	return true;
 	    } else {
-	    	$this->resource_status[$name] = self::StatusNotFound;
+	    	$this->resourceStatus[$name] = self::STATUS_NOT_FOUND;
 	    	return false;
 	    }
     }
     
+    /**
+     * Reset resource
+     *
+     * @param string $name
+     * @return Enlight_Bootstrap
+     */
     public function resetResource($name)
     {
-    	if(isset($this->resource_list[$name])) {
-	    	unset($this->resource_list[$name]);
-	    	unset($this->resource_status[$name]);
+    	if(isset($this->resourceList[$name])) {
+	    	unset($this->resourceList[$name]);
+	    	unset($this->resourceStatus[$name]);
     	}
     	return $this;
     }
 
+    /**
+     * Returns resource
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return Enlight_Class Resource
+     */
     public function __call ($name, $arguments=null)
     {
     	return $this->getResource($name);
