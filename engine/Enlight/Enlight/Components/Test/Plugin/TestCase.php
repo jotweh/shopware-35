@@ -1,12 +1,17 @@
 <?php
 /**
- * Enter description here...
+ * Plugin test case
  *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
+ * @subpackage Test
  */
-abstract class Enlight_Test_Plugin_TestCase extends Enlight_Test_Controller_TestCase
+abstract class Enlight_Components_Test_Plugin_TestCase extends Enlight_Components_Test_Controller_TestCase
 {
 	/**
-	 * Enter description here...
+	 * Create event args method
 	 *
 	 * @param string|array $name|$args
 	 * @param array $args

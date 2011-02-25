@@ -161,7 +161,7 @@ class Smarty extends Smarty_Internal_Data {
     public $direct_access_security = true; 
     public $trusted_dir = array();
     // debug mode
-    public $debugging = false;
+    public $debugging = true;
     public $debugging_ctrl = 'NONE';
     public $smarty_debug_id = 'SMARTY_DEBUG';
     public $debug_tpl = null; 

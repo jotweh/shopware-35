@@ -7,9 +7,8 @@
  * @author Heiner Lohaus
  * @package Enlight
  * @subpackage Test
- * 
  */
-abstract class Enlight_Test_Database_TestCase extends PHPUnit_Extensions_Database_TestCase
+abstract class Enlight_Components_Test_Database_TestCase extends PHPUnit_Extensions_Database_TestCase
 {
 	/**
      * Returns the test database connection.

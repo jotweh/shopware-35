@@ -1,8 +1,14 @@
 <?php
 /**
  * Controller test case
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
+ * @subpackage Test
  */
-abstract class Enlight_Test_Controller_TestCase extends Enlight_Test_TestCase
+abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Components_Test_TestCase
 {
 	/**
      * @var Zend_Controller_Front

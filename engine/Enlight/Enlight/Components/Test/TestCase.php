@@ -1,9 +1,14 @@
 <?php
 /**
- * Enter description here...
- *
+ * Test case class
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Enlight
+ * @subpackage Test
  */
-abstract class Enlight_Test_TestCase extends PHPUnit_Framework_TestCase
+abstract class Enlight_Components_Test_TestCase extends PHPUnit_Framework_TestCase
 {
 	/**
      * Returns a mock object for the specified class.
@@ -19,7 +24,8 @@ abstract class Enlight_Test_TestCase extends PHPUnit_Framework_TestCase
      * @throws InvalidArgumentException
      * @since  Method available since Release 3.0.0
      */
-	public function getMock($originalClassName, $methods = array(), array $arguments = array(), $mockClassName = '', $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true)
+	public function getMock($originalClassName, $methods = array(), array $arguments = array(), 
+	  $mockClassName = '', $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true)
 	{
 		$originalClassName = Enlight_Class::getClassName($originalClassName);
 		return parent::getMock($originalClassName, $methods, $arguments, $mockClassName, $callOriginalConstructor, $callOriginalClone, $callAutoload);

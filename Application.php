@@ -1,14 +1,12 @@
 <?php
-
-
-include(dirname(__FILE__).DIRECTORY_SEPARATOR.'config.php');
+include($this->DocPath().'config.php');
 
 return array(
 	'db' => array(
 		'username' => $DB_USER,
 		'password' => $DB_PASSWORD,
 		'dbname' => $DB_DATABASE,
-		'host' => $DB_HOST 
+		'host' => $DB_HOST
 	),
 	'front' => array(
 		'noErrorHandler' => false,
@@ -91,7 +89,7 @@ return array(
 	'backend' => array(
 		'refererCheck' => true,
 	),
-	'phpsettings'=>array(
+	'phpSettings'=>array(
 		'error_reporting'=>E_ALL | E_STRICT,
 		'display_errors'=>1,
 		'date.timezone'=>'Europe/Berlin',
