@@ -36,10 +36,12 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
     protected $_response;
     
     /**
-     * Set up
+     * Test set up method
      */
 	public function setUp()
     {
+    	parent::setUp();
+    	
         $this->reset();
         //$this->Front()
         //     ->setRequest($this->Request())
@@ -165,7 +167,7 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
     /**
      * Retrieve test case request object
      *
-     * @return Enlight_Controller_Request_RequestHttp
+     * @return Enlight_Controller_Request_RequestTestCase
      */
     public function Request()
     {
@@ -189,6 +191,8 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
     }
     
     /**
+     * Magic get method
+     * 
      * @param mixed $name
      * @return void
      */
