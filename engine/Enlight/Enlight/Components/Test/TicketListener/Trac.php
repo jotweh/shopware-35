@@ -15,7 +15,7 @@ class Enlight_Components_Test_TicketListener_Trac extends PHPUnit_Extensions_Tic
 	protected $notifyTicketStateChanges;
 	
 	/**
-	 * Constructor
+	 * Constructor method
 	 * 
 	 * @param string|array $options
 	 */
@@ -34,30 +34,29 @@ class Enlight_Components_Test_TicketListener_Trac extends PHPUnit_Extensions_Tic
      */
     public function getTicketInfo($ticketId = null)
     {
-        if (!is_numeric($ticketId)) {
-            return array('status' => 'invalid_ticket_id');
-        }
-
-        try {
-        	$info = $this->getClient()->call('ticket.get' ,(int)$ticketId);
-        	
-        	switch ($info[3]['status']) {
-                case 'closed':
-                case 'testing':
-                case 'testingExt':
-                    return array('status' => 'closed');
-                	break;
-                case 'new':
-	            case 'reopened':
-	            	return array('status' => 'new');
-	                break;
-                default:
-                    return array('status' => 'unknown_ticket');
-            }
-        }
-        catch (Exception $e) {
-            return array('status' => 'unknown_ticket');
-        }
+    	if (!is_numeric($ticketId)) {
+    		return array('status' => 'invalid_ticket_id');
+    	}
+    	try {
+    		$info = $this->getClient()->call('ticket.get' ,(int)$ticketId);
+    		switch ($info[3]['status']) {
+    			case 'closed':
+    			case 'testing':
+    			case 'testingExt':
+    				return array('status' => 'closed');
+    				break;
+    			case 'assigned':
+    			case 'new':
+    			case 'reopened':
+    				return array('status' => 'new');
+    				break;
+    			default:
+    				return array('status' => 'unknown_ticket');
+    		}
+    	}
+    	catch (Exception $e) {
+    		return array('status' => 'unknown_ticket');
+    	}
     }
 
     /**
