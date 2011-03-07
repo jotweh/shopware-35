@@ -24,11 +24,13 @@ class sCms
 	 */
 	public function sGetStaticPage($staticID=null)
 	{	
-		if(empty($staticID)&&!empty($this->sSYSTEM->_GET['sCustom'])) $staticID = $this->sSYSTEM->_GET['sCustom'];
+		if(empty($staticID) && !empty($this->sSYSTEM->_GET['sCustom'])) {
+			$staticID = $this->sSYSTEM->_GET['sCustom'];
+		}
 		if(empty($staticID)) return false;
 		// Query all information of the static-template
 		$queryStaticTemplate = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHESTATIC'],"
-		SELECT * FROM s_cms_static WHERE id=?",array($this->sSYSTEM->_GET['sCustom']));
+			SELECT * FROM s_cms_static WHERE id=?", array($staticID));
 		if (empty($queryStaticTemplate)){
 			return;
 		}

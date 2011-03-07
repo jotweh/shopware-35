@@ -1,39 +1,55 @@
 <?php
+/**
+ * Custom controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Custom extends Enlight_Controller_Action
 {	
+	/**
+	 * Pre dispatch method
+	 */
 	public function preDispatch()
 	{
-		return;
-		$this->View()->setCaching(true);
-		$this->View()->setCacheID(array($this->Request()->sCustom));
+		//$this->View()->setCaching(true);
+		//$this->View()->setCacheID(array($this->Request()->sCustom));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
-		if($this->request->isXmlHttpRequest()) {
-			$this->view->loadTemplate('frontend/custom/ajax.tpl');
+		if($this->Request()->isXmlHttpRequest()) {
+			$this->View()->loadTemplate('frontend/custom/ajax.tpl');
 		}
-		if(!$this->view->isCached() || $this->request->isXmlHttpRequest())
-		{
-			$static_pages = Shopware()->Modules()->Cms()->sGetStaticPage($this->request->getParam('sCustom'));
-			
-			if (!empty($static_pages['html']))
-			{
-				$this->view->sContent = $static_pages['html'];
-			}
-			
-			for ($i=1;$i<=3;$i++)
-			{
-				if (empty($static_pages['tpl'.$i.'variable'])||!empty($static_pages['tpl'.$i.'path'])) continue;
-				if(!$this->action->View()->templateExists($static_pages['tpl'.$i.'path'])) continue;
+		
+		$staticPage = Shopware()->Modules()->Cms()->sGetStaticPage($this->Request()->sCustom);
+		
+		if (!empty($staticPage['link'])) {
+			$link = Shopware()->Modules()->Core()->sRewriteLink($staticPage['link'], $staticPage['description']);
+			return $this->redirect($link, array('code' => 301));
+		}
+		
+		if (!empty($staticPage['html'])) {
+			$this->View()->sContent = $staticPage['html'];
+		}
 				
-				$this->action->View()->assign($static_pages['tpl'.$i.'variable'], $this->action->View()->fetch($static_pages['tpl'.$i.'path']));
+		for ($i=1; $i<=3; $i++) {
+			if (empty($staticPage['tpl'.$i.'variable'])||empty($staticPage['tpl'.$i.'path'])) {
+				continue;
 			}
-			
-			$this->view->sCustomPage = $static_pages;
-			$this->view->sBreadcrumb = array(0=>array('name'=>$static_pages['description']));
+			if(!$this->View()->templateExists($staticPage['tpl'.$i.'path'])) {
+				continue;
+			}
+			$this->View()->assign($staticPage['tpl'.$i.'variable'], $this->View()->fetch($staticPage['tpl'.$i.'path']));
 		}
 		
-		
+		$this->View()->sCustomPage = $staticPage;
+		$this->View()->sBreadcrumb = array(0=>array('name'=>$staticPage['description']));
 	}
 }
