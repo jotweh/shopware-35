@@ -8,7 +8,20 @@
  * @package Enlight
  * @subpackage Test
  */
-abstract class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
-{
-	
+class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
+{	
+	/**
+     * Adds a test to the suite.
+     *
+     * @param  PHPUnit_Framework_Test $test
+     * @param  array                  $groups
+     */
+	public function addTest(PHPUnit_Framework_Test $test, $groups = array())
+    {
+    	if ($test instanceof PHPUnit_Framework_TestSuite && empty($groups)) {
+            $groups = $test->getGroups();
+        }
+        $groups[] = $this->getName();
+    	parent::addTest($test, $groups);
+    }
 }
