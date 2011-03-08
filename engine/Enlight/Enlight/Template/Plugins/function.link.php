@@ -1,30 +1,40 @@
 <?php
+/**
+ * Enter description here...
+ *
+ * @param array $params
+ * @param Smarty $smarty
+ * @param unknown_type $template
+ * @return string
+ */
 function smarty_function_link($params, $smarty, $template)
 {
 	if(empty($params['file'])) {
 		return '';
 	}
 	$file = $params['file'];
+	$docPath = Enlight::Instance()->DocPath();
 	
-	if (strpos($file, '/')!==0&&strpos($file, '://')===false) {
+	if (strpos($file, '/')!==0 && strpos($file, '://')===false) {
 		$dirs = (array) $smarty->template_dir;
-		$dirs[] = Enlight()->OldPath();
+		$dirs[] = $docPath;
 		foreach ($dirs as $dir) {
 			if(file_exists($dir.$file)) {
 				$file = $dir.$file;
+				break;
 			}
 		}
-		if(strpos($file, Enlight()->OldPath())===0) {
-			$file = substr($file, strlen(Enlight()->OldPath()));
+		if(strpos($file, $docPath)===0) {
+			$file = substr($file, strlen($docPath));
 		}
 		if (strpos($file, '/')!==0) {
-			//$request->getScheme().'://'. $request->getHttpHost().
-			$request = Enlight()->Front()->Request();
+			$request = Enlight::Instance()->Front()->Request();
 			$file = $request->getBasePath().'/'.$file;
 		}
 	}
 	
-	if (strpos($file, '/')===0&&!empty($params['fullPath'])) {
+	if (strpos($file, '/')===0 && !empty($params['fullPath'])) {
+		$request = Enlight::Instance()->Front()->Request();
 		$file = $request->getScheme().'://'. $request->getHttpHost().$file;
 	}
 	
