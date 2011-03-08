@@ -109,4 +109,40 @@ abstract class Enlight_Components_Test_TestCase extends PHPUnit_Framework_TestCa
     {
         return new PHPUnit_Extensions_Database_DataSet_XmlDataSet($xmlFile);
     }
+    
+	/**
+     * Asserts that a link exists.
+     *
+     * @param  string $link
+     * @param  string $message
+     */
+    public static function assertLinkExists($link, $message = '')
+    {
+    	if (!is_string($link)) {
+            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string');
+        }
+
+        $constraint = new Enlight_Components_Test_Constraint_LinkExists;
+
+        self::assertThat($link, $constraint, $message);
+    }
+    
+    /**
+     * Asserts that a link does not exist.
+     *
+     * @param  string $link
+     * @param  string $message
+     */
+    public static function assertLinkNotExists($link, $message = '')
+    {
+    	if (!is_string($link)) {
+            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'string');
+        }
+
+        $constraint = new PHPUnit_Framework_Constraint_Not(
+          new Enlight_Components_Test_Constraint_LinkExists
+        );
+
+        self::assertThat($link, $constraint, $message);
+    }
 }
