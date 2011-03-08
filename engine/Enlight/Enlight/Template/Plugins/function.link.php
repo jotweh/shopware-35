@@ -27,6 +27,9 @@ function smarty_function_link($params, $smarty, $template)
 		if(strpos($file, $docPath)===0) {
 			$file = substr($file, strlen($docPath));
 		}
+		if(Enlight::Instance()->DS()!='/') {
+			$file = str_replace(Enlight::Instance()->DS(), '/', $file);
+		}
 		if (strpos($file, '/')!==0) {
 			$request = Enlight::Instance()->Front()->Request();
 			$file = $request->getBasePath().'/'.$file;
