@@ -1,10 +1,22 @@
 <?php
+/**
+ * Checkout controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 {
 	protected $admin;
 	protected $basket;
 	protected $session;
 	
+	/**
+	 * Init controller method
+	 */
 	public function init()
 	{
 		$this->admin = Shopware()->Modules()->Admin();
@@ -12,6 +24,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->session = Shopware()->Session();
 	}
 		
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
 		if ($this->basket->sCountBasket()<1||!$this->admin->sCheckUser()) {
@@ -21,6 +36,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function cartAction()
 	{
 		$this->View()->sUserData = $this->getUserData();	
@@ -51,6 +69,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->View()->sTargetAction = 'cart';
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function confirmAction()
 	{
 		if (!$this->admin->sCheckUser()) {	
@@ -94,23 +115,39 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->View()->sTargetAction = 'confirm';
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function finishAction()
 	{		
-		if(empty($this->session['sOrderVariables'])||$this->getMinimumCharge()||$this->getEsdNote()||$this->getDispatchNoOrder())
-		{
+		if($this->Request()->getParam('sUniqueID') && !empty($this->session['sOrderVariables'])) {
+			$sql = '
+				SELECT transactionID as sTransactionumber, ordernumber as sOrderNumber
+				FROM s_order
+				WHERE temporaryID=? AND userID=?
+			';
+			$order = Shopware()->Db()->fetchRow($sql, array($this->Request()->getParam('sUniqueID'), Shopware()->Session()->sUserId));
+			if(!empty($order)) {
+				$this->View()->assign($order);
+				$this->View()->assign($this->session['sOrderVariables']->getArrayCopy());
+				return;
+			}
+		}
+		
+		if(empty($this->session['sOrderVariables'])||$this->getMinimumCharge()||$this->getEsdNote()||$this->getDispatchNoOrder()) {
 			return $this->forward('confirm');
 		}
 		
 		$checkQuantities = Shopware()->Modules()->Basket()->sCheckBasketQuantities();
-		if ($checkQuantities["hideBasket"]==true){
+		if (!empty($checkQuantities['hideBasket'])){
 			return $this->forward('confirm');
 		}
 		
 		$this->View()->assign($this->session['sOrderVariables']->getArrayCopy());
 		$this->View()->sUserData = $this->getUserData();
 		
-		if ($this->basket->sCountBasket()>0&&empty($this->View()->sUserData['additional']['payment']['embediframe']))
-		{
+		if ($this->basket->sCountBasket()>0
+		 && empty($this->View()->sUserData['additional']['payment']['embediframe'])) {
 			if($this->Request()->getParam('sNewsletter')!==null) {
 				$this->session['sNewsletter'] = $this->Request()->getParam('sNewsletter') ? true : false;
 			}
@@ -132,19 +169,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		}
 		
 		$this->View()->assign($this->session['sOrderVariables']->getArrayCopy());
-		
-		if($this->Request()->getParam('sUniqueID'))
-		{
-			$sql = '
-				SELECT transactionID as sTransactionumber, ordernumber as sOrderNumber
-				FROM s_order
-				WHERE temporaryID=? AND userID=?
-			';
-			$order = Shopware()->Db()->fetchRow($sql, array($this->Request()->getParam('sUniqueID'), Shopware()->Session()->sUserId));
-			$this->View()->assign($order);
-		}
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function paymentAction()
 	{
 		if(empty($this->session['sOrderVariables'])||$this->getMinimumCharge()||$this->getEsdNote()||$this->getDispatchNoOrder()) {
@@ -183,6 +212,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->View()->sEmbedded = $embedded;
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function addArticleAction()
 	{
 		$ordernumber = $this->Request()->getParam('sAdd');
@@ -227,6 +259,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function addAccessoriesAction()
 	{
 		$accessories = $this->Request()->getParam('sAddAccessories');
@@ -253,6 +288,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function addBundleAction()
 	{
 		if ($this->Request()->getParam('sAddBundle') && $this->Request()->getParam('sBID'))
@@ -262,6 +300,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function deleteArticleAction()
 	{
 		if($this->Request()->getParam('sDelete'))
@@ -271,6 +312,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function changeQuantityAction()
 	{
 		if($this->Request()->getParam('sArticle') && $this->Request()->getParam('sQuantity'))
@@ -280,6 +324,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function addVoucherAction()
 	{
 		if ($this->Request()->isPost())
@@ -293,6 +340,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function addPremiumAction()
 	{
 		if ($this->Request()->isPost())
@@ -310,6 +360,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function calculateShippingCostsAction()
 	{
 		if ($this->Request()->getPost('sCountry'))
@@ -327,6 +380,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
+	/**
+	 * Returns user data
+	 *
+	 * @return array
+	 */
 	public function getUserData()
 	{
 		$userData = $this->admin->sGetUserData();
@@ -360,6 +418,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $userData;
 	}
 	
+	/**
+	 * Save temporary order
+	 */
 	public function saveTemporaryOrder()
 	{
 		$order = Shopware()->Modules()->Order();
@@ -381,6 +442,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$order->sCreateTemporaryOrder();	// Create new temporary order
 	}
 	
+	/**
+	 * Save order method
+	 */
 	public function saveOrder()
 	{
 		$order = Shopware()->Modules()->Order();
@@ -401,6 +465,13 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $order->sSaveOrder();
 	}
 		
+	/**
+	 * Returns instock info
+	 *
+	 * @param unknown_type $ordernumber
+	 * @param unknown_type $quantity
+	 * @return unknown
+	 */
 	public function getInstockInfo($ordernumber, $quantity)
 	{		
 		if(empty($ordernumber))	{
@@ -427,6 +498,12 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return null;
 	}
 	
+	/**
+	 * Returns available stock
+	 *
+	 * @param unknown_type $ordernumber
+	 * @return unknown
+	 */
 	public function getAvailableStock($ordernumber)
 	{
 		$sql = '
@@ -456,6 +533,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $row;
 	}
 	
+	/**
+	 * Returns shipping costs
+	 *
+	 * @return array
+	 */
 	public function getShippingCosts()
 	{
 		$country = $this->getSelectedCountry();
@@ -465,6 +547,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return empty($shippingcosts) ? array('brutto'=>0, 'netto'=>0) : $shippingcosts;
 	}
 	
+	/**
+	 * Returns basket data
+	 *
+	 * @return array
+	 */
 	public function getBasket()
 	{
 		$this->basket->sCheckBasketBundles(); 
@@ -511,6 +598,12 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $basket;
 	}
 	
+	/**
+	 * Returns tax rates
+	 *
+	 * @param unknown_type $basket
+	 * @return unknown
+	 */
 	public function getTaxRates($basket)
 	{
 		$result = array();
@@ -545,6 +638,12 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $result;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @param unknown_type $articleID
+	 * @return unknown
+	 */
 	public function getSimilarShown($articleID)
 	{
 		Shopware()->Modules()->Crossselling()->sBlacklist = Shopware()->Modules()->Basket()->sGetBasketIds();
@@ -565,6 +664,12 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->View()->sCrossSimilarShown = $smilars;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @param unknown_type $articleID
+	 * @return unknown
+	 */
 	public function getBoughtToo($articleID)
 	{
 		Shopware()->Modules()->Crossselling()->sBlacklist = Shopware()->Modules()->Basket()->sGetBasketIds();
@@ -582,16 +687,31 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $boughttoos;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getMinimumCharge()
 	{
 		return $this->basket->sCheckMinimumCharge();
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getDispatchNoOrder()
 	{
 		return !empty(Shopware()->Config()->PremiumShippiungNoOrder)&&(empty($this->session['sDispatch'])||empty($this->session['sCountry']));
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getPremiums()
 	{
 		$sql = 'SELECT `id` FROM `s_order_basket` WHERE `sessionID`=? AND `modus`=1';
@@ -600,12 +720,22 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return Shopware()->Modules()->Marketing()->sGetPremiums();
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getEsdNote()
 	{
 		$payment = empty($this->View()->sUserData['additional']['payment']) ? $this->session['sOrderVariables']['sUserData']['additional']['payment'] : $this->View()->sUserData['additional']['payment'];
 		return $this->basket->sCheckForESD() && !$payment['esdactive'];
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getInquiry()
 	{
 		if (Shopware()->Config()->get('sINQUIRYVALUE'))
@@ -625,16 +755,31 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return false;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getInquiryLink()
 	{
 		return Shopware()->Config()->get('sBASEFILE').'?sViewport=support&sFid='.Shopware()->Config()->get('sINQUIRYID').'&sInquiry=basket';
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getCountryList()
 	{
 		return $this->admin->sGetCountryList();
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getDispatches()
 	{
 		$country = $this->getSelectedCountry();
@@ -644,11 +789,21 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $this->admin->sGetDispatches($country['id']);
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getPayments()
 	{
 		return $this->admin->sGetPaymentMeans();
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getSelectedCountry()
 	{
 		if(!empty($this->View()->sUserData['additional']['countryShipping'])) {
@@ -667,6 +822,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $country;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getSelectedPayment()
 	{
 		if(!empty($this->View()->sUserData['additional']['payment'])) {
@@ -693,6 +853,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $payment;
 	}
 	
+	/**
+	 * Returns checkout data method
+	 *
+	 * @return unknown
+	 */
 	public function getSelectedDispatch()
 	{
 		if(empty($this->session['sCountry'])) {
@@ -718,11 +883,17 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		return $dispatch;
 	}
 
+	/**
+	 * Ajax add article action
+	 */
 	public function ajaxAddArticleAction()
 	{
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
 	}
 	
+	/**
+	 * Ajax cart action
+	 */
 	public function ajaxCartAction()
 	{
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
@@ -740,6 +911,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		
 	}
 	
+	/**
+	 * Ajax amount action
+	 */
 	public function ajaxAmountAction()
 	{
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
