@@ -1,6 +1,20 @@
 <?php
+/**
+ * Router rewrite plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Init plugin method
+	 *
+	 * @return bool
+	 */
 	public function init()
 	{		
 		$event = new Enlight_Event_EventHandler(
@@ -40,6 +54,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		Shopware()->Events()->registerListener($event);
 	}
 	
+	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -50,22 +69,28 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		return true;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onStartDispatch(Enlight_Event_EventArgs $args)
     {
     	Shopware()->Plugins()->Frontend()->RouterRewrite();
     }
     
+    /**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
     public function onPreDispatch(Enlight_Event_EventArgs $args)
 	{		
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 		
-		if(!$request->isDispatched()||$response->isException()||$request->getModuleName()!='frontend') {
+		if($response->isException() || !$request->getParam('sRedirect')) {
 			return;	
-		}
-		
-		if(!$request->getParam('sRedirect')) {
-			return;
 		}
 		
 		$router = $args->getSubject()->Router();
@@ -79,6 +104,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public function onAfterSendResponse(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
@@ -117,6 +147,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public function onInitResourceSessionID(Enlight_Event_EventArgs $args)
 	{
 		$alias = $this->sGetQueryAlias('sCoreId');
@@ -126,6 +161,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public function onRoute(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getRequest();
@@ -152,6 +192,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public function onAssemble(Enlight_Event_EventArgs $args)
 	{
 		$params = $args->getParams();
@@ -191,6 +236,12 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		*/
 	}
 	
+	/**
+	 * Assemble query method
+	 *
+	 * @param array $query
+	 * @return string
+	 */
 	public function assemble($query)
 	{
 		$org_query = array ();
@@ -267,6 +318,11 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	
 	protected $sQueryAliasList;
 	
+	/**
+	 * Returns query alias list
+	 *
+	 * @return unknown
+	 */
 	public function sGetQueryAliasList()
 	{
 		if(!isset($this->sQueryAliasList))
@@ -282,12 +338,24 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		return $this->sQueryAliasList;
 	}
 	
+	/**
+	 * Returns query alias by key
+	 *
+	 * @param string $key
+	 * @return string
+	 */
 	public function sGetQueryAlias($key)
 	{
 		if(!isset($this->sQueryAliasList)) $this->sGetQueryAliasList();
 		return isset($this->sQueryAliasList[$key]) ? $this->sQueryAliasList[$key] : null;
 	}
 	
+	/**
+	 * Rewrite query method
+	 *
+	 * @param array $query
+	 * @return string
+	 */
 	public function sRewriteQuery($query)
 	{
 		if(!empty($query))
