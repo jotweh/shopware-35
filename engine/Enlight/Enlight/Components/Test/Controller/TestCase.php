@@ -81,6 +81,7 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         $this->_template = null;
         $this->_front = null;
         
+        Enlight::Instance()->Plugins()->resetPlugins();
         Enlight::Instance()->Hooks()->resetHooks();
         Enlight::Instance()->Events()->resetEvents();
         
@@ -89,12 +90,17 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         	'Template' => 'Enlight_Template_TemplateManager',
         	'Front' => 'Enlight_Controller_Front',
         	'View' => 'Enlight_View_ViewDefault',
-        	'ViewRenderer' => 'Enlight_Controller_Plugins_ViewRenderer_Bootstrap'
+        	'Enlight_Controller_Plugins_ErrorHandler_Bootstrap',
+        	'Enlight_Controller_Plugins_ViewRenderer_Bootstrap'
         );
         
-        foreach ($ressources as $ressource=>$class) {
+        foreach ($ressources as $ressource => $class) {
         	Enlight_Class::resetInstance($class);
-			Enlight::Instance()->Bootstrap()->resetResource($ressource);
+        	if(!is_int($ressource)) {
+        		Enlight::Instance()->Bootstrap()
+        			->resetResource($ressource)
+        			->loadResource($ressource);
+        	}
         }
     }
             
