@@ -1,6 +1,9 @@
 <?php
 require_once(dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR.'Shopware'.DIRECTORY_SEPARATOR.'Shopware.php');
 
+/**
+ * Shopware Payment Application
+ */
 class sPayment extends Shopware
 {
 	public $sDB_CONNECTION;
@@ -16,6 +19,13 @@ class sPayment extends Shopware
 	public $neededArguments = array();
 	public $arguments = array('coreID'=>'param_sCoreId','dispatchID'=>'dispatchID','transactionID'=>'transactionID','comment'=>'comment');
 
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $debug
+	 * @param unknown_type $path
+	 * @param unknown_type $initSession
+	 */
 	public function __construct ($debug, $path='', $initSession=true)
 	{
 		parent::__construct();
@@ -50,6 +60,11 @@ class sPayment extends Shopware
 		//$this->initUser();
 	}
 		
+	/**
+	 * Login user method
+	 *
+	 * @return unknown
+	 */
 	public function loginUser()
 	{
 		if (empty($this->sSYSTEM->_SESSION['sUserId'])&&!empty($_REQUEST[$this->arguments['coreID']])) {
@@ -75,6 +90,9 @@ class sPayment extends Shopware
 		return true;
 	}
 
+	/**
+	 * Init user method
+	 */
 	public function initUser()
 	{
 		$this->sUser = Shopware()->Modules()->Admin()->sGetUserData();
@@ -105,6 +123,9 @@ class sPayment extends Shopware
 		$this->sTax = $this->sUser['additional']['charge_vat'];
 	}
 
+	/**
+	 * Returns amount method
+	 */
 	public function getAmount()
 	{
 		if(!$this->sBasket) {
@@ -117,6 +138,9 @@ class sPayment extends Shopware
 		}
 	}
 	
+	/**
+	 * Returns amount net method
+	 */
 	public function getAmountNet()
 	{
 		if(!$this->sBasket) {
@@ -125,6 +149,9 @@ class sPayment extends Shopware
 		return $this->sBasket['AmountNetNumeric'];
 	}
 	
+	/**
+	 * Init basket method
+	 */
 	public function initBasket()
 	{
 		if(!$this->sUser) {
@@ -165,6 +192,11 @@ class sPayment extends Shopware
 		}
 	}
 
+	/**
+	 * Returns basket method
+	 *
+	 * @return array
+	 */
 	public function getBasket()
 	{
 		if(!$this->sBasket) {
@@ -173,6 +205,9 @@ class sPayment extends Shopware
 		return $this->sBasket;
 	}
 	
+	/**
+	 * Returns amount tax method
+	 */
 	public function getAmountTax()
 	{
 		if(!$this->sBasket) {
@@ -185,6 +220,9 @@ class sPayment extends Shopware
 		}
 	}
 	
+	/**
+	 * Returns shipping costs method
+	 */
 	public function getShippingCosts()
 	{
 		if(!$this->sBasket) {
@@ -197,6 +235,9 @@ class sPayment extends Shopware
 		}
 	}
 	
+	/**
+	 * Returns shipping costs method
+	 */
 	public function getShippingCostsNet()
 	{
 		if(!$this->sBasket) {
@@ -205,6 +246,9 @@ class sPayment extends Shopware
 		return $this->sBasket['sShippingcostsNet'];
 	}
 
+	/**
+	 * Save order method
+	 */
 	public function submitOrder($viewport, $path ,$viewportName ,$paymentState=0)
 	{
 		if(!$this->loginUser()){
@@ -264,6 +308,12 @@ class sPayment extends Shopware
 		return $ordernumber;
 	}
 	
+	/**
+	 * Through error method
+	 *
+	 * @param unknown_type $msg
+	 * @param unknown_type $hold
+	 */
 	public function throughError($msg, $hold=true)
 	{
 		if ($this->verbose && $hold){
@@ -273,11 +323,20 @@ class sPayment extends Shopware
 		}
 	}
 	
-	public function formatAmountCent($amount)
+	/**
+	 * Format cent method
+	 *
+	 * @param unknown_type $amount
+	 * @return unknown
+	 */
+	public static function formatAmountCent($amount)
 	{
-		return intval($amount*100);
+		return intval(round($amount*100));
 	}
 
+	/**
+	 * Init payment method
+	 */
 	public function initPayment()
 	{
 		if (!empty($this->gatewayIps)){
@@ -295,7 +354,13 @@ class sPayment extends Shopware
 		}
 	}
 	
-	public function catchErrors() {
+	/**
+	 * Catch errors method
+	 * 
+	 * @deprecated 
+	 */
+	public function catchErrors()
+	{
 		
 	}
 }
