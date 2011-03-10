@@ -102,6 +102,10 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         			->loadResource($ressource);
         	}
         }
+        
+        Enlight::Instance()->Bootstrap()
+        	->resetResource('System')
+        	->resetResource('Modules');
     }
             
     /**
