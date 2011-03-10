@@ -1,6 +1,18 @@
 <?php
+/**
+ * Debug plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Plugin install method
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -15,22 +27,29 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		return true;
 	}
 	
+	/**
+	 * Plugin uninstall method
+	 */
 	public function uninstall()
 	{
 		$this->unsubscribeEvents();
 		return true;
 	}
 	
-	public static function onStartDispatch($args)
+	/**
+	 * Plugin event method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public static function onStartDispatch(Enlight_Event_EventArgs $args)
 	{
 		if(!Shopware()->Bootstrap()->hasResource('Log')){
 			return;
 		}
 		
-		$request = $args->getSubject();
 		$config = Shopware()->Plugins()->Core()->Debug()->Config();
 		
-		if (!empty($config->AllowIP) && strpos($config->AllowIP, $request->getClientIp(false))===false){
+		if (!empty($_SERVER['REMOTE_ADDR']) && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
 			return;
 		}
 
@@ -62,19 +81,32 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		Shopware()->Events()->registerListener($event);
 	}
 	
-	public function onAfterRenderView($args)
+	/**
+	 * Plugin event method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public function onAfterRenderView(Enlight_Event_EventArgs $args)
 	{
 		$template = $args->getTemplate();
 		$this->logTemplate($template);
 	}
 	
-	public function onDispatchLoopShutdown($args)
+	/**
+	 * Plugin event method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public function onDispatchLoopShutdown(Enlight_Event_EventArgs $args)
 	{
 		$this->logDb();
 		$this->logError();
 		$this->logException();
 	}
 	
+	/**
+	 * Log error method
+	 */
 	public function logError()
 	{
 		$error_handler = Shopware()->Plugins()->Core()->ErrorHandler();
@@ -102,6 +134,9 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		}
 	}
 	
+	/**
+	 * Log database method
+	 */
 	public function logDb()
 	{
 		$profiler = Shopware()->Db()->getProfiler();
@@ -141,6 +176,9 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		Shopware()->Log()->table($table);
 	}
 
+	/**
+	 * Log template method
+	 */
 	public function logTemplate($template)
 	{		
 		$template_vars = $template->getTemplateVars();
@@ -171,6 +209,9 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		}
 	}
 	
+	/**
+	 * Encode data method
+	 */
 	public function encode($data)
 	{
 		if(is_array($data)) {
@@ -188,7 +229,10 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		}
 		return $data;
 	}
-		
+	
+	/**
+	 * Log exception method
+	 */
 	public function logException()
 	{
 		$response = Shopware()->Front()->Response();
