@@ -3,7 +3,12 @@ if(empty($_REQUEST['module'])) {
 	exit();
 }
 $base_path = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS'])!='off') ? 'https://' : 'http://';
-$base_path .= $_SERVER['HTTP_HOST'].dirname(dirname(dirname($_SERVER['PHP_SELF'])));
+$base_path .= $_SERVER['HTTP_HOST'];
+if(!empty($_SERVER['REQUEST_URI'])) {
+	$base_path .= dirname(dirname(dirname($_SERVER['REQUEST_URI'])));
+} else {
+	$base_path .= dirname(dirname(dirname($_SERVER['PHP_SELF'])));
+}
 $base_dir = dirname(dirname(dirname(__FILE__))).'/';
 $module = basename($_REQUEST['module']);
 $module = preg_replace('/[^a-z0-9_.:-]/i', '', $module);
