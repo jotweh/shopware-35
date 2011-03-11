@@ -10,7 +10,7 @@ if ($result!="SUCCESS"){
 	die();
 }
 
-$campaignid =  urlencode($_POST["template"]);
+$campaignid =  urlencode($_GET["template"]);
 if (empty($campaignid)) $campaignid = "0";
 
 ?>
