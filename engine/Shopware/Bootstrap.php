@@ -1,6 +1,6 @@
 <?php
 /**
- * Bootstrap
+ * Shopware Application Bootstrap
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
@@ -9,7 +9,7 @@
 class Shopware_Bootstrap extends Enlight_Bootstrap
 {
 	/**
-	 * Run application 
+	 * Run application method
 	 *
 	 * @return unknown
 	 */
@@ -34,9 +34,9 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 	}
     
 	/**
-	 * Init template
+	 * Init template method
 	 *
-	 * @return unknown
+	 * @return Enlight_Template_TemplateManager
 	 */
 	protected function initTemplate()
     {
@@ -58,7 +58,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-	 * Init view
+	 * Init view method
 	 *
 	 * @return Enlight_View_ViewDefault
 	 */
@@ -68,7 +68,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-	 * Init db
+	 * Init database method
 	 *
 	 * @return Zend_Db_Adapter_Pdo_Abstract
 	 */
@@ -86,7 +86,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init session id method
      *
      * @return unknown
      */
@@ -102,7 +102,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init session method
      *
      * @return unknown
      */
@@ -172,45 +172,102 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init mail transport
      *
      * @return unknown
      */
-    protected function initMail()
+    protected function initMailTransport()
     {
-    	if(!$this->issetResource('Db')) {
-    		return null;
-    	}
+    	$options = Shopware()->getOption('mail') ? Shopware()->getOption('mail') : array();
     	$config = $this->getResource('Config');
     	
-    	if($config->MailerMailer=='smtp') {
-    		$options = array();
-    		if(!empty($config->MailerUsername)) {
-    			$options['auth'] =  'login';
-    			$options['username'] =  $config->MailerUsername;
-    			$options['password'] = $config->MailerPassword;
-    		}
-    		if(!empty($config->MailerSMTPSecure)) {
-    			$options['ssl'] = $config->MailerSMTPSecure;
-    		}
-    		if(!empty($config->MailerPort)) {
-    			$options['port'] = $config->MailerPort;
-    		}
-    		if(!empty($config->MailerHostname)) {
-    			$options['name'] = $config->MailerHostname;
-    		}
-			$transport = new Zend_Mail_Transport_Smtp($config->MailerHost, $options);
-			Zend_Mail::setDefaultTransport($transport);
+    	if(!isset($options['type']) && !empty($config->MailerMailer) && $config->MailerMailer!='mail') {
+			$options['type'] = $config->MailerMailer;
+		}
+		if(empty($options['type'])) {
+    		$options['type'] = 'sendmail';
     	}
-		Enlight_Components_Mail::setDefaultFrom($config->Mail, $config->Shopname);
+    	if(!isset($options['username']) && !empty($config->MailerUsername)) {
+    		if(empty($options['auth'])) {
+				$options['auth'] = 'login';
+			}
+			$options['username'] = $config->MailerUsername;
+			$options['password'] = $config->MailerPassword;
+		}
+		if(!isset($options['ssl']) && !empty($config->MailerSMTPSecure)) {
+			$options['ssl'] = $config->MailerSMTPSecure;
+		}
+		if(!isset($options['port']) && !empty($config->MailerPort)) {
+			$options['port'] = $config->MailerPort;
+		}
+		if(!isset($options['name']) && !empty($config->MailerHostname)) {
+			$options['name'] = $config->MailerHostname;
+		}
+		if(!isset($options['host']) && !empty($config->MailerHost)) {
+			$options['host'] = $config->MailerHost;
+		}
 		
-	    $mail = new Enlight_Components_Mail($config->CharSet);
+		if(!Shopware()->Loader()->loadClass($options['type'])) {
+			$transportName = ucfirst(strtolower($options['type']));
+			$transportName = 'Zend_Mail_Transport_'.$transportName;
+		}
+		if($transportName=='Zend_Mail_Transport_Smtp') {
+			$transport = Enlight_Class::Instance($transportName, array($options['host'], $options));
+		} else {
+			$transport = Enlight_Class::Instance($transportName, array($options));
+		}
+		Enlight_Components_Mail::setDefaultTransport($transport);
+		
+		if(!isset($options['from']) && !empty($config->Mail)) {
+			$options['from'] = array('email'=>$config->Mail, 'name'=>$config->Shopname);
+		}
+				
+    	if(!empty($options['from']['email'])) {
+    		Enlight_Components_Mail::setDefaultFrom(
+    			$options['from']['email'], 
+    			!empty($options['from']['name']) ? $options['from']['name'] : null
+    		);
+    	}
+    	if(!empty($options['replyTo']['email'])) {
+    		Enlight_Components_Mail::setDefaultReplyTo(
+    			$options['replyTo']['email'], 
+    			!empty($options['replyTo']['name']) ? $options['replyTo']['name'] : null
+    		);
+    	}
     	
+    	return $transport;
+    }
+    
+    /**
+     * Init mail method
+     *
+     * @return Enlight_Components_Mail
+     */
+    protected function initMail()
+    {
+    	if(!$this->loadResource('Config')
+    	 || !$this->loadResource('MailTransport')) {
+    		return null;
+    	}
+    	
+    	$options = Shopware()->getOption('mail');
+    	$config = $this->getResource('Config');
+		
+		if(isset($options['charset'])) {
+			$defaultCharSet = $options['charset'];
+		} elseif (!empty($config->CharSet)) {
+			$defaultCharSet = $config->CharSet;
+		} else {
+			$defaultCharSet = null;
+		}
+    	
+	    $mail = new Enlight_Components_Mail($defaultCharSet);
+	    
     	return $mail;
     }
     
     /**
-     * Init
+     * Init config method
      *
      * @return unknown
      */
@@ -233,7 +290,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init snippets method
      *
      * @return unknown
      */ 
@@ -252,29 +309,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
-     *
-     * @return unknown
-     */
-    protected function initFront()
-    {
-    	$front = parent::initFront();
-    	
-    	$config = Shopware()->getOption('Front');
-    	
-    	$front->setParams($config);
-    	    	
-    	if(!empty($config['throwExceptions'])) {
-    		$front->throwExceptions(true);
-    	}
-    	if(!empty($config['returnResponse'])) {
-    		$front->returnResponse(true);
-    	}
-    	return $front;
-    }
-    
-    /**
-     * Init
+     * Init router method
      *
      * @return unknown
      */
@@ -284,7 +319,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init subscriber method
      *
      * @return unknown
      */
@@ -297,7 +332,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init plugins method
      *
      * @return unknown
      */
@@ -325,7 +360,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init locale method
      *
      * @return unknown
      */
@@ -339,7 +374,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init
+     * Init currency method
      *
      * @return unknown
      */
@@ -353,7 +388,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init date
+     * Init date method
      *
      * @return unknown
      */
@@ -364,7 +399,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     }
     
     /**
-     * Init cache
+     * Init cache method
      *
      * @return unknown
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Bootstrap
+ * Enlight Bootstrap
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
@@ -28,7 +28,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     protected $resourceStatus = array();
     
     /**
-     * Run application
+     * Run application method
      * 
      * @return mixed
      */
@@ -39,7 +39,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Init front
+     * Init front method
      *
      * @return Enlight_Controller_Front
      */
@@ -49,11 +49,22 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     	
     	$front = Enlight_Class::Instance('Enlight_Controller_Front');
    	    $front->Dispatcher()->addModuleDirectory(Enlight()->AppPath('Controllers'));
+   	    
+   	    $config = Shopware()->getOption('Front');
+    	$front->setParams($config);
+    	    	
+    	if(!empty($config['throwExceptions'])) {
+    		$front->throwExceptions(true);
+    	}
+    	if(!empty($config['returnResponse'])) {
+    		$front->returnResponse(true);
+    	}
+   	    
         return $front;
     }
        
     /**
-     * Init template
+     * Init template method
      *
      * @return Enlight_Template_TemplateManager
      */ 
@@ -64,6 +75,11 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
         return $template;
     }
     
+    /**
+     * Init helper method
+     *
+     * @return Enlight_Helper_HelperManager
+     */
     protected function initHelpers()
     {
    	    $helpers = new Enlight_Helper_HelperManager();
@@ -71,7 +87,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Init zend
+     * Init zend method
      *
      * @return bool
      */
@@ -85,7 +101,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Enter description here...
+     * Register resource method
      *
      * @param string $name
      * @param mixed $resource
@@ -99,7 +115,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Enter description here...
+     * Has resource method
      *
      * @param string $name
      * @return bool
@@ -110,7 +126,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Returns resource
+     * Returns resource method
      *
      * @param string $name
      * @return bool
@@ -121,7 +137,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Returns resource
+     * Returns resource method
      *
      * @param string $name
      * @return Enlight_Class
@@ -138,7 +154,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
 
     /**
-     * Load resource
+     * Load resource method
      *
      * @param string $name
      * @return bool
@@ -182,7 +198,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
     
     /**
-     * Reset resource
+     * Reset resource method
      *
      * @param string $name
      * @return Enlight_Bootstrap
@@ -197,7 +213,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     }
 
     /**
-     * Returns resource
+     * Returns called resource
      *
      * @param string $name
      * @param array $arguments
