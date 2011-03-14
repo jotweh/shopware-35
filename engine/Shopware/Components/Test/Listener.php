@@ -71,7 +71,7 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
         	null,
         	null,
         	array(
-        		'jenkins_date' => Zend_Date::now()->toString('YYYY-MM-DD HH:mm:ss'),
+        		'jenkins_date' => Zend_Date::now()->toString('YYYY-MM-dd HH:mm:ss'),
         		'jenkins' => $statusToBe=='closed' ? 'Test erfolgreich' : 'Test fehlgeschlagen',
         		'resolution' => $resolution
         	),
