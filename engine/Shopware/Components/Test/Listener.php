@@ -41,7 +41,7 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
     		$info = $this->getClient()->call('ticket.get', (int) $ticketId);
     		switch ($info[3]['jenkins']) {
     			case 'Test erfolgreich':
-    			//	return array('status' => 'closed');
+    				return array('status' => 'closed');
     			case '':
     			case 'Kein Test':
     			case 'Test fehlgeschlagen':
@@ -71,7 +71,7 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
         	null,
         	null,
         	array(
-        		'jenkins_date' => Zend_Date::now()->toString('YYYYMMDDTHH:mm:ss'),
+        		'jenkins_date' => Zend_Date::now()->toString('YYYY-MM-DD HH:mm:ss'),
         		'jenkins' => $statusToBe=='closed' ? 'Test erfolgreich' : 'Test fehlgeschlagen',
         		'resolution' => $resolution
         	),
