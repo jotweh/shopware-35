@@ -1,8 +1,12 @@
 <?php
 function smarty_function_config($params, $smarty, $template)
 {
-	if(empty($params['name'])||!Shopware()->Bootstrap()->issetResource('Config')) {
+	if(empty($params['name'])
+	  || !Enlight()->Bootstrap()->issetResource('Config')) {
 		return null;
 	}
-	return Shopware()->Config()->get($params['name'], isset($params['default']) ? $params['default'] : null);
+	return Enlight()->Config()->get(
+		$params['name'],
+		isset($params['default']) ? $params['default'] : null
+	);
 }

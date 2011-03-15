@@ -1,12 +1,22 @@
 <?php
+/**
+ * Enlight Loader
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Enlight_Loader extends Enlight_Class
 {	
-	private $namespaces = array();
-	private $loaded_clasess = array();
+	protected $namespaces = array();
+	protected $loadedClasses = array();
 	
-	const Default_Separator = '_\\';
-	const Default_Extension = '.php';
+	const DEFAULT_SEPARATOR = '_\\';
+	const DEFAULT_EXTENSION = '.php';
 	
+	/**
+	 * Init method
+	 */
 	public function init()
 	{
 		if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
@@ -16,6 +26,13 @@ class Enlight_Loader extends Enlight_Class
 		}
 	}
 	
+	/**
+	 * Load class method
+	 *
+	 * @param string|array $class
+	 * @param string $path
+	 * @return bool
+	 */
 	public function loadClass($class, $path=null)
 	{
 		if(is_array($class)) {
@@ -30,39 +47,50 @@ class Enlight_Loader extends Enlight_Class
 				$path = $this->getClassPath($class);
 			}
 			if($path) {
-				$this->includeFile($path);
+				$this->loadFile($path);
 			}
 		}
 		if(!$this->isLoaded($class)) {
 			return false;
 		}
 		
-		$this->loaded_clasess[] = $class;
+		$this->loadedClasses[] = $class;
 		return true;
 	}
 	
-	public static function includeFile($path)
+	/**
+	 * Load file method
+	 *
+	 * @param string $path
+	 */
+	public static function loadFile($path)
 	{
-		$path_org = $path;
-        $path = realpath($path);
-        if(!self::checkFile($path))
-		{
+        if(!self::checkFile($path)) {
 			throw new Enlight_Exception('Security check: Illegal character in filename');
 		}
-		if(!file_exists($path)||!is_file($path))
-		{
-			throw new Enlight_Exception('File "'.$path_org.'" not exists failure');
+		if(!file_exists($path) || !is_file($path)) {
+			throw new Enlight_Exception('File "'.$path.'" not exists failure');
 		}
-		@ob_start();
-		include($path);
-		@ob_end_clean();
+		return include $path;
 	}
 	
+	/**
+	 * Check file is readable
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
 	public static function isReadable($path)
 	{
-		return self::checkFile($path)&&file_exists($path)&&is_file($path);
+		return self::checkFile($path) && file_exists($path) && is_file($path);
 	}
 	
+	/**
+	 * Explode include path 
+	 *
+	 * @param unknown_type $path
+	 * @return unknown
+	 */
 	public static function explodeIncludePath($path = null)
     {
         if (null === $path) {
@@ -80,12 +108,16 @@ class Enlight_Loader extends Enlight_Class
         return $paths;
     }
 
+    /**
+     * Returns class path
+     *
+     * @param string $class
+     * @return string|void
+     */
 	public function getClassPath($class)
 	{
-		foreach ($this->namespaces as  $namespace)
-		{
-			if(strpos($class, $namespace['namespace'])===0)
-			{
+		foreach ($this->namespaces as  $namespace) {
+			if(strpos($class, $namespace['namespace'])===0) {
 				$path = substr($class, strlen($namespace['namespace'])+1);
 				$path = str_replace(str_split($namespace['separator']), DIRECTORY_SEPARATOR, $path);
 				$path = $namespace['path'].$path.$namespace['extension'];
@@ -94,15 +126,28 @@ class Enlight_Loader extends Enlight_Class
 				}
 			}
 		}
-		return false;
 	}
 	
-	public function isLoaded($class)
+	/**
+	 * Check class is loaded
+	 *
+	 * @param string $class
+	 * @return bool
+	 */
+	public static function isLoaded($class)
 	{
 		return class_exists($class, false)||interface_exists($class, false);
 	}
 	
-	public function registerNamespace($namespace, $path, $separator=self::Default_Separator, $extension=self::Default_Extension)
+	/**
+	 * Register namespace
+	 *
+	 * @param string $namespace
+	 * @param string $path
+	 * @param string $separator
+	 * @param string $extension
+	 */
+	public function registerNamespace($namespace, $path, $separator=self::DEFAULT_SEPARATOR, $extension=self::DEFAULT_EXTENSION)
 	{
 		$this->namespaces[] = array(
 			'namespace' => $namespace,
@@ -112,24 +157,45 @@ class Enlight_Loader extends Enlight_Class
 		);
 	}
 	
+	/**
+	 * Add include path
+	 *
+	 * @param unknown_type $path
+	 * @return unknown
+	 */
 	public static function addIncludePath($path)
 	{
 		if(is_array($path)) {
 			return (bool) array_map(__METHOD__, $path);
 		}
-		if(!is_string($path)||!file_exists($path)||!is_dir($path)) {
-    		throw new Enlight_Exception('Path "'.$path.'" is not a dir failure');
-    	}
-    	
-    	$paths = self::explodeIncludePath();
-        
-        if (array_search($path, $paths) !== false) {
-        	return true;
-        }
-        
-        array_push($paths, $path);
-        
-        $old = set_include_path(implode(PATH_SEPARATOR, $paths));
+		if(!is_string($path) || !file_exists($path) || !is_dir($path)) {
+			throw new Enlight_Exception('Path "'.$path.'" is not a dir failure');
+		}
+
+		$paths = self::explodeIncludePath();
+
+		if (array_search($path, $paths) !== false) {
+			return true;
+		}
+
+		array_push($paths, $path);
+
+		return self::setIncludePath($paths);
+	}
+	
+	/**
+	 * Set include path
+	 *
+	 * @param unknown_type $path
+	 * @return unknown
+	 */
+	public static function setIncludePath($path)
+	{
+		if(is_array($path)) {
+			$path = implode(PATH_SEPARATOR, $path);
+		}
+		       
+        $old = set_include_path($path);
         if(!$old || $old == get_include_path()) {
         	throw new Enlight_Exception('Include path "'.$path.'" could not be added failure');
         }
@@ -137,20 +203,35 @@ class Enlight_Loader extends Enlight_Class
         return true;
 	}
 	
+	/**
+	 * Returns loaded classes
+	 *
+	 * @return array
+	 */
 	public function getLoadedClasses()
 	{
-		return $this->loaded_clasess;
+		return $this->loadedClasses;
 	}
 	
+	/**
+	 * Autoload class
+	 *
+	 * @param string $class
+	 */
 	public function autoload($class)
 	{
-		try
-		{
+		try {
 			$this->loadClass($class);
 		}
 		catch (Exception $e) { }
 	}
 	
+	/**
+	 * Security check file
+	 *
+	 * @param string $path
+	 * @return bool
+	 */
 	public static function checkFile($path)
     {
         return !preg_match('/[^a-z0-9 \\/\\\\_.:-]/i', $path);

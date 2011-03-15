@@ -50,7 +50,7 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
     	$front = Enlight_Class::Instance('Enlight_Controller_Front');
    	    $front->Dispatcher()->addModuleDirectory(Enlight()->AppPath('Controllers'));
    	    
-   	    $config = Shopware()->getOption('Front');
+   	    $config = Enlight()->getOption('Front');
     	$front->setParams($config);
     	    	
     	if(!empty($config['throwExceptions'])) {
@@ -93,10 +93,10 @@ abstract class Enlight_Bootstrap extends Enlight_Class implements Enlight_Hook
      */
     protected function initZend()
     {
-    	Enlight()->Loader()->registerNamespace('Zend', Shopware()->CorePath('Zend'));
-    	Enlight()->Loader()->addIncludePath(Shopware()->CorePath());
-    	Enlight()->Loader()->registerNamespace('Zend', Shopware()->VendorPath('Zend_library_Zend'));
-    	Enlight()->Loader()->addIncludePath(Shopware()->VendorPath('Zend_library'));
+    	Enlight()->Loader()->registerNamespace('Zend', Enlight()->CorePath('Zend'));
+    	Enlight()->Loader()->addIncludePath(Enlight()->CorePath());
+    	Enlight()->Loader()->registerNamespace('Zend', Enlight()->VendorPath('Zend_library_Zend'));
+    	Enlight()->Loader()->addIncludePath(Enlight()->VendorPath('Zend_library'));
     	return true;
     }
     
