@@ -1,6 +1,20 @@
 <?php
+/**
+ * Shopware System Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{		
 	 	$event = $this->createEvent(
@@ -21,6 +35,11 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 		return true;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onInitResourceSystem(Enlight_Event_EventArgs $args)
 	{
 		$shop = Shopware()->Shop();
@@ -58,7 +77,7 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 		$system->sLicenseData = self::getLicenceData();
 		$system->sSubShops = self::getShopData();
 		$system->sLanguageData = $system->sSubShops;
-		$system->sBotSession = self::getUserIsBot();
+		$system->sBotSession = Shopware()->Session()->Bot;
 		
 		$system->sLanguage = $shop->getId();
 		$system->sSubShop = $system->sSubShops[$shop->getId()];
@@ -99,26 +118,11 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 		return $system;
 	}
 	
-	public static function getUserIsBot()
-	{
-		static $result;
-		if($result !== null){
-			return $result;
-		}
-		$result = false;
-		if(!empty($_SERVER['HTTP_USER_AGENT'])) {
-			$useragent = preg_replace('/[^a-z]/', '', strtolower($_SERVER['HTTP_USER_AGENT']));
-		} else {
-			$useragent = '';
-		}
-		$bots = preg_replace('/[^a-z;]/', '', strtolower(Shopware()->Config()->BotBlackList));
-		$bots = explode(';',$bots);
-		if(!empty($useragent) && str_replace($bots, '', $useragent)!=$useragent) {
-			$result = true;
-		}
-		return $result;
-	}
-	
+	/**
+	 * Returns currency data
+	 *
+	 * @return array
+	 */
 	public static function getCurrencyData()
 	{
 		$sql = 'SELECT currency as `key`, cc.* FROM s_core_currencies cc ORDER BY position ASC';
@@ -126,6 +130,11 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 		return $data;
 	}
 	
+	/**
+	 * Returns licence data
+	 *
+	 * @return array
+	 */
 	public static function getLicenceData()
 	{
 		$sql = 'SELECT module, hash FROM s_core_licences WHERE inactive=0';
@@ -135,12 +144,22 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
 		return $data;
 	}
 	
+	/**
+	 * Returns shop data
+	 *
+	 * @return array
+	 */
 	public static function getShopData()
 	{
 		$data = Shopware()->Db()->fetchAssoc('SELECT id as `key`, m.* FROM s_core_multilanguage m');
 		return $data;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onInitResourceModules(Enlight_Event_EventArgs $args)
 	{
 		$modules = new Shopware_Components_Modules();
@@ -149,6 +168,11 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
     	return $modules;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onInitResourceAdodb(Enlight_Event_EventArgs $args)
 	{
 		$db = new Enlight_Components_Adodb(array(
@@ -159,6 +183,9 @@ class Shopware_Plugins_Core_System_Bootstrap extends Shopware_Components_Plugin_
     	return $db;
 	}
 	
+	/**
+	 * Returns capabilities
+	 */
 	public function getCapabilities()
     {
         return array(

@@ -1,6 +1,20 @@
 <?php
+/**
+ * Shopware Statistics Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install plugin method
+	 *
+	 * @return unknown
+	 */
 	public function install()
 	{
 		$event = $this->createEvent(
@@ -11,34 +25,41 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		
 		return true;
 	}
-		
+	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onDispatchLoopShutdown(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 		
-		if($response->isException()||$request->getModuleName()!='frontend'){
+		if($response->isException()
+		  || $request->getModuleName()!='frontend'
+		  || $request->getClientIp(false)===null
+		  || !empty(Shopware()->Session()->Bot)) {
 			return;	
 		}
-		
-		if($request->getClientIp(false)===null) {
-			return;
+		if(!empty(Shopware()->Config()->BlockIP) 
+		  && strpos(Shopware()->Config()->BlockIP, $request->getClientIp(false))!==false) {
+			return;	
 		}
-		
-		if (strpos(Shopware()->Config()->BlockIP, $request->getClientIp(false))!==false){
-			return;
-		}
-		
+				
 		$plugin = Shopware()->Plugins()->Frontend()->Statistics();
 		
-		$plugin->sCleanUp();
-		$plugin->sRefreshLog();
-		$plugin->sRefreshReferer($request);
-		$plugin->sRefreshCurrentUsers($request);
-		$plugin->sRefreshPartner($request);
+		$plugin->cleanupStatistic();
+		$plugin->refreshLog($request);
+		$plugin->refreshReferer($request);
+		$plugin->refreshCurrentUsers($request);
+		$plugin->refreshPartner($request, $response);
 	}
 	
-	public function sCleanUp()
+	/**
+	 * Cleanup statistic
+	 */
+	public function cleanupStatistic()
 	{
 		if ((rand()%10) == 0) {
 			$sql = 'DELETE FROM s_statistics_currentusers WHERE time < DATE_SUB(NOW(), INTERVAL 3 MINUTE)';
@@ -48,19 +69,29 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		}
 	}
 	
-	public function sRefreshCurrentUsers($request)
+	/**
+	 * Refresh current users
+	 *
+	 * @param Enlight_Controller_Request_Request $request
+	 */
+	public function refreshCurrentUsers(Enlight_Controller_Request_Request $request)
 	{
-		$sql = 'INSERT INTO s_statistics_currentusers VALUES (NULL,?,?,NOW(),?)';
+		$sql = 'INSERT INTO s_statistics_currentusers (`remoteaddr`, `page`, `time`, `userID`) VALUES (?, ?, NOW(), ?)';
 		Shopware()->Db()->query($sql,array(
 			$request->getClientIp(false),
-			$_SERVER['PHP_SELF'],
+			$request->getRequestUri(),
 			empty(Shopware()->Session()->sUserId) ? 0 : (int) Shopware()->Session()->sUserId
 		));
 	}
 
-	public function sRefreshLog($request){
+	/**
+	 * Refresh visitor log
+	 *
+	 * @param Enlight_Controller_Request_Request $request
+	 */
+	public function refreshLog(Enlight_Controller_Request_Request $request){
 
-		$ip = $_SERVER['REMOTE_ADDR'];
+		$ip = $request->getClientIp(false);
 		
 		$sql = 'SELECT id FROM s_statistics_visitors WHERE datum=CURDATE()';
 		$abfrage = Shopware()->Db()->fetchOne($sql);
@@ -82,52 +113,66 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		}
 	}
 
-	public function sRefreshReferer($request)
+	/**
+	 * Refresh referer log
+	 *
+	 * @param Enlight_Controller_Request_Request $request
+	 */
+	public function refreshReferer(Enlight_Controller_Request_Request $request)
 	{
-		if(empty($_SERVER['HTTP_REFERER'])) return;
-		if(strpos($_SERVER['HTTP_REFERER'], 'http')!==0) return;
-		if(strpos($_SERVER['HTTP_REFERER'], Shopware()->Config()->Host)!==false) return;
+		$referer = $request->getHeader('REFERER');
 		
-		$referer = $_SERVER['HTTP_REFERER'];
-		
-		if (!empty($_GET['sPartner'])){
-			$referer = $referer.'$'.$_GET['sPartner'];
+		if(empty($referer)
+		  || strpos($referer, 'http')!==0
+		  || strpos($referer, Shopware()->Config()->Host)!==false) {
+			return;
 		}
 		
 		Shopware()->Session()->sReferer = $referer;
-		$sql = 'INSERT INTO s_statistics_referer (datum, referer) VALUES (NOW(),?)';
-		$sql = Shopware()->Db()->query($sql, array($referer));
+		
+		if ($request->getQuery('sPartner')){
+			$referer .= '$'.$request->getQuery('sPartner');
+		}
+		
+		$sql = 'INSERT INTO s_statistics_referer (datum, referer) VALUES (NOW(), ?)';
+		Shopware()->Db()->query($sql, array($referer));
 	}
 	
-	public function sRefreshPartner($request)
+	/**
+	 * Refresh partner log
+	 *
+	 * @param Enlight_Controller_Request_Request $request
+	 */
+	public function refreshPartner(Enlight_Controller_Request_Request $request, Enlight_Controller_Response_Response $response)
 	{
-		if (isset($_GET['sPartner'])) {
-			if (strpos($_GET['sPartner'], 'sCampaign')===0) {
-				$campaignID = (int) str_replace('sCampaign', '', $_GET['sPartner']);
-				Shopware()->Session()->sPartner = 'sCampaign'.$campaignID;
-				$sql = '
-					UPDATE s_campaigns_mailings
-					SET clicked = clicked + 1
-					WHERE id = ?
-				';
-				Shopware()->Db()->query($sql, array($campaignID));
+		if ($request->getQuery('sPartner') !== null) {
+			if (strpos($request->getQuery('sPartner'), 'sCampaign')===0) {
+				$campaignID = (int) str_replace('sCampaign', '',$request->getQuery('sPartner'));
+				if(!empty($campaignID)) {
+					Shopware()->Session()->sPartner = 'sCampaign'.$campaignID;
+					$sql = '
+						UPDATE s_campaigns_mailings
+						SET clicked = clicked + 1
+						WHERE id = ?
+					';
+					Shopware()->Db()->query($sql, array($campaignID));
+				}
 			} else {
 				$sql = 'SELECT * FROM s_emarketing_partner WHERE active=1 AND idcode=?';
-				$partner = Shopware()->Db()->fetchRow($sql, array($_GET['sPartner']));
-				if(!empty($partner))
-				{
+				$partner = Shopware()->Db()->fetchRow($sql, array($request->getQuery('sPartner')));
+				if(!empty($partner)) {
 					if ($partner['cookielifetime']){
 						$valid = time() + $partner['cookielifetime'];
 					} else {
-						$valid = '0';
+						$valid = 0;
 					}
-					setcookie('sPartner', $_GET['sPartner'], $valid);
+					$response->setCookie('sPartner', $partner['idcode'], $valid, '/');
 				}
-				Shopware()->Session()->sPartner = $_GET['sPartner'];
+				Shopware()->Session()->sPartner = $request->getQuery('sPartner');
 			}
-		} elseif (isset($_COOKIE['sPartner'])) {
+		} elseif ($request->getCookie('sPartner') !== null) {
 			$sql = 'SELECT idcode FROM s_emarketing_partner WHERE active=1 AND idcode=?';
-			$partner = Shopware()->Db()->fetchOne($sql, array($_COOKIE['sPartner']));
+			$partner = Shopware()->Db()->fetchOne($sql, array($request->getCookie('sPartner')));
 			if(empty($partner)) {
 				unset(Shopware()->Session()->sPartner);
 			} else {
