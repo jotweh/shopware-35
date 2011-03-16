@@ -96,4 +96,70 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
     {
         return new Zend_XmlRpc_Client($this->serverAddress);
     }
+
+    /**
+     * Test ended method
+     *
+     * @param PHPUnit_Framework_Test $test
+     * @param float $time
+     */
+    public function endTest(PHPUnit_Framework_Test $test, $time)
+    {
+        if (!$test instanceof PHPUnit_Framework_Warning) {
+            if ($test->getStatus() == PHPUnit_Runner_BaseTestRunner::STATUS_PASSED) {
+                $ifStatus   = array('assigned', 'new', 'reopened');
+                $newStatus  = 'closed';
+                $message    = 'Automatically closed by PHPUnit (test passed).';
+                $resolution = 'fixed';
+                $cumulative = TRUE;
+            }
+
+            else if ($test->getStatus() == PHPUnit_Runner_BaseTestRunner::STATUS_FAILURE) {
+                $ifStatus   = array('closed');
+                $newStatus  = 'reopened';
+                $message    = 'Automatically reopened by PHPUnit (test failed).';
+                $resolution = '';
+                $cumulative = FALSE;
+            }
+
+            else {
+                return;
+            }
+
+            $name = $test->getName();
+            $pos = strpos($name, ' with data set');
+            if ($pos !== FALSE) {
+            	$name = substr($name, 0, $pos);
+            }
+            $tickets = PHPUnit_Util_Test::getTickets(get_class($test), $name);
+
+            foreach ($tickets as $ticket) {
+                // Remove this test from the totals (if it passed).
+                if ($test->getStatus() == PHPUnit_Runner_BaseTestRunner::STATUS_PASSED) {
+                    unset($this->ticketCounts[$ticket][$name]);
+                }
+
+                // Only close tickets if ALL referenced cases pass
+                // but reopen tickets if a single test fails.
+                if ($cumulative) {
+                    // Determine number of to-pass tests:
+                    if (count($this->ticketCounts[$ticket]) > 0) {
+                        // There exist remaining test cases with this reference.
+                        $adjustTicket = FALSE;
+                    } else {
+                        // No remaining tickets, go ahead and adjust.
+                        $adjustTicket = TRUE;
+                    }
+                } else {
+                    $adjustTicket = TRUE;
+                }
+
+                $ticketInfo = $this->getTicketInfo($ticket);
+
+                if ($adjustTicket && in_array($ticketInfo['status'], $ifStatus)) {
+                    $this->updateTicket($ticket, $newStatus, $message, $resolution);
+                }
+            }
+        }
+    }
 }

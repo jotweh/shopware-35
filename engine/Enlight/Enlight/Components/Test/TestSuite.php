@@ -22,6 +22,13 @@ class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
             $groups = $test->getGroups();
         }
         $groups[] = $this->getName();
+        if ($test instanceof PHPUnit_Framework_TestSuite) {
+            $tests = $test->tests();
+            $test = new self();
+            foreach ($tests as $childTest) {
+            	$test->addTest($childTest, $groups);
+            }
+        }
     	parent::addTest($test, $groups);
     }
 }
