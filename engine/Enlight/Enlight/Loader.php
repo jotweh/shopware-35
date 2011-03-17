@@ -15,7 +15,7 @@ class Enlight_Loader extends Enlight_Class
 	const DEFAULT_EXTENSION = '.php';
 	
 	/**
-	 * Init method
+	 * Init loader method
 	 */
 	public function init()
 	{
@@ -68,7 +68,7 @@ class Enlight_Loader extends Enlight_Class
         if(!self::checkFile($path)) {
 			throw new Enlight_Exception('Security check: Illegal character in filename');
 		}
-		if(!file_exists($path) || !is_file($path)) {
+		if(!self::isReadable($path)) {
 			throw new Enlight_Exception('File "'.$path.'" not exists failure');
 		}
 		return include $path;
@@ -82,7 +82,26 @@ class Enlight_Loader extends Enlight_Class
 	 */
 	public static function isReadable($path)
 	{
-		return self::checkFile($path) && file_exists($path) && is_file($path);
+		if (is_readable($path)) {
+            return true;
+        }
+        
+        if (strpos($path, DIRECTORY_SEPARATOR) === 0 
+          || strpos($path, DIRECTORY_SEPARATOR.':') === 1) {
+        	return false;
+        }
+        
+        foreach (self::explodeIncludePath() as $includePath) {
+            if ($includePath == '.') {
+                continue;
+            }
+            $file = $includePath . '/' . $path;
+            if (is_readable($file)) {
+                return true;
+            }
+        }
+        
+		return false;
 	}
 	
 	/**
@@ -121,7 +140,7 @@ class Enlight_Loader extends Enlight_Class
 				$path = substr($class, strlen($namespace['namespace'])+1);
 				$path = str_replace(str_split($namespace['separator']), DIRECTORY_SEPARATOR, $path);
 				$path = $namespace['path'].$path.$namespace['extension'];
-				if(file_exists($path)) {
+				if(self::isReadable($path)) {
 					return $path;
 				}
 			}
@@ -214,7 +233,7 @@ class Enlight_Loader extends Enlight_Class
 	}
 	
 	/**
-	 * Autoload class
+	 * Autoload class method
 	 *
 	 * @param string $class
 	 */
