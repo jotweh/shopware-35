@@ -505,6 +505,9 @@ class Zend_Session extends Zend_Session_Abstract
             }
         } else {
         	$_SESSION = array();
+        	if(!session_id()) {
+	        	session_id(md5(uniqid(mt_rand(), true)));
+	        }
         }
 
         parent::$_readable = true;
