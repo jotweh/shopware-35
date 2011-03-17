@@ -1,8 +1,18 @@
 <?php
+/**
+ * Enlight Class
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 abstract class Enlight_Class
 {
 	static protected $instances = array();
 	
+	/**
+	 * Constructor method
+	 */
 	public function __construct ()
 	{
 		$class = get_class($this);
@@ -27,9 +37,9 @@ abstract class Enlight_Class
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns the class name
 	 *
-	 * @param string $class
+	 * @param mixed $class
 	 * @return string
 	 */
 	public static function getClassName($class=null)
@@ -41,7 +51,9 @@ abstract class Enlight_Class
 				throw new Enlight_Exception('Method not supported');
 			}
 		}
-		
+		if(is_object($class)) {
+			$class = get_class($class);
+		}
 		if(in_array('Enlight_Hook', class_implements($class))) {
     		$class = Enlight::Instance()->Hooks()->getProxy($class);
     	}
@@ -49,7 +61,7 @@ abstract class Enlight_Class
 	}
 
 	/**
-	 * Enter description here...
+	 * Returns a instance
 	 *
 	 * @param string $class
 	 * @param array $args
@@ -72,27 +84,55 @@ abstract class Enlight_Class
 		return $instance;
 	}
 	
+	/**
+	 * Reset a instance
+	 *
+	 * @param mixed $class
+	 */
 	static public function resetInstance($class=null)
 	{
 		$class = self::getClassName($class);
 		unset(self::$instances[$class]);
 	}
 	
+	/**
+	 * Magic caller
+	 *
+	 * @param unknown_type $name
+	 * @param unknown_type $value
+	 */
 	public function __call($name, $value=null)
 	{
 		throw new Enlight_Exception('Method "'.get_class($this).'::'.$name.'" not found failure', Enlight_Exception::Method_Not_Found);
 	}
 	
+	/**
+	 * Magic static caller
+	 *
+	 * @param string $name
+	 * @param array $value
+	 */
 	static public function __callStatic($name, $value=null)
 	{
 		throw new Enlight_Exception('Method "'.get_called_class().'::'.$name.'" not found failure', Enlight_Exception::Method_Not_Found);
 	}
 	
+	/**
+	 * Magic getter
+	 *
+	 * @param string $name
+	 */
 	public function __get($name)
 	{
 		throw new Enlight_Exception('Property "'.$name.'" not found failure', Enlight_Exception::Property_Not_Found);
 	}
 	
+	/**
+	 * Magic setter
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 */
 	public function __set($name, $value=null)
 	{
 		throw new Enlight_Exception('Property "'.$name.'" not found failure', Enlight_Exception::Property_Not_Found);

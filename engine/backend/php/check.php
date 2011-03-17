@@ -1,5 +1,7 @@
 <?php
-session_start();
+if(empty($_SESSION)) {
+	session_start();
+}
 
 unset($DB_USER);
 unset($DB_PASSWORD);

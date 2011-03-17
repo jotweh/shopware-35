@@ -503,6 +503,8 @@ class Zend_Session extends Zend_Session_Abstract
                     throw new Zend_Session_Exception(__CLASS__ . '::' . __FUNCTION__ . '() - ' . Zend_Session_Exception::$sessionStartError);
                 }
             }
+        } else {
+        	$_SESSION = array();
         }
 
         parent::$_readable = true;
@@ -698,22 +700,21 @@ class Zend_Session extends Zend_Session_Abstract
      */
     public static function writeClose($readonly = true)
     {
-        if (self::$_unitTestEnabled) {
-            return;
-        }
+    	if (self::$_writeClosed) {
+    		return;
+    	}
 
-        if (self::$_writeClosed) {
-            return;
-        }
+    	if ($readonly) {
+    		parent::$_writable = false;
+    	}
 
-        if ($readonly) {
-            parent::$_writable = false;
-        }
+    	if (!self::$_unitTestEnabled) {
+    		session_write_close();
+    		session_id('');
+    	}
 
-        session_write_close();
-        session_id('');
-        self::$_writeClosed = true;
-        self::$_sessionStarted = false;
+    	self::$_writeClosed = true;
+    	self::$_sessionStarted = false;
         self::$_defaultOptionsSet = false;
     }
 
@@ -727,10 +728,6 @@ class Zend_Session extends Zend_Session_Abstract
      */
     public static function destroy($remove_cookie = true, $readonly = true)
     {
-        if (self::$_unitTestEnabled) {
-            return;
-        }
-
         if (self::$_destroyed) {
             return;
         }
@@ -738,8 +735,10 @@ class Zend_Session extends Zend_Session_Abstract
         if ($readonly) {
             parent::$_writable = false;
         }
-
-        session_destroy();
+        
+		if (!self::$_unitTestEnabled) {
+            session_destroy();
+        }
         self::$_destroyed = true;
 
         if ($remove_cookie) {
@@ -755,15 +754,15 @@ class Zend_Session extends Zend_Session_Abstract
      */
     public static function expireSessionCookie()
     {
+        self::$_sessionCookieDeleted = true;
+        
         if (self::$_unitTestEnabled) {
             return;
         }
 
         if (self::$_sessionCookieDeleted) {
             return;
-        }
-
-        self::$_sessionCookieDeleted = true;
+        }        
 
         if (isset($_COOKIE[session_name()])) {
             $cookie_params = session_get_cookie_params();

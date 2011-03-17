@@ -133,7 +133,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		return $this;
 	}
 	
-	protected function shouldAuth()
+	public function shouldAuth()
     {
     	return !$this->noAuth;
     }

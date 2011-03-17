@@ -43,6 +43,11 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
     	parent::setUp();
     	
         $this->reset();
+        
+        Enlight::Instance()->Bootstrap()
+        	->resetResource('Session')
+        	->resetResource('Auth');
+        
         //$this->Front()
         //     ->setRequest($this->Request())
         //     ->setResponse($this->Response());
@@ -80,6 +85,12 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         $this->_view = null;
         $this->_template = null;
         $this->_front = null;
+        
+        foreach(Enlight::Instance()->Plugins()->getList() as $namespace) {
+        	foreach($namespace->getList() as $plugin) {
+	        	Enlight_Class::resetInstance($plugin);
+	        }
+        }
         
         Enlight::Instance()->Plugins()->resetPlugins();
         Enlight::Instance()->Hooks()->resetHooks();

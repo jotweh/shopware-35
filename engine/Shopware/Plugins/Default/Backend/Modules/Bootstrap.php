@@ -66,7 +66,7 @@ class Shopware_Plugins_Backend_Modules_Bootstrap extends Shopware_Components_Plu
 	 * @param bool $include
 	 * @return Shopware_Plugins_Backend_Modules_Bootstrap
 	 */
-	public function setInclude($include = true)
+	public function enableInclude($include = true)
 	{
 		$this->include = (bool) $include;
 		return $this;

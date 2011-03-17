@@ -108,9 +108,16 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
      */
     protected function initSession()
     {
+    	$config_session = Shopware()->getOption('session') ? Shopware()->getOption('session') : array();
+    	
+    	if(!empty($config_session['unitTestEnabled'])) {
+    		Enlight_Components_Session::$_unitTestEnabled = true;
+    	}
+    	unset($config_session['unitTestEnabled']);
+    	
     	if(Enlight_Components_Session::isStarted())	{
     		Enlight_Components_Session::writeClose();
-    	}
+    	}    	
     	    	
     	$session_id = $this->getResource('SessionID');
     	if(!empty($session_id)) {
@@ -126,14 +133,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     		$path = rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/';
     		$host = $config->get('Host')=='localhost' ? null : '.'.$config->get('Host');
     	}
-    	
-    	$config_session = Shopware()->getOption('session') ? Shopware()->getOption('session') : array();
-    	
-    	if(!empty($config_session['unitTestEnabled'])) {
-    		Enlight_Components_Session::$_unitTestEnabled = true;
-    	}
-    	unset($config_session['unitTestEnabled']);
-    	
+
     	$config_session['cookie_path'] = $path;
     	$config_session['cookie_domain'] = $host;
     	

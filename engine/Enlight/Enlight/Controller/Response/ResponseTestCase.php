@@ -40,12 +40,29 @@ class Enlight_Controller_Response_ResponseTestCase extends Zend_Controller_Respo
     /**
      * Get a cookie value
      *
-     * @param string $key
+     * @param string $name
      * @param string $default
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function getCookie($name, $default = null)
     {
        return isset($this->_cookies[$name]['value']) ? $this->_cookies[$name]['value'] : $default;
+    }
+    
+    /**
+     * Get a header value
+     *
+     * @param string $name
+     * @param string $default
+     * @return Zend_Controller_Request_HttpTestCase
+     */
+    public function getHeader($name, $default = null)
+    {
+    	foreach ($this->_headers as $header) {
+    		if(isset($header['name']) && $header['name'] === $name) {
+    			return $header['value'];
+    		}
+    	}
+    	return $default;
     }
 }
