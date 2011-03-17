@@ -8,6 +8,12 @@
 	<link href="{link file='engine/backend/plugins/moo.tabs/css/default.css'}" rel="stylesheet" type="text/css" />
 {/block}
 {block name="backend_index_javascript"}
+	<script type="text/javascript">
+	//<![CDATA[
+	var baseUrl = "{$BaseUrl}";
+	var basePath = "{$BasePath}";
+	//]]>
+	</script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/adapter/ext/ext-base.js'}"></script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/ext-all.js'}"></script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/build/locale/ext-lang-de.js'}" charset="utf-8"></script>

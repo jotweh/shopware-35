@@ -9,7 +9,6 @@ $result = $result->checkUser();
 if ($result!="SUCCESS"){
 	
 }
-$sBASEPATH = (empty($_SERVER["HTTPS"]) ? "http" : "https")."://".$sCore->sCONFIG['sBASEPATH'];
 ob_start();
 ?>
 <?php if (1!=1) { ?> <script> <?php } ?>
@@ -107,7 +106,7 @@ function doSuggestSearch(keyword){
 		$('searchfocus').removeClass('search_disabled').addClass('search_enabled');
 		if(keyword!=last)
 		{
-			var myAjax = new Request.HTML({url: "<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/ajax/search.php", update: $('result')}).get({"search":keyword});
+			var myAjax = new Request.HTML({url: basePath+"/engine/backend/ajax/search.php", update: $('result')}).get({"search":keyword});
 			last = keyword;
 		}
 	}
@@ -131,7 +130,7 @@ function hideSuggestSearch(){
 // -------------------------------------------------------------------------------------
 function deleteCache(type){
 		var request = new Request.JSON({
-			url: '<?php echo $sBASEPATH ?>/backend/cache/'+type,
+			url: basePath+'/backend/cache/'+type,
 			onStart: function(el){},
 			onFailure: function (el){
 				window.Growl("Cache konnte nicht geleert werden");
@@ -221,7 +220,7 @@ function initSkeleton(module, skeleton){
 	var temp = new sWindow("Fenster", skeleton.init);
 	var sCreatedNewWindow = true;
 	
-	var url = '<?php echo $sBASEPATH?>/engine/backend/js/include.php?module='+escape(module)+'&include='+escape(skeleton.init.url);
+	var url = basePath+'/engine/backend/js/include.php?module='+escape(module)+'&include='+escape(skeleton.init.url);
 	
 	// Check how to load the wished content
 	switch (skeleton.init.loader){
@@ -384,7 +383,7 @@ function loadSkeleton(module,forceNewWindow, options){
 		options.module = module;
 		
 		var jSonRequest = new Request.JSON({
-			url: '<?php echo $sBASEPATH ?>/engine/backend/js/include.php',
+			url: basePath+'/engine/backend/js/include.php',
 			onStart: function(el){
 				
 			},
@@ -419,7 +418,7 @@ function openAction(controller, action, params)
 		params.target_action = action;
 		
 		var request = new Request.JSON({
-			url: '<?php echo $sBASEPATH ?>/backend/'+controller+'/skeleton',
+			url: baseUrl+'/backend/'+controller+'/skeleton',
 			onStart: function(el){},
 			onFailure: function (el){
 				window.Growl("Controller konnte nicht geladen werden");
@@ -742,7 +741,7 @@ sWindow = new Class({
 				
 				if(this.options.title&&this.options.title!='')
 				{
-					var request = new Request.JSON({url: "<?php echo$sBASEPATH?>/engine/backend/ajax/AdminSettings.php", method: 'post', async: true, onComplete: function(ret){
+					var request = new Request.JSON({url: basePath+"/engine/backend/ajax/AdminSettings.php", method: 'post', async: true, onComplete: function(ret){
 						if(ret&&ret!=''&&ret!='FAIL')
 						{
 						
@@ -1209,7 +1208,7 @@ sWindow = new Class({
 				obj2.options.width = el.getStyle('width').toInt();					
 				obj2.options.height = el.getStyle('height').toInt();
 				
-				new Request( {url: '<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/ajax/AdminSettings.php',method: 'post'}).get({'window':obj.options.module,'height':obj.options.height,'width':obj.options.width,'screenwidth':screen.width});
+				new Request( {url: basePath+'/engine/backend/ajax/AdminSettings.php',method: 'post'}).get({'window':obj.options.module,'height':obj.options.height,'width':obj.options.width,'screenwidth':screen.width});
 	   		}
 	   		var ResizeDrag = function ()
 	   		{
@@ -1441,7 +1440,7 @@ window.Growl = function (e) {
 		var module = "";
 	}
 	// Save notice to log-file
-	var myAjax = new Request( {url: '<?php echo empty($_SERVER["HTTPS"]) ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/ajax/saveLog.php',method: 'post'}).get({'msg':e,'mod':module});
+	var myAjax = new Request( {url: basePath+'/engine/backend/ajax/saveLog.php',method: 'post'}).get({'msg':e,'mod':module});
 	// Display notice
 	Ext.example.msg('Hinweis', e); 
 }

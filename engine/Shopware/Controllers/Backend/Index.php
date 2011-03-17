@@ -23,6 +23,9 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 			$this->View()->Logo = "logoCE";
 		}
 		
+		$this->View()->BaseUrl = $this->Request()->getBaseUrl();
+		$this->View()->BasePath = $this->Request()->getBasePath();
+		
 		$this->View()->rssData = $this->_getRssFeed();
 		$this->View()->Scheme = $this->Request()->getScheme();
 		$this->View()->BackendUsers = implode(',',$this->_getUsers());
