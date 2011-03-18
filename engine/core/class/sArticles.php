@@ -2052,57 +2052,71 @@ class sArticles
 	{
 		$current_time = $this->sSYSTEM->sDB_CONNECTION->GetOne('SELECT NOW() as `current_time`');
 		$cached_time = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne((int) $this->sSYSTEM->sCONFIG['sCACHETRANSLATIONTABLE'], 'SELECT NOW() as cached_time');
-		if(strtotime($cached_time)<strtotime($current_time))
-		{
+		if(strtotime($cached_time)<strtotime($current_time)) {
 			return true;
 		}
 
 		$sql = "
-			SELECT
-				IFNULL(ct.objectdata, ct2.objectdata) as data,
-				IFNULL(ct.objectkey, ct2.objectkey) as articleID,
-				cm.id as languageID
-			FROM s_core_multilanguage cm 
-			LEFT JOIN s_core_translations ct
-			ON ct.objectlanguage=cm.isocode
-			AND ct.objecttype = 'article'
-			LEFT JOIN s_core_translations ct2
-			ON ct2.objectlanguage=cm.fallback
-			AND ct2.objecttype = 'article'
-			WHERE ct.id IS NOT NULL
-			OR ct2.id IS NOT NULL
+			SELECT 
+    			ct.objectdata as data,
+    			ct.objectkey as articleID,
+    			cm.id as languageID
+    		FROM s_core_translations ct, s_core_multilanguage cm 
+			WHERE ct.objectlanguage=cm.isocode
+			AND ct.objecttype='article'
+			
+			UNION ALL
+			
+			SELECT 
+    			ct.objectdata as data,
+    			ct.objectkey as articleID,
+    			cm.id as languageID
+    		FROM s_core_translations ct
+    		
+    		INNER JOIN s_core_multilanguage cm 
+    		ON ct.objectlanguage=cm.fallback
+    		AND cm.fallback != ''
+    		
+    		LEFT JOIN s_core_translations ct2
+			ON ct2.objectlanguage=cm.isocode
+			AND ct2.objecttype='article'
+			AND ct2.objectkey=ct.objectkey
+    		
+			WHERE ct.objecttype = 'article'
+			AND ct2.id IS NULL	
 		";
 		$result = Shopware()->Db()->query($sql);
-		if($result===false)
-		return false;
+		if(empty($result)) {
+			return false;
+		}
 
 		$values = array();
-		for ($i=1,$c=$result->rowCount();$row = $result->fetch();$i++)
-		{
+		for ($i=1,$c=$result->rowCount();$row = $result->fetch();$i++) {
 			$data = unserialize($row['data']);
 			$articleID = (int) $row['articleID'];
 			$languageID = (int) $row['languageID'];
-			if(empty($data)||!is_array($data)||empty($articleID)||empty($languageID))
-			{
+			if(empty($data)||!is_array($data)||empty($articleID)||empty($languageID)) {
 				continue;
 			}
+			if(!empty($data['txtlangbeschreibung']) && strlen($data['txtlangbeschreibung']) > 1000) {
+				$data['txtlangbeschreibung'] = substr(strip_tags($data['txtlangbeschreibung']), 0, 1000);
+			}
 			$values[] = implode(',', array(
-			$articleID,
-			$languageID,
-			$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtArtikel']) ? (string) $data['txtArtikel'] : ''),
-			$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtkeywords']) ? (string) $data['txtkeywords'] : ''),
-			$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtshortdescription']) ? (string) $data['txtshortdescription'] : ''),
-			$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtlangbeschreibung']) ? (string) $data['txtlangbeschreibung'] : ''),
+				$articleID,
+				$languageID,
+				$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtArtikel']) ? (string) $data['txtArtikel'] : ''),
+				$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtkeywords']) ? (string) $data['txtkeywords'] : ''),
+				$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtshortdescription']) ? (string) $data['txtshortdescription'] : ''),
+				$this->sSYSTEM->sDB_CONNECTION->qstr(isset($data['txtlangbeschreibung']) ? (string) $data['txtlangbeschreibung'] : ''),
 			));
-			if($i==$c||count($values)>5000)
-			{
+			if($i==$c||count($values)>5000) {
 				$sql_values = '
 					REPLACE INTO `s_articles_translations` (
 						articleID, languageID, name, keywords, description, description_long
 		 			)  VALUES
 		 		';
 				$sql_values .= ' ('.implode('), (',$values).')';
-				$this->sSYSTEM->sDB_CONNECTION->Execute($sql_values);
+				Shopware()->Db()->exec($sql_values);
 				$values = array();
 			}
 		}
@@ -2122,8 +2136,9 @@ class sArticles
 			WHERE ct.id IS NULL AND ct2.id IS NULL
 		";
 		$result = $this->sSYSTEM->sDB_CONNECTION->Execute($sql);
-		if($result===false)
-		return false;
+		if(empty($result)) {
+			return false;
+		}
 
 		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCreateTranslationTable_BeforeEnd"));
 		return true;
