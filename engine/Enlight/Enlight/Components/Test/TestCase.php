@@ -128,7 +128,7 @@ abstract class Enlight_Components_Test_TestCase extends PHPUnit_Framework_TestCa
     }
     
     /**
-     * Asserts that a link does not exist.
+     *Asserts that a link does not exist.
      *
      * @param  string $link
      * @param  string $message
@@ -144,5 +144,43 @@ abstract class Enlight_Components_Test_TestCase extends PHPUnit_Framework_TestCa
         );
 
         self::assertThat($link, $constraint, $message);
+    }
+    
+    /**
+     * Asserts that an array has count values.
+     *
+     * @param int $count
+     * @param array $array
+     * @param string $message
+     */
+    public static function assertArrayCount($count, array $array, $message = '')
+    {
+    	if (!is_int($count)) {
+            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'integer');
+        }
+
+        $constraint = new Enlight_Components_Test_Constraint_ArrayCount($count);
+
+        self::assertThat($array, $constraint, $message);
+    }
+    
+    /**
+     * Asserts that an array does not have count values.
+     *
+     * @param int $count
+     * @param array $array
+     * @param string $message
+     */
+    public static function assertArrayNotCount($count, array $array, $message = '')
+    {
+    	if (!is_int($count)) {
+            throw PHPUnit_Util_InvalidArgumentHelper::factory(1, 'integer');
+        }
+        
+        $constraint = new PHPUnit_Framework_Constraint_Not(
+          new Enlight_Components_Test_Constraint_ArrayCount($count)
+        );
+
+        self::assertThat($array, $constraint, $message);
     }
 }
