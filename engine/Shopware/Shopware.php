@@ -1,10 +1,23 @@
 <?php
 require_once(dirname(dirname(__FILE__)).'/Enlight/Enlight/Enlight.php');
 
+/**
+ * Shopware Application
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware extends Enlight
 {
 	protected $old_path;
 	
+	/**
+	 * Constructor method
+	 *
+	 * @param string $environment
+	 * @param mixed $options
+	 */
 	public function __construct($environment='production', $options=null)
 	{
 		Shopware($this);
@@ -23,6 +36,12 @@ class Shopware extends Enlight
 		parent::__construct($environment, $options);
 	}
 	
+	/**
+	 * Returns old path
+	 *
+	 * @param string $path
+	 * @return string
+	 */
 	public function OldPath($path=null)
 	{
 		if($path!==null) {
@@ -32,13 +51,19 @@ class Shopware extends Enlight
 		return $this->old_path;
 	}
 	
+	/**
+	 * Returns document path
+	 *
+	 * @param string $path
+	 * @return string
+	 */
 	public function DocPath($path=null)
 	{
 		return $this->OldPath($path);
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns template instance
 	 *
 	 * @return Enlight_Template_TemplateManager
 	 */
@@ -46,8 +71,9 @@ class Shopware extends Enlight
 	{
 		return $this->_bootstrap->getResource('Template');
 	}
+	
 	/**
-	 * Enter description here...
+	 * Returns database instance
 	 *
 	 * @return Enlight_Components_Db_Adapter_Pdo_Mysql
 	 */
@@ -55,8 +81,9 @@ class Shopware extends Enlight
 	{
 		return $this->_bootstrap->getResource('Db');
 	}
+	
 	/**
-	 * Enter description here...
+	 * Returns session instance
 	 *
 	 * @return Enlight_Components_Session_Namespace
 	 */
@@ -64,10 +91,20 @@ class Shopware extends Enlight
 	{
 		return $this->_bootstrap->getResource('Session');
 	}
+	
+	/**
+	 * Returns application instance
+	 *
+	 * @return Shopware
+	 */
+	public static function Instance()
+	{
+		return self::$_instance;	
+	}
 }
 
 /**
- * Enter description here...
+ * Returns application instance
  *
  * @return Shopware
  */

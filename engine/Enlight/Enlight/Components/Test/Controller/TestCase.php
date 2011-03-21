@@ -116,7 +116,9 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         
         Enlight::Instance()->Bootstrap()
         	->resetResource('System')
-        	->resetResource('Modules');
+        	->resetResource('Modules')
+        	->resetResource('Config')
+        	->resetResource('Shop');
     }
             
     /**
