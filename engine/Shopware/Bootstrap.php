@@ -188,7 +188,9 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     		$options['type'] = 'sendmail';
     	}
     	if(!isset($options['username']) && !empty($config->MailerUsername)) {
-    		if(empty($options['auth'])) {
+    		if(!empty($config->MailerAuth)) {
+    			$options['auth'] = $config->MailerAuth;
+    		} elseif(empty($options['auth'])) {
 				$options['auth'] = 'login';
 			}
 			$options['username'] = $config->MailerUsername;

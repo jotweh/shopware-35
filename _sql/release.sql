@@ -1,37 +1,13 @@
 -- Release.sql for Shopware 3.5.4
--- STORED PROCEDURES
-drop procedure if exists AddColumnUnlessExists;
-DELIMITER $$
-create procedure AddColumnUnlessExists(
-	IN dbName tinytext,
-	IN tableName tinytext,
-	IN fieldName tinytext,
-	IN fieldDef text)
-begin
-	IF NOT EXISTS (
-		SELECT * FROM information_schema.COLUMNS
-		WHERE column_name=fieldName
-		and table_name=tableName
-		and table_schema=dbName
-		)
-	THEN
-		set @ddl=CONCAT('ALTER TABLE ',dbName,'.',tableName,
-			' ADD COLUMN ',fieldName,' ',fieldDef);
-		prepare stmt from @ddl;
-		execute stmt;
-	END IF;
-end;
-$$
-DELIMITER ;
 
--- Notices
--- Every sql changeset needs a corresponding ticket-id, author and change-date
--- Example: #T3333 / st.hamann / 12.03.2011
+/*
+ * @ticket 4847
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/03/22
+ */
 
--- New structures
+UPDATE `s_core_config` SET `description` = 'Method to send mail: ("mail", "smtp" or "file").' WHERE `name`='sMAILER_Mailer';
 
--- Changes on structure
--- Sample: call AddColumnUnlessExists(Database(), 'cb_events', 'event_test2', 'varchar(32) null AFTER `cb_datetime`');
-
--- Cleanup 
-drop procedure AddColumnUnlessExists;
+SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'Mailer');
+INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
+(NULL, @parent, 'sMAILER_Auth', '', 'Sets connection auth. Options are "", "plain",  "login" or "crammd5"', 0, 0, '', 1, '');
