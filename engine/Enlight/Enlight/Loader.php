@@ -14,6 +14,10 @@ class Enlight_Loader extends Enlight_Class
 	const DEFAULT_SEPARATOR = '_\\';
 	const DEFAULT_EXTENSION = '.php';
 	
+	const POSITION_APPEND = 'append';
+	const POSITION_PREPEND = 'prepend';
+	const POSITION_REMOVE = 'remove';
+	
 	/**
 	 * Init loader method
 	 */
@@ -107,8 +111,8 @@ class Enlight_Loader extends Enlight_Class
 	/**
 	 * Explode include path 
 	 *
-	 * @param unknown_type $path
-	 * @return unknown
+	 * @param string $path
+	 * @return array
 	 */
 	public static function explodeIncludePath($path = null)
     {
@@ -165,24 +169,37 @@ class Enlight_Loader extends Enlight_Class
 	 * @param string $path
 	 * @param string $separator
 	 * @param string $extension
+	 * @param string $postion
 	 */
-	public function registerNamespace($namespace, $path, $separator=self::DEFAULT_SEPARATOR, $extension=self::DEFAULT_EXTENSION)
+	public function registerNamespace($namespace, $path, $separator=self::DEFAULT_SEPARATOR, $extension=self::DEFAULT_EXTENSION, $postion=self::POSITION_APPEND)
 	{
-		$this->namespaces[] = array(
+		$namespace = array(
 			'namespace' => $namespace,
 			'path' => $path,
 			'separator' => $separator,
 			'extension' => $extension
 		);
+		
+		switch ($postion) {
+			case self::POSITION_APPEND:
+				array_push($this->namespaces, $namespace);
+				break;
+			case self::POSITION_PREPEND:
+				array_unshift($this->namespaces, $namespace);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	/**
 	 * Add include path
 	 *
-	 * @param unknown_type $path
-	 * @return unknown
+	 * @param string $path
+	 * @param string $postion
+	 * @return string
 	 */
-	public static function addIncludePath($path)
+	public static function addIncludePath($path, $postion=self::POSITION_APPEND)
 	{
 		if(is_array($path)) {
 			return (bool) array_map(__METHOD__, $path);
@@ -193,20 +210,29 @@ class Enlight_Loader extends Enlight_Class
 
 		$paths = self::explodeIncludePath();
 
-		if (array_search($path, $paths) !== false) {
-			return true;
+		if (($key = array_search($path, $paths)) !== false) {
+			unset($paths[$key]);
 		}
-
-		array_push($paths, $path);
-
+		
+		switch ($postion) {
+			case self::POSITION_APPEND:
+				array_push($paths, $path);
+				break;
+			case self::POSITION_PREPEND:
+				array_unshift($paths, $path);
+				break;
+			default:
+				break;
+		}
+		
 		return self::setIncludePath($paths);
 	}
 	
 	/**
 	 * Set include path
 	 *
-	 * @param unknown_type $path
-	 * @return unknown
+	 * @param string|array $path
+	 * @return string
 	 */
 	public static function setIncludePath($path)
 	{
@@ -215,11 +241,12 @@ class Enlight_Loader extends Enlight_Class
 		}
 		       
         $old = set_include_path($path);
-        if(!$old || $old == get_include_path()) {
-        	throw new Enlight_Exception('Include path "'.$path.'" could not be added failure');
+        if($old !== $path 
+          && (!$old || $old == get_include_path())) {
+        	throw new Enlight_Exception('Include path "'.$path.'" could not be set failure');
         }
         
-        return true;
+        return $old;
 	}
 	
 	/**
