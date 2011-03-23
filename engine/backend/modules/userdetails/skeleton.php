@@ -22,6 +22,7 @@ if(!empty($_REQUEST['orderId']))
 	$ln = mysql_result($queryUserDetails,0,"lastname");
 	
 	$title = sprintf("%s %s (Bearbeitung der Bestelldaten)", $fn, $ln);
+	$title = htmlentities($title, ENT_QUOTES, null, false);
 	?>
 	
 {
@@ -52,7 +53,7 @@ if(!empty($_REQUEST['orderId']))
 	}else {
 		$title = $sLang["userdetails"]["skeleton_customer_login"]." ".mysql_result($queryUserDetails,0,"firstname")." ".mysql_result($queryUserDetails,0,"lastname");
 	}
-	
+	$title = htmlentities($title, ENT_QUOTES, null, false);
 	?>
 	{
 		"init": {
