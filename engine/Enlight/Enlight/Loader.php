@@ -86,7 +86,7 @@ class Enlight_Loader extends Enlight_Class
 	public static function isReadable($path)
 	{
 		if (is_readable($path)) {
-            return realpath($path);
+            return $path;
         }
         
         if(function_exists('stream_resolve_include_path')) {
