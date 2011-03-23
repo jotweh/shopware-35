@@ -1,6 +1,18 @@
 <?php
+/**
+ * Newsletter controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 {	
+	/**
+	 * Confirm action method
+	 */
 	public function confirmAction()
 	{
 		if (!empty($this->request()->sConfirmation)){
@@ -23,30 +35,35 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 		return $this->forward("index");
 	}
 	
+	/**
+	 * Send mail method
+	 *
+	 * @param unknown_type $recipient
+	 * @param unknown_type $template
+	 * @param unknown_type $optin
+	 */
 	protected function sendMail($recipient, $template, $optin=false)
 	{
 		$mail = clone Shopware()->Mail();
 		
-		$mail->IsHTML($template['ishtml']);
 		$mail->From     = $template['frommail'];
 		$mail->FromName = $template['fromname'];
 		$mail->Subject  = $template['subject'];
-		if ($template['ishtml']){
+		if (!empty($template['ishtml'])) {
 	    	$mail->IsHTML(1);	
 	    	$mail->Body     = $template['contentHTML'];
 	    	$mail->AltBody = $template['content'];
-	    }else {
+	    } else {
 	    	$mail->IsHTML(0);
 	    	$mail->Body     = $template['content'];
 	    }
 	    $mail->Body = str_replace("{sMAIL}",$email,$mail->Body);
 	     
 	    if (!empty($optin)){
-	    	 $mail->Body = str_replace("{\$sConfirmLink}",$optin,$mail->Body);
+	    	 $mail->Body = str_replace('{$sConfirmLink}', $optin, $mail->Body);
 	    }
 	    
-	    foreach (Shopware()->System()->_POST as $key => $value)
-	    {
+	    foreach (Shopware()->System()->_POST as $key => $value) {
 	    	$mail->Subject = str_replace('{$sUser.'.$key.'}', $value, $mail->Subject);
 	    	$mail->Body = str_replace('{$sUser.'.$key.'}', $value, $mail->Body);
 	    	$mail->AltBody = str_replace('{$sUser.'.$key.'}', $value, $mail->AltBody);
@@ -57,6 +74,9 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 	    $mail->Send();
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
 		$variables = array();
@@ -122,21 +142,27 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Returns customer groups
+	 *
+	 * @return array
+	 */
 	protected function getCustomerGroups()
 	{
 		$customergroups = array('EK');
-		if(!empty(Shopware()->System()->sSubShop['defaultcustomergroup']))
-		{
+		if(!empty(Shopware()->System()->sSubShop['defaultcustomergroup'])) {
 			$customergroups[] = Shopware()->System()->sSubShop['defaultcustomergroup'];
 		}
-		if(!empty(Shopware()->System()->sUSERGROUPDATA['groupkey']))
-		{
+		if(!empty(Shopware()->System()->sUSERGROUPDATA['groupkey'])) {
 			$customergroups[] = Shopware()->System()->sUSERGROUPDATA['groupkey'];
 		}
 		$customergroups = array_unique($customergroups);
 		return $customergroups;
 	}
 	
+	/**
+	 * Listing action method
+	 */
 	public function listingAction()
 	{
 		$customergroups = $this->getCustomerGroups();
@@ -189,6 +215,9 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 		$this->View()->sContent = $content;
 	}
 	
+	/**
+	 * Detail action method
+	 */
 	public function detailAction()
 	{
 		$customergroups = $this->getCustomerGroups();
@@ -207,9 +236,16 @@ class Shopware_Controllers_Frontend_Newsletter extends Enlight_Controller_Action
 		$content = Shopware()->Db()->fetchRow($sql, array(Shopware()->System()->sLanguage, $this->request()->sID));
 		if(!empty($content))
 		{
-			$content['hash'] = array($content['id'], Shopware()->System()->sLicenseData['sCORE']);
+			($license = Shopware()->License()->getLicense('sCORE')) || ($license = Shopware()->License()->getLicense('sCOMMUNITY'));
+			$content['hash'] = array($content['id'], $license);
 			$content['hash'] = md5(implode('|', $content['hash']));
-			$content['link'] = 'engine/core/php/campaigns.php?id='.$content['id'].'&hash='.$content['hash'];
+			$content['link'] = $this->Front()->Router()->assemble(array(
+				'module' => 'backend',
+				'controller' => 'newsletter',
+				'id' => $content['id'],
+				'hash' => $content['hash'],
+				'fullPath' => true
+			));
 		}
 		
 		$this->View()->sContentItem = $content;
