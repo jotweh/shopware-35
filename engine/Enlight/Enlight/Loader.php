@@ -45,8 +45,7 @@ class Enlight_Loader extends Enlight_Class
 		if(!is_string($class)) {
     		throw new Enlight_Exception('Class name must be a string');
     	}
-		if(!$this->isLoaded($class))
-		{
+		if(!$this->isLoaded($class)) {
 			if(!$path) {
 				$path = $this->getClassPath($class);
 			}
@@ -82,16 +81,26 @@ class Enlight_Loader extends Enlight_Class
 	 * Check file is readable
 	 *
 	 * @param string $path
-	 * @return bool
+	 * @return string|bool
 	 */
 	public static function isReadable($path)
 	{
 		if (is_readable($path)) {
-            return true;
+            return realpath($path);
         }
         
-        if (strpos($path, DIRECTORY_SEPARATOR) === 0 
-          || strpos($path, DIRECTORY_SEPARATOR.':') === 1) {
+        if(function_exists('stream_resolve_include_path')) {
+        	$path = stream_resolve_include_path($path);
+        	if($path !== false && is_readable($path)) {
+        		return $path;
+        	} else {
+        		return false;
+        	}
+        }
+                
+        if (empty($path) 
+          || $path{0} === '/'
+          || $path{0} === DIRECTORY_SEPARATOR) {
         	return false;
         }
         
@@ -99,9 +108,9 @@ class Enlight_Loader extends Enlight_Class
             if ($includePath == '.') {
                 continue;
             }
-            $file = $includePath . '/' . $path;
-            if (is_readable($file)) {
-                return true;
+            $file = realpath($includePath . '/' . $path);
+            if ($file && is_readable($file)) {
+                return $file;
             }
         }
         
@@ -144,7 +153,8 @@ class Enlight_Loader extends Enlight_Class
 				$path = substr($class, strlen($namespace['namespace'])+1);
 				$path = str_replace(str_split($namespace['separator']), DIRECTORY_SEPARATOR, $path);
 				$path = $namespace['path'].$path.$namespace['extension'];
-				if(self::isReadable($path)) {
+				$path = self::isReadable($path);
+				if($path) {
 					return $path;
 				}
 			}
@@ -171,7 +181,10 @@ class Enlight_Loader extends Enlight_Class
 	 * @param string $extension
 	 * @param string $postion
 	 */
-	public function registerNamespace($namespace, $path, $separator=self::DEFAULT_SEPARATOR, $extension=self::DEFAULT_EXTENSION, $postion=self::POSITION_APPEND)
+	public function registerNamespace($namespace, $path,
+	  $separator=self::DEFAULT_SEPARATOR, 
+	  $extension=self::DEFAULT_EXTENSION,
+	  $postion=self::POSITION_APPEND)
 	{
 		$namespace = array(
 			'namespace' => $namespace,
