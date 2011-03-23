@@ -1,15 +1,31 @@
 <?php
+/**
+ * Listing controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Listing extends Enlight_Controller_Action
 {
 	protected $system;
 	protected $config;
 	
+	/**
+	 * Init controller method
+	 */
 	public function init()
 	{
 		$this->system = Shopware()->System();
 		$this->config = Shopware()->Config();
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
 		$this->system->_GET['sCategory'] = (int) $this->request->getQuery('sCategory');
@@ -66,6 +82,7 @@ class Shopware_Controllers_Frontend_Listing extends Enlight_Controller_Action
 		
 		if($this->request->getParam('sRss')||$this->request->getParam('sAtom'))
 		{
+			Shopware()->Config()->DontAttachSession = true;
 			$type = $this->request->getParam('sRss') ? 'rss' : 'atom';
 			$listing = !empty($categoryContent['blog']) ? 'blog' : 'listing';
 			
@@ -110,11 +127,23 @@ class Shopware_Controllers_Frontend_Listing extends Enlight_Controller_Action
 		$this->view->activeFilterGroup = $this->request->getQuery('sFilterGroup');
 	}
 	
+	/**
+	 * Returns live shoppinp article
+	 *
+	 * @param unknown_type $categoryID
+	 * @return unknown
+	 */
 	public function getLiveShopping($categoryID)
 	{
 		return Shopware()->Modules()->Articles()->sGetLiveShopping('random', $categoryID, null, true, 'AND lv.categories_display=1', '', 0);
 	}
 	
+	/**
+	 * Returns listing breadcrumb
+	 *
+	 * @param unknown_type $categoryID
+	 * @return unknown
+	 */
 	public function getBreadcrumb($categoryID)
 	{
 		return array_reverse(Shopware()->Modules()->Categories()->sGetCategoriesByParent($categoryID));
