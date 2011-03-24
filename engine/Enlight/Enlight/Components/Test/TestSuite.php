@@ -14,7 +14,8 @@ class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
      * Adds a test to the suite.
      *
      * @param  PHPUnit_Framework_Test $test
-     * @param  array                  $groups
+     * @param  array $groups
+     * @return Enlight_Components_Test_TestSuite
      */
 	public function addTest(PHPUnit_Framework_Test $test, $groups = array())
     {
@@ -22,13 +23,31 @@ class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
             $groups = $test->getGroups();
         }
         $groups[] = $this->getName();
-        if ($test instanceof PHPUnit_Framework_TestSuite) {
-            $tests = $test->tests();
-            $test = new self();
-            foreach ($tests as $childTest) {
-            	$test->addTest($childTest, $groups);
-            }
+
+        parent::addTest($test, $groups);
+    	
+    	return $this;
+    }
+    
+    /**
+     * Adds the tests from the given class to the suite.
+     *
+     * @param  mixed $testClass
+     * @throws InvalidArgumentException
+     * @return Enlight_Components_Test_TestSuite
+     */
+    public function addTestSuite($testClass)
+    {
+    	if (is_string($testClass) && class_exists($testClass)) {
+            $testClass = new ReflectionClass($testClass);
         }
-    	parent::addTest($test, $groups);
+    	if($testClass instanceof ReflectionClass 
+    	  && $testClass->isSubclassOf('PHPUnit_Framework_TestCase')) {
+    		$this->addTest(new self($testClass));
+    	} else {
+    		parent::addTestSuite($testClass);
+    	}
+    	
+    	return $this;
     }
 }
