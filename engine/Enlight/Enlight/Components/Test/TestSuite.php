@@ -19,12 +19,7 @@ class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
      */
 	public function addTest(PHPUnit_Framework_Test $test, $groups = array())
     {
-    	if ($test instanceof PHPUnit_Framework_TestSuite && empty($groups)) {
-            $groups = $test->getGroups();
-        }
-        $groups[] = $this->getName();
-
-        parent::addTest($test, $groups);
+    	parent::addTest($test, $groups);
     	
     	return $this;
     }
@@ -49,5 +44,20 @@ class Enlight_Components_Test_TestSuite extends PHPUnit_Framework_TestSuite
     	}
     	
     	return $this;
+    }
+    
+    /**
+     * Returns the test groups of the suite.
+     *
+     * @return array
+     */
+    public function getGroups()
+    {
+    	$groups = parent::getGroups();
+    	if($this->getName()
+    	  && !class_exists($this->getName(), false)) {
+    		$groups[] = $this->getName();
+    	}
+    	return $groups;
     }
 }
