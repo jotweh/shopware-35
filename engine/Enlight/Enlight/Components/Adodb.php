@@ -1,24 +1,30 @@
 <?php
-class Enlight_Components_Adodb extends Enlight_Class
+class	Enlight_Components_Adodb extends Enlight_Class
 {
 	/**
-	 * Enter description here...
-	 *
 	 * @var Zend_Db_Adapter_Abstract
 	 */
-	protected $_db = array();
+	protected $db;
 	
 	/**
-	 * Enter description here...
-	 *
 	 * @var Zend_Cache_Core
 	 */
-	protected $_cache;
+	protected $cache;
 
-	protected $_cacheTags = array();
-	protected $_cacheLifetime = 0;
+	/**
+	 * @var array
+	 */
+	protected $cacheTags = array();
 	
-	protected $_rowCount;
+	/**
+	 * @var int
+	 */
+	protected $cacheLifetime = 0;
+	
+	/**
+	 * @var int
+	 */
+	protected $rowCount;
 	
 	public function __construct($config)
 	{
@@ -26,36 +32,36 @@ class Enlight_Components_Adodb extends Enlight_Class
             $config = $config->toArray();
         }
         if(isset($config['db'])) {
-        	$this->_db = $config['db'];
+        	$this->db = $config['db'];
         }
         if(isset($config['cache'])) {
-        	$this->_cache = $config['cache'];
+        	$this->cache = $config['cache'];
         }
         if(isset($config['cacheTags'])) {
-        	$this->_cacheTags = $config['cacheTags'];
+        	$this->cacheTags = $config['cacheTags'];
         }
 	}
 	
 	public function Insert_ID() 
 	{ 
-		return $this->_db->lastInsertId(); 
+		return $this->db->lastInsertId(); 
 	}
 	
 	public function Execute($sql, $bind = array())
 	{
-		$stm = $this->_db->query($sql, $bind);
-		$this->_rowCount = $stm->rowCount();
+		$stm = $this->db->query($sql, $bind);
+		$this->rowCount = $stm->rowCount();
 		return new Enlight_Components_Adodb_Statement($stm);
 	}
 	
 	public function qstr($value)
 	{ 
-		return $this->_db->quote($value); 
+		return $this->db->quote($value); 
 	}
 	
 	public function quote($value)
 	{ 
-		return $this->_db->quote($value); 
+		return $this->db->quote($value); 
 	}
 	
 	public function Param($value)
@@ -81,14 +87,14 @@ class Enlight_Components_Adodb extends Enlight_Class
 	{
 		if(empty($timestamp) && $timestamp!==0) return 'null';
 		$date = new Zend_Date($timestamp);
-		return $this->_db->quote($date->toString($this->fmtTimeStamp, 'php'));
+		return $this->db->quote($date->toString($this->fmtTimeStamp, 'php'));
 	}
 	
 	public function DBDate($timestamp)
 	{
 		if(empty($timestamp) && $timestamp!==0) return 'null';
 		$date = new Zend_Date($timestamp);
-		return $this->_db->quote($date->toString($this->fmtDate, 'php'));
+		return $this->db->quote($date->toString($this->fmtDate, 'php'));
 	}
 	
 	public function BindTimeStamp($timestamp)
@@ -105,39 +111,39 @@ class Enlight_Components_Adodb extends Enlight_Class
 	
 	public function ErrorMsg()
 	{
-		$error = $this->_db->getConnection()->errorInfo();
+		$error = $this->db->getConnection()->errorInfo();
 		return isset($error[2]) ? $error[2] : null;
 	}
 	
 	public function Affected_Rows()
 	{
-		return $this->_rowCount; 
+		return $this->rowCount; 
 	}
 	
 	public function GetAll($sql, $bind = array())
-	{ 
-		return $this->_db->fetchAll($sql, $bind);
+	{
+		return $this->db->fetchAll($sql, $bind);
 	}
 	
 	public function GetRow($sql, $bind = array())
 	{ 
-		$result = $this->_db->fetchRow($sql, $bind);
+		$result = $this->db->fetchRow($sql, $bind);
 		return $result===false ? array() : $result;
 	}
 	
 	public function GetOne($sql, $bind = array())
 	{ 
-		return $this->_db->fetchOne($sql, $bind);
+		return $this->db->fetchOne($sql, $bind);
 	}
 	
 	public function GetCol($sql, $bind = array())
 	{
-		return $this->_db->fetchCol($sql, $bind);
+		return $this->db->fetchCol($sql, $bind);
 	}
 	
 	public function GetAssoc($sql, $bind = array())
 	{ 		
-		$stmt = $this->_db->query($sql, $bind);
+		$stmt = $this->db->query($sql, $bind);
 		$data = array();
 		if($stmt->columnCount()==2)
 		{
@@ -159,96 +165,105 @@ class Enlight_Components_Adodb extends Enlight_Class
 	
 	public function SelectLimit($sql, $count, $offset = 0, $bind = array())
 	{
-		$sql = $this->_db->limit($sql, $count, $offset);
-		return $this->_db->Execute($sql, $bind);
+		$sql = $this->db->limit($sql, $count, $offset);
+		return $this->db->Execute($sql, $bind);
 	}
 	
 	public function CacheExecute($timeout, $sql, $bind = array())
 	{ 
 		return $this->Execute($sql, $bind); 
 	}
-		
-	public function __call($name, $params=array())
+	
+	public function GetFoundRows()
 	{
-		switch ($name) {
-			case 'CacheGetAll':
-			case 'CacheGetRow':
-			case 'CacheGetOne':
-			case 'CacheGetCol':
-			case 'CacheGetAssoc':
-				
-				if(!isset($params[1])||$params[1]===null) {
-					$sql = $params[0];
-					$timeout = $this->_cacheLifetime;
-				} else {
-					$sql = $params[1];
-					$timeout = $params[0];
-				}
-				$bind = isset($params[2]) ? $params[2] : array();
-				$name = substr($name, 5);
-				
-				
-				if($timeout>0&&$this->_cache!==null) {
-					$id = md5($name.$sql.serialize($bind));
-					$tags = $this->_cacheTags;
-					if (!empty($params[3])){
-						$tags[] = $params[3];
-					}
-					if(!$this->_cache->test($id)) {
-						$result = $this->$name($sql, $bind);
-						$this->_cache->save($result, $id, $tags, $timeout);
-					} else {
-						$result = $this->_cache->load($id);
-					}
-				} else {
-					$result = $this->$name($sql, $bind);
-				}
-				
-				return $result;
-			default:
-				return parent::__call($name, $params);
+		return $this->db->fetchOne('SELECT FOUND_ROWS() as count');
+	}
+	
+	public function CacheGetFoundRows()
+	{
+		$result = $this->cache->load($this->lastCacheId);
+		if(isset($result['foundRows'])) {
+			return $result['foundRows'];
+		} else {
+			return false;
 		}
 	}
-}
+	
+	protected $lastCacheId = null;
+	
+	public function getCacheId($name, $sql, $bind = array())
+	{
+		return md5($name.$sql.serialize($bind));
+	}
+	
+	public function callCached($name, $timeout, $sql = null, $bind = array(), $tags = array())
+	{
+		if($sql === null) {
+			$sql = $timeout;
+			$timeout = null;
+		}
+		$timeout = $timeout===null ? $this->cacheLifetime : (int) $timeout;
+		$tags = (array) $tags + $this->cacheTags;
+		$bind = (array) $bind;
+		
+		$this->lastCacheId = null;
+		
+		if($timeout>0 && $this->cache!==null) {
+			
+			$this->lastCacheId = $this->getCacheId($name, $sql, $bind);
 
-class Enlight_Components_Adodb_Statement extends Enlight_Class
-{
-	protected $_statement;
-	
-	public $fields = array();
-	public $EOF = true;
-	
-	public function __construct($statement)
-    {
-        $this->_statement = $statement;
-        $this->MoveNext();
-    }
+			if(strpos($sql, 'SQL_CALC_FOUND_ROWS') !== false) {
+				$calcFoundRows = true;
+			} else {
+				$calcFoundRows = false;
+			}
+			
+			if(!$this->cache->test($this->lastCacheId)) {
+				$result = $this->$name($sql, $bind);
+				if($calcFoundRows) {
+					$result = array(
+						'rows' => $result,
+						'foundRows' => $this->GetFoundRows()
+					);
+				}
+				$this->cache->save($result, $this->lastCacheId, $tags, $timeout);
+			} else {
+				$result = $this->cache->load($this->lastCacheId);
+			}
+			
+			if($calcFoundRows && isset($result['rows'])) {
+				$result = $result['rows'];
+			}
+			
+		} else {
+			$result = $this->$name($sql, $bind);
+		}
 		
-	public function RecordCount()
-	{
-		return $this->_statement->rowCount();
+		return $result;
+	}
+		
+	public function CacheGetAll($timeout, $sql = null, $bind = array(), $tags = array())
+	{ 
+		return $this->callCached('GetAll', $timeout, $sql, $bind, $tags);
 	}
 	
-	public function MoveNext()
-	{
-		if($this->_statement->columnCount()) {
-			$this->fields = $this->_statement->fetch();
-			$this->EOF = $this->fields===false;
-		}
+	public function CacheGetRow($timeout, $sql = null, $bind = array(), $tags = array())
+	{ 
+		return $this->callCached('GetRow', $timeout, $sql, $bind, $tags);
 	}
 	
-	public function FetchRow()
-	{
-		if($this->fields) {
-			$result = $this->fields;
-			$this->fields = array();
-			return $result;
-		}
-		return $this->_statement->fetch(Zend_Db::FETCH_ASSOC);
+	public function CacheGetOne($timeout, $sql = null, $bind = array(), $tags = array())
+	{ 
+		return $this->callCached('GetOne', $timeout, $sql, $bind, $tags);
 	}
 	
-	public function Close()
-	{
-		return $this->_statement->closeCursor();
+	public function CacheGetCol($timeout, $sql = null, $bind = array(), $tags = array())
+	{ 
+		return $this->callCached('GetCol', $timeout, $sql, $bind, $tags);
+	}
+	
+	public function CacheGetAssoc($timeout, $sql = null, $bind = array(), $tags = array())
+	{ 
+		return $this->callCached('GetAssoc', $timeout, $sql, $bind, $tags);
 	}
 }

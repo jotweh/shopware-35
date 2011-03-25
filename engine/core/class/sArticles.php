@@ -1067,14 +1067,9 @@ class sArticles
 
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_sGetArticlesByCategory_FilterSql', $sql, array('subject'=>$this,'id'=>$this->sSYSTEM->_GET['sCategory']));
 
-		$this->sSYSTEM->sDB_CONNECTION->LogSQL(false);
 		$articles = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,false,"category_".$this->sSYSTEM->_GET['sCategory']);
-
-
-		$sql = 'SELECT FOUND_ROWS() as count_'.md5($sql);
-		$numberArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,false,"category_".$this->sSYSTEM->_GET['sCategory']);
-
-		$this->sSYSTEM->sDB_CONNECTION->LogSQL($this->sSYSTEM->sCONFIG['sADODB_LOG']);
+		$numberArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetFoundRows();
+		
 		if (!isset($addAlias)) $addAlias = "";
 		if (!isset($addFilterHaving)) $addFilterHaving = "";
 		if (!empty($blogCategory)){
