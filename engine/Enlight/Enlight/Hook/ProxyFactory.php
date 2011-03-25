@@ -1,62 +1,96 @@
 <?php
+/**
+ * Enlight Proxy Factory
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Enlight_Hook_ProxyFactory extends Enlight_Class
 {
     protected $proxyNamespace;
     protected $proxyDir;
     protected $fileExtension = '.php';
     
+    /**
+	 * Constructor method
+	 */
     public function __construct($proxyNamespace=null, $proxyDir=null)
     {
         $proxyNamespace = Enlight::Instance()->App().'_Proxies';
-        $proxyDir = Enlight::Instance()->AppPath().'Proxies'.Enlight::Instance()->DS();
+        $proxyDir = Enlight::Instance()->AppPath('Proxies');
         $this->proxyNamespace = $proxyNamespace;
         $this->proxyDir = $proxyDir;
     }
-        
+    
+    /**
+     * Return proxy class
+     *
+     * @param string $class
+     * @return string
+     */
     public function getProxy($class)
     {
-    	//if(!Enlight::Instance()->Hooks()->hasHooks($class))	{
-    	//	return $class;
-    	//}
-    	$file = $this->getProxyFileName($class);
+    	$proxyFile = $this->getProxyFileName($class);
+    	$proxy = $this->getProxyClassName($class);
     	
-        if(!file_exists($file)) {
+        if(!is_readable($proxyFile)) {
         	if(!is_writable($this->proxyDir)) {
         		return $class;
         	}
             $this->generateProxyClass($class);
+        } else {
+        	$hooks = array_keys(Enlight::Instance()->Hooks()->getHooks($class));
+	    	$methodes = call_user_func($proxy.'::getHookMethods');
+	    	$diff = array_diff($hooks, $methodes);
+	    	if(!empty($diff)) {
+	    		@unlink($file);
+	    	}
         }
-        
-    	$proxy = $this->getProxyClassName($class);
-    	
-    	$hooks = array_keys(Enlight::Instance()->Hooks()->getHooks($class));
-    	$methodes = call_user_func($proxy.'::getHookMethods');
-    	$diff = array_diff($hooks, $methodes);
-    	
-    	if(!empty($diff)) {
-    		@unlink($file);
-    	}
         
         return $proxy;
     }
     
+    /**
+     * Return proxy class name
+     *
+     * @param string $class
+     * @return string
+     */
     public function getProxyClassName($class)
     {
         return $this->proxyNamespace.'_'.$this->formatClassName($class);
     }
     
+    /**
+     * Format class name
+     *
+     * @param string $class
+     * @return string
+     */
     public function formatClassName($class)
     {
-        return str_replace(array('_','\\'), '', $class) . 'Proxy';
+        return str_replace(array('_', '\\'), '', $class) . 'Proxy';
     }
     
+    /**
+     * Return proxy file name
+     *
+     * @param string $class
+     * @return string
+     */
     public function getProxyFileName($class)
     {
         $proxyClassName = $this->formatClassName($class);
         return $this->proxyDir.$proxyClassName.$this->fileExtension;
     }
     
-    private function generateProxyClass($class)
+    /**
+     * Generate proxy class
+     *
+     * @param string $class
+     */
+    protected function generateProxyClass($class)
     {
         $methods = $this->generateMethods($class);
         $fileName = $this->getProxyFileName($class);
@@ -80,51 +114,60 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
 
         file_put_contents($fileName, $file);
     }
-        
-    private function generateMethods($class)
+    
+    /**
+     * Generate proxy methods
+     *
+     * @param unknown_type $class
+     * @return unknown
+     */
+    protected function generateMethods($class)
     {
         $rc = new ReflectionClass($class);
         $methodsArray = array();
     	$methods = '';
-    	foreach ($rc->getMethods() as $rm)
-    	{
-    		if($rm->isFinal()||$rm->isStatic()||$rm->isPrivate()){
+    	foreach ($rc->getMethods() as $rm) {
+    		if($rm->isFinal() || $rm->isStatic() || $rm->isPrivate()) {
     			continue;
     		}
-    		if(substr($rm->getName(), 0, 2)=='__'){
+    		if(substr($rm->getName(), 0, 2)=='__') {
     			continue;
     		}
-    		if(!Enlight::Instance()->Hooks()->hasHooks($class, $rm->getName())){
+    		if(!Enlight::Instance()->Hooks()->hasHooks($class, $rm->getName())) {
     			continue;
     		}
     		$methodsArray[] = $rm->getName();
     		$params = '';
     		$proxy_params = '';
     		$array_params = '';
-    		foreach ($rm->getParameters() as $rp)
-    		{
-    			if($params)
-    			{
+    		foreach ($rm->getParameters() as $rp) {
+    			if($params) {
     				$params .= ', ';
     				$proxy_params .= ', ';
     				$array_params .= ', ';
     			}
-    			if ($rp->isPassedByReference())
-    			{
+    			if ($rp->isPassedByReference()) {
     				$params .= '&';
     			}
     			$params .= '$'.$rp->getName();
     			$proxy_params .= '$'.$rp->getName();
     			$array_params.= '\''.$rp->getName().'\'=>$'.$rp->getName();
-    			if ($rp->isOptional())
-    			{
-    				$params .= '='.str_replace("\n",'',var_export($rp->getDefaultValue(), true));
+    			if ($rp->isOptional()) {
+    				$params .= ' = '.str_replace("\n", '', var_export($rp->getDefaultValue(), true));
     			}
     		}
     		$modifiers = Reflection::getModifierNames($rm->getModifiers());
     		$modifiers = implode(' ', $modifiers);
-    		$search = array('<methodName>', '<methodModifiers>', '<methodParameters>', '<proxyMethodParameters>', '<arrayMethodParameters>', '<className>');
-    		$replace = array($rm->getName(), $modifiers, $params, $proxy_params, $array_params, $class);
+    		$search = array(
+    			'<methodName>', '<methodModifiers>',
+    			'<methodParameters>', '<proxyMethodParameters>',
+    			'<arrayMethodParameters>', '<className>'
+    		);
+    		$replace = array(
+    			$rm->getName(), $modifiers,
+    			$params, $proxy_params,
+    			$array_params, $class
+    		);
     		$method = $this->proxyMethodTemplate;
     		$method = str_replace($search, $replace, $method);
     		$methods .= $method;
@@ -132,7 +175,7 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
     	return array('array'=>$methodsArray, 'methods'=>$methods);
     }
     
-    private $proxyClassTemplate =
+    protected $proxyClassTemplate =
 '<?php
 class <namespace>_<proxyClassName> extends <className> implements Enlight_Hook_Proxy
 {
@@ -148,12 +191,11 @@ class <namespace>_<proxyClassName> extends <className> implements Enlight_Hook_P
     <methods>
 }
 ';
-    private $proxyMethodTemplate =
+    protected $proxyMethodTemplate =
 '
     <methodModifiers> function <methodName>(<methodParameters>)
     {
-        if(!Enlight::Instance()->Hooks()->hasHooks(\'<className>\', \'<methodName>\'))
-        {
+        if(!Enlight::Instance()->Hooks()->hasHooks(\'<className>\', \'<methodName>\')) {
             return parent::<methodName>(<proxyMethodParameters>);
         }
         
