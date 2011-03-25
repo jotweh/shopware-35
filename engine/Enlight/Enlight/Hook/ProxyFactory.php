@@ -38,7 +38,8 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
         	if(!is_writable($this->proxyDir)) {
         		return $class;
         	}
-            $this->generateProxyClass($class);
+        	$content = $this->generateProxyClass($class);
+        	$this->writeProxyClass($proxyFile, $content);
         } else {
         	$hooks = array_keys(Enlight::Instance()->Hooks()->getHooks($class));
 	    	$methodes = call_user_func($proxy.'::getHookMethods');
@@ -93,7 +94,6 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
     protected function generateProxyClass($class)
     {
         $methods = $this->generateMethods($class);
-        $fileName = $this->getProxyFileName($class);
         $proxyClassName = $this->formatClassName($class);
 
         $search = array(
@@ -112,9 +112,28 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
         $file = $this->proxyClassTemplate;
         $file = str_replace($search, $replace, $file);
 
-        file_put_contents($fileName, $file);
+        return $file;
     }
     
+    /**
+     * Write proxy class
+     *
+     * @param string $fileName
+     * @param string $content
+     * @return bool
+     */
+    protected function writeProxyClass($fileName, $content)
+    {
+    	$oldMask = umask(0);
+        if(!file_put_contents($fileName, $content)) {
+        	umask($oldMask);
+        	throw new Enlight_Exception('Unable to write file "'.$fileName.'"');
+        	return false;
+        }
+        chmod($fileName, 0644);
+        umask($oldMask);
+    }
+
     /**
      * Generate proxy methods
      *
