@@ -49,6 +49,11 @@ class	Enlight_Components_Adodb extends Enlight_Class
 	
 	public function Execute($sql, $bind = array())
 	{
+		if(empty($bind) 
+		  && ltrim(strtoupper(substr($sql, 0, 3))) != 'SEL' && empty($bind)) {
+			$this->rowCount = $this->db->exec($sql);
+			return;
+		}
 		$stm = $this->db->query($sql, $bind);
 		$this->rowCount = $stm->rowCount();
 		return new Enlight_Components_Adodb_Statement($stm);
@@ -181,15 +186,13 @@ class	Enlight_Components_Adodb extends Enlight_Class
 	
 	public function CacheGetFoundRows()
 	{
-		$result = $this->cache->load($this->lastCacheId);
-		if(isset($result['foundRows'])) {
-			return $result['foundRows'];
-		} else {
-			return false;
+		if($this->foundRows===null) {
+			$this->foundRows = $this->GetFoundRows();
 		}
+		return $this->foundRows;
 	}
 	
-	protected $lastCacheId = null;
+	protected $foundRows = null;
 	
 	public function getCacheId($name, $sql, $bind = array())
 	{
@@ -206,11 +209,11 @@ class	Enlight_Components_Adodb extends Enlight_Class
 		$tags = (array) $tags + $this->cacheTags;
 		$bind = (array) $bind;
 		
-		$this->lastCacheId = null;
+		$this->foundRows = null;
 		
 		if($timeout>0 && $this->cache!==null) {
 			
-			$this->lastCacheId = $this->getCacheId($name, $sql, $bind);
+			$id = $this->getCacheId($name, $sql, $bind);
 
 			if(strpos($sql, 'SQL_CALC_FOUND_ROWS') !== false) {
 				$calcFoundRows = true;
@@ -218,7 +221,7 @@ class	Enlight_Components_Adodb extends Enlight_Class
 				$calcFoundRows = false;
 			}
 			
-			if(!$this->cache->test($this->lastCacheId)) {
+			if(!$this->cache->test($id)) {
 				$result = $this->$name($sql, $bind);
 				if($calcFoundRows) {
 					$result = array(
@@ -226,12 +229,13 @@ class	Enlight_Components_Adodb extends Enlight_Class
 						'foundRows' => $this->GetFoundRows()
 					);
 				}
-				$this->cache->save($result, $this->lastCacheId, $tags, $timeout);
+				$this->cache->save($result, $id, $tags, $timeout);
 			} else {
-				$result = $this->cache->load($this->lastCacheId);
+				$result = $this->cache->load($id);
 			}
 			
 			if($calcFoundRows && isset($result['rows'])) {
+				$this->foundRows = $result['foundRows'];
 				$result = $result['rows'];
 			}
 			
