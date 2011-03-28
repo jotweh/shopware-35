@@ -75,6 +75,10 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     protected function initDb()
     {   
     	$config = Shopware()->getOption('db');
+    	
+    	if(!isset($config['charset'])) {
+    		$config['charset'] = 'latin1';
+    	}
     	    	
     	$db = Enlight_Components_Db::factory('PDO_MYSQL', $config);
     	$db->getConnection();

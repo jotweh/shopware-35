@@ -36,8 +36,10 @@ if (_DEBUG == "FirePHP"){
 ob_start();
 
 		
-mysql_pconnect($DB_HOST,$DB_USER,$DB_PASSWORD);
+mysql_pconnect($DB_HOST, $DB_USER, $DB_PASSWORD);
 mysql_select_db($DB_DATABASE);
+mysql_query("SET NAMES 'latin1'");
+
 // Load-configuration and default functions
 include("functions.php");
 include("language_de.php");
@@ -73,7 +75,7 @@ if (@mysql_num_rows($checkIfApiSet)){
 }
 
 
-class checkLogin
+class	checkLogin
 {
 	var $sTimeout;
 	var $sSession;
