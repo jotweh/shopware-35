@@ -1,25 +1,41 @@
 <?php
+/**
+ * Shopware Shop Model
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 {
-    protected static $_db;
-	protected static $_cache;
+    protected static $db;
+	protected static $cache;
 	
-	protected $_id;
-	protected $_name;
-	protected $_host;
-	protected $_locale;
-	protected $_currency;
-	protected $_config;
-	protected $_template;
-	protected $_properties = array();
+	protected $id;
+	protected $name;
+	protected $host;
+	protected $locale;
+	protected $currency;
+	protected $config;
+	protected $template;
+	protected $properties = array();
 	
-	protected $_switchShops = array();
-	protected $_switchCurrencies = array();
-	protected $_switchLocales = array();
+	protected $switchShops = array();
+	protected $switchCurrencies = array();
+	protected $switchLocales = array();
 	
+	/**
+	 * Constructor method
+	 *
+	 * @param int|string $shop
+	 * @param int|string $locale
+	 * @param int|string $currency
+	 */
 	public function __construct($shop=null, $locale=null, $currency=null)
 	{
-		if($shop!==null&&is_array($shop)) {
+		//parent::__construct();
+		
+		if($shop!==null && is_array($shop)) {
 			$this->setOptions($shop);
 		} else {
 			$this->setShop($shop);
@@ -28,56 +44,75 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 			$this->setLocale($locale);
 		}
 		if($currency!==null) {
-			$this->setLocale($currency);
+			$this->setCurrency($currency);
 		}
 	}
 	
+	/**
+	 * Set shop and read options
+	 *
+	 * @param int|string $shop
+	 * @return Shopware_Models_Shop
+	 */
 	public function setShop($shop=null)
 	{
 		if (is_numeric($shop)) {
 			$sql = 'SELECT * FROM s_core_multilanguage WHERE id=?';
-			$options = self::$_db->fetchRow($sql, array($shop));
-		} elseif (is_string($shop)&&!empty($shop)) {
+			$options = self::$db->fetchRow($sql, array($shop));
+		} elseif (is_string($shop) && !empty($shop)) {
 			$sql = 'SELECT * FROM s_core_multilanguage WHERE domainaliase LIKE ?';
-			$options = self::$_db->fetchRow($sql, array($shop.'%'));
+			$options = self::$db->fetchRow($sql, array($shop.'%'));
 		} elseif ($shop===null) {
 			$sql = 'SELECT * FROM s_core_multilanguage WHERE `default`=1';
-			$options = self::$_db->fetchRow($sql);
+			$options = self::$db->fetchRow($sql);
 		}
-		if(isset($options)) {
+		if($options !== null) {
 			$this->setOptions($options);
 		}
-		$this->_config = null;
+		$this->config = null;
+		return $this;
 	}
 	
-	public static function findShop($shop=null)
+	/**
+	 * Find shop id method
+	 *
+	 * @param string $shop
+	 * @return int
+	 */
+ 	public static function findShop($shop = null)
 	{
 		if (!empty($shop)&&is_numeric($shop)) {
 			$sql = 'SELECT id FROM s_core_multilanguage WHERE id=?';
-			$result = self::$_db->fetchOne($sql, array($shop));
+			$result = self::$db->fetchOne($sql, array($shop));
 			if(!empty($result)) {
 				return (int) $result;
 			}
 		}
 	
-		if(empty($shop)&&!empty($_SERVER['SERVER_NAME'])) {
-			$shop = $_SERVER['SERVER_NAME'];
+		if(empty($shop) && !empty($_SERVER['HTTP_HOST'])) {
+			$shop = $_SERVER['HTTP_HOST'];
 		}
 		
-		if (!empty($shop)&&is_string($shop)) {
+		if (!empty($shop) && is_string($shop)) {
 			$sql = 'SELECT id FROM s_core_multilanguage WHERE domainaliase LIKE ?';
-			$result =  self::$_db->fetchOne($sql, array('%'.$shop.'%'));
+			$result =  self::$db->fetchOne($sql, array('%'.$shop.'%'));
 			if(!empty($result)) {
 				return (int) $result;
 			}
 		}
 		
 		$sql = 'SELECT id FROM s_core_multilanguage WHERE `default`=1';
-		$shop = (int) self::$_db->fetchOne($sql);
+		$shop = (int) self::$db->fetchOne($sql);
 		return empty($shop) ? false : $shop;
 	}
 	
-	public function setOptions($options)
+	/**
+	 * Set options method
+	 *
+	 * @param array $options
+	 * @return Shopware_Models_Shop
+	 */
+	public function setOptions(array $options)
 	{
 		if(isset($options['shop'])) {
 			$this->setShop($options['shop']);
@@ -86,24 +121,24 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 		foreach ($options as $key => $option) {
 			switch ($key) {
 				case 'id':
-					$this->_id = (int) $option;
+					$this->id = (int) $option;
 					break;
 				case 'name':
-					$this->_name = $option;
+					$this->name = $option;
 					break;
 				case 'locale':
 					$this->setLocale($option);
 					break;
 				case 'defaultcurrency':
-					$this->_properties[$key] = $option;
+					$this->properties[$key] = $option;
 				case 'currency':
 					$this->setCurrency($option);
 					break;
 				case 'switchCurrencies':
-					$this->_switchCurrencies = explode('|', $option);
+					$this->switchCurrencies = explode('|', $option);
 					break;
 				case 'switchLanguages':
-					$this->_switchShops = explode('|', $option);
+					$this->switchShops = explode('|', $option);
 					break;
 				case 'host':
 					$this->setHost($option);
@@ -116,173 +151,267 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 					break;
 				case 'template':
 					$this->setTemplate($option);
-					$this->_properties[$key] = $option;
+					$this->properties[$key] = $option;
 					break;
 				default:
-					$this->_properties[$key] = $option;
+					$this->properties[$key] = $option;
 					break;
 			}
 		}
 		return $this;
 	}
 	
+	/**
+	 * Register resources
+	 *
+	 * @param Enlight_Bootstrap $bootstrap
+	 * @return Shopware_Models_Shop
+	 */
 	public function registerResources(Enlight_Bootstrap $bootstrap)
 	{
 		$bootstrap->registerResource('Shop', $this);
 		$bootstrap->registerResource('Locale', $this->Locale());
 		$bootstrap->registerResource('Currency', $this->Currency());
 		$bootstrap->registerResource('Config', $this->Config());
-	}
-	
-	public function getId()
-	{
-		return $this->_id;
-	}
-	
-	public function setLocale($locale = null)
-	{
-		if ($locale instanceof Shopware_Models_Locale) {
-			$this->_locale = $locale;
-		} else {
-			$this->_locale = new Shopware_Models_Locale($locale);
-		}
 		return $this;
-	}
-	
-	public function setHost($host = null)
-	{
-		if($host!==null) {
-			$this->_host = trim($host);
-		} else {
-			unset($this->_host);
-		}
-	}
-		
-	public function setCurrency($currency = null)
-	{
-		if ($currency instanceof Shopware_Models_Currency) {
-			$this->_currency = $currency;
-		} else {
-			$this->_currency = new Shopware_Models_Currency($currency, $this->Locale());
-		}
-		return $this;
-	}
-	
-	public static function setCache(Zend_Cache_Core $cache=null)
-	{
-		self::$_cache = $cache;
-	}
-	
-	public static function setDb($db)
-	{
-		self::$_db = $db;
-	}
-	
-	public function initConfig()
-	{
-		$this->_config = new Shopware_Models_Config(array('cache'=>$this->Cache(), 'shop'=>$this));
-		
-		if(!isset($this->_config['sHOSTORIGINAL'])) {
-			$this->_config['sHOSTORIGINAL'] = $this->_config['sHOST'];
-		}
-		$this->_config['sBASEPATH'] = str_replace($this->_config['sHOST'], $this->getHost(), $this->_config['sBASEPATH']);
-		$this->_config['sHOST'] = $this->getHost();
-		$this->_config['sTEMPLATEPATH'] = dirname($this->_config['sTEMPLATEPATH']).'/'.$this->getTemplate();
-		$this->_config['sTEMPLATEOLD'] = (bool) preg_match('#^[0-9]+$#', $this->getTemplate());
-				
-		return $this;
-	}
-		
-	public function setTemplate($template=null)
-	{
-		if($template!==null&&$template!=-1) {
-			$this->_template = preg_replace('#\W#', '', basename($template));
-			if($this->_config!==null) {
-				$this->_config['sTEMPLATEPATH'] = dirname($this->_config['sTEMPLATEPATH']).'/'.$this->_template;
-				$this->_config['sTEMPLATEOLD'] = (bool) preg_match('#^[0-9]+$#', $this->_template);
-			}
-		} else {
-			$this->setTemplate($this->_properties['template']);
-		}
-		return $this;
-	}
-	
-	public function getTemplate()
-	{
-		return $this->_template;
-	}
-	
-	public function getName()
-	{
-		return $this->_name;
-	}
-	
-	public function getHost()
-	{
-		return $this->_host;
-	}
-	
-	public function get($name)
-	{
-		return isset($this->_properties[$name]) ? $this->_properties[$name] : null;
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns the shop id
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
+	
+	/**
+	 * Set locale instance
+	 *
+	 * @param int|string|Shopware_Models_Locale $locale
+	 * @return Shopware_Models_Shop
+	 */
+	public function setLocale($locale = null)
+	{
+		if ($locale instanceof Shopware_Models_Locale) {
+			$this->locale = $locale;
+		} else {
+			$this->locale = new Shopware_Models_Locale($locale);
+		}
+		return $this;
+	}
+	
+	/**
+	 * Set shop host method
+	 *
+	 * @param int|string|Shopware_Models_Locale $locale
+	 * @return Shopware_Models_Shop
+	 */
+	public function setHost($host = null)
+	{
+		if($host!==null) {
+			$this->host = trim($host);
+			if($this->config!==null) {
+				if(!isset($this->config['sHOSTORIGINAL'])) {
+					$this->config['sHOSTORIGINAL'] = $this->config['sHOST'];
+				}
+				$this->config['sBASEPATH'] = str_replace($this->config['sHOST'], $this->host, $this->config['sBASEPATH']);
+				$this->config['sHOST'] = $this->host;
+			}
+		} else {
+			$this->host = null;
+		}
+		return $this;
+	}
+
+	/**
+	 * Set currency instance
+	 *
+	 * @param int|string|Shopware_Models_Currency $currency
+	 * @return Shopware_Models_Shop
+	 */
+	public function setCurrency($currency = null)
+	{
+		if ($currency instanceof Shopware_Models_Currency) {
+			$this->currency = $currency;
+		} else {
+			$this->currency = new Shopware_Models_Currency($currency, $this->Locale());
+		}
+		return $this;
+	}
+	
+	/**
+	 * Set template method
+	 *
+	 * @param string $template
+	 * @return Shopware_Models_Shop
+	 */
+	public function setTemplate($template = null)
+	{
+		if($template===null || $template==-1) {
+			return $this->setTemplate($this->properties['template']);
+		}
+		$this->template = preg_replace('#\W#', '', basename($template));
+		if($this->config!==null) {
+			$this->config['sTEMPLATEPATH'] = dirname($this->config['sTEMPLATEPATH']). '/' .$this->template;
+			$this->config['sTEMPLATEOLD'] = (bool) preg_match('#^[0-9]+$#', $this->template);
+		}
+		return $this;
+	}
+	
+	/**
+	 * Set cache instance
+	 *
+	 * @param Zend_Cache_Core $cache
+	 */
+	public static function setCache(Zend_Cache_Core $cache=null)
+	{
+		self::$cache = $cache;
+	}
+	
+	/**
+	 * Set database instance
+	 *
+	 * @param Zend_Db_Adapter_Abstract $db
+	 */
+	public static function setDb(Zend_Db_Adapter_Abstract $db)
+	{
+		self::$db = $db;
+	}
+	
+	/**
+	 * Returns shop template
+	 *
+	 * @return string
+	 */
+	public function getTemplate()
+	{
+		return $this->template;
+	}
+	
+	/**
+	 * Returns shop name
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+	
+	/**
+	 * Returns shop host
+	 *
+	 * @return string
+	 */
+	public function getHost()
+	{
+		return $this->host;
+	}
+	
+	/**
+	 * Returns option by name
+	 *
+	 * @param string $name
+	 * @return string
+	 */
+	public function get($name)
+	{
+		return isset($this->properties[$name]) ? $this->properties[$name] : null;
+	}
+	
+	/**
+	 * Returns shop currency
 	 *
 	 * @return Shopware_Components_Currency
 	 */
 	public function Currency()
 	{
-		return $this->_currency;
+		return $this->currency;
 	}
     
 	/**
-	 * Enter description here...
+	 * Returns shop locale
 	 *
 	 * @return Shopware_Models_Locale
 	 */
 	public function Locale()
 	{
-		return $this->_locale;
+		return $this->locale;
 	}
 	
 	/**
-	 * Enter description here...
+	 * Init shop config
 	 *
-	 * @return Shopware_Models_Locale
+	 * @return Shopware_Models_Shop
+	 */
+	public function initConfig()
+	{
+		$this->config = new Shopware_Models_Config(array('cache'=>$this->Cache(), 'shop'=>$this));
+		
+		$this->config['sDefaultCustomerGroup'] = $this->get('defaultcustomergroup');
+		
+		$this->setTemplate($this->getTemplate());
+		$this->setHost($this->getHost());
+				
+		return $this;
+	}
+	
+	/**
+	 * Returns shop config
+	 *
+	 * @return Shopware_Models_Config
 	 */
 	public function Config()
 	{
-		if(!$this->_config) {
+		if(!$this->config) {
 			$this->initConfig();
 		}
-		return $this->_config;
+		return $this->config;
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns cache instance
 	 *
 	 * @return Zend_Cache_Core
 	 */
 	public static function Cache()
 	{
-		return self::$_cache;
+		return self::$cache;
 	}
 	
+	/**
+	 * Returns db instance
+	 *
+	 * @return Zend_Db_Adapter_Abstract
+	 */
+	public static function Db()
+	{
+		return self::$db;
+	}
+	
+	/**
+	 * Sleep instance method
+	 *
+	 * @return array
+	 */
     public function __sleep()
     {
         return array('_id', '_locale', '_currency', '_host', '_template');
     }
     
+    /**
+     * Wakeup instance method
+     */
 	public function __wakeup()
     {
-    	$locale = $this->_locale;
-    	$currency = $this->_currency;
-    	$host = $this->_host;
-    	$template = $this->_template;
+    	$locale = $this->locale;
+    	$currency = $this->currency;
+    	$host = $this->host;
+    	$template = $this->template;
     	
-    	$this->setShop($this->_id);
+    	$this->setShop($this->id);
     	$this->setLocale($locale);
     	$this->setCurrency($currency);
     	$this->setHost($host);
