@@ -146,7 +146,9 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 				case 'domainaliase':
 					if(!empty($option)) {
 						$option = explode("\n", $option);
-						$this->setHost(current($option));
+						$host = current($option);
+						$this->properties['host'] = $host;
+						$this->setHost($host);
 					}
 					break;
 				case 'template':
@@ -205,22 +207,22 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	/**
 	 * Set shop host method
 	 *
-	 * @param int|string|Shopware_Models_Locale $locale
+	 * @param int|string $host
 	 * @return Shopware_Models_Shop
 	 */
 	public function setHost($host = null)
 	{
-		if($host!==null) {
-			$this->host = trim($host);
-			if($this->config!==null) {
-				if(!isset($this->config['sHOSTORIGINAL'])) {
-					$this->config['sHOSTORIGINAL'] = $this->config['sHOST'];
-				}
-				$this->config['sBASEPATH'] = str_replace($this->config['sHOST'], $this->host, $this->config['sBASEPATH']);
-				$this->config['sHOST'] = $this->host;
+		if($host===null) {
+			if(isset($this->properties['host']) && $this->properties['host'] !== null) {
+				return $this->setHost($this->properties['host']);
+			} else {
+				return $this;
 			}
-		} else {
-			$this->host = null;
+		}
+		$this->host = trim($host);
+		if($this->config!==null) {
+			$this->config['sBASEPATH'] = str_replace($this->config['sHOST'], $this->host, $this->config['sBASEPATH']);
+			$this->config['sHOST'] = $this->host;
 		}
 		return $this;
 	}
@@ -351,6 +353,9 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 		$this->config = new Shopware_Models_Config(array('cache'=>$this->Cache(), 'shop'=>$this));
 		
 		$this->config['sDefaultCustomerGroup'] = $this->get('defaultcustomergroup');
+		if($this->config['sHOSTORIGINAL'] === null) {
+			$this->config['sHOSTORIGINAL'] = $this->config['sHOST'];
+		}
 		
 		$this->setTemplate($this->getTemplate());
 		$this->setHost($this->getHost());
