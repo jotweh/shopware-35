@@ -214,9 +214,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		if(!empty($params['sAction'])&&$params['sAction']=='index') {
 			unset($params['sAction']);
 		}
-		if(!empty($params['sViewport'])&&$params['sViewport']=='index'&&!empty(Shopware()->Config()->RouterRemoveCategory)) {
-			unset($params['sCategory']);
-		}
+		
 		/*
 		if(!empty(Shopware()->Config()->RouterUrlCache)) {
 			$id = 'Shopware_RouterRewrite_'.Shopware()->Shop()->getId().'_'.md5(serialize($params));
@@ -250,9 +248,6 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			switch ($query['sViewport']) {
 				case 'detail':
 					$org_query['sArticle'] = $query['sArticle'];
-					//if(!empty(Shopware()->Config()->RouterRemoveCategory)) {
-					//	unset ($query['sCategory']);
-					//}
 					break;
 				case 'cat':
 					$org_query ['sCategory'] = $query['sCategory'];
@@ -321,7 +316,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	/**
 	 * Returns query alias list
 	 *
-	 * @return unknown
+	 * @return array
 	 */
 	public function sGetQueryAliasList()
 	{

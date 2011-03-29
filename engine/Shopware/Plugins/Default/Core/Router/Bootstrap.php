@@ -1,6 +1,20 @@
 <?php
+/**
+ * Shopware Router Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_Bootstrap
-{			
+{
+	/**
+	 * Init plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{	
 		$event = $this->createEvent(
@@ -37,6 +51,11 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 		return true;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onRouteStartup(Enlight_Event_EventArgs $args)
 	{
 		$front = $args->getSubject();
@@ -57,6 +76,11 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onRouteShutdown(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
@@ -64,6 +88,11 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 		$request->setQuery($request->getQuery()+$request->getUserParams());
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onFilterAssemble(Enlight_Event_EventArgs $args)
 	{			
 		$params = $args->getReturn();
@@ -105,41 +134,44 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 			$params = array_merge(array('sViewport'=>null), $params);
 		}
 		
-		unset($params['sUseSSL'], $params['fullPath'], $params['appendSession'], $params['forceSecure'], $params['sCoreId']);		
+		unset($params['sUseSSL'], $params['fullPath'], $params['appendSession'], $params['forceSecure'], $params['sCoreId']);
+		
+		if(!empty($params['sViewport']) && $params['sViewport']=='detail'
+		  && !empty(Shopware()->Config()->RouterRemoveCategory)) {
+			unset($params['sCategory']);
+		}
 				
 		return $params;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onFilterUrl(Enlight_Event_EventArgs $args)
 	{
 		$params = $args->getParams();
 		$userParams = $args->get('userParams');
 
-		if(!empty($params['module'])&&$params['module']!='frontend'&&empty($userParams['fullPath'])) {
+		if(!empty($params['module']) && $params['module']!='frontend' && empty($userParams['fullPath'])) {
 			return $args->getReturn();
 		}
 		
-		if(empty(Shopware()->Config()->UseSSL))
-		{
+		if(empty(Shopware()->Config()->UseSSL)) {
 			$useSSL = false;
-		}
-		elseif(!empty($userParams['sUseSSL'])||!empty($userParams['forceSecure']))
-		{
+		} elseif(!empty($userParams['sUseSSL'])||!empty($userParams['forceSecure'])) {
 			$useSSL = true;
-		}
-		elseif(!empty($params['sViewport'])&&in_array($params['sViewport'], array('account', 'checkout', 'register', 'ticket', 'note')))
-		{
+		} elseif(!empty($params['sViewport']) &&
+		  in_array($params['sViewport'], array('account', 'checkout', 'register', 'ticket', 'note'))) {
 			$useSSL = true;
-		}
-		else
-		{
+		} else {
 			$useSSL = false;
 		}
 		
 		$url = '';
 	
-		if(!isset($userParams['fullPath'])||!empty($userParams['fullPath']))
-		{
+		if(!isset($userParams['fullPath']) || !empty($userParams['fullPath'])) {
 			$url = $useSSL ? 'https://' : 'http://';
 			if(Shopware()->Bootstrap()->hasResource('Shop')) {
 				$url .= Shopware()->Shop()->getHost().Shopware()->Front()->Request()->getBasePath();
@@ -149,16 +181,15 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 			$url .= '/';
 		}
 		
-		if(empty(Shopware()->Config()->RouterUseModRewrite)&&(!empty($params['sViewport'])||empty(Shopware()->Config()->RedirectBaseFile)))
-		{
+		if(empty(Shopware()->Config()->RouterUseModRewrite)
+		  && (!empty($params['sViewport']) || empty(Shopware()->Config()->RedirectBaseFile))) {
 			$url .= Shopware()->Config()->BaseFile;
 			$url .= '/';
 		}
 		
 		$url .= $args->getReturn();
 		
-		if (/*((empty($params['module'])||$params['module']=='frontend')&&$this->sUserNeedSessionID())||*/!empty($userParams['appendSession']))
-		{
+		if (!empty($userParams['appendSession'])) {
 			$url .= strpos($url, '?')===false ? '?' : '&';
 			$url .= 'sCoreId='.Shopware()->SessionID();
 		}
@@ -166,13 +197,21 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 		return $url;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onAssemble(Enlight_Event_EventArgs $args)
 	{
 		$params = $args->getParams();
-		unset($params['sCoreId'], $params['sUseSSL'], $params['title']);
+		unset($params['title']);
 		return $args->getSubject()->assembleDefault($params);
 	}
 	
+	/**
+	 * Returns capabilities
+	 */
 	public function getCapabilities()
     {
         return array(
