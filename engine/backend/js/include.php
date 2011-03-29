@@ -5,7 +5,8 @@ if(empty($_REQUEST['module'])) {
 $base_path = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS'])!='off') ? 'https://' : 'http://';
 $base_path .= $_SERVER['HTTP_HOST'];
 if(!empty($_SERVER['REQUEST_URI'])) {
-	$base_path .= dirname(dirname(dirname($_SERVER['REQUEST_URI'])));
+	$request_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+	$base_path .= dirname(dirname(dirname($request_path)));
 } else {
 	$base_path .= dirname(dirname(dirname($_SERVER['PHP_SELF'])));
 }
