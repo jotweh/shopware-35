@@ -1,5 +1,7 @@
 <?php
-class shopware_articles{
+class
+	shopware_articles
+{
 	// Preise auf Gültigkeit prüfen
 	function check_prices (&$_POST, &$form ){
 		
@@ -37,7 +39,8 @@ class shopware_articles{
 	}
 } // End Class
 
-class shopware_admin
+class
+	shopware_admin
 {
 	// Connection Holder
 	var $conn;
@@ -75,7 +78,8 @@ class shopware_admin
 	
 }
 
-class shopware_forms
+class
+	shopware_forms
 {
 	var $elements;
 	var $ruleCOUNTER;
@@ -144,7 +148,7 @@ class shopware_forms
 				}
 				if (!empty($disabled)) $disabled = "style=\"opacity:0.6;\" readonly='readonly'";
 			
-				$data = htmlentities(htmlspecialchars_decode($data), null, null, false);
+				$data = htmlspecialchars($data, ENT_COMPAT, null, false);
 				$element = "<input name=\"$name\" id=\"$nameId\" value=\"$data\" class=\"$class\" $disabled>";
 				if ($multilanguage){
 					$element.= "<div style=\"margin-left:20px;margin-top:5px;float:left\">";
@@ -178,7 +182,7 @@ class shopware_forms
 				
 				$nameId = str_replace("[","",$name);
 				$nameId = str_replace("]","",$nameId);
-				
+				$data = htmlspecialchars($data, ENT_COMPAT);
 				$element = "<textarea name=\"$name\" id=\"$nameId\" cols=\"30\" rows=\"6\" class=\"anlegen\">$data</textarea>";
 				
 				if ($multilanguage){
@@ -222,7 +226,7 @@ class shopware_forms
 			case "wysiwyg":
 				$nameId = str_replace("[","",$name);
 				$nameId = str_replace("]","",$nameId);
-				
+				$data = htmlspecialchars($data, ENT_COMPAT);
 				$element = "<textarea id=\"$nameId\" name=\"$name\" rows=\"15\" rows=\"80\" mce_editable=\"true\">$data</textarea>";
 				$useowntemplate = true;
 				
