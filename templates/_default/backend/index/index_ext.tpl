@@ -15,7 +15,7 @@ var myExt = function(){
 		var sBuyRent; var sBuyFrame;
 	return {
 		sShowBuy: function(mode,modul){
-			var url = "https://support.shopware2.de/oopaccount/modules/modul/buy.php?domain={config name='Host')}&pairing={$this->config('AccountId')}&module="+modul+"&mode="+mode;
+			var url = "https://support.shopware2.de/oopaccount/modules/modul/buy.php?domain={config name='Host'}&pairing={config name='AccountId'}&module="+modul+"&mode="+mode;
 			Ext.getCmp('sBuyFrame').url = url;
 			this.sBuyRent.show();
 			$('framepanelsBuyFrame').src = url;
