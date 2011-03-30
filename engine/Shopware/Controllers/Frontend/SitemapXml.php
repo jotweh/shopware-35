@@ -18,8 +18,9 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		
 		$this->Front()->setParam('disableOutputBuffering', true);
+		$this->Front()->returnResponse(true);
 		
-		$this->Response()->setHeader('Content-Type', 'text/xml; charset=iso-8859-1');
+		$this->Response()->setHeader('Content-Type', 'text/xml; charset=utf-8');
 		$this->Response()->sendResponse();
 	}
 	
