@@ -403,7 +403,7 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
     public function __sleep()
     {
-        return array('_id', '_locale', '_currency', '_host', '_template');
+        return array('id', 'locale', 'currency', 'host', 'template');
     }
     
     /**
