@@ -6,7 +6,8 @@ interface Enlight_View_View
 	public function setTemplate($template=null);
 	public function hasTemplate();
 	
-	public function assign($spec, $value = null);
+	public function assign($spec, $value = null, $nocache = false, $scope = null);
+	
 	public function clearAssign($spec = null);
 	public function getAssign($spec = null);
 	
