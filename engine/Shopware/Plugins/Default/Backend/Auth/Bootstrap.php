@@ -153,7 +153,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			if($request->isXmlHttpRequest()) {
 				throw new Enlight_Controller_Exception('Unauthorized', 401); 
 			} else {
-				$args->getSubject()->redirect(array('module'=>'backend', 'controller'=>'auth'));
+				$args->getSubject()->redirect('backend/auth');
 			}
 		}
 	}
