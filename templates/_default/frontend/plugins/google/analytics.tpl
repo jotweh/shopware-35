@@ -2,6 +2,9 @@
 //<![CDATA[
 	var _gaq = _gaq || [];
 	_gaq.push(['_setAccount', "{$GoogleTrackingID|escape:'javascript'}"]);
+{if $GoogleAnonymizeIp}
+	_gaq.push(['_gat._anonymizeIp']);
+{/if}
 	_gaq.push(['_trackPageview']);
 	
 	{if $sBasket.content && $sOrderNumber}
