@@ -15,7 +15,7 @@ var myExt = function(){
 		var sBuyRent; var sBuyFrame;
 	return {
 		sShowBuy: function(mode,modul){
-			var url = "https://support.shopware2.de/oopaccount/modules/modul/buy.php?domain={$this->config('Host')}&pairing={$this->config('AccountId')}&module="+modul+"&mode="+mode;
+			var url = "https://support.shopware2.de/oopaccount/modules/modul/buy.php?domain={config name='Host')}&pairing={$this->config('AccountId')}&module="+modul+"&mode="+mode;
 			Ext.getCmp('sBuyFrame').url = url;
 			this.sBuyRent.show();
 			$('framepanelsBuyFrame').src = url;
@@ -58,7 +58,7 @@ var myExt = function(){
 			}
 			try {				
 				Ext.Ajax.request({
-				   url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/getTicketStore.php',
+				   url: basePath+'/engine/backend/ajax/getTicketStore.php',
 				   success: function(conn, options){
 				   		var json = Ext.decode(conn.responseText);
 				   		var total = json.total;
@@ -97,7 +97,7 @@ var myExt = function(){
 			if(btn == 'yes')
 			{
 				Ext.Ajax.request({
-				   url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/deleteIm.php',
+				   url: basePath+'/engine/backend/ajax/deleteIm.php',
 				   success: function(){
 				   		parent.Growl('Nachricht '+id+' wurde gelöscht!');
 				   		myExt.reload();
@@ -135,7 +135,7 @@ var myExt = function(){
 		    }
 		    
 		store = new Ext.data.Store({
-	        url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/dashboard.php',
+	        url: basePath+'/engine/backend/ajax/dashboard.php',
 	        baseParams: { pagingID:storeid},
 	        // create reader that reads the Topic records
 	        reader: new Ext.data.JsonReader({ 
@@ -155,7 +155,7 @@ var myExt = function(){
 		
 		
 		imStore = new Ext.data.Store({
-	        url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/getIm.php',
+	        url: basePath+'/engine/backend/ajax/getIm.php',
 	        baseParams: { pagingID:storeid},
 	        // create reader that reads the Topic records
 	        reader: new Ext.data.JsonReader({
@@ -188,7 +188,7 @@ var myExt = function(){
 		
 		
 		storeOnline = new Ext.data.Store({
-	        url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/dashboard_online.php',
+	        url: basePath+'/engine/backend/ajax/dashboard_online.php',
 	        baseParams: { pagingID:storeid},
 	         
 	        // create reader that reads the Topic records
@@ -281,7 +281,7 @@ var myExt = function(){
 	         	'beforeexpand' : { fn: function(expander, record, body, rowIndex){
 					
 					Ext.Ajax.request({
-					   url: '{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/refreshIm.php',
+					   url: basePath+'/engine/backend/ajax/refreshIm.php',
 					   success: function(){
 					   		
 					   },
@@ -370,7 +370,7 @@ var myExt = function(){
 	        id: 'form1234',
 	       
 	        labelWidth: 55,
-	        url:'{$Scheme}://{$this->config('BasePath')}/engine/backend/ajax/saveIm.php',
+	        url: basePath+'/engine/backend/ajax/saveIm.php',
 	        defaultType: 'textfield',
 	        items: [
 	        new Ext.form.ComboBox({
@@ -500,7 +500,7 @@ var myExt = function(){
 	    {if $rssData}
 	    	var rssData = {$rssData};
 	    {else}
-	   		var rssData = [[1,'Keine Einträge vorhanden','http://www.shopware-ag.de']];
+	   		var rssData = [[1, 'Keine Einträge vorhanden', 'http://www.shopware.de/']];
 	    {/if}
 	    
 	    var rssStore = new Ext.data.SimpleStore({
@@ -513,7 +513,7 @@ var myExt = function(){
 	    }
 	    
 	    function renderIcon(val){
-	    	return "<p style=\"background-image: url( {link file="engine/backend/img/default/rss/logo.png"}); background-repeat: no-repeat; background-position: 0pt 0.4em; height:16px; width:16px\"></p>";
+	    	return "<p style=\"background-image: url( {link file='engine/backend/img/default/rss/logo.png'}); background-repeat: no-repeat; background-position: 0pt 0.4em; height:16px; width:16px\"></p>";
 	    }
 		
 	    rssfeed = new Ext.grid.GridPanel({
