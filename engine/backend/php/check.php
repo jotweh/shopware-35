@@ -27,15 +27,8 @@ if (@defined('sConfigPath')){
 	}
 }
 
-if(!defined('_DEBUG')) define('_DEBUG', false); 
-if (_DEBUG == "FirePHP"){
-	error_reporting(E_ALL ^ E_NOTICE);
-}else {
-	error_reporting(0);
-}
-ob_start();
+error_reporting(0);
 
-		
 mysql_pconnect($DB_HOST, $DB_USER, $DB_PASSWORD);
 mysql_select_db($DB_DATABASE);
 mysql_query("SET NAMES 'latin1'");

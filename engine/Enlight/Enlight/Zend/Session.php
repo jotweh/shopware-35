@@ -207,7 +207,6 @@ class Zend_Session extends Zend_Session_Abstract
 
             self::$_defaultOptionsSet = true;
         }
-
         // set the options the user has requested to set
         foreach ($userOptions as $userOptionName => $userOptionValue) {
 
@@ -431,7 +430,7 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         if (self::$_sessionStarted) {
-            return; // already started
+            self::writeClose();
         }
 
         // make sure our default options (at the least) have been set

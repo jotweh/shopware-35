@@ -105,6 +105,7 @@ class Enlight_Config extends Zend_Config implements ArrayAccess
      * Set allow modifications
      *
      * @param bool $option
+     * @return Enlight_Config
      */
     public function setAllowModifications($option = true)
     {
@@ -114,5 +115,6 @@ class Enlight_Config extends Zend_Config implements ArrayAccess
                 $value->setAllowModifications($option);
             }
         }
+        return $this;
     }
 }

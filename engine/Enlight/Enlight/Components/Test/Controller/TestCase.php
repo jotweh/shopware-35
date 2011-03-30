@@ -96,6 +96,8 @@ abstract class Enlight_Components_Test_Controller_TestCase extends Enlight_Compo
         Enlight::Instance()->Hooks()->resetHooks();
         Enlight::Instance()->Events()->resetEvents();
         
+        Enlight::Instance()->Db()->getProfiler()->clear();
+        
         $ressources = array(
         	'Plugins' => 'Enlight_Plugin_PluginManager',
         	'Template' => 'Enlight_Template_TemplateManager',

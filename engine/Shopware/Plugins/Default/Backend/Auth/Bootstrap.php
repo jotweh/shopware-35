@@ -1,6 +1,19 @@
 <?php
+/**
+ * Shopware Auth Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{		
 	 	$event = $this->createEvent(
@@ -16,6 +29,11 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		return true;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onInitResourceAuth(Enlight_Event_EventArgs $args)
 	{
 		$request = Shopware()->Front()->Request();
@@ -23,6 +41,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
     	$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
 		
 		Zend_Session::start(array(
+			'name' => get_cfg_var('session.name'),
 			'gc_maxlifetime' => 60*90,
 			'cookie_lifetime' => 0,
 			'cookie_path' => $path,
@@ -75,6 +94,13 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 	
 	protected $noAuth = false;
 	
+	/**
+	 * Auth login method
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @return bool
+	 */
 	public function login($username, $password)
 	{
 		$auth = Shopware()->Auth();		
@@ -111,6 +137,11 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		}
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onPreDispatchBackend(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
@@ -127,12 +158,23 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		}
 	}
 	
+	/**
+	 * Set no auth method
+	 *
+	 * @param bool $flag
+	 * @return unknown
+	 */
 	public function setNoAuth($flag = true)
 	{
 		$this->noAuth = $flag ? true : false;
 		return $this;
 	}
 	
+	/**
+	 * Should auth method
+	 *
+	 * @return bool
+	 */
 	public function shouldAuth()
     {
     	return !$this->noAuth;
