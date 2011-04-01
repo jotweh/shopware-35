@@ -302,14 +302,18 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
      */ 
     protected function initSnippets()
     {
-    	if(!$this->issetResource('Db')||!$this->issetResource('Shop')) {
-    		return null;
+    	if(!$this->issetResource('Db')) {
+    		return;
     	}
     	
     	$snippet = new Shopware_Components_Snippet_SnippetManager();
-    	
+    	    	
     	$snippet->setCache($this->getResource('Cache'));
-    	$snippet->setShop($this->getResource('Shop'));
+    	$snippet->setLocale($this->getResource('Locale'));
+        	
+    	if($this->issetResource('Shop')) {
+    		$snippet->setShop($this->getResource('Shop'));
+    	}
     	
     	return $snippet;
     }

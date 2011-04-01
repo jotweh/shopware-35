@@ -430,7 +430,11 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         if (self::$_sessionStarted) {
-            self::writeClose();
+        	if($options === true) {
+        		return;
+        	} else {
+        		self::writeClose();
+        	}
         }
 
         // make sure our default options (at the least) have been set

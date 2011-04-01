@@ -9,8 +9,18 @@ class Shopware_Components_Snippet_SnippetManager extends Enlight_Class
 	
 	public function getSnippet($namespace)
 	{
-		$localeId = $this->locale->getId();
-		$shopId = $this->shop->getId();
+		if($this->shop !== null) {
+			$shopId = $this->shop->getId();
+		} else {
+			$shopId = 1;
+		}
+		if($this->locale !== null) {
+			$localeId = $this->locale->getId();
+		} elseif($this->locale !== null) {
+			$localeId = $this->shop->Locale()->getId();
+		} else {
+			$localeId = 1;
+		}
 		if(empty($namespace)) {
 			if(!isset($this->snippetMerge)) {
 				$this->snippetMerge = new Shopware_Models_Snippet(array(
@@ -32,11 +42,16 @@ class Shopware_Components_Snippet_SnippetManager extends Enlight_Class
 			return $this->snippets[$localeId][$namespace];
 		}
 	}
+	
+	public function setLocale(Shopware_Models_Locale $locale)
+    {
+    	$this->locale = $locale;
+        return $this;
+    }
 		    
     public function setShop(Shopware_Models_Shop $shop)
     {
     	$this->shop = $shop;
-    	$this->locale = $shop->Locale();
         return $this;
     }
     

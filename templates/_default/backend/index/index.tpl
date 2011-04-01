@@ -1,17 +1,14 @@
 {extends file="backend/index/parent.tpl"}
 {block name="backend_index_css" append}
-	<!-- Common CSS -->
 	<link href="{link file='engine/backend/css/icons4.css'}"  rel="stylesheet" type="text/css" />
-	
 	<link href="{link file='backend/_resources/styles/index.css'}" rel="stylesheet" type="text/css" />
-
 	<link href="{link file='engine/backend/plugins/moo.tabs/css/default.css'}" rel="stylesheet" type="text/css" />
 {/block}
 {block name="backend_index_javascript"}
 	<script type="text/javascript">
 	//<![CDATA[
-	var baseUrl = "{$BaseUrl}";
-	var basePath = "{$BasePath}";
+		var baseUrl = "{$BaseUrl}";
+		var basePath = "{$BasePath}";
 	//]]>
 	</script>
 	<script type="text/javascript" src="{link file='engine/vendor/ext/adapter/ext/ext-base.js'}"></script>
@@ -22,6 +19,28 @@
 	<script type="text/javascript" src="{link file='engine/backend/js/framework.php'}"></script>
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.ux.TabScrollerMenu.js'}" charset="utf-8"></script>
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/plugins/Ext.Grid.RowExpander.js'}" charset="utf-8"></script>
+	{block name="backend_index_index_onload"}
+	<script type="text/javascript">
+	//<![CDATA[
+		var sConfirmationObj = new sConfirmation($('ConfirmationBox'), { child: 0, pipe: 0, parameter: ''});
+		window.addEvent('domready',function() { 
+			
+			{if $ShowActivate}
+				openAction('activate');
+			{elseif !{config name=HideStart}}
+				loadSkeleton('start');
+			{/if}
+			
+			myExt.reload.periodical({config name='RefreshDashboard'}, this);
+
+			{block name="backend_index_index_onload_inline"}{/block}
+		});
+	//]]>
+	</script>
+	{/block}
+	{block name="backend_index_index_extjs"}
+		{include file="backend/index/index_ext.tpl"}
+	{/block}
 {/block}
 {block name='backend_index_header_title'}
 	Shopware {config name='Version'} - 08.12.2010 - Backend (c) 2010,2011 shopware AG
@@ -31,35 +50,16 @@
 
 {block name="backend_index_body_inline"}
 	<div id="header">
-		{block name="backend_index_index_menu_function"}
-			{function name=backend_menu level=0}
-				{foreach from=$categories item=category}
-				    <li {if !$level}class="main"{/if}>
-						<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
-							{$category->label} 
-						</a>
-				    	{if $category->hasChildren()}
-				    		<ul {if $level}style="margin-left:100%;width:100%"{/if}>
-					     		{call name=backend_menu categories=$category level=$level+1}
-					     	</ul>
-					    {/if}
-				    </li>
-				{/foreach}
-			{/function}
-		{/block}
+		
 		
 		{block name="backend_index_index_menu"}
-			{if $Menu}
-				<ul id="nav">
-					{call name=backend_menu categories=$Menu}
-				</ul>
-			{/if}
+			{include file="backend/index/menu.tpl"}
 		{/block}
 		
 		{block name="backend_index_index_search"}
 			<div id="mastersearch">
 				<form name="frmSuche" method="post" action=""  style="float:left;">
-					<input name="search" id="search" type="text" class="mastersearch" value="Suche" maxlength="30" />
+					<input name="search" id="search" type="text" class="mastersearch" value="{s name='SearchLabel'}Suche{/s}" maxlength="30" />
 				</form>
 				<div id="searchfocus" class="search_disabled" style="top:0px;left:122px;position:relative;float:none;margin:0pt;"></div>
 				<div id="result" style="display:none;position:relative;top:-1px;left:-95px;"></div>
@@ -83,7 +83,12 @@
 		<!-- STATUSBAR -->
 		<div id="footer">
 			<div class="status">
-				<a href="{url action='logout'}">Logout</a><img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" /><a href="#" onclick="javascript:loadSkeleton('live',true);">Shop-Ansicht</a><img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" /><a class="ico2 status_online" href="#" onclick="javascript:loadSkeleton('auth',true);" title="Benutzer: {$UserName}" style="width: 8px;"></a> <img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" /><a class="ico2 balloons" href="#" id="imHandler" onclick="if ($('im').getStyle('display')=='none'){ $('im').setStyle('display','block'); myExt.reload(); myExt.displayLicense(); }else{ $('im').setStyle('display','none');}" title="Instant Messenger" style="width: 8px;"></a>
+				<a href="{url action='logout'}">{s name='LogoutLabel'}Logout{/s}</a><img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
+				<a href="#" onclick="javascript:loadSkeleton('live',true);">{s name='LiveViewLabel'}Shop-Ansicht{/s}</a>
+				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
+				<a class="ico2 status_online" href="#" onclick="javascript:loadSkeleton('auth',true);" title="{s name='UserLabel'}Benutzer: {$UserName}{/s}" style="width: 8px;"></a>
+				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
+				<a class="ico2 balloons" href="#" id="imHandler" onclick="if ($('im').getStyle('display')=='none'){ $('im').setStyle('display','block'); myExt.reload(); myExt.displayLicense(); }else{ $('im').setStyle('display','none');}" title="Instant Messenger" style="width: 8px;"></a>
 				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
 				<div id="windowTracker" class="windowTracker" style="position:absolute;left:160px;padding-top:3px;top:-5px;width:450px">
 				</div>
@@ -116,19 +121,20 @@
 	{/block}
 	
 	{block name="backend_index_index_account"}
-		{if !$this->config('AccountId')}
+		{if !{config name='AccountId'}}
 			<div id="saccount">
 					<p style="font-weight:bold">
-						<span style="color:#F00">Kein Account angelegt!</span><br /><br />
+						{se name='AccountMissing' style='color:#F00'}Kein Account angelegt!{/se}
+						<br /><br />
 					</p>
 			</div>
 		{else}
 			<div id="saccount">
 				{if $Amount <= 0}
-					<span style="color:#F00">Guthaben: {$Amount} SC</span>
+					{se name='AccountBalance' style='color:#F00'}Guthaben: {$Amount} SC{/se}
 				{else}
 					<p style="font-size:11px; padding:5px;">
-					Guthaben: {$Amount} SC
+						{se name='AccountBalance'}Guthaben: {$Amount} SC{/se}
 					</p>
 				{/if}
 			</div>
@@ -147,7 +153,7 @@
 
 	<div style="display:none">
 		<div id="licence" style="padding:10px 10px 10px 10px">
-			{if $PremiumLicence == false}
+			{if !$PremiumLicence}
 				<p style="font-weight:bold;color:#F00">Dieser Premium-Inhalt ist Wartungskunden vorbehalten!</p>
 				<br /><br />
 				Mit einem Wartungsvertrag für Ihre Shopware sind Sie bestens für die Zukunft gerüstet. <br />
@@ -169,30 +175,4 @@
 	</div>
 	
 	</div>
-	{block name="backend_index_index_onload"}
-		<script>
-		var sConfirmationObj = new sConfirmation($('ConfirmationBox'), { child: 0, pipe: 0, parameter: ''});
-		window.addEvent('domready',function() { 
-			{if $this->config('HideStart')!=1 && !$ShowActivate}
-				loadSkeleton('start');
-			{/if}
-			
-			{if $ShowActivate}
-				openAction('activate');
-			{/if}
-			
-			myExt.reload.periodical({$this->config('RefreshDashboard')}, this);
-			
-			
-			{block name="backend_index_index_onload_inline"}{/block}
-		});
-		</script>
-	{/block}
-	{if $ShowActivate}
-		
-	{/if}
-	{block name="backend_index_index_extjs"}
-		{include file="backend/index/index_ext.tpl"}
-		
-	{/block}
 {/block}

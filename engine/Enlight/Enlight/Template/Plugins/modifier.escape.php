@@ -112,6 +112,9 @@ function smarty_modifier_escape($string, $esc_type = 'html', $char_set = null, $
                 } 
             } 
             return $_res;
+            
+        case 'json':
+        	return Zend_Json::encode($string); 
 
         default:
             return $string;
