@@ -213,6 +213,30 @@ if ($_GET["edit"] || $_GET["new"]){
 		   	    echo "<li class=\"clear\"/>";
 		   	   }
 		   	   
+		   	   elseif ($row["Field"]=="symbol_position"){
+		   	   	echo "<li><label style=\"width:150px; text-align:left\" for=\"name\">{$column}:</label>";
+		   	   	echo "<select name=\"{$fieldName}\" id=\"\" style=\"height:25px;width:250px\" class=\"w200\">";
+		   	   	
+		   	   	if ($getCustomerGroup[$row["Field"]] == 16){
+		   	   		$selYes = "selected";
+		   	   		$selNo = "";
+		   	   	} elseif ($getCustomerGroup[$row["Field"]] == 32){
+		   	   		$selYes = "";
+		   	   		$selNo = "selected";
+		   	   	} else {
+		   	   		$selYes = "";
+		   	   		$selNo = "";
+		   	   	}
+		   	   	
+		   	   	echo "<option value=\"0\">".'Standard'."</option>";
+		   	   	echo "<option value=\"16\" $selYes>".'Rechts'."</option>";
+		   	   	echo "<option value=\"32\" $selNo>".'Links'."</option>";
+		   	   
+		   	   	echo "</select>";
+		   	   	echo "</li>";
+		   	    echo "<li class=\"clear\"/>";
+		   	   }
+		   	   
 		   	   
 		   	   else {
 		   	   

@@ -2273,9 +2273,11 @@ modules/presetting
 */
 $sLang["presettings"]["currencies_Currency"] = "Währung";
 $sLang["presettings"]["currencies_array"] = array(
-		"id"=>"hide",
-		"name"=>"Name"
-		);	
+	"id"=>"hide",
+	"templatechar"=>"Symbol",
+	"factor"=>"Faktor",
+	"symbol_position"=>"Symbol-Position"
+);	
 $sLang["presettings"]["currencies_was_deleted"] = "wurde gelöscht";
 $sLang["presettings"]["currencies_entry_saved"] = "Eintrag wurde gespeichert";
 $sLang["presettings"]["currencies_cant_be_found"] = "konnte nicht gefunden werden";

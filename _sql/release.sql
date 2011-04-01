@@ -42,3 +42,12 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
 (NULL, 'backend/auth/login_panel', 1, 2, 'LoginButton', 'Login', '2011-04-01 11:37:09', '2011-04-01 11:37:09'),
 (NULL, 'backend/auth/login_panel', 1, 2, 'LocaleField', 'Language', '2011-04-01 11:37:32', '2011-04-01 11:37:32'),
 (NULL, 'backend/auth/login_panel', 1, 2, 'PasswordField', 'Password', '2011-04-01 11:37:32', '2011-04-01 11:37:32');
+
+/*
+ * @ticket 4778
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/04/01
+ */
+/* 
+ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NULL AFTER `templatechar`;
+*/
