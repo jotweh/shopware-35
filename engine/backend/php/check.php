@@ -104,7 +104,7 @@ class	checkLogin
 		if (isset($_SESSION["sUsername"]) && isset($_SESSION["sPassword"]) && !@defined('login')){
 			return $this->renew();
 		}else {
-			$this->login();
+			return $this->report("ERROR_TIMEOUT");
 		}
 		
 	}
@@ -119,10 +119,9 @@ class	checkLogin
 		$sPassword = htmlspecialchars(mysql_real_escape_string($_SESSION["sPassword"]));
 		
 		$checkUserLoginState = "
-			SELECT * FROM s_core_auth WHERE sessionID='$session' AND username='$sUsername' AND password='$sPassword' AND UNIX_TIMESTAMP(lastlogin)>=(UNIX_TIMESTAMP(now())-".$this->sTimeout.")
+			SELECT * FROM s_core_auth WHERE sessionID='$session' AND username='$sUsername' AND password='$sPassword'
+			AND lastlogin >= '".date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s')-$this->sTimeout))."'
 		";
-		
-		
 		$checkUserLoginState = mysql_query($checkUserLoginState);
 		
 		if (!@mysql_num_rows($checkUserLoginState)){
@@ -141,64 +140,11 @@ class	checkLogin
 		
 		// Update last-check-time
 		$updateUserCheckTime = mysql_query("
-			UPDATE s_core_auth SET lastlogin=NOW() WHERE sessionID='$session'
+			UPDATE s_core_auth SET lastlogin='".date('Y-m-d H:i:s')."' WHERE sessionID='$session'
 		");
 		
 		return $this->report("SUCCESS");
 		
-	}
-	
-	function login(){
-		// Login the user
-		if (empty($_POST["sUsername"]) || empty($_POST["sPassword"])) return false;
-		$_POST["sUsername"] = htmlspecialchars(mysql_real_escape_string($_POST["sUsername"]));
-		
-		// Check Salt
-		$getSalt = mysql_query("SELECT salted FROM s_core_auth WHERE username = '{$_POST["sUsername"]}'");
-		$salt = mysql_result($getSalt,0,"salted");
-		if (empty($salt)){
-
-			$_POST["sPassword"] = md5($_POST["sPassword"]);
-		}else {
-			$_POST["sPassword"] = md5("A9ASD:_AD!_=%a8nx0asssblPlasS$".md5($_POST["sPassword"]));
-		}
-		$checkUserLoginState = "
-			SELECT * FROM s_core_auth WHERE username='{$_POST["sUsername"]}' AND password='{$_POST["sPassword"]}' AND active=1
-		";
-		
-		$checkUserLoginState = mysql_query($checkUserLoginState);
-		
-		if (!@mysql_num_rows($checkUserLoginState)){
-			 return $this->report("ERROR_USER");
-		}
-		
-		$sUserId = mysql_result($checkUserLoginState,0,"id");
-		$salted = mysql_result($checkUserLoginState,0,"salted");
-		$updateUser = mysql_query("
-			UPDATE s_core_auth SET sessionID='".session_id()."', lastlogin=NOW() WHERE id=$sUserId
-		");
-		$user= mysql_fetch_assoc($checkUserLoginState);
-		$_SESSION["sName"] = $user["name"];
-		$_SESSION["sID"] = $sUserId;
-		$_SESSION["sSidebar"] = $user["sidebar"];
-		$_SESSION["sWindow_Width"] = $user["window_width"];
-		$_SESSION["sWindow_Height"] = $user["window_height"];
-		
-		
-		$_SESSION["sWindow_Size"] = unserialize($user["window_size"]);
-		$_SESSION["sRights"] = unserialize($user["rights"]);
-		$_SESSION["sAdmin"] = $user["admin"];
-		
-		$_SESSION["sUsername"] = $_POST["sUsername"];
-		$_SESSION["sPassword"] = $_POST["sPassword"];
-		
-		$_SESSION["reload"] = 1;
-		
-		if (empty($salted)){
-			$this->report("UNSALTED");
-			exit;
-		}
-		$this->report("SUCCESS");
 	}
 	
 	function logout(){
