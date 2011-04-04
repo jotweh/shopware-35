@@ -1,5 +1,6 @@
 <?php
-class Enlight_Controller_Router_RouterDefault extends Enlight_Controller_Router_Router
+class
+	Enlight_Controller_Router_RouterDefault extends Enlight_Controller_Router_Router
 {
 	protected $front;
 	protected $globalParams = array();
@@ -40,7 +41,6 @@ class Enlight_Controller_Router_RouterDefault extends Enlight_Controller_Router_
 		$query = array(); $params = array();
 		foreach (explode($this->seperator, $path) as $routePart)
 		{
-			if(empty($routePart)) continue;
 			$routePart = urldecode($routePart);
 			if(empty($query[$request->getModuleKey()])&&$dispatcher->isValidModule($routePart))
 			{

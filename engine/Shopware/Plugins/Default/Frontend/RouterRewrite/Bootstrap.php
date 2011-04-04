@@ -89,17 +89,22 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 		
-		if($response->isException() || !$request->getParam('sRedirect')) {
+		if($response->isException() 
+		  || $request->isPost()
+		  || $request->isXmlHttpRequest()
+		  || ($request->getModuleName() && $request->getModuleName()!='frontend')
+		  || (!$request->getParam('RewriteAlias') && !$request->getParam('RewriteOld'))) {
 			return;	
 		}
 		
 		$router = $args->getSubject()->Router();
 		
-		$current_location = $request->getScheme().'://'.$request->getHttpHost().$request->getRequestUri();
-		$query = $request->getQuery(); unset($query['sRedirect']);
+		$currentLocation = $request->getScheme().'://'.$request->getHttpHost().$request->getRequestUri();
+		$query = $request->getQuery();
+		unset($query['RewriteOld'], $query['RewriteAlias'], $query['RewriteUrl']);
 		$location = $router->assemble($query);
 				
-		if($current_location!=$location) {
+		if($currentLocation!=$location) {
 			$response->setRedirect($location, 301);
 		}
 	}
@@ -134,8 +139,8 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		$current_time = Shopware()->Db()->fetchOne('SELECT NOW()');
 		$cached_time = empty($last_update[$shopId]) ? false : $last_update[$shopId];
 				
-		if(empty($cached_time)||strtotime($cached_time)<strtotime($current_time)-$cache)
-		{
+		if(empty($cached_time)
+		  || strtotime($cached_time)<strtotime($current_time)-$cache) {
 			Shopware()->Modules()->RewriteTable()->sCreateRewriteTable();
 	    	
 	    	$data = $last_update;
@@ -186,7 +191,9 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			}
 			parse_str($result['org_path'], $query);
 			if(empty($result['main'])) {
-				$query['sRedirect'] = true;
+				$request->setParam('RewriteAlias', true);
+			} else {
+				$request->setParam('RewriteUrl', true);
 			}
 			return $query;
 		}
