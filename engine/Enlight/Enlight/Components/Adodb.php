@@ -52,7 +52,7 @@ class	Enlight_Components_Adodb extends Enlight_Class
 		if(empty($bind) 
 		  && ltrim(strtoupper(substr($sql, 0, 3))) != 'SEL' && empty($bind)) {
 			$this->rowCount = $this->db->exec($sql);
-			return;
+			return $this->rowCount!==false;
 		}
 		$stm = $this->db->query($sql, $bind);
 		$this->rowCount = $stm->rowCount();
