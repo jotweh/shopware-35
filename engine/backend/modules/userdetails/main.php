@@ -375,10 +375,10 @@ if (!@mysql_num_rows($queryUserShippingAddress)){
 }
 
 foreach ($userBilling as $key => $value) {
-	$userBilling[$key] = htmlspecialchars($value, ENT_COMPAT, null, false);
+	$userBilling[$key] = htmlspecialchars($value, ENT_QUOTES, null, false);
 }
 foreach ($userShipping as $key => $value) {
-	$userShipping[$key] = htmlspecialchars($value, ENT_COMPAT, null, false);
+	$userShipping[$key] = htmlspecialchars($value, ENT_QUOTES, null, false);
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
