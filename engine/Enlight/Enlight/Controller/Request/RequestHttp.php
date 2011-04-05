@@ -36,4 +36,24 @@ class Enlight_Controller_Request_RequestHttp extends Zend_Controller_Request_Htt
     	$_SERVER['HTTP_HOST'] = $host;
     	return $this;
     }
+    
+    /**
+     * Set the REQUEST_URI on which the instance operates
+     *
+     * If no request URI is passed, uses the value in $_SERVER['REQUEST_URI'],
+     * $_SERVER['HTTP_X_REWRITE_URL'], or $_SERVER['ORIG_PATH_INFO'] + $_SERVER['QUERY_STRING'].
+     *
+     * @param string $requestUri
+     * @return Zend_Controller_Request_Http
+     */
+    public function setRequestUri($requestUri = null)
+    {
+    	parent::setRequestUri($requestUri);
+    	if($this->_requestUri === null
+    	  && !empty($_SERVER['argc'])
+    	  && $_SERVER['argc'] > 1) {
+    	  	$this->setRequestUri($_SERVER['argv'][1]);
+    	}
+    	return $this;
+    }
 }
