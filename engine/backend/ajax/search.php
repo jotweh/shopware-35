@@ -54,7 +54,7 @@ if (@mysql_num_rows($queryArticles)){
 		
 		$article["name"] = html_entity_decode($article["name"], ENT_QUOTES);
 		$article["name"] = substr($article["name"], 0, 45);
-		$article["name"] = htmlentities($article["name"], ENT_QUOTES, null, false);
+		$article["name"] = htmlspecialchars($article["name"], ENT_QUOTES, null, false);
 		
 		$articles .= "<li onclick=\"loadSkeleton('articles',false, {'article':{$article["id"]}});\"><a href=\"#\" style=\"font-size:9px\">{$article["name"]}</a></li>";
 	}
@@ -87,7 +87,7 @@ if (@mysql_num_rows($queryCustomer)){
 		
 		$customer["name"] = html_entity_decode($customer["name"], ENT_QUOTES);
 		$customer["name"] = substr($customer["name"], 0, 45);
-		$customer["name"] = htmlentities($customer["name"], ENT_QUOTES, null, false);
+		$customer["name"] = htmlspecialchars($customer["name"], ENT_QUOTES, null, false);
 		
 		$userids[] = $customer["userID"];
 		$customers .= "<li onclick=\"loadSkeleton('userdetails',false, {'id':{$customer["userID"]}})\"><a href=\"#\" style=\"font-size:9px\">{$customer["name"]}</a></li>";
