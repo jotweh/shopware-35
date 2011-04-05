@@ -374,8 +374,12 @@ if (!@mysql_num_rows($queryUserShippingAddress)){
 	$userShipping = mysql_fetch_array($queryUserShippingAddress);
 }
 
-
-
+foreach ($userBilling as $key => $value) {
+	$userBilling[$key] = htmlspecialchars($value, ENT_COMPAT, null, false);
+}
+foreach ($userShipping as $key => $value) {
+	$userShipping[$key] = htmlspecialchars($value, ENT_COMPAT, null, false);
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="de" xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
@@ -396,7 +400,7 @@ label {
 <body>
 <script type="text/javascript">
 function deleteClient(ev,text){
-		parent.parent.sConfirmationObj.show('<?php echo $sLang["userdetails"]["main_should_the_customer"]." ".htmlentities($userBilling["firstname"],ENT_QUOTES)." ".htmlentities($userBilling["lastname"],ENT_QUOTES)." ".$sLang["userdetails"]["main_really_be_deleted"] ?>',window,'deleteClient',ev);
+		parent.parent.sConfirmationObj.show('<?php echo $sLang["userdetails"]["main_should_the_customer"]." ".$userBilling["firstname"]." ".$userBilling["lastname"]." ".$sLang["userdetails"]["main_really_be_deleted"] ?>',window,'deleteClient',ev);
 
 }
 	
