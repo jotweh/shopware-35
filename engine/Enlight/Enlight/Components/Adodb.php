@@ -50,7 +50,7 @@ class	Enlight_Components_Adodb extends Enlight_Class
 	public function Execute($sql, $bind = array())
 	{
 		if(empty($bind) 
-		  && ltrim(strtoupper(substr($sql, 0, 3))) != 'SEL' && empty($bind)) {
+		  && strtoupper(substr(ltrim($sql), 0, 3)) != 'SEL' && empty($bind)) {
 			$this->rowCount = $this->db->exec($sql);
 			return $this->rowCount!==false;
 		}

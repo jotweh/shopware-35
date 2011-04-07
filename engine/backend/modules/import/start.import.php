@@ -18,18 +18,20 @@ error_reporting(0);
 require_once('../../../connectors/api/api.php');
 $api = new sAPI();
 $import = &$api->import->shopware;
+
 error_reporting(E_ALL);
-ini_set("display_errors",1);
+ini_set('display_errors', 1);
+
 require_once($api->sPath.'/engine/backend/ajax/json.php');
 $json = new Services_JSON();
 
-$sql = 'SELECT id FROM s_core_auth WHERE sessionID=? AND lastlogin>=DATE_SUB(NOW(),INTERVAL 60*90 SECOND)';
 $id = isset($_REQUEST[session_name()]) ? $_REQUEST[session_name()] : $_COOKIE[session_name()];
-
-$result = $api->sDB->GetOne($sql,array($id));
-if (empty($result)){
-	die("Login failure".$api->sDB->ErrorMsg());
+$sql = "SELECT id FROM s_core_auth WHERE sessionID=? AND lastlogin>=?";
+$result = $api->sDB->GetOne($sql, array($id, date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s')-60*90))));
+if (empty($result)) {
+	exit;
 }
+
 $sConfig = array();
 
 $sConfig['sMaxExecutionTime'] = @ini_get('max_execution_time') ? ini_get('max_execution_time') : 30;
@@ -40,8 +42,7 @@ $sConfig['sDeleteArticles'] = empty($_REQUEST["delete_old_articles"]) ? 0 : intv
 $sConfig['sArticleImages'] = empty($_REQUEST['article_images']) ? 0 : 1;
 $sConfig['sDeleteArticleCache'] = empty($_REQUEST['delete_article_cache']) ? 0 : 1;
 $sConfig['sTyp'] = empty($_REQUEST['typ']) ? 0 : (int) $_REQUEST['typ'];
-if(isset($_REQUEST['group']))
-{
+if(isset($_REQUEST['group'])) {
 	$sConfig['sValueGroup'] = (int) $_REQUEST['group'];
 }
 
@@ -104,7 +105,10 @@ if($sConfig['sFormat']==1)
 	require_once('csv.php');
 	$articles = new CsvIterator($sConfig['sFilePath'],';');
 	$sConfig['sHeader'] = $articles->GetHeader();
-	if(in_array('ordernumber',$sConfig['sHeader']))
+	if(empty($sConfig['sHeader'])) {
+		$sConfig['sHeader'] = array();
+	}
+	elseif(in_array('ordernumber',$sConfig['sHeader']))
 	{
 		foreach ($articles as $article)
 		{

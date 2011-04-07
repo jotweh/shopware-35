@@ -21,12 +21,13 @@ $import = &$api->import->shopware;
 
 require_once($api->sPath.'/engine/backend/ajax/json.php');
 $json = new Services_JSON();
-$id = isset($_REQUEST[session_name()]) ? $_REQUEST[session_name()] : $_COOKIE[session_name()];
 
-$sql = 'SELECT id FROM s_core_auth WHERE sessionID=? AND lastlogin>=DATE_SUB(NOW(),INTERVAL 60*90 SECOND)';
-$result = $api->sDB->GetOne($sql,array($id));
-if (empty($result))
+$id = isset($_REQUEST[session_name()]) ? $_REQUEST[session_name()] : $_COOKIE[session_name()];
+$sql = "SELECT id FROM s_core_auth WHERE sessionID=? AND lastlogin>=?";
+$result = $api->sDB->GetOne($sql, array($id, date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s')-60*90))));
+if (empty($result)) {
 	exit;
+}
 	
 $sConfig = $_REQUEST;
 	
