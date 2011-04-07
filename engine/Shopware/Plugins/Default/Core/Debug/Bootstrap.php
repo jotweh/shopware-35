@@ -49,11 +49,14 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		
 		$config = Shopware()->Plugins()->Core()->Debug()->Config();
 		
-		if (!empty($_SERVER['REMOTE_ADDR']) && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
+		if (!empty($_SERVER['REMOTE_ADDR']) 
+		  && !empty($config->AllowIP)
+		  && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
 			return;
 		}
 
-		if(!empty($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'FirePHP/')!==false) {
+		if(!empty($_SERVER['HTTP_USER_AGENT'])
+		  && strpos($_SERVER['HTTP_USER_AGENT'], 'FirePHP/')!==false) {
 			$writer = new Zend_Log_Writer_Firebug();
 			$writer->setPriorityStyle(8, 'TABLE');
 			$writer->setPriorityStyle(9, 'EXCEPTION');
