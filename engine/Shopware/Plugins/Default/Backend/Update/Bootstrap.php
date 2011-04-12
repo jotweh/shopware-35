@@ -41,6 +41,16 @@ class Shopware_Plugins_Backend_Update_Bootstrap extends Shopware_Components_Plug
 			'style' => 'background-position: 5px 5px;'
 		));
 		$this->Menu()->addItem($item);
+		$parent = $this->Menu()->findOneBy('label', 'Hilfe');
+		$item = $this->createMenuItem(array(
+			'label' => 'Suche nach neuer Version...',
+			'onclick' => 'Shopware.Update.checkVersion();',
+			'class' => 'ico2 magnifier',
+			'active' => 1,
+			'parent' => $parent,
+			'style' => 'background-position: 5px 5px;'
+		));
+		$this->Menu()->addItem($item);
 		$this->Menu()->save();
 		
 		$event = $this->createEvent(
@@ -48,6 +58,12 @@ class Shopware_Plugins_Backend_Update_Bootstrap extends Shopware_Components_Plug
 	 		'onGetControllerPath'
 	 	);
 	 	$this->subscribeEvent($event);
+	 	
+	 	$event = $this->createEvent(
+			'Enlight_Controller_Action_PostDispatch_Backend_Index',
+			'onPostDispatch'
+		);
+		$this->subscribeEvent($event);
 		
 	 	return true;
 	}
@@ -61,4 +77,23 @@ class Shopware_Plugins_Backend_Update_Bootstrap extends Shopware_Components_Plug
     {
 		return dirname(__FILE__).'/Controllers/Update.php';
     }
+    
+    /**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+    public static function onPostDispatch(Enlight_Event_EventArgs $args)
+	{
+		$request = $args->getSubject()->Request();
+		$response = $args->getSubject()->Response();
+		$view = $args->getSubject()->View();
+		
+		if($response->isException()) {
+			return;
+		}
+		
+		$view->addTemplateDir(dirname(__FILE__).'/Views/');
+		$view->extendsBlock('backend_index_javascript', '{include file=\'backend/update/check.tpl\'}', 'append');
+	}
 }

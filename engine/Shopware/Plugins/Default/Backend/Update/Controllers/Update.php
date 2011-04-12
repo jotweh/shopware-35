@@ -67,7 +67,9 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function getVersionConfig()
 	{
-		$config = new Zend_Config_Xml($this->versionChannel, 'update');
+		$url = $this->versionChannel;
+		$url .= '?version='.urlencode(Shopware()->Config()->Version);
+		$config = new Zend_Config_Xml($url, 'update');
 		return $config;
 	}
 	
@@ -76,6 +78,15 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function skeletonAction()
 	{
+	}
+	
+	/**
+	 * Index action method
+	 */
+	public function checkVersionAction()
+	{
+		$config = new Zend_Config_Xml($this->versionChannel, 'update');
+		echo Zend_Json::encode($config->toArray());
 	}
 	
 	/**
@@ -430,8 +441,6 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				return;
 			}
 		}
-		
-		echo json_encode(array('message'=>'Entpacken der Downloaddatei.', 'success'=>true, 'step'=>$step+1, 'offset'=>0));
 	}
 	
 	/**
@@ -449,8 +458,6 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 			echo json_encode(array('message'=>'Updatedateien konnten nicht angelegt werden.<br />'.htmlentities($e->getMessage()), 'success'=>false));
 			return;
 		}
-		
-		echo json_encode(array('message'=>'Herunterladen der Updatedateien.', 'success'=>true, 'step'=>1, 'progress'=>0));
 	}
 	
 	/**
@@ -493,7 +500,6 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				return;
 			}
 		}
-		echo json_encode(array('message'=>'Backup der Datenbank.', 'success'=>true, 'step'=>3, 'progress'=>0, 'offset'=>0));
 	}
 	
 	/**
@@ -566,7 +572,6 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				@unlink($file);
 			}
 		}
-		echo json_encode(array('success'=>true, 'progress'=>1));
 	}
 	
 	/**
@@ -574,6 +579,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function updateAction()
     {
+    	/*
     	$requestTime = !empty($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
     	$db = $this->Db();
     	
@@ -583,29 +589,42 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 			echo json_encode(array('message'=>'Es konnte keine FTP-Verbindung aufgebaut werden.<br />'.htmlentities($e->getMessage()), 'success'=>false));
 			return;
 		}
-    	    	
-    	$step = empty($_REQUEST['step']) ? 0 : (int) $_REQUEST['step'];
+		*/
+    	$step = (int) $this->Request()->getParam('step', 0);
     	switch ($step) {
 			case 0:
-				return $this->prepareAction();
+				//return $this->prepareAction();
+				echo Zend_Json::encode(array('message'=>'Herunterladen der Updatedateien.', 'success'=>true, 'step'=>1, 'progress'=>0));
+				return;
 			case 1:
-				return $this->downloadAction();
+				//return $this->downloadAction();
+				sleep(2);
+				echo Zend_Json::encode(array('message'=>'Entpacken der Downloaddatei.', 'success'=>true, 'step'=>$step+1, 'offset'=>0));
+				return;
 			case 2:
-				return $this->unpackAction();
+				//return $this->unpackAction();
+				sleep(3);
+				echo Zend_Json::encode(array('message'=>'Backup der Datenbank.', 'success'=>true, 'step'=>3, 'progress'=>0, 'offset'=>0));
+				return;
 			case 3:
-				return $this->backupAction();
-				echo json_encode(array('message'=>'Update der Datenbank.', 'success'=>true, 'step'=>4, 'progress'=>0));
+				//return $this->backupAction();
+				sleep(2);
+				echo Zend_Json::encode(array('message'=>'Update der Datenbank.', 'success'=>true, 'step'=>4, 'progress'=>0));
 				return;
 			case 4:
-				return $this->copyAction();
-				echo json_encode(array('message'=>'Update der Dateien.', 'success'=>true, 'step'=>5, 'progress'=>0.9));
+				//return $this->copyAction();
+				sleep(4);
+				echo Zend_Json::encode(array('message'=>'Update der Dateien.', 'success'=>true, 'step'=>5, 'progress'=>0.9));
 				return;
 			case 5:
-				return $this->unpackAction();					
-				echo json_encode(array('message'=>'L&ouml;schen der Updatedateien.', 'success'=>true, 'step'=>6, 'progress'=>0.8));
+				//return $this->unpackAction();		
+				sleep(1);			
+				echo Zend_Json::encode(array('message'=>'L&ouml;schen der Updatedateien.', 'success'=>true, 'step'=>6, 'progress'=>0.8));
 				return;
 			case 6:
-				return $this->finishAction();
+				//return $this->finishAction();
+				echo Zend_Json::encode(array('message'=>'Update wurde erfolgreich abgeschlossen.', 'success'=>true, 'progress'=>1));
+				return;
 			default:
 				break;
 		}

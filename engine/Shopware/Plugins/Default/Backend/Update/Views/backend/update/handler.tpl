@@ -31,7 +31,7 @@ Handler = Ext.extend(Ext.FormPanel, {
 				disabled: true
 			},{
 				xtype: 'checkbox',
-				fieldLabel: 'Wartungsmodus aktvieren',
+				fieldLabel: 'Wartungsmodus aktivieren',
 				name: 'service_mode',
 				checked: true
 			},{
@@ -45,12 +45,12 @@ Handler = Ext.extend(Ext.FormPanel, {
 		this.formConfig = {
         	url: '{url action=update}',
         	success: function(form, action){
-        		if(action.result.tables) {
-        			Ext.MessageBox.wait(action.result.message, 'Backup');
+        		if(action.result.progress !== 1) {
+        			Ext.MessageBox.wait(action.result.message, 'Update');
         			this.formConfig.params = action.result;
         			form.submit(this.formConfig);
         		} else {
-        			Ext.MessageBox.alert('Backup', action.result.message);
+        			Ext.MessageBox.alert('Update', action.result.message);
         			Update.BackupList.refreshList();
         		}
         	},
@@ -79,7 +79,9 @@ Handler = Ext.extend(Ext.FormPanel, {
 	            	return;
 	            }
 	            Ext.MessageBox.wait('Bitte warten ...', 'Update');
-	            this.formConfig.params = Update.ConfigForm.getForm().getValues(),
+	            if(Update.ConfigForm.rendered) {
+	            	this.formConfig.params = Update.ConfigForm.getForm().getValues();
+	            }
 	            form.submit(this.formConfig);
 	        },
 	        scope: this

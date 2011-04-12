@@ -1,5 +1,5 @@
 <?php
-class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
+class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 {	
 	public function indexAction()
 	{
@@ -34,8 +34,6 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$this->View()->UserName = $_SESSION['sName'];
 		$connectString = "?domain=".Shopware()->Config()->Host."&pairing=".Shopware()->Config()->AccountId;
 		$this->View()->accountUrl = "https://support.shopware2.de/account2/index.php$connectString";
-		
-		Shopware()->Db()->query("UPDATE s_core_config SET value = '3.5.3' WHERE name='sVERSION'");
 	}
 	
 	public function logoutAction()
