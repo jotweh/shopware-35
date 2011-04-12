@@ -283,7 +283,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function backupListAction()
 	{
-		$backupDir = Shopware()->DocPath('files/backup');
+		$backupDir = Shopware()->DocPath('files_backups');
 		
 		if($delete = $this->Request()->getParam('delete')) {
 			$delete = basename($delete);
@@ -310,7 +310,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function downloadBackupAction()
 	{
-		$backupDir = Shopware()->DocPath('files/backup');
+		$backupDir = Shopware()->DocPath('files_backups');
 		$file = $this->Request()->getParam('file');
 		$file = basename($file);
 		if(!file_exists($backupDir.$file)) {
@@ -340,7 +340,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	{
 		$requestTime = !empty($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
 		$offset = (int) $this->Request()->getParam('offset', 0);
-		$backupDir = Shopware()->DocPath('files/backup');
+		$backupDir = Shopware()->DocPath('files_backups');
 		if(!$tables = $this->Request()->getParam('tables')) {
 			$tables = Shopware()->Db()->listTables();
 		}
