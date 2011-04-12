@@ -11,19 +11,11 @@ Handler = Ext.extend(Ext.FormPanel, {
 		
 		this.fieldsetBase = {
             xtype:'fieldset',
-            title: 'Allgemeine Hinweise',
+            title: 'Update-Einstellungen',
             autoHeight:true,
             defaults: { anchor: '100%' },
             defaultType: 'textfield',
             items :[{
-				xtype: 'panel',
-				cls : 'form_text',
-				border: false,
-				bodyStyle:'font-family:Arial,Verdana,Helvetica,sans-serif;'
-						 +'font-size:12px;font-size-adjust:none;/*font-weight:bold;*/',
-				html: '{$VersionConfig->info|escape:javascript}',
-				preventBodyReset: true
-			},{
 				fieldLabel: 'Version',
 				name: 'version',
 				value: '{$VersionConfig->version}',

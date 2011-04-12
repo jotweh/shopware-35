@@ -95,5 +95,22 @@ class Shopware_Plugins_Backend_Update_Bootstrap extends Shopware_Components_Plug
 		
 		$view->addTemplateDir(dirname(__FILE__).'/Views/');
 		$view->extendsBlock('backend_index_javascript', '{include file=\'backend/update/check.tpl\'}', 'append');
+		$view->VersionConfig = Shopware()->Plugins()->Backend()->Update()->getVersionConfig();
+	}
+	
+	protected $downloadChannel = 'http://www.shopware.de/install/files/download.php';
+	protected $versionChannel = 'http://www.shopware.de/install/version.php';
+	
+	/**
+	 * Returns version config
+	 *
+	 * @return unknown
+	 */
+	public function getVersionConfig()
+	{
+		$url = $this->versionChannel;
+		$url .= '?version='.urlencode(Shopware()->Config()->Version);
+		$config = new Zend_Config_Xml($url, 'update');
+		return $config;
 	}
 }

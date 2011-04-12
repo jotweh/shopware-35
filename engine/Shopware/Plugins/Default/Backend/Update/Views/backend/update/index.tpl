@@ -22,6 +22,7 @@
 Ext.ns('Shopware.Update');	
 </script>
 {include file='backend/update/view.tpl'}
+{include file='backend/update/info.tpl'}
 {include file='backend/update/backup.tpl'}
 {include file='backend/update/backup_list.tpl'}
 {include file='backend/update/config.tpl'}

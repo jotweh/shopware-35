@@ -3,6 +3,7 @@ View = Ext.extend(Ext.Viewport, {
 	layout: 'fit',
 	initComponent: function() {
 
+		this.Info = new Shopware.Update.Info();
 		this.BackupForm = new Shopware.Update.Backup();
 		this.ConfigForm = new Shopware.Update.Config();
 		this.BackupList = new Shopware.Update.BackupList();
@@ -10,7 +11,7 @@ View = Ext.extend(Ext.Viewport, {
 
 		this.Tabs = new Ext.TabPanel({
 	        activeTab: 0,
-	        items: [this.BackupList, this.BackupForm, this.ConfigForm, this.HandlerFrom]
+	        items: [this.Info, this.ConfigForm, this.HandlerFrom, this.BackupForm, this.BackupList]
 	    });
 		
 	    this.items = [this.Tabs];

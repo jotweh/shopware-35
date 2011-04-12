@@ -214,7 +214,7 @@ Config = Ext.extend(Ext.FormPanel, {
 	            form.submit({
 	            	url: '{url action="testConfig"}',
 	            	success: function(fp, o){
-	            		//Ext.MessageBox.alert("Backup erfolgreich erstellt!", ""); 
+	            		Update.Tabs.activate(Update.HandlerFrom);
 	            	},
 	            	failure: function(form, action) {
 	            		switch (action.failureType) {
