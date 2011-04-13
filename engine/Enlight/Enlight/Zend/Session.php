@@ -488,8 +488,9 @@ class Zend_Session extends Zend_Session_Abstract
 
             $startedCleanly = session_start();
             
-            if(!session_id()) {
+            if(!session_id() || !isset($_SESSION['__ZA'])) {
 	        	session_regenerate_id();
+	        	$_SESSION['__ZA'] = true;
 	        }
 
             if (self::$_throwStartupExceptions) {
@@ -602,7 +603,7 @@ class Zend_Session extends Zend_Session_Abstract
         }
 
         if (isset($_SESSION['__ZF']) && empty($_SESSION['__ZF'])) {
-            unset($_SESSION['__ZF']);
+        	unset($_SESSION['__ZF']);
         }
     }
 
