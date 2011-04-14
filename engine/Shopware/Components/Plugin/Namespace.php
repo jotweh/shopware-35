@@ -1,4 +1,11 @@
 <?php
+/**
+ * Shopware Plugin Namespace
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 {
 	protected $cache;
@@ -7,12 +14,14 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 	
 	protected $shop;
 	protected $locale;
-	
-	public function __construct($namespace)
-	{
-		parent::__construct($namespace);
-	}
-	
+		
+	/**
+	 * Returns plugin info
+	 *
+	 * @param unknown_type $plugin
+	 * @param unknown_type $name
+	 * @return unknown
+	 */
 	public function getInfo($plugin, $name)
 	{
 		if($this->infos===null) {
@@ -33,6 +42,12 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 		}
 	}
 	
+	/**
+	 * Returns plugin source
+	 *
+	 * @param string $plugin
+	 * @return string
+	 */
 	public function getSource($plugin)
 	{
 		foreach ($this->path as $path=>$prefix) {
@@ -43,6 +58,12 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 		}
 	}
 	
+	/**
+	 * Returns plugin config
+	 *
+	 * @param string $plugin
+	 * @return Shopware_Models_Plugin_Config
+	 */
 	public function getConfig($plugin)
     {
     	$pluginId = $this->getPluginId($plugin);
@@ -54,17 +75,23 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
     		$shopId = 1;
 			$localeId = 1;
     	}
-    			
+    	
 		if(!isset($this->configs[$pluginId][$shopId][$localeId])) {
 			$this->configs[$pluginId][$shopId][$localeId] = new Shopware_Models_Plugin_Config(array(
 				'section' => array($pluginId, $localeId, $shopId),
-				'extends' => array(array($pluginId, 1, 1), array($pluginId, $localeId, 1), array($pluginId, 1, $shopId)),
+				'extends' => array(array($pluginId, 1, $shopId), array($pluginId, 1, 1)),
 				'cache' => $this->cache
 			));
 		}
 		return $this->configs[$pluginId][$shopId][$localeId];
     }
 	
+    /**
+     * Set shop instance
+     *
+     * @param Shopware_Models_Shop $shop
+     * @return Shopware_Components_Plugin_Namespace
+     */
 	public function setShop(Shopware_Models_Shop $shop)
     {
     	$this->shop = $shop;
@@ -72,12 +99,24 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
         return $this;
     }
     
+    /**
+     * Set cache instance
+     *
+     * @param Zend_Cache_Core $cache
+     * @return Shopware_Components_Plugin_Namespace
+     */
     public function setCache(Zend_Cache_Core $cache)
     {
     	$this->cache = $cache;
         return $this;
     }
     
+    /**
+     * Returns plugin id
+     *
+     * @param string $plugin
+     * @return int
+     */
     public function getPluginId($plugin)
     {
     	return $this->getInfo($plugin, 'id');
