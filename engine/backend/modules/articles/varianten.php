@@ -69,20 +69,25 @@ if ($_GET["delete"]){
 
 #sorts { 
 	position: inherit;
+	padding: 0px;
 }
  
 ul#sorts {
 	margin: 0;
 }
  
-li {
+li.sortme {
 	/*padding: 4px 8px; */
-	
+	padding: 10px 5px;
+	margin:0;
+	cursor: move;
 	list-style: none;
-	
-}
- 
-ul#sorts li {
+	float: none;
+	position:relative;
+	background: url(../../../backend/img/default/window/fieldset_table_bg.gif) repeat-x;
+	height: 18px;
+	background-position:0px 1px;
+	/*border-bottom: 1px solid #dfdfdf;*/
 
 }
 </style>
@@ -128,8 +133,6 @@ window.onload = function(){
 	
 };
 </script>
-
-<body>
 <script>
 window.addEvent('domready', function(){
 new Sortables($('sorts'), {
@@ -137,8 +140,7 @@ new Sortables($('sorts'), {
 	});
 });
 </script>
-
-
+<body>
 
 
 <?php
@@ -274,7 +276,7 @@ if ($numberVariants){
          
          <td  width="50%" class="th_bold"><?php echo $sLang["articles"]["varianten_variant"] ?></td>          
          <td  width="50%" class="th_bold"><?php echo $sLang["articles"]["varianten_options"] ?></td>
-   </tr
+   </tr>
    </table>
    <ul id="sorts">
 <?php
@@ -283,19 +285,19 @@ if ($numberVariants){
 	while ($variant=mysql_fetch_array($getVariants))
 	{
 		$i++;
-		$comma = $i==$numberLinks ? "" : ",";
-		echo "<li style=\"margin:0px;float:none;\">";
-		?><table width="100%"  border="0" cellpadding="2" cellspacing="1" bordercolor="#CCCCCC">
-		<tr  style="background: url(../../../backend/img/default/window/fieldset_table_bg.gif) repeat-x; height:40px;border-bottom: 1px solid #a0a0a0;">
-            
-             <td  width="50%"><span class="handle" style="cursor:move"><?php echo $variant['additionaltext'] ?></span></td>          
-             <td  width="50%"><?php if ($variant["kind"]!=1){ ?>
+		$comma = $i==$numberLinks ? "" : ",";?>
+		<li class="sortme">
+		<span class="handle" style="cursor:move">
+			<span style="float:left;width:50%">
+            <?php echo $variant['additionaltext'] ?>
+            </span>
+            <?php if ($variant["kind"]!=1) { ?>
 				<a class="ico delete" style="cursor:pointer" onclick="deleteLink(<?php echo $variant["id"] ?>,'<?php echo $variant["additionaltext"] ?>')"></a><a class="ico pencil" style="cursor:pointer" onclick="window.location='artikeln1.inc.php?variante=<?php echo $variant["id"]?>&article=<?php echo $_GET["article"] ?>&edit=<?php echo $variant["id"]?>'"></a> <?php
-				}  ?></td>
-        </tr></table>
+			} ?>
         <?php
 		echo "<input type=\"hidden\" name=\"posvariante[]\" value=\"{$variant["id"]}\">";
         ?>
+        </span> 
         </li>
 		<?php
 	// =================================

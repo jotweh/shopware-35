@@ -617,11 +617,12 @@ var MooTable = new Class({
 		
 		if (this.events && this.events[type]){
 		
-		
 			this.events[type].keys.each(function(fn){
-				
-			
-				fn.bind(this, args)();
+				if(fn.apply) {
+					fn.apply(this, args);
+				} else {
+					fn.bind(this, args)();
+				}
 			}, this);
 		}
 	}	
