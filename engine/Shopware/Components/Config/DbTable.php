@@ -1,4 +1,11 @@
 <?php
+/**
+ * Shopware DbTable Config Component
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 {
 	protected $_name;
@@ -18,7 +25,12 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	protected $_createdColumn = 'created';
 	protected $_updatedColumn = 'updated';
 	
-	public function __construct($config)
+	/**
+	 * Constructor method
+	 *
+	 * @param array $config
+	 */
+	public function __construct(array $config)
     {
     	if($this->_name!==null&&!isset($config['name'])) {
   			$config['name'] = $this->_name;
@@ -28,15 +40,25 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 
     	$this->setOptions($config);
 
-    	if($this->_cache!==null) {
-    		$data = $this->loadCache();
-    	} else {
-    		$data = $this->load();
+    	if(!$this->testCache()) {
+    		$this->_data = $this->load();
     	}
     	
-    	parent::__construct($data, $this->_allowModifications);
+    	parent::__construct($this->_data, $this->_allowModifications);
+    	
+    	if($this->testCache()) {
+    		$this->loadCache();
+    	} else {
+    		$this->saveCache();
+    	}
     }
     
+    /**
+     * Set options method
+     *
+     * @param unknown_type $options
+     * @return unknown
+     */
     public function setOptions($options)
     {
     	foreach ($options as $key=>$option) {
@@ -65,6 +87,12 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	return $this;
     }
     
+    /**
+     * Set section method
+     *
+     * @param unknown_type $section
+     * @return unknown
+     */
     public function setSection($section)
     {
     	if(is_array($section)) {
@@ -74,6 +102,12 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 		return $this;
     }
     
+    /**
+     * Set section method
+     *
+     * @param unknown_type $extends
+     * @return unknown
+     */
     public function setExtends($extends)
     {
     	if(is_array($extends)) {
@@ -94,6 +128,13 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	return $this;
     }
     
+    /**
+     * Set extend method
+     *
+     * @param unknown_type $extendingSection
+     * @param unknown_type $extendedSection
+     * @return unknown
+     */
     public function setExtend($extendingSection, $extendedSection = null)
     {
     	if($extendingSection!==$extendedSection){
@@ -102,17 +143,70 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	return $this;
     }
     
-    protected function loadCache()
+    /**
+     * Returns cache id method
+     *
+     * @return unknown
+     */
+    public function getCacheId()
     {
-    	$this->_cacheId = md5(serialize(array($this->_dbTable->info('name'), $this->_sectionColum, $this->_section, $this->_extends, $this->_cacheTags)));
-    	if($this->_cache->test($this->_cacheId)) {
-    		return $this->_cache->load($this->_cacheId);
+    	if($this->_cacheId === null) {
+    		$this->_cacheId = md5(serialize(array(
+    			$this->_dbTable->info('name'),
+    			$this->_sectionColum,
+    			$this->_section,
+    			$this->_extends,
+    			$this->_cacheTags
+    		)));
     	}
-    	$data = $this->load();
-    	$this->_cache->save($data, $this->_cacheId, $this->_cacheTags);
-    	return $data;
+    	return $this->_cacheId;
     }
     
+    /**
+     * Test cache method
+     *
+     * @return unknown
+     */
+    public function testCache()
+    {
+    	if($this->_cache === null) {
+    		return false;
+    	}
+    	return $this->_cache->test($this->getCacheId());
+    }
+    
+    /**
+     * Load cache method
+     *
+     * @return unknown
+     */
+    protected function loadCache()
+    {
+    	if($this->_cache === null) {
+    		return false;
+    	}
+    	$this->_data = $this->_cache->load($this->getCacheId());
+    	return $this->_data !== null;
+    }
+    
+    /**
+     * Save cache method
+     *
+     * @return unknown
+     */
+    protected function saveCache()
+    {
+    	if($this->_cache === null) {
+    		return false;
+    	}
+    	return $this->_cache->save($this->_data, $this->getCacheId(), $this->_cacheTags);
+    }
+    
+    /**
+     * Load data method
+     *
+     * @return unknown
+     */
     protected function load()
     {
     	$extendingSection = $this->_section;
@@ -126,6 +220,12 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	return $data;
     }
     
+    /**
+     * Read section method
+     *
+     * @param unknown_type $section
+     * @return unknown
+     */
     protected function readSection($section)
     {
     	$select = $this->_dbTable->select()->from($this->_dbTable->info('name'), array($this->_nameColum, $this->_valueColum));
@@ -158,6 +258,14 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	return $data;
     }
     
+    /**
+     * Returns value method
+     *
+     * @param unknown_type $name
+     * @param unknown_type $default
+     * @param unknown_type $save
+     * @return unknown
+     */
     public function get($name, $default=null, $save=false)
 	{
 		if($save && !$this->__isset($name)) {
@@ -168,29 +276,58 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 		}
 	}
     
+	/**
+	 * Set value method
+	 *
+	 * @param unknown_type $name
+	 * @param unknown_type $value
+	 * @return unknown
+	 */
     public function __set($name, $value)
 	{
 		$this->_dirtyFields[] = $name;
 		return parent:: __set($name, $value);
 	}
 	
+	/**
+	 * Reset dirty fields
+	 */
 	public function resetDirtyFields()
 	{
 		$this->_dirtyFields = array();
 	}
 	
+	/**
+	 * Returns dirty fields
+	 *
+	 * @return unknown
+	 */
 	public function getDirtyFields()
 	{
 		$this->_dirtyFields = array_unique($this->_dirtyFields);
 		return $this->_dirtyFields;
 	}
 	
+	/**
+	 * Insert value method
+	 *
+	 * @param unknown_type $name
+	 * @param unknown_type $value
+	 * @return unknown
+	 */
 	public function insert($name, $value)
     {
     	$this->__set($name, $value);
 		return $this->save($name, false);
     }
 	
+    /**
+     * Save data method
+     *
+     * @param unknown_type $fields
+     * @param unknown_type $update
+     * @return unknown
+     */
     public function save($fields=null, $update=true)
     {
     	$db = $this->_dbTable->getAdapter();

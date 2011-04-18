@@ -56,7 +56,10 @@ class Shopware_Plugins_Frontend_Google_Bootstrap extends Shopware_Components_Plu
 		$request = $args->getSubject()->Request();
 		$response = $args->getSubject()->Response();
 				
-		if(!$request->isDispatched() || $response->isException() || $request->getModuleName()!='frontend'){
+		if(!$request->isDispatched() 
+		  || $response->isException() 
+		  || $request->getModuleName()!='frontend'
+		  || $request->isXmlHttpRequest()) {
 			return;
 		}
 		
