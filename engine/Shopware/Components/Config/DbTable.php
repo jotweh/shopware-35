@@ -42,6 +42,8 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 
     	if(!$this->testCache()) {
     		$this->_data = $this->load();
+    	} else {
+    		$this->_data = array();
     	}
     	
     	parent::__construct($this->_data, $this->_allowModifications);
