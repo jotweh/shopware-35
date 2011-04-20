@@ -10,9 +10,10 @@
  */
 abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensions_SeleniumTestCase
 {
-    protected $captureScreenshotOnFailure = TRUE;
-    protected $screenshotPath = '/var/www/';
-    protected $screenshotUrl = 'http://localhost/';
+    protected $browserUrl = 'http://daily.shopvm.de/';
+    protected $captureScreenshotOnFailure = true;
+    protected $screenshotUrl = 'http://hl.shopvm.de/screenshots';
+    protected $screenshotPath = 'D:\\XAMPP\\xampplite\\htdocs\\screenshots\\';
 
 	/**
 	 * Setup Shop - Set base url
@@ -20,6 +21,21 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
 	 */
     protected function setUp()
     {
-        $this->setBrowserUrl('http://daily.shopvm.de/');
+    	if($this->browserUrl !== null) {
+    		$this->setBrowserUrl($this->browserUrl);
+    	}
+    	parent::setUp();
+    }
+    
+    /**
+     * Verify text method
+     *
+     * @param unknown_type $selector
+     * @param unknown_type $content
+     * @return unknown
+     */
+    public function verifyText($selector, $content)
+    {
+    	return $this->assertSelectEquals($selector, $content, true, $this->getHtmlSource());
     }
 }
