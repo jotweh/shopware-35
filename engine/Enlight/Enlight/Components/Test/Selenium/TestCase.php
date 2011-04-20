@@ -36,6 +36,6 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
      */
     public function verifyText($selector, $content)
     {
-    	return $this->assertSelectEquals($selector, $content, true, $this->getHtmlSource());
+    	return $this->assertElementContainsText($selector, $content);
     }
 }
