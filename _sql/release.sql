@@ -51,3 +51,11 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
 /* 
 ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NULL AFTER `templatechar`;
 */
+
+/*
+ * @ticket 5068
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/04/12
+ */
+UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
+UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';

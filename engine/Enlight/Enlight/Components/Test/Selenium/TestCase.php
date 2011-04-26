@@ -30,9 +30,9 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
     /**
      * Verify text method
      *
-     * @param unknown_type $selector
-     * @param unknown_type $content
-     * @return unknown
+     * @param string $selector
+     * @param string $content
+     * @return void
      */
     public function verifyText($selector, $content)
     {

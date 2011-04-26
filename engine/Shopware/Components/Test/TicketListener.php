@@ -8,10 +8,9 @@
  * @package Shopware
  * @subpackage Components
  */
-class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListener
+class Shopware_Components_Test_TicketListener extends PHPUnit_Extensions_TicketListener
 {
 	protected $client;
-	protected $test;
 	protected $serverAddress;
 	protected $printTicketStateChanges;
 	protected $notifyTicketStateChanges;
@@ -67,6 +66,8 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
      */
     protected function updateTicket($ticketId, $statusToBe, $message, $resolution)
     {
+    	$statusText = $statusToBe=='closed' ? 'Test erfolgreich' : 'Test fehlgeschlagen';
+    	
         $this->getClient()->call('ticket.update', array(
         	(int) $ticketId,
         	$message,
@@ -74,19 +75,19 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
         	null,
         	array(
         		'jenkins_date' => Zend_Date::now()->toString('YYYY-MM-dd HH:mm:ss'),
-        		'jenkins' => $statusToBe=='closed' ? 'Test erfolgreich' : 'Test fehlgeschlagen',
+        		'jenkins' => $statusText,
         		'resolution' => $resolution
         	),
         	$this->notifyTicketStateChanges
-        ));
-        
-        if ($this->printTicketStateChanges) {
-            printf(
-              "\nUpdating Trac issue #%d, status: %s\n",
-              $ticketId,
-               $statusToBe=='closed' ? 'Test erfolgreich' : 'Test fehlgeschlagen'
-            );
-        }
+    	));
+
+    	if ($this->printTicketStateChanges) {
+    		printf(
+	    		"\nUpdating Trac issue #%d, status: %s\n",
+	    		$ticketId,
+	    		$statusText
+    		);
+    	}
     }
 
     /**
@@ -100,17 +101,6 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
     		$this->client = new Zend_XmlRpc_Client($this->serverAddress);
     	}
         return $this->client;
-    }
-    
-    /**
-     * A test started method
-     *
-     * @param  PHPUnit_Framework_Test $test
-     */
-    public function startTest(PHPUnit_Framework_Test $test)
-    {
-    	$this->test = $test;
-    	return parent::startTest($test);
     }
     
     /**
@@ -137,11 +127,7 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
         
         $message = str_replace("\n", "\n[[BR]]", $message);
         
-        $name = $test->getName();
-        $pos = strpos($name, ' with data set');
-        if ($pos !== FALSE) {
-        	$name = substr($name, 0, $pos);
-        }
+        $name = $test->getName(false);
         $tickets = PHPUnit_Util_Test::getTickets(get_class($test), $name);
         
         foreach ($tickets as $ticket) {
@@ -174,45 +160,41 @@ class Shopware_Components_Test_Listener extends PHPUnit_Extensions_TicketListene
      */
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
-        if (!$test instanceof PHPUnit_Framework_Warning) {
+        if ($test instanceof PHPUnit_Framework_Warning) {
+        	return;
+        } elseif ($test->getStatus() != PHPUnit_Runner_BaseTestRunner::STATUS_PASSED) {
+        	return;
+        }
+        
+        $ifStatus   = array('assigned', 'new', 'reopened');
+        $newStatus  = 'closed';
+        $message    = 'Automatically closed by PHPUnit (test passed).';
+        $resolution = 'fixed';
+        $cumulative = TRUE;
+
+        $name = $test->getName(false);
+        $tickets = PHPUnit_Util_Test::getTickets(get_class($test), $name);
+        
+        foreach ($tickets as $ticket) {
+            // Remove this test from the totals (if it passed).
             if ($test->getStatus() == PHPUnit_Runner_BaseTestRunner::STATUS_PASSED) {
-                $ifStatus   = array('assigned', 'new', 'reopened');
-                $newStatus  = 'closed';
-                $message    = 'Automatically closed by PHPUnit (test passed).';
-                $resolution = 'fixed';
-                $cumulative = TRUE;
+                unset($this->ticketCounts[$ticket][$name]);
+            }
+
+            // Only close tickets if ALL referenced cases pass
+            // but reopen tickets if a single test fails.
+            if (count($this->ticketCounts[$ticket]) > 0) {
+            	// There exist remaining test cases with this reference.
+            	$adjustTicket = FALSE;
             } else {
-                return;
+            	// No remaining tickets, go ahead and adjust.
+            	$adjustTicket = TRUE;
             }
 
-            $name = $test->getName();
-            $pos = strpos($name, ' with data set');
-            if ($pos !== FALSE) {
-            	$name = substr($name, 0, $pos);
-            }
-            $tickets = PHPUnit_Util_Test::getTickets(get_class($test), $name);
+            $ticketInfo = $this->getTicketInfo($ticket);
             
-            foreach ($tickets as $ticket) {
-                // Remove this test from the totals (if it passed).
-                if ($test->getStatus() == PHPUnit_Runner_BaseTestRunner::STATUS_PASSED) {
-                    unset($this->ticketCounts[$ticket][$name]);
-                }
-
-                // Only close tickets if ALL referenced cases pass
-                // but reopen tickets if a single test fails.
-                if (count($this->ticketCounts[$ticket]) > 0) {
-                	// There exist remaining test cases with this reference.
-                	$adjustTicket = FALSE;
-                } else {
-                	// No remaining tickets, go ahead and adjust.
-                	$adjustTicket = TRUE;
-                }
-
-                $ticketInfo = $this->getTicketInfo($ticket);
-                
-                if ($adjustTicket && in_array($ticketInfo['status'], $ifStatus)) {
-                    $this->updateTicket($ticket, $newStatus, $message, $resolution);
-                }
+            if ($adjustTicket && in_array($ticketInfo['status'], $ifStatus)) {
+                $this->updateTicket($ticket, $newStatus, $message, $resolution);
             }
         }
     }
