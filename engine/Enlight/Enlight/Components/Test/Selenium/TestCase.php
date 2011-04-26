@@ -38,4 +38,14 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
     {
     	return $this->assertElementContainsText($selector, $content);
     }
+    
+    /**
+     * Returns screenshot url
+     *
+     * @return string
+     */
+    public function getFullScreenshotUrl()
+    {
+    	return $this->screenshotUrl.'/'.$this->testId.'.png';
+    }
 }
