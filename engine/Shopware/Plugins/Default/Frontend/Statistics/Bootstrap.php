@@ -37,6 +37,7 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		$response = $args->getSubject()->Response();
 		
 		if($response->isException()
+		  || $request->isXmlHttpRequest()
 		  || $request->getModuleName()!='frontend'
 		  || $request->getClientIp(false)===null
 		  || !empty(Shopware()->Session()->Bot)) {
