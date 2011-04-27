@@ -28,7 +28,7 @@
 			{if $ShowActivate}
 				openAction('activate');
 			{elseif !{config name=HideStart}}
-				loadSkeleton('start');
+				openAction('Widgets');
 			{/if}
 			
 			myExt.reload.periodical({config name='RefreshDashboard'}, this);
