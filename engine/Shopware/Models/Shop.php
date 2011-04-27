@@ -196,11 +196,7 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function setLocale($locale = null)
 	{
-		if ($locale instanceof Shopware_Models_Locale) {
-			$this->locale = $locale;
-		} else {
-			$this->locale = new Shopware_Models_Locale($locale);
-		}
+		$this->locale = $locale;
 		return $this;
 	}
 	
@@ -212,17 +208,19 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function setHost($host = null)
 	{
-		if($host===null) {
+		if($host === null) {
 			if(isset($this->properties['host']) && $this->properties['host'] !== null) {
 				return $this->setHost($this->properties['host']);
+			} elseif($this->config !== null && $this->config->host !== null) {
+				return $this->setHost($this->config->host);
 			} else {
 				return $this;
 			}
 		}
 		$this->host = trim($host);
 		if($this->config!==null) {
-			$this->config['sBASEPATH'] = str_replace($this->config['sHOST'], $this->host, $this->config['sBASEPATH']);
-			$this->config['sHOST'] = $this->host;
+			$this->config->basePath = str_replace($this->config->host, $this->host, $this->config->basePath);
+			$this->config->host = $this->host;
 		}
 		return $this;
 	}
@@ -235,11 +233,7 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function setCurrency($currency = null)
 	{
-		if ($currency instanceof Shopware_Models_Currency) {
-			$this->currency = $currency;
-		} else {
-			$this->currency = new Shopware_Models_Currency($currency, $this->Locale());
-		}
+		$this->currency = $currency;
 		return $this;
 	}
 	
@@ -330,6 +324,9 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function Currency()
 	{
+		if (!$this->currency instanceof Shopware_Models_Currency) {
+			$this->currency = new Shopware_Models_Currency($this->currency, $this->Locale());
+		}
 		return $this->currency;
 	}
     
@@ -340,6 +337,9 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function Locale()
 	{
+		if (!$this->locale instanceof Shopware_Models_Locale) {
+			$this->locale = new Shopware_Models_Locale($this->locale);
+		}
 		return $this->locale;
 	}
 	
@@ -415,7 +415,7 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
     	$currency = $this->currency;
     	$host = $this->host;
     	$template = $this->template;
-    	
+    	    	
     	$this->setShop($this->id);
     	$this->setLocale($locale);
     	$this->setCurrency($currency);
