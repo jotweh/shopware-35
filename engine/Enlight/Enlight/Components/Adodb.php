@@ -206,7 +206,7 @@ class	Enlight_Components_Adodb extends Enlight_Class
 			$timeout = null;
 		}
 		$timeout = $timeout===null ? $this->cacheLifetime : (int) $timeout;
-		$tags = (array) $tags + $this->cacheTags;
+		$tags = array_merge((array) $tags, $this->cacheTags);
 		$bind = (array) $bind;
 		
 		$this->foundRows = null;
@@ -214,12 +214,7 @@ class	Enlight_Components_Adodb extends Enlight_Class
 		if($timeout>0 && $this->cache!==null) {
 			
 			$id = $this->getCacheId($name, $sql, $bind);
-
-			if(strpos($sql, 'SQL_CALC_FOUND_ROWS') !== false) {
-				$calcFoundRows = true;
-			} else {
-				$calcFoundRows = false;
-			}
+			$calcFoundRows = strpos($sql, 'SQL_CALC_FOUND_ROWS') !== false;
 			
 			if(!$this->cache->test($id)) {
 				$result = $this->$name($sql, $bind);
