@@ -39,6 +39,7 @@ class Shopware_Plugins_Frontend_Statistics_Bootstrap extends Shopware_Components
 		if($response->isException()
 		  || $request->isXmlHttpRequest()
 		  || $request->getModuleName()!='frontend'
+		  || $request->getControllerName()=='captcha'
 		  || $request->getClientIp(false)===null
 		  || !empty(Shopware()->Session()->Bot)) {
 			return;	
