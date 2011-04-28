@@ -48,9 +48,7 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  * @author h.lohaus 
  * @since 3.5.4 - 2011/04/01
  */
-/* 
 ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NULL AFTER `templatechar`;
-*/
 
 /*
  * @ticket 5068
