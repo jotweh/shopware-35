@@ -131,7 +131,7 @@
 	
 	{* Additional footer *}
 	<div class="additional_footer">
-		<form  method="post" action="{if !$sUserData.additional.payment.embediframe}{url action='finish'}{else}{url action='payment'}{/if}">
+		<form method="post" action="{if $sPayment.embediframe || $sPayment.action}{url action='payment'}{else}{url action='finish'}{/if}">
 		
 			<div class="clear">&nbsp;</div>
 			
@@ -180,10 +180,10 @@
 			    	{block name='frontend_checkout_confirm_submit'}
 			    	{* Submit order button *}
 			    	<div class="actions">
-			    		{if !$sUserData.additional.payment.embediframe}
-			    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmActionSubmit'}{/s}" />
-			    		{else}
+			    		{if $sPayment.embediframe || $sPayment.action}
 			    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmDoPayment'}Zahlung durchführen{/s}" />
+			    		{else}
+			    			<input type="submit" class="button-right large" id="basketButton" value="{s name='ConfirmActionSubmit'}{/s}" />
 			    		{/if}
 			    	</div>
 			    	{/block}

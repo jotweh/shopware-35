@@ -176,7 +176,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	 */
 	public function paymentAction()
 	{
-		if(empty($this->session['sOrderVariables'])||$this->getMinimumCharge()||$this->getEsdNote()||$this->getDispatchNoOrder()) {
+		if(empty($this->session['sOrderVariables']) 
+		  || $this->getMinimumCharge()
+		  || $this->getEsdNote()
+		  || $this->getDispatchNoOrder()) {
 			return $this->forward('confirm');
 		}
 		
@@ -195,7 +198,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		$this->View()->assign($this->session['sOrderVariables']->getArrayCopy());
 		$this->View()->sAGBError = false;
 		
-		if(empty($this->View()->sUserData['additional']['payment']['embediframe'])) {
+		if(empty($this->View()->sPayment['embediframe'])
+		  && empty($this->View()->sPayment['action'])) {
 			return $this->forward('confirm');
 		}
 		
@@ -203,13 +207,17 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			$this->admin->sUpdateNewsletter(true, $this->admin->sGetUserMailById(), true);
 		}
 		
-		$embedded = $this->View()->sUserData['additional']['payment']['embediframe'];
-		$embedded = preg_replace('#^[./]+#', '', $embedded);
-		$embedded .= '?sCoreId='.Shopware()->SessionID();
-		$embedded .= '&sAGB=1';
-		
-		$this->View()->sConfig = Shopware()->Config();
-		$this->View()->sEmbedded = $embedded;
+		if(!empty($this->View()->sPayment['embediframe'])) {
+			$embedded = $this->View()->sPayment['embediframe'];
+			$embedded = preg_replace('#^[./]+#', '', $embedded);
+			$embedded .= '?sCoreId='.Shopware()->SessionID();
+			$embedded .= '&sAGB=1';
+			
+			$this->View()->sEmbedded = $embedded;
+		} else {
+			list($controller, $action) = explode('/', $this->View()->sPayment['action']);
+			$this->redirect(array('controller' => $controller, 'action' => $action));	
+		}
 	}
 	
 	/**

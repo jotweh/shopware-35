@@ -7,7 +7,7 @@
  * @copyright (C) Shopware AG 2002-2010
  * @version Shopware 3.5.0
  */
-class sAdmin
+class	sAdmin
 {
 	/**
      * Pointer to sSystem object
@@ -478,8 +478,10 @@ class sAdmin
 			return;
 		}else {
 			// Include management-class and check input-data
-			$sPaymentObject = $this->sInitiatePaymentClass($paymentData);
-			$checkPayment = $sPaymentObject->sInit($this->sSYSTEM);
+			if(!empty($paymentData['class'])) {
+				$sPaymentObject = $this->sInitiatePaymentClass($paymentData);
+				$checkPayment = $sPaymentObject->sInit($this->sSYSTEM);
+			}
 			return array("checkPayment"=>$checkPayment,"paymentData"=>$paymentData,"sProcessed"=>true,"sPaymentObject"=>&$sPaymentObject);
 		}
 		return;

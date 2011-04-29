@@ -1,8 +1,21 @@
 <?php
+/**
+ * Shopware Plugin Bootstrap
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Bootstrap
 {	
 	protected $capabilities;
 	
+	/**
+	 * Constructor method
+	 *
+	 * @param Enlight_Plugin_Namespace $namespace
+	 * @param string $name
+	 */
 	public function __construct(Enlight_Plugin_Namespace $namespace, $name)
 	{
 		parent::__construct($namespace, $name);
@@ -10,7 +23,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Install plugin method
 	 *
 	 * @return bool
 	 */
@@ -20,7 +33,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Uninstall plugin method
 	 *
 	 * @return bool
 	 */
@@ -40,7 +53,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 
 	/**
-	 * Enter description here...
+	 * Update plugin method
 	 *
 	 * @return bool
 	 */
@@ -56,6 +69,11 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		return true;
 	}
 	
+	/**
+	 * Enable plugin method
+	 *
+	 * @return bool
+	 */
 	public function enable()
 	{
 		if(empty($this->capabilities['enable'])) {
@@ -68,6 +86,11 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		return true;
 	}
 	
+	/**
+	 * Disable plugin method
+	 *
+	 * @return bool
+	 */
 	public function disable()
 	{
 		if(empty($this->capabilities['disable'])) {
@@ -81,7 +104,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns plugin config
 	 *
 	 * @return Shopware_Models_Plugin_Config
 	 */
@@ -91,7 +114,22 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Returns plugin form
+	 *
+	 * @return Shopware_Components_Form
+	 */
+	public function Form()
+	{
+		$form = new Shopware_Components_Form();
+		$form->setId($this->getId());
+		$saveHandler = new Shopware_Components_Form_SaveHandler_DbTable();
+		$form->setSaveHandler($saveHandler);
+		$form->load();
+		return $form;
+	}
+	
+	/**
+	 * Returns shopware menu
 	 *
 	 * @return Shopware_Components_Menu
 	 */
@@ -99,12 +137,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	{
 		return Shopware()->Menu();
 	}
-	
-	public function getId()
-	{
-		return $this->namespace->getPluginId($this->name);
-	}
-	
+			
 	/**
 	 * Enter description here...
 	 *
@@ -151,89 +184,118 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Subscribe cron method
 	 *
-	 * @return Shopware_Components_Form
+	 * @param Shopware_Components_Cron_CronHandler $handler
+	 * @return Shopware_Components_Plugin_Bootstrap
 	 */
-	public function Form()
+	public function subscribeCron($handler)
 	{
-		$form = new Shopware_Components_Form();
-		$form->setId($this->getId());
-		$saveHandler = new Shopware_Components_Form_SaveHandler_DbTable();
-		$form->setSaveHandler($saveHandler);
-		$form->load();
-		return $form;
+		if(!$handler instanceof Shopware_Components_Cron_CronHandler) {
+			$reflection = new ReflectionClass('Shopware_Components_Cron_CronHandler');
+			$handler = $reflection->newInstanceArgs(func_get_args());
+		}
+		if(!$handler->getPlugin()) {
+			$handler->setPlugin($this->getId());
+		}
+		Shopware()->Cron()->addCronJob($handler);
+		
+		return $this;
 	}
 	
-	public function subscribeCron($name, $action, $interval=86400, $active=1, $next=null, $start=null, $end=null)
+	/**
+	 * Subscribe cron method
+	 *
+	 * @param Enlight_Event_EventHandler $handler
+	 * @return Shopware_Components_Plugin_Bootstrap
+	 */
+	public function subscribeEvent(Enlight_Event_EventHandler $handler)
 	{
-		if (empty($next)) {
-			$next = date('Y-m-d H:i:s', time());
-		}
-		if (empty($start)) {
-			$start = date('Y-m-d H:i:s', time()-86400);
-		}
-		if (empty($end)) {
-			$end = date('Y-m-d H:i:s', time()-86400);
-		}
-		$sql = '
-			INSERT INTO s_crontab (`name`, `action`, `next`, `start`, `interval`, `active`, `end`, `pluginID`)
-			VALUES (?,?,?,?,?,?,?,?)
-		';
-		Shopware()->Db()->query($sql, array(
-			$name, $action, $next, $start, $interval, $active, $end, $this->getId()
-		));	
+		Shopware()->Subscriber()->subscribeEvent($handler);
+		
+		return $this;
 	}
 	
+	/**
+	 * Subscribe hook method
+	 *
+	 * @param Enlight_Hook_HookHandler $handler
+	 * @return Shopware_Components_Plugin_Bootstrap
+	 */
+	public function subscribeHook(Enlight_Hook_HookHandler $handler)
+	{
+		Shopware()->Subscriber()->subscribeHook($handler);
+		
+		return $this;
+	}
+	
+	/**
+	 * Unsubscribe cron method
+	 */
 	public function unsubscribeCron()
 	{
 		$sql = 'DELETE FROM `s_crontab` WHERE `pluginID`=?';
 		Shopware()->Db()->query($sql, $this->getId());
+		
+		return $this;
 	}
-	
-	public function subscribeEvent(Enlight_Event_EventHandler $handler)
-	{
-		Shopware()->Subscriber()->subscribeEvent($handler);
-	}
-	
-	public function subscribeHook(Enlight_Hook_HookHandler $handler)
-	{
-		Shopware()->Subscriber()->subscribeHook($handler);
-	}
-	
-	public function unsubscribeEvent(Enlight_Event_EventHandler $handler)
-	{
-		Shopware()->Subscriber()->subscribeEvent($handler);
-	}
-	
+		
+	/**
+	 * Unsubscribe hooks
+	 */
 	public function unsubscribeHooks()
 	{
 		Shopware()->Subscriber()->unsubscribeHooks(array('pluginID'=>$this->getId()));
+		
+		return $this;
 	}
 	
+	/**
+	 * Unsubscribe events
+	 */
 	public function unsubscribeEvents()
 	{
 		Shopware()->Subscriber()->unsubscribeEvents(array('pluginID'=>$this->getId()));
+		
+		return $this;
 	}
 	
+	/**
+	 * Delete plugin form
+	 */
 	public function deleteForm()
 	{
 		$sql = 'DELETE FROM `s_core_plugin_elements` WHERE `pluginID`=?';
 		Shopware()->Db()->query($sql, $this->getId());
+		
+		return $this;
 	}
 	
+	/**
+	 * Delete plugin config
+	 */
 	public function deleteConfig()
 	{
 		$sql = 'DELETE FROM `s_core_plugin_configs` WHERE `pluginID`=?';
 		Shopware()->Db()->query($sql, $this->getId());
+		
+		return $this;
 	}
 	
+	/**
+	 * Delete menu items
+	 */
 	public function deleteMenuItems()
 	{
 		$sql = 'DELETE FROM `s_core_menu` WHERE `pluginID`=?';
 		Shopware()->Db()->query($sql, $this->getId());
+		
+		return $this;
 	}
 	
+	/**
+	 * Returns capabilities
+	 */
 	public function getCapabilities()
     {
         return array(
@@ -245,21 +307,51 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
     	);
     }
     
+    /**
+	 * Returns plugin id
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->namespace->getPluginId($this->name);
+	}
+    
+	/**
+	 * Returns plugin version
+	 *
+	 * @return string
+	 */
     public function getVersion()
     {
-        return 1;
+        return '1.0.0';
     }
     
+    /**
+	 * Returns plugin name
+	 *
+	 * @return string
+	 */
     public function getName()
     {
     	return $this->name;
     }
     
+    /**
+	 * Returns plugin source
+	 *
+	 * @return string
+	 */
     public function getSource()
     {
     	return $this->namespace->getSource($this->name);
     }
     
+    /**
+	 * Returns plugin info
+	 *
+	 * @return array
+	 */
     public function getInfo()
     {
     	return array(

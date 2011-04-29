@@ -7,7 +7,7 @@
  * @copyright (C) Shopware AG 2002-2010
  * @version Shopware 3.5.0
  */
-class Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
+class	Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 {
 	/**
      * Object from Type Model\Order
@@ -121,8 +121,8 @@ class Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 
 		$d = Enlight_Class::Instance('Shopware_Components_Document');//new Shopware_Components_Document();
 		
-		//$d->setOrder(new Shopware_Models_Order($orderID,$config));
-		$d->setOrder(Enlight_Class::Instance('Shopware_Models_Order', array($orderID,$config)));
+		//$d->setOrder(new Shopware_Models_Document_Order($orderID,$config));
+		$d->setOrder(Enlight_Class::Instance('Shopware_Models_Document_Order', array($orderID,$config)));
 		
 		
 		$d->setConfig($config);
@@ -594,7 +594,7 @@ class Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 	 * Set order
 	 * @access protected
 	 */
-	protected function setOrder(Shopware_Models_Order $order){
+	protected function setOrder(Shopware_Models_Document_Order $order){
 		$this->_order = $order;
 		$shop = new Shopware_Models_Shop($this->_order->order->subshopID);
 		$shop->setCurrency($this->_order->order->currencyID);
