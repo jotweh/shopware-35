@@ -7,7 +7,7 @@
  * @copyright (C) Shopware AG 2002-2010
  * @version Shopware 3.5.0
  */
-class sMarketing
+class	sMarketing
 {
 	/**
 	* Pointer to Shopware-Core-public functions
@@ -154,33 +154,20 @@ class sMarketing
 		
 		$categoryID = intval($categoryID);
 		$sql = "
-			SELECT a.id as articleID, a.name, relevance
-			FROM s_articles a
-			INNER JOIN s_articles_categories c
-			LEFT JOIN ( 
-				SELECT articleID, SUM(relevance) as relevance FROM (
-						
-						SELECT
-							COUNT(LA.articleID)*$relevancViews AS `relevance`,
-							LA.articleID as `articleID`
-						FROM 
-							s_emarketing_lastarticles AS LA
-						WHERE
-							LA.time >= DATE_SUB(NOW(),INTERVAL $tagTime DAY)
-						GROUP BY LA.articleID
-					
-				) as r2
-				GROUP BY articleID
-			) AS r
+			SELECT a.id as articleID, a.name, COUNT(r.articleID) AS `relevance`
+			FROM s_articles_categories c, s_articles a
+		
+			LEFT JOIN s_emarketing_lastarticles r
 			ON a.id = r.articleID
+			AND r.time >= DATE_SUB(NOW(),INTERVAL $tagTime DAY)
+			
 			WHERE c.categoryID = $categoryID
 			AND c.articleID=a.id
 			AND a.active = 1
-			AND relevance > 0
-			ORDER BY relevance DESC
+			GROUP BY a.id
+			ORDER BY COUNT(r.articleID) DESC
 			LIMIT $tagSize
 		";
-		
 		$articles = $this->sSYSTEM->sDB_CONNECTION->CacheGetAssoc($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
 		if(empty($articles))
 			return false;
