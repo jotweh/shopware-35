@@ -91,7 +91,7 @@
 			{if !$sArticle.laststock || $sArticle.sVariants || $sArticle.instock>0}
 			<div id="detailCartButton" {if $NotifyHideBasket && $sArticle.notification && $sArticle.instock <= 0}style="display: none;"{/if}>
 				{block name='frontend_detail_buy_quantity'}
-						{if $sArticle.laststock && !$sArticle.sVariants}
+						{if $sArticle.laststock && !$sArticle.sVariants && $sArticle.instock < $sArticle.maxpurchase}
 							{assign var=maxQuantity value=$sArticle.instock+1}
 						{else}
 							{assign var=maxQuantity value=$sArticle.maxpurchase+1}
