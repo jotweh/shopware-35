@@ -2,32 +2,32 @@
 	<div class="inner">
 		
 		{* Top *}
-		{if $sArticle.highlight}
-			{block name='frontend_listing_box_article_hint'}
+		{block name='frontend_listing_box_article_hint'}
+			{if $sArticle.highlight}
 			<div class="ico_tipp">{se name='ListingBoxTip'}{/se}</div>
-			{/block}
-		{/if}
+			{/if}
+		{/block}
 		
 		{* New *}
-		{if $sArticle.newArticle}
-			{block name='frontend_listing_box_article_new'}
+		{block name='frontend_listing_box_article_new'}
+			{if $sArticle.newArticle}
 			<div class="ico_new">{se name='ListingBoxNew'}{/se}</div>
-			{/block}
-		{/if}
+			{/if}
+		{/block}
 		
 		{* ESD article *}
-		{if $sArticle.esd}
-			{block name='frontend_listing_box_article_esd'}
+		{block name='frontend_listing_box_article_esd'}
+			{if $sArticle.esd}
 			<div class="ico_esd">{se name='ListingBoxInstantDownload'}{/se}</div>
-			{/block}
-		{/if}
+			{/if}
+		{/block}
 		
 		{* Article rating *}
-        {if $sArticle.sVoteAverange.averange}
-        	{block name='frontend_listing_box_article_rating'}
-	        	<div class="star star{$sArticle.sVoteAverange.averange*2|round}"></div>
-	        {/block}
-        {/if}
+        {block name='frontend_listing_box_article_rating'}
+        	{if $sArticle.sVoteAverange.averange}
+	        <div class="star star{$sArticle.sVoteAverange.averange*2|round}"></div>
+	        {/if}
+	    {/block}
         
 		{* Article picture *}
 		{block name='frontend_listing_box_article_picture'}
