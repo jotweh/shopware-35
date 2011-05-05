@@ -1,21 +1,48 @@
 <?php
+/**
+ * Shopware Snippet Controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Marcel Schmäing
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 {
-
+	/**
+	 * Pre dispatch action method
+	 */
 	public function preDispatch()
 	{
-		if($this->Request()->getActionName()!='index' && $this->Request()->getActionName()!='skeleton') {
-			$this->View()->setTemplate();
+		if(!in_array($this->Request()->getActionName(), array('index', 'skeleton'))) {
+			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		}
 	}
 	
+	/**
+	 * Skeleton action method
+	 */
 	public function skeletonAction ()
 	{
 		
 	}
 	
-	public function indexAction(){
-		$result = $this->getAllLocalesAndShopIDs();
+	/**
+	 * Index action method
+	 */
+	public function indexAction()
+	{
+		$sql = "DELETE FROM `s_core_snippets` WHERE `namespace` LIKE '/%' OR `namespace` LIKE 'templates/%';";
+		Shopware()->Db()->exec($sql);
+		
+		$sql = "UPDATE `s_core_snippets` SET `shopID` = 1 WHERE `shopID` = 0;";
+		Shopware()->Db()->exec($sql);
+		
+		$result = $this->getAllLocalesAndShopIds();
+		$locales = array();
 		foreach ($result as $row) {
 			$tempArray = array();
 			$tempArray["name"] = $row["locale"]."-".$row["id"];
@@ -25,11 +52,19 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		$this->View()->translations = $locales;
 	}
 	
-	public function viewAction(){
+	/**
+	 * View action method
+	 */
+	public function viewAction()
+	{
 		$this->forward('index');
 	}
 
-	public function getSnippetAction() {
+	/**
+	 * Get snippet action
+	 */
+	public function getSnippetAction()
+	{
 		$limit = (int)$this->Request()->limit ? $this->Request()->limit : 25;
 		$order = $this->Request()->sort ? $this->Request()->sort : "namespace,name,locale,shopID";
 		$dir = $this->Request()->dir ? $this->Request()->dir : "ASC";
@@ -40,13 +75,13 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		if(!empty($this->Request()->locale)) {
 			$tempLocale = $this->Request()->locale;
 			$localeAndShopID = explode("-",$tempLocale);
-			$localQuery = "AND l.locale = ".Shopware()->Db()->quote($localeAndShopID[0])."AND sn.shopID = ".Shopware()->Db()->quote($localeAndShopID[1]);
+			$localQuery = "AND l.locale = ".Shopware()->Db()->quote($localeAndShopID[1])."AND sn.shopID = ".Shopware()->Db()->quote($localeAndShopID[0]);
 		}
 		$showEmpty = ($this->Request()->showEmpty) ? " AND value = ''" : "";
 		//make regex groups out of the namespace
 		preg_match("/(.*)_([0-9]*)/", $nameSpace, $result);
 		if (!empty($nameSpace) && $nameSpace !="_") {
-			$nameSpace = "AND namespace like".Shopware()->Db()->quote($result[1]."%");
+			$nameSpace = "AND namespace LIKE ".Shopware()->Db()->quote($result[1]."%");
 		}
 		if ($this->Request()->search) {
 			$search = $this->Request()->search;
@@ -98,59 +133,81 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			$snippet["value"] = $this->getFormatSnippetForGrid($snippet["value"]);
 			$snippet["name"] = $this->getFormatSnippetForGrid($snippet["name"]);
 		}
-		echo json_encode(array("count"=>Shopware()->Db()->fetchOne("SELECT FOUND_ROWS()"),"data"=>$getSnippets));
+		
+		$count = Shopware()->Db()->fetchOne("SELECT FOUND_ROWS()");
+		
+		echo json_encode(array("count"=>$count, "data"=>$getSnippets));
 	}
 	
-	//deletes marked snippets
-	public function deleteSnippetsAction() {
-		$sSnippetIds = $this->Request()->snippetIds;
-		$sql = "Delete FROM s_core_snippets WHERE id in ($sSnippetIds)";
-		$stuff = Shopware()->Db()->query($sql);
+	/**
+	 * Delete snippet action 
+	 */
+	public function deleteSnippetsAction()
+	{
+		$snippetIds = explode(',', $this->Request()->snippetIds);
+		$snippetIds = Shopware()->Db()->quote($snippetIds);
+		$sql = "DELETE FROM s_core_snippets WHERE id IN ($snippetIds)";
+		$stuff = Shopware()->Db()->exec($sql);
 	}
 	
-	public function getLanguageShopAction() {
-		$locales = $this->getAllLocalesAndShopIDs();
+	/**
+	 * Get language action
+	 */
+	public function getLanguageShopAction()
+	{
+		$locales = $this->getAllLocalesAndShopIds();
 		$data[] = array("id"=>0,"locale"=>"Alle anzeigen"); //Default val todo Snippet
 		foreach ($locales as $locale) {
-			$locale["id"] = $locale["locale"]."-".$locale["id"];
+			$locale["id"] = $locale["id"].'-'.$locale["locale"];
 			$locale["locale"] = $locale["name"]." (".$locale["id"].")";
+			$locale["locale"] = utf8_encode($locale["locale"]);
 			$data[] = $locale;
 		}
-		echo json_encode(array("locales"=>$data));
+		echo Zend_Json::encode(array("locales"=>$data));
 	}
 	
-	public function getLocalesAction() {
-		$locales = Shopware()->Db()->fetchCol("SELECT DISTINCT l.locale as locale
+	/**
+	 * Get locales action
+	 */
+	public function getLocalesAction()
+	{
+		$locales = Shopware()->Db()->fetchAll("
+			SELECT DISTINCT l.locale as locale
 			FROM s_core_multilanguage AS ml, s_core_locales AS l 
-			WHERE ml.locale = l.id");
-		foreach ($locales as $locale) {
-				$tempLocale["locale"] = $locale;
-				$data[] = $tempLocale;
-		}
-		echo json_encode(array("locales"=>$data));
+			WHERE ml.locale = l.id
+		");
+		echo Zend_Json::encode(array("locales"=>$locales));
 	}
 	
-	public function getshopIDsAction() {
-		$ids = Shopware()->Db()->fetchCol("SELECT id
-			FROM s_core_multilanguage");
-		foreach ($ids as $id) {
-				$tempShopID["shopID"] = $id;
-				$data[] = $tempShopID;
-		}
-		echo json_encode(array("shopIDs"=>$data));
+	/**
+	 * Get shop ids action
+	 */
+	public function getShopIdsAction()
+	{
+		$ids = Shopware()->Db()->fetchAll("
+			SELECT id as shopID FROM s_core_multilanguage
+		");
+		echo Zend_Json::encode(array("shopIDs"=>$ids));
 	}
 	
-	//change ns on marked snippets
-	public function changeSnippetsAction() {
-		$sSnippetIds = $this->Request()->snippetIds;
-		$sNameSpace = Shopware()->Db()->quote($this->Request()->nameSpace);
-		$sql = "UPDATE s_core_snippets SET namespace = $sNameSpace WHERE id in ($sSnippetIds)";
-		Shopware()->Db()->query($sql);
+	/**
+	 * Shange snippets action
+	 */
+	public function changeSnippetsAction()
+	{
+		$snippetIds = explode(',', $this->Request()->snippetIds);
+		$snippetIds = Shopware()->Db()->quote($snippetIds);
+		$nameSpace = Shopware()->Db()->quote($this->Request()->nameSpace);
+		$sql = "UPDATE s_core_snippets SET namespace = $nameSpace WHERE id in ($snippetIds)";
+		Shopware()->Db()->exec($sql);
 	}
 	
-	//get whole snippet form data
-	public function loadSnippetFormAction() {
-		$sSnippetIds = $this->Request()->snippetIds;
+	/**
+	 * Get whole snippet data for form action
+	 */
+	public function loadSnippetFormAction()
+	{
+		$snippetIds = $this->Request()->snippetIds;
 		$sql = "SELECT sn.namespace, sn.name, sn.value AS value, l.locale AS locale, ml.id AS id
 			FROM s_core_snippets AS sn
 			LEFT JOIN s_core_locales AS l ON ( sn.localeID = l.id )
@@ -171,12 +228,15 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		echo json_encode(array("snippet"=>array($data)));
 	}
 	
-	//save the updated snippetform data
-	public function submitSnippetAction() {
+	/**
+	 * Submit snippet action
+	 */
+	public function submitSnippetAction()
+	{
 		$req = (array)$this->Request()->getParams();
 		$oldNamespace = $req["oldNamespace"];
 		$oldName = $req["oldName"];
-		$localesAndShopIds = $this->getAllLocalesAndShopIDs();
+		$localesAndShopIds = $this->getAllLocalesAndShopIds();
 		foreach ($localesAndShopIds as $row) {
 			$tempArray["both"] = $row["locale"]."-".$row["id"];
 			$tempArray["locale"] = $row["locale"];
@@ -187,7 +247,7 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			//check if locale was send
 			if(!empty($req[$localeAndShopID["both"]])) {
 				//getLocationID = $locale
-				$localeID = $this->getLocaleID($localeAndShopID["locale"]);
+				$localeID = $this->getLocaleId($localeAndShopID["locale"]);
 				
 				$sql = "SELECT id FROM s_core_snippets WHERE namespace = ? and name = ? and localeID = ? AND shopID = ?";
 				$getSnippetID = Shopware()->Db()->fetchOne($sql,array($oldNamespace, $oldName, $localeID, $localeAndShopID["shopID"]));
@@ -233,10 +293,13 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		}
 	}
 	
-	//change or add only one snippet 
-	public function changeSnippetAction() {
+	/**
+	 * Change snippet action
+	 */
+	public function changeSnippetAction()
+	{
 		//getLocationID = $locale
-		$localeID = $this->getLocaleID($this->Request()->locale);
+		$localeID = $this->getLocaleId($this->Request()->locale);
 			
 		if(!$this->Request()->id) {
 			//Add new Snippet
@@ -279,30 +342,48 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		}
 	}
 	
-	//dublicate the existing snippets with new namespaces
-	public function dublicateSnippetsAction() {
-		$sSnippetIds = $this->Request()->snippetIds;
-		$sNameSpace = $this->Request()->nameSpace;
-		$sql = "SELECT * FROM s_core_snippets WHERE id in ($sSnippetIds)";
+	/**
+	 * Dublicate the existing snippets with new namespaces action
+	 */
+	public function dublicateSnippetsAction()
+	{
+		$snippetIds = explode(',', $this->Request()->snippetIds);
+		$snippetIds = Shopware()->Db()->quote($snippetIds);
+		$nameSpace = $this->Request()->nameSpace;
+		$sql = "SELECT * FROM s_core_snippets WHERE id in ($snippetIds)";
 		$stuff = Shopware()->Db()->fetchAll($sql);
 		foreach ($stuff as $snippet) {
-			$sql ="INSERT INTO `s_core_snippets` (
-			`namespace` ,
-			`name` ,
-			`localeID` ,
-			`shopID` ,
-			`value` ,
-			`created` ,
-			`updated`
-			)
-			VALUES (
-			?,?,?,?,?,?,?
-			)";
-			Shopware()->Db()->query($sql,array($sNameSpace,$snippet["name"],$snippet["localeID"],$snippet["shopID"],$snippet["value"],$snippet["created"],$snippet["updated"]));
+			$sql ="
+				INSERT INTO `s_core_snippets` (
+					`namespace` ,
+					`name` ,
+					`localeID` ,
+					`shopID` ,
+					`value` ,
+					`created` ,
+					`updated`
+				)
+				VALUES (
+					?,?,?,?,?,?,?
+				)
+			";
+			Shopware()->Db()->query($sql,array(
+				$nameSpace,
+				$snippet["name"],
+				$snippet["localeID"],
+				$snippet["shopID"],
+				$snippet["value"],
+				$snippet["created"],
+				$snippet["updated"]
+			));
 		}
 	}
 	
-	public function getNSAction() {
+	/**
+	 * Get namespace action
+	 */
+	public function getNSAction()
+	{
 		$node = $this->Request()->node;
 
 		if ($node!="_"){
@@ -319,9 +400,9 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 		}
 		
 		$sql = "
-		SELECT SUBSTRING_INDEX(s_core_snippets.namespace, '/', $layer) AS namespaceExploded,s_core_snippets.namespace AS namespaceOriginal FROM s_core_snippets 
-		$where
-		GROUP BY namespaceExploded
+			SELECT SUBSTRING_INDEX(s_core_snippets.namespace, '/', $layer) AS namespaceExploded,s_core_snippets.namespace AS namespaceOriginal FROM s_core_snippets 
+			$where
+			GROUP BY namespaceExploded
 		";
 		$getNamespaceTree = Shopware()->Db()->fetchAll($sql);
 		foreach ($getNamespaceTree as &$namespace){
@@ -337,21 +418,20 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			}
 			$data[] = array("text"=>$ns,"id"=>$namespace["namespaceExploded"]."_".$layer,"leaf"=>$leaf,"layer"=>$layer);	
 		}
-		echo json_encode($data);
-		
+		echo Zend_Json::encode($data);
 	}
-	
-	/////////////////////////////////////////
-	// Export Import Functions
-	/////////////////////////////////////////
-	public function exportSnippetAction() {
+
+	/**
+	 * Export snippet action
+	 */
+	public function exportSnippetAction()
+	{
 		$format = $this->Request()->formatExport;
-		if($format=="CSV")
-		{
-			//Attention group_concat_max_len is default 1024 the variable should be increased
-			$sql = "SELECT namespace, name, GROUP_CONCAT( value
-				ORDER BY shopID, localeId
-				SEPARATOR '~' ) AS localeVals
+		if($format=="CSV") {
+			$sql = "
+				SELECT namespace, name, GROUP_CONCAT( value
+					ORDER BY shopID, localeId
+					SEPARATOR '~' ) AS localeVals
 				FROM s_core_snippets
 				GROUP BY name, namespace
 				ORDER BY namespace";
@@ -395,184 +475,284 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					}
 				}
 				unset($row["localeVals"]);
-				echo $this->_encode_line($row, array_keys($row));
-				
+				echo $this->encodeLine($row, array_keys($row));
 			}
-			
-		}
-		else {
-			$sql = "SELECT namespace,name,localeID,shopID,value,created,updated
-			FROM `s_core_snippets`";
+		} else {
 			$this->Response()->setHeader('Content-type: text/plain');
 			$this->Response()->setHeader('Content-Disposition', 'attachment; filename="export.sql"');
-			$result = Shopware()->Db()->fetchAll($sql);
-			$countRows = count($result);
+			
+			$sql = "SELECT * FROM `s_core_snippets`";
+			$result = Shopware()->Db()->query($sql);
+			$countRows = (int) $result->rowCount();
+			
+			echo "\xEF\xBB\xBF";
 			echo  "REPLACE INTO `s_core_snippets` (`namespace`, `name`, `localeID`, `shopID`, `value`, `created`, `updated`) VALUES"."\r\n";
-			foreach ($result as $key => $row) {
+			
+			for ($i=1; $row = $result->fetch(); $i++) {
 				$row['namespace'] = mysql_escape_string(utf8_encode($row['namespace']));
 				$row['name'] = mysql_escape_string(utf8_encode($row['name']));
 				$row['localeID'] = mysql_escape_string(utf8_encode($row['localeID']));
 				$row['value'] = mysql_escape_string(utf8_encode($row['value']));
 				if($countRows != $key+1){
 					echo "('{$row['namespace']}', '{$row['name']}', '{$row['localeID']}', '{$row['shopID']}','{$row['value']}', '{$row['created']}', NOW()),"."\r\n";
-				}
-				else {
-					//lastRow
+				} else {
 					echo "('{$row['namespace']}', '{$row['name']}', '{$row['localeID']}', '{$row['shopID']}','{$row['value']}', '{$row['created']}', NOW());";
 				}
 			}
 		}
-		return true;
 	}
 	
-	public function importSnippetAction() {
-		$sConfig['sFileName'] = basename($_FILES['snippet_file']['name']);
-		$sConfig['sFileExtension'] = pathinfo($sConfig['sFileName'],PATHINFO_EXTENSION);
-		if($sConfig['sFileExtension'] == "csv"){
+	/**
+	 * Read xml row action
+	 *
+	 * @param unknown_type $xml
+	 * @param array $keys
+	 * @return array
+	 */
+	public function readXmlRow($xml, $keys=null)
+	{
+		$data = array();
+    	foreach ($xml as $cell) {
+    		$data[] = (string) $cell->Data;
+    	}
+    	if($keys!==null) {
+    		$key_data = array();
+	    	foreach ($keys as $key=>$name) {
+	    		$key_data[$name] = isset($data[$key]) ? $data[$key] : '';
+	    	}
+	    	return $key_data;
+    	}
+    	return $data;
+	}
+	
+	/**
+	 * Import snippet action
+	 */
+	public function importSnippetAction()
+	{
+		$file_name = basename($_FILES['snippet_file']['name']);
+		$extension = pathinfo($file_name, PATHINFO_EXTENSION);
 		
-			if(file_exists(Shopware()->OldPath()."/engine/connectors/api/tmp")&&is_writeable(Shopware()->OldPath()."/engine/connectors/api/tmp")) {
-				$tmpdir = Shopware()->OldPath()."/engine/connectors/api/tmp";
+		if(!in_array($extension, array('csv', 'txt', 'xml'))) {
+			echo htmlentities(Zend_Json::encode(array(
+				'msg' => utf8_encode('Dieses Dateiformat wird nicht unterstützt.'),
+				'success' => false
+			)));
+			return;
+		}
+		
+		$tmpdir = Shopware()->OldPath().'/engine/connectors/api/tmp';
+		
+		if(!file_exists($tmpdir) && !is_writeable($tmpdir)) {
+			echo htmlentities(Zend_Json::encode(array(
+				'msg' => utf8_encode('Für den Ordner "/engine/connectors/api/tmp" sind keine Schreibrechte vorhanden.'),
+				'success' => false
+			)));
+			return;
+		}
+		
+		$file = tempnam($tmpdir, 'import_');
+		
+		move_uploaded_file($_FILES['snippet_file']['tmp_name'], $file);
+		chmod($file, 0644);
+	
+		if($extension=='csv') {
+			$snippets = new Shopware_Components_CsvIterator($file, ';');
+			$headers = $snippets->getHeader();
+		} elseif($extension=='txt') {
+			$snippets = new Shopware_Components_CsvIterator($file, "\t");
+			$snippets->SetFieldmark('');
+			$headers = $snippets->getHeader();
+		} else {
+			$xml = @simplexml_load_file($file, 'SimpleXMLElement', LIBXML_NOCDATA);
+			$snippets = $xml->Worksheet->Table->Row;
+			$headers = $this->readXmlRow(current($snippets));
+		}
+				
+		if(empty($headers) || !in_array('namespace', $headers) || !in_array('name', $headers)) {
+			echo htmlentities(json_encode(array(
+				'msg' => utf8_encode('Die Datei enspricht nicht den Vorgaben.'),
+				'success' => false
+			)));
+			return;
+		}
+		
+		$translations = array();
+		foreach ($headers as $header) {
+			$pos = strpos($header, 'value-');
+			if($pos === false) {
+				continue;
 			}
-			else {
-				die(htmlentities($json->encode(array(
-					'msg' => utf8_encode('Für den Ordner "/engine/connectors/api/tmp" sind keine Schreibrechte vorhanden.'),
-					'success' => false
-				))));	
-			}
-			
-			$sConfig['sFilePath'] = tempnam($tmpdir, 'import_');
-			if(is_readable($_FILES['snippet_file']['tmp_name'])) {
-				copy($_FILES['snippet_file']['tmp_name'],$sConfig['sFilePath']);
-			}
-			$counter = 0;
-			chmod($sConfig['sFilePath'], 0644);
-			$snippets = new Shopware_Components_CsvIterator($sConfig['sFilePath'],';');
-			unlink($sConfig['sFilePath']); // We don´t need the physical file anymore
-			$sConfig['sHeader'] = $snippets->getHeader();
-			
-			if(!empty($sConfig['sHeader'])) {
-				foreach ($sConfig['sHeader'] as $header) {
-					$pos = strpos($header, "value-");
-					if($pos !== false) {
-						$row = explode("-",$header);
-
-						$tempArray["both"] = $row[1]."-".$row[2];
-						$tempArray["locale"] = $row[1];
-						$tempArray["shopID"] = $row[2];
-						$localesAndShopIDs[] = $tempArray;
-					}
+			$row = explode('-',$header);
+			$translations[] = array(
+				'both' => $row[1].'-'.$row[2],
+				'localeID' => $this->getLocaleId($row[1]),
+				'shopID' => $row[2],
+			);
+		}
+		
+		$counter = 0;
+		foreach ($snippets as $key => $snippet) {
+			if($extension=='xml') {
+				$snippet = $this->readXmlRow($snippet, $headers);
+				if($snippet['name']=='name') {
+					continue;
 				}
-				if(in_array('namespace',$sConfig['sHeader'])) {
-					foreach ($snippets as $snippet) {
-						$snippet = preg_replace("/^'?/","",$snippet); //Stripes the first ' 
-						foreach ($localesAndShopIDs as $localeAndShopID) {
-							if(!empty($snippet["value-".$localeAndShopID["both"]])) { 
-								$localeID = $this->getLocaleID($localeAndShopID["locale"]);
-								$sql = "REPLACE INTO `s_core_snippets` (`namespace`, `name`, `localeID`, `shopID`, `value`, `updated`,`created`) 
-								VALUES
-								(?, ?, ?, ?, ?, now(),now())";
-								$stuff = Shopware()->Db()->query($sql,array($snippet["namespace"],$snippet["name"], $localeID, $localeAndShopID["shopID"], $snippet["value-".$localeAndShopID["both"]]));
-								$counter++;
-							}
-						}
-						$allSQL[] = $sql;
-					}
+			}
+			foreach ($translations as $translation) {
+				if(empty($snippet['value-'.$translation['both']])) { 
+					continue;
 				}
-				//Returning
-				echo json_encode(array(
-				'msg' => utf8_encode('Es wurden '.$counter.' Textbausteine importiert.'),
-				'success' => true));
+				$namespace = trim(ltrim($snippet['namespace'], "'"));
+				$name = trim(ltrim($snippet['name'], "'"));
+				if(empty($name)) {
+					continue;
+				}
+				$value = trim(ltrim($snippet['value-'.$translation['both']], "'"));
+				$value = $this->getFormatSnippetForSave($value);
+				$sql = '
+					INSERT INTO `s_core_snippets` (`namespace`, `name`, `localeID`, `shopID`, `value`, `updated`, `created`) 
+					VALUES (?, ?, ?, ?, ?, NOW(), NOW())
+					ON DUPLICATE KEY UPDATE `value`=VALUES(`value`), `updated`=NOW()
+				';
+				Shopware()->Db()->query($sql,array(
+					$namespace, $name,
+					$translation['localeID'], $translation['shopID'], $value
+				));
+				$counter++;
 			}
 		}
-		else {
-				die(json_encode(array(
-					'msg' => utf8_encode('Dieses Dateiformat wird nicht unterstützt.'),
-					'success' => false
-				)));
-			}
+		echo htmlentities(json_encode(array(
+			'msg' => utf8_encode('Es wurden '.$counter.' Textbausteine importiert.'),
+			'success' => true
+		)));
 	}
-	/////////////////////////////////////////
-	// Export Import Functions Ends
-	/////////////////////////////////////////
 	
-	
-	/////////////////////////////////////////
-	// Helper
-	/////////////////////////////////////////
-	private function getFormatSnippetForSave($string) {
+	/**
+	 * Format snippet for save
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	protected function getFormatSnippetForSave($string)
+	{
 		if(function_exists('mb_convert_encoding')) {
 			$string = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
 		}
-		$string = str_replace(array('&nbsp;', '&amp;', '&lt;', '&gt;'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'), $string);
+		$string = str_replace(
+			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
+			array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'),
+			$string
+		);
 		$string = html_entity_decode(utf8_decode($string), ENT_NOQUOTES);
-		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'), array('&nbsp;', '&amp;', '&lt;', '&gt;'), $string);
+		$string = str_replace(
+			array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'),
+			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
+			$string
+		);
 		return $string;
 	}
 	
-	private function getFormatSnippetForGrid($string) {
-		$string = str_replace(array('&nbsp;', '&amp;', '&lt;', '&gt;'), array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'), $string);
+	/**
+	 * Format snippet for grid
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	protected function getFormatSnippetForGrid($string)
+	{
+		$string = str_replace(
+			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
+			array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'),
+			$string
+		);
 		if(function_exists('mb_convert_encoding')) {
 			$string = mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
 		} else {
 			$string = utf8_encode(html_entity_decode($string, ENT_NOQUOTES));
 		}
-		$string = str_replace(array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'), array('&nbsp;', '&amp;', '&lt;', '&gt;'), $string);
+		$string = str_replace(
+			array('%%%SHOPWARE_NBSP%%%', '%%%SHOPWARE_AMP%%%', '%%%SHOPWARE_LT%%%', '%%%SHOPWARE_GT%%%'),
+			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
+			$string
+		);
 		return $string;
 	}
 	
-	private function getAllLocalesAndShopIDs() {
-		$result = Shopware()->Db()->fetchAll("SELECT l.locale as locale, ml.id as id ,ml.name as name
-			FROM s_core_multilanguage AS ml, s_core_locales AS l 
-			WHERE ml.locale = l.id");
+	/**
+	 * Returns locales and ahop ids
+	 *
+	 * @return unknown
+	 */
+	protected function getAllLocalesAndShopIds()
+	{
+		$result = Shopware()->Db()->fetchAll("
+			SELECT DISTINCT s.shopID as id, l.locale, CONCAT(IF(o.id=1, 'Default', o.name), ' / ', l.language) as name
+			FROM s_core_snippets s, s_core_locales l, s_core_multilanguage o
+			WHERE l.id = s.localeID
+			AND o.id = s.shopID
+		");
 		return $result;
 	}
 
-	private function getLocaleID($locale) {
-		$localeID = Shopware()->Db()->fetchOne("SELECT *
+	/**
+	 * Returns locale id by locale
+	 *
+	 * @param unknown_type $locale
+	 * @return unknown
+	 */
+	protected function getLocaleId($locale)
+	{
+		$sql = '
+			SELECT `id`
 			FROM `s_core_locales`
-			WHERE `locale` = ?",
-			array($locale));
-		return $localeID;
+			WHERE `locale` = ?
+		';
+		return Shopware()->Db()->fetchOne($sql, array($locale));
 	}
 	
-	function _encode_line($line, $keys)
+	/**
+	 * Encode line for csv
+	 *
+	 * @param array $line
+	 * @param array $keys
+	 * @return string
+	 */
+	protected function encodeLine($line, $keys)
 	{
-		$sSettings = array(
+		$settings = array(
 			"separator" => ";",
-			"encoding"=>"ISO-8859-1",//UTF-8
-			"escaped_separator" => "'",
-			"escaped_fieldmark" => "\"\"",
+			"encoding" => 'ISO-8859-1', //UTF-8
+			"fieldmark" => '"',
+			"escaped_fieldmark" => '""',
 			"newline" => "\r\n",
-			"escaped_newline" => "",
+			"escaped_newline" => '',
 		);
 	
-		if(isset($sSettings['fieldmark']))
-			$fieldmark = $sSettings['fieldmark'];
-		else
-			$fieldmark = "";
-		$lastkey = end($keys);
-		foreach ($keys as $key)
-		{
-			if(!empty($line[$key]))
-			{
-				if(strpos($line[$key],"\r")!==false||strpos($line[$key],"\n")!==false||strpos($line[$key],$fieldmark)!==false||strpos($line[$key],$sSettings['separator'])!==false)
+		$lastKey = end($keys);
+		foreach ($keys as $key) {
+			if(!empty($line[$key])) {
+				//if($settings['encoding']=="UTF-8") {
+				//	$line[$key] = utf8_decode($line[$key]);
+				//}
+				if(strpos($line[$key], "\r") !== false
+				  || strpos($line[$key], "\n") !== false
+				  || strpos($line[$key], $settings['fieldmark']) !== false
+				  || strpos($line[$key], $settings['separator']) !== false)
 				{
-					$csv .= "'";
-					if($sSettings['encoding']=="UTF-8")
-						$line[$key] = utf8_decode($line[$key]);
-						$csv .= str_replace($sSettings['separator'],$sSettings['escaped_separator'],$line[$key]);
+					$csv .= $settings['fieldmark']
+						  . str_replace($settings['fieldmark'], $settings['escaped_fieldmark'], $line[$key])
+						  . $settings['fieldmark'];
+				} else {
+					$csv .= "'" . $line[$key];
 				}
-				else 
-					$csv .= "'".$line[$key];
 			}
-			if($lastkey!=$key){
-				$csv .= $sSettings['separator'];
-			}
-			else{
-				$csv .= $sSettings['newline'];
+			if($lastKey != $key){
+				$csv .= $settings['separator'];
+			} else{
+				$csv .= $settings['newline'];
 			}
 		}
-		return html_entity_decode($csv);
+		return $csv;
 	}
-	
 }
