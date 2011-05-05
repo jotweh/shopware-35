@@ -42,9 +42,9 @@ class Shopware_Components_Test_TicketListener extends PHPUnit_Extensions_TicketL
     		$info = $this->getClient()->call('ticket.get', (int) $ticketId);
     		switch ($info[3]['jenkins']) {
     			case '':
-    			case 'Kein Test':
     			case 'Test erfolgreich':
     				return array('status' => 'closed');
+    			case 'Kein Test':
     			case 'Test fehlgeschlagen':
     				return array('status' => 'new');
     			default:
