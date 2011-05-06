@@ -173,7 +173,7 @@ Ext.onReady(function(){
     	region:'north',
     	height: 70,
     	html: "<div style=\"padding:20px;font-family:arial,tahoma,helvetica,sans-serif;font-size:12px;font-size-adjust:none;font-style:normal;font-variant:normal;font-weight:bold;line-height:normal;color:red\">"+
-			"Die Import/Export-Möglichkeiten unterstützen gegebenenfalls nicht alle von Ihnen gepflegten Felder, prüfen Sie daher bitte unbedingt die Dokumentation im <a href=\"http://www.shopware-ag.de/wiki/Datenaustausch_detail_308.html\" target=\"_blank\">Wiki</a> bevor Sie mit dem Modul arbeiten."+
+			"Die Import/Export-Möglichkeiten unterstützen gegebenenfalls nicht alle von Ihnen gepflegten Felder, prüfen Sie daher bitte unbedingt die Dokumentation im <a href=\"http://www.shopware.de/wiki/Datenaustausch_detail_308.html\" target=\"_blank\">Wiki</a> bevor Sie mit dem Modul arbeiten."+
 	 	"</div>"
     };
     var viewport = new Ext.Viewport({

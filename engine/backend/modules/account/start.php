@@ -14,7 +14,9 @@ echo "
 	";
 	die();
 }
-// *****************
-$connectString = "?domain=".$sCore->sCONFIG["sHOST"]."&pairing=".$sCore->sCONFIG["sACCOUNTID"];
-header("Location: https://support.shopware2.de/account2/index.php$connectString");
-?>
+
+$accountUrl = 'https://account.shopware.de/register.php'
+	. '?domain=' .urlencode($sCore->sCONFIG['sHOST'])
+	. '&pairing=' .urlencode($sCore->sCONFIG['sACCOUNTID']);
+
+header('Location: ' . $accountUrl);

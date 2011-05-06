@@ -88,7 +88,7 @@ echo $sCore->sDumpLicenceInfo(
 	"Mit der \"Bundle\"-Funktion können Sie beliebige Artikel in Shopware miteinander kombinieren, 
 	um diese dann als Bundle zu einem vergünstigten Preis anzubieten. Auf diese Weise können Sie 
 	beispielsweise Zubehörartikel zu einem reduzierten Preis in Verbindung mit dem Hauptartikel anbieten.
-	", "http://www.shopware-ag.de/Bundle-Modul-_detail_485_180.html","sBUNDLE");
+	", "http://www.shopware.de/Bundle-Modul-_detail_485_180.html","sBUNDLE");
 	exit;
 }
 ?>

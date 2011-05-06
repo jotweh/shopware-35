@@ -14,12 +14,10 @@ echo "
 	";
 	die();
 }
-// *****************
-?>
-<?php
-if ($_REQUEST["link"]){
-	$_REQUEST["link"] = urldecode($_REQUEST["link"]);
-	if (!preg_match("/hamann-media\.de/",$_REQUEST["link"])) exit;
+if (!empty($_REQUEST["link"])){
+	if (strpos($_REQUEST["link"], 'http://www.shopware.de/') !== 0) {
+		exit;
+	}
 }
 ?>
 {
@@ -31,6 +29,6 @@ if ($_REQUEST["link"]){
 		"height": "480",
 		"content": "",
 		"loader": "extern",
-		"url": <?php echo $_REQUEST["link"] ? "\"".$_REQUEST["link"]."\"" : "\"http://www.hamann-media.de\"" ?>
+		"url": "<?php echo !empty($_REQUEST["link"]) ? $_REQUEST["link"] : "http://www.shopware.de/"; ?>"
 	}
 }

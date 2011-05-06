@@ -78,7 +78,7 @@ Informationen und Hilfestellung zur API erhalten Sie im Entwickler Portal.<br/>
 		<ul>
 		
 			
-		<li id="buttonTemplate" class="buttonTemplate"><a href="http://www.hamann-media.de/dev" class="bt_icon information_frame" target="_blank" style="text-decoration:none;"><?php echo $sLang["presettings"]["api_shopware_developer_portal"] ?></a></li>	
+		<li id="buttonTemplate" class="buttonTemplate"><a href="http://www.shopware.de/wiki" class="bt_icon information_frame" target="_blank" style="text-decoration:none;"><?php echo $sLang["presettings"]["api_shopware_developer_portal"] ?></a></li>	
 		
 		</ul>
 		</div>

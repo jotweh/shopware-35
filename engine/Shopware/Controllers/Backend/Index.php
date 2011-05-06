@@ -1,6 +1,18 @@
 <?php
-class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
+/**
+ * Shopware Backend Controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
+class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 {	
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
 		$this->View()->Menu = Shopware()->Menu();
@@ -26,16 +38,20 @@ class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$this->View()->BaseUrl = $this->Request()->getBaseUrl();
 		$this->View()->BasePath = $this->Request()->getBasePath();
 		
-		$this->View()->rssData = $this->_getRssFeed();
+		$this->View()->rssData = $this->getRssFeed();
 		$this->View()->Scheme = $this->Request()->getScheme();
-		$this->View()->BackendUsers = implode(',',$this->_getUsers());
+		$this->View()->BackendUsers = implode(',', $this->getUsers());
 		$this->View()->SidebarActive = $_SESSION['sSidebar'];
-		$this->View()->Amount = $this->_getAmount();
+		$this->View()->Amount = $this->getAmount();
 		$this->View()->UserName = $_SESSION['sName'];
-		$connectString = "?domain=".Shopware()->Config()->Host."&pairing=".Shopware()->Config()->AccountId;
-		$this->View()->accountUrl = "https://support.shopware2.de/account2/index.php$connectString";
+		$this->View()->accountUrl = 'https://account.shopware.de/register.php'
+			. '?domain=' .urlencode(Shopware()->Config()->Host)
+			. '&pairing=' .urlencode(Shopware()->Config()->AccountId);
 	}
 	
+	/**
+	 * logout action method
+	 */
 	public function logoutAction()
 	{
 		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();	
@@ -43,7 +59,12 @@ class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		return $this->redirect('backend/auth');
 	}
 	
-	protected function _getUsers()
+	/**
+	 * Returns backend users
+	 *
+	 * @return array
+	 */
+	protected function getUsers()
 	{
 		$getUsers = Shopware()->Db()->fetchAll('SELECT id, username FROM s_core_auth ORDER BY username ASC');
 		$users = array();
@@ -53,13 +74,22 @@ class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		return $users;
 	}
 	
-	protected function _getRssFeed()
+	/**
+	 * Returns sidebar rss feed
+	 *
+	 * @return array
+	 */
+	protected function getRssFeed()
 	{
     	$data = array();
     	try {
-	    	$channel = new Zend_Feed_Rss('http://www.shopware-ag.de/rss.xml');
+	    	$channel = new Zend_Feed_Rss('http://www.shopware.de/rss.xml');
 	    	foreach ($channel as $i => $item) {
-	    		$data[] = array($i+1, (string) $item->title, (string) $item->link);
+	    		$title = (string) $item->title;
+	    		if(function_exists('mb_convert_encoding')) {
+	    			$title = mb_convert_encoding($title, 'HTML-ENTITIES', 'UTF-8');
+	    		}
+	    		$data[] = array($i+1, $title, (string) $item->link);
 				if ($i>3) {
 					break;
 				}
@@ -68,116 +98,48 @@ class	Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	    return Zend_Json::encode($data);;
 	}
 	
-	protected function _getMenu(){
-		$sql = '
-			SELECT 
-				id,	parent, hyperlink, name, onclick, style, class, position, ul_properties
-			FROM 
-				s_core_menu
-			WHERE
-				active=1 AND parent = 0
-			ORDER BY position ASC 
-		';
-		$entrys = Shopware()->Db()->fetchAll($sql);
-		
-		if (!$entrys){
-			throw new Enlight_Exception('Could not load backend menu');
-		}
-		
-		$entrys = $this->_getChilds($entrys);
-		return $entrys;
-	}
-
-	protected function _getChilds($entrys)
+	/**
+	 * Returns account amount
+	 *
+	 * @return float
+	 */
+	protected function getAmount()
 	{
-		foreach ($entrys as &$entry){
-			$getChilds = Shopware()->Db()->fetchAll('
-				SELECT 
-					id,	parent, hyperlink, name, onclick, style, class, position, ul_properties
-				FROM 
-					s_core_menu
-				WHERE
-					active=1 AND parent = ?
-				ORDER BY position ASC 
-			',array($entry['id']));
-			if (!empty($getChilds)){
-				$entry['childs'] = $this->_getChilds($getChilds);
-			}
-		}
-		return $entrys;
-	}
-	
-	protected function _getAmount()
-	{
-		$post = array();
-		
-		$post['domain'] = Shopware()->Config()->Host;
-		$post['pairing'] = Shopware()->Config()->AccountId;
-		
-		if (empty($post['domain']) && empty($post['pairing'])){
+		if (empty(Shopware()->Config()->Host)
+		  || empty(Shopware()->Config()->AccountId)){
 			return false;
 		}
-		$post['server_ip'] = getenv('SERVER_ADDR');
-			
-		$post = http_build_query($post,'','&');
 		
-		$url = 'https://support.shopware2.de/account/info.php';
+		$url = 'https://account.shopware.de/core/credit.php';
 		$referer = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 
-		$timeout = 5;
+		$client = new Zend_Http_Client($url, array(
+			'useragent' => 'Shopware/' . Shopware()->Config()->Version,
+			'timeout' => 5,
+		));
+		$client->setParameterPost(array(
+			'domain' => Shopware()->Config()->Host,
+			'pairing' => Shopware()->Config()->AccountId,
+			'server_ip' => getenv('SERVER_ADDR')
+		));
+		$client->setHeaders('Referer', 
+			$this->Request()->getScheme() . '://'
+			. $this->Request()->getHttpHost()
+			. $this->Request()->getBasePath()
+		);
+		if (extension_loaded('curl')) {
+			$adapter = new Zend_Http_Client_Adapter_Curl();
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
+			$client->setAdapter($adapter);
+		}
 		
-		if (function_exists('curl_init'))
-		{
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-			curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
-			curl_setopt($ch, CURLOPT_REFERER, $referer); 
-			$response = curl_exec($ch);
+		try {
+			$response = $client->request('POST');
+		} catch (Exception $e) {
+			return false;
 		}
-		elseif(function_exists('fsockopen') || function_exists('pfsockopen'))
-		{
-			$url = parse_url($url);
-			$scheme = $url['scheme'];
-			$host = $url['host'];
-			$path = $url['path'];
-			if ($scheme == 'https' && function_exists('pfsockopen')){
-				$isHTTPS = true;
-				$port = 443;
-			} else {
-				$isHTTPS = false;
-				$port = 80;
-			}
-			if ($isHTTPS){
-				$fp = pfsockopen('ssl://'.$host, $port, $errno, $errstr, $timeout);
-			} else {
-				$fp = fsockopen($host, $port, $errno, $errstr, $timeout);
-			}
-			$response = '';
-			if ($fp)
-			{
-				fputs($fp, "POST $path HTTP/1.1\r\n");
-				fputs($fp, "Host: $host\r\n");
-				fputs($fp, "Referer: $referer\r\n");
-				fputs($fp, "Content-type: application/x-www-form-urlencoded\r\n");
-				fputs($fp, "Content-length: ". strlen($post) ."\r\n");
-				fputs($fp, "Connection: close\r\n\r\n");
-				fputs($fp, $post);
-				while(!feof($fp)) {
-					$response .= fgets($fp, 128);
-				}
-				fclose($fp);
-				$response = substr($response, strpos($response, "\r\n\r\n")+4);
-			}
-		}
-		return $response;
-	}	
+		
+		return $response->getBody();
+	}
 }

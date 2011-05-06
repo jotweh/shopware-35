@@ -666,11 +666,7 @@ sWindow = new Class({
 				
 				//this.clone.getElement('.help').addEvent('click',myWindowHelp);
 				if (this.options.help){
-					/*this.options.help = this.options.help.replace(/www\.hamann-media\.de\/dev\/wiki\/(.*)/,"www.shopware-ag.de/wiki/shopware.php?sViewport=searchFuzzy&sLanguage=1&sSearch=$1");
-					this.options.help = this.options.help.replace(/\#/," ");
-					this.options.help = this.options.help.replace(/Hilfe/,"");
-					*/
-					this.options.help = "http://www.shopware-ag.de/wiki/shopware.php?sViewport=searchFuzzy&sLanguage=1&sSearch="+this.options.title;
+					this.options.help = "http://www.shopware.de/wiki/shopware.php?sViewport=searchFuzzy&sSearch="+this.options.title;
 				}
 				
 				
