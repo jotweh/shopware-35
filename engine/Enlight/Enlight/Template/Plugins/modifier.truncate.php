@@ -33,14 +33,14 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
     if (is_callable('mb_strlen')) {
     	$string = mb_convert_encoding($string, 'UTF-8', 'HTML-ENTITIES');
         if (mb_strlen($string) > $length) {
-            $length -= min($length, mb_strlen($etc));
+            $length -= min($length, mb_strlen($etc, 'UTF-8'));
             if (!$break_words && !$middle) {
-                $string = preg_replace('/\s+?(\S+)?$/u', '', mb_substr($string, 0, $length + 1));
+                $string = preg_replace('/\s+?(\S+)?$/u', '', mb_substr($string, 0, $length + 1, 'UTF-8'));
             } 
             if (!$middle) {
-                $string = mb_substr($string, 0, $length) . $etc;
+                $string = mb_substr($string, 0, $length, 'UTF-8') . $etc;
             } else {
-                $string = mb_substr($string, 0, $length / 2) . $etc . mb_substr($string, - $length / 2);
+                $string = mb_substr($string, 0, $length / 2, 'UTF-8') . $etc . mb_substr($string, - $length / 2, 'UTF-8');
             } 
         }
         if(mb_internal_encoding()!='UTF-8') {
@@ -64,5 +64,3 @@ function smarty_modifier_truncate($string, $length = 80, $etc = '...',
         return $string;
     } 
 }
-
-?>
