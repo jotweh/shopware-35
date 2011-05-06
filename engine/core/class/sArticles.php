@@ -1571,23 +1571,29 @@ class sArticles
 			FROM 
 				s_articles a, 
 				s_articles_supplier s,
-				s_articles_categories ac
+				s_articles_categories ac,
+				s_categories c
 			WHERE a.supplierID = s.id
 			AND a.active = 1
 			AND (
-					SELECT articleID 
-					FROM s_articles_avoid_customergroups 
-					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+				SELECT articleID 
+				FROM s_articles_avoid_customergroups 
+				WHERE articleID = a.id
+				AND customergroupID = ?
 			) IS NULL
 			AND a.changetime <= NOW()
-			AND a.mode = 0
-			AND ac.categoryID = ?
+			AND a.mode = c.blog
+			AND ac.categoryID = c.id
 			AND ac.articleID = a.id
+			AND c.id = ?
 			GROUP BY s.id
 			ORDER BY s.name ASC
-			LIMIT 0 , $limit
+			LIMIT 0, $limit
 		";
-		$getSupplier = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHESUPPLIER'],$sql,array($id));
+		$getSupplier = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHESUPPLIER'], $sql, array(
+			$this->sSYSTEM->sUSERGROUPDATA['id'],
+			$id
+		));
 		$this->sSYSTEM->sExtractor[] = "sSupplier";
 
 		foreach ($getSupplier as $supplierKey => $supplierValue)
