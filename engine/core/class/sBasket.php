@@ -1043,9 +1043,8 @@ class sBasket
 			$totalAmount = $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($totalAmount);
 
 			// Total-Amount brutto (in any case)
-			$totalAmountWithTaxNumeric = $totalAmountWithTax-$discount;
-
-			$totalAmountWithTax = $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($totalAmountWithTax-round($discount,2));
+			$totalAmountWithTaxNumeric = $totalAmountWithTax;
+			$totalAmountWithTax = $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($totalAmountWithTax);
 
 			// Total-Amount netto
 			$totalAmountNetNumeric = $totalAmountNet;
