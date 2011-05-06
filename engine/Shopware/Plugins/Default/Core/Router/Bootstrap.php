@@ -173,7 +173,8 @@ class Shopware_Plugins_Core_Router_Bootstrap extends Shopware_Components_Plugin_
 	
 		if(!isset($userParams['fullPath']) || !empty($userParams['fullPath'])) {
 			$url = $useSSL ? 'https://' : 'http://';
-			if(Shopware()->Bootstrap()->hasResource('Shop')) {
+			if(Shopware()->Bootstrap()->hasResource('Shop')
+			  && Shopware()->Bootstrap()->hasResource('Front')) {
 				$url .= Shopware()->Shop()->getHost().Shopware()->Front()->Request()->getBasePath();
 			} else {
 				$url .= Shopware()->Config()->BasePath;
