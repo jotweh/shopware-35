@@ -708,6 +708,7 @@ class sArticles
 
 
 	}
+	
 	/**
 	 * Get all articles from a specific category
 	 * @param int $id category id
@@ -1384,6 +1385,7 @@ class sArticles
 
 		} //  For the case, articles were found
 	}
+	
 	/**
 	 * Get supplier by id
 	 * @param int $id - s_articles_supplier.id 
@@ -3434,14 +3436,13 @@ class sArticles
 				break;
 			case "new":
 				$sql = "SELECT a.datum as date, COUNT(a.id) as count FROM s_articles a $categoryFrom WHERE a.mode=0 AND a.active=1 $categorySQL $cacheSQL GROUP BY a.datum ORDER BY a.datum DESC LIMIT 1";
-				$results = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
+				$results = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
 				$randLimit = rand(0,$results["count"]-1);
 				$results["date"] = $this->sSYSTEM->sDB_CONNECTION->qstr($results["date"]);
-				$sql = "SELECT a.id as articleID FROM s_articles a $categoryFrom WHERE a.mode=0 AND a.active=1 AND datum={$results["date"]} $categorySQL $cacheSQL LIMIT $randLimit,1";
+				$sql = "SELECT a.id as articleID FROM s_articles a $categoryFrom WHERE a.mode=0 AND a.active=1 AND datum>={$results["date"]} $categorySQL $cacheSQL LIMIT $randLimit,1";
 				$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlNew', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-
-				$value = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
-				$value = $value["articleID"];
+				$value = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
+				if(empty($value)) return false;
 				$valueSQL = "a.id=$value";
 				break;
 			case "top":
@@ -3987,16 +3988,17 @@ class sArticles
 		$category = intval($category);
 		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotions_Start"));
 		$sToday = date("Y-m-d");
-		$sql = "SELECT category,mode, TRIM(ordernumber) as ordernumber, link, description, link_target, img, liveshoppingID
-		FROM s_emarketing_promotions
-		WHERE category=$category AND ((TO_DAYS(valid_from) <= TO_DAYS('$sToday') AND
-		TO_DAYS(valid_to) >= TO_DAYS('$sToday')) OR
-		(valid_from='0000-00-00' AND valid_to='0000-00-00')) ORDER BY position ASC
+		$sql = "
+			SELECT category,mode, TRIM(ordernumber) as ordernumber, link, description, link_target, img, liveshoppingID
+			FROM s_emarketing_promotions
+			WHERE category=$category AND ((TO_DAYS(valid_from) <= TO_DAYS('$sToday') AND
+			TO_DAYS(valid_to) >= TO_DAYS('$sToday')) OR
+			(valid_from='0000-00-00' AND valid_to='0000-00-00')) ORDER BY position ASC
 		";
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotions_FilterSQL', $sql, array('subject'=>$this,'category'=>$category));
 		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotions_AfterSQL"));
 		$getAffectedPromitions = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql);
-
+		
 		// Clearing cache
 		unset($this->sCachePromotions);
 		if (count($getAffectedPromitions)){
