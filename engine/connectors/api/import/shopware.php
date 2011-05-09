@@ -2483,6 +2483,9 @@ class sShopwareImport
 				$this->sDB->Execute($sql);
 			}
 			$this->sDeleteTranslation(array('article','configuratoroption','configuratorgroup','accessoryoption','accessorygroup','properties'),$article['articleID']);
+			
+			$sql = 'DELETE FROM s_core_rewrite_urls WHERE org_path=?';
+			$this->sDB->Execute($sql, array('sViewport=detail&sArticle=' . $article['articleID']));
 		}
 		else 
 		{
@@ -2618,10 +2621,12 @@ class sShopwareImport
 			"s_export_articles",
 			"s_filter_values",
 			"s_articles_groups_settings",
-			"s_filter_values"
+			"s_filter_values",
+			"s_core_rewrite_urls"
 		);
-		foreach($tabellen as $tabelle)
+		foreach($tabellen as $tabelle) {
 			$this->sDB->Execute("TRUNCATE `$tabelle`;");
+		}
 		$sql = "DELETE FROM s_core_translations WHERE objecttype IN ('article','variant','configuratoroption','configuratorgroup','accessoryoption','accessorygroup','properties','link')";
 		$this->sDB->Execute($sql);
 		return true;
