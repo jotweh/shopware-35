@@ -1,6 +1,18 @@
 <?php
+/**
+ * Cache controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 {
+	/**
+	 * Pre dispatch controller method
+	 */
 	public function preDispatch()
 	{
 		if(!in_array($this->Request()->getActionName(), array('index', 'skeleton'))) {
@@ -8,80 +20,135 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Index action method
+	 */
 	public function indexAction()
 	{
 		$this->View()->CacheInformation = $this->getCacheInformation();
 	}
 	
+	/**
+	 * Skeleton action method
+	 */
 	public function skeletonAction()
 	{
 	}
 	
+	/**
+	 * Clear snippets and template cache action
+	 */
 	public function snippetsAction()
 	{
+		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
+			'Shopware_Config',
+			'Shopware_Plugin'
+		));
 		$this->clearTemplateCache();
-		$this->clearConfigCache();
 		$this->clearCompilerCache();
 	}
 	
+	/**
+	 * Clear articles cache action
+	 */
 	public function articlesAction()
 	{
-		$this->clearAdodbCache();
-		$this->clearPluginCache();
+		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
+			'Shopware_Adodb',
+			'Shopware_Plugin',
+			'Shopware_RouterRewrite'
+		));
+		$this->clearRewriteCache();
 	}
 	
+	/**
+	 * Clear config cache action
+	 */
 	public function configAction()
 	{
 		$this->clearTemplateCache();
-		$this->clearConfigCache();
 		$this->clearCompilerCache();
-		$this->clearPluginCache();
+		
+		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
+			'Shopware_Config',
+			'Shopware_Plugin'
+		));
 	}
 	
+	/**
+	 * Clear cache action
+	 */
 	public function clearCacheAction()
 	{
 		$cache = $this->Request()->getPost('cache');
 		
-		if ($cache["template"] == "on") $this->clearTemplateCache();
-		if ($cache["config"] == "on") $this->clearConfigCache();
-		if ($cache["seo"] == "on") $this->clearRewriteCache();
-		if ($cache["plugins"] == "on") $this->clearPluginCache();
-		if ($cache["search"] == "on") $this->clearSearchCache();
-		if ($cache["adodb"] == "on") $this->clearAdodbCache();
+		$tags = array();
+		if ($cache['config'] == 'on') {
+			$tags[] = 'Shopware_Config';
+		}
+		if ($cache['plugins'] == 'on') {
+			$tags[] = 'Shopware_Plugin';
+		}
+		if ($cache['seo'] == 'on') {
+			$tags[] = 'Shopware_RouterRewrite';
+		}
+		if ($cache['adodb'] == 'on') {
+			$tags[] = 'Shopware_Adodb';
+		}
+		if ($cache['search'] == 'on') {
+			$tags[] = 'Shopware_Modules_Search';
+		}
+		if(!empty($tags)) {
+			Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, $tags);
+		}
+		
+		if ($cache['search'] == 'on') {
+			$this->clearSearchCache();
+		}
+		if ($cache['template'] == 'on') {
+			$this->clearTemplateCache();
+		}
+		if ($cache['seo'] == 'on') {
+			$this->clearRewriteCache();
+		}
 	}
 	
+	/**
+	 * Clear static cache
+	 */
 	public function clearStaticCacheAction()
 	{
 		$cache = $this->Request()->getPost('cache');
 		
-		if ($cache["compiler"] == "on") $this->clearCompilerCache();
-		if ($cache["locale"] == "on") $this->clearLocaleCache();
+		if ($cache['compiler'] == 'on') {
+			$this->clearCompilerCache();
+		}
+		if ($cache['locale'] == 'on') {
+			Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array());
+		}
 	}
 	
-	protected function clearConfigCache()
-	{
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_Config'));
-	} 
-	
+	/**
+	 * Clear template cache
+	 */
 	protected function clearTemplateCache()
 	{
 		Shopware()->Template()->cache->clear(null, 'frontend');
 	}
 	
+	/**
+	 * Clear compiler cache
+	 */
 	protected function clearCompilerCache()
 	{
 		Shopware()->Template()->utility->clearCompiledTemplate();
 	}
 	
-	protected function clearLocaleCache()
-	{
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array());
-	}
-	
+	/**
+	 * Clear rewrite cache
+	 */
 	protected function clearRewriteCache()
 	{
-		//Shopware()->Db()->query("UPDATE s_core_config SET value = '' WHERE name = 'sROUTERLASTUPDATE'");
-		
 		$cache = (empty(Shopware()->Config()->RouterCache)||Shopware()->Config()->RouterCache<360) ? 86400 : (int) Shopware()->Config()->RouterCache;
 		$sql = 'SELECT value FROM s_core_config WHERE name=?';
 		$last_update = Shopware()->Db()->fetchOne($sql, array('sROUTERLASTUPDATE'));
@@ -96,26 +163,21 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 		}
 		$sql = 'UPDATE `s_core_config` SET `value`=? WHERE `name`=?';
 	    Shopware()->Db()->query($sql, array(serialize($last_update), 'sROUTERLASTUPDATE'));
-			
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_RouterRewrite'));	
 	}
 	
-	protected function clearPluginCache()
-	{
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_Plugin'));
-	}
-	
+	/**
+	 * Clear search cache
+	 */
 	protected function clearSearchCache()
 	{
-		Shopware()->Db()->query("UPDATE s_core_config SET value = '' WHERE name = 'sFUZZYSEARCHLASTUPDATE'");
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_Modules_Search'));
+		Shopware()->Db()->exec("UPDATE s_core_config SET value = '' WHERE name = 'sFUZZYSEARCHLASTUPDATE'");
 	}
 	
-	protected function clearAdodbCache()
-	{
-		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_Adodb'));
-	}
-	
+	/**
+	 * Returns cache information
+	 *
+	 * @return array
+	 */
 	public function getCacheInformation()
 	{
 		$cache = Shopware()->Cache();
@@ -127,7 +189,7 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 			$info['cache_dir'] = $cache_config['backendOptions']['slow_backend_options']['cache_dir'];
 		}
 		if(!empty($info['cache_dir'])) {
-			$info['cache_size'] = 0;
+			$info['cache_size'] = (float) 0;
 			$info['cache_files'] = 0;
 			$dir_iterator = new RecursiveDirectoryIterator($info['cache_dir']);
 			$iterator = new RecursiveIteratorIterator($dir_iterator, RecursiveIteratorIterator::SELF_FIRST);
@@ -146,6 +208,12 @@ class Shopware_Controllers_Backend_Cache extends Enlight_Controller_Action
 		return $info;
 	}
 	
+	/**
+	 * Format size method
+	 *
+	 * @param float $bytes
+	 * @return string
+	 */
 	public static function encodeSize($bytes)
 	{
 	    $types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
