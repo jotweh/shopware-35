@@ -13,8 +13,19 @@
 		{/foreach}
 	{/if}
 	{if $sArticles}
+		{* Sorting and changing layout *}
+		{block name="frontend_listing_top_actions"}
+			{include file='frontend/blog/listing_actions.tpl'}
+		{/block}
+	
 		{foreach from=$sArticles item=article key=key name="counter"}
 			{include file="frontend/blog/box.tpl" sArticle=$article key=$key}
 		{/foreach}
+		
+		{* Paging *}
+		{block name="frontend_listing_bottom_paging"}
+			{include file='frontend/blog/listing_actions.tpl'}
+		{/block}
 	{/if}
 </div>
+
