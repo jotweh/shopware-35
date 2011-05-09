@@ -149,6 +149,8 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 			
 	    	$sql = 'UPDATE `s_core_config` SET `value`=? WHERE `name`=?';
 	    	Shopware()->Db()->query($sql, array($data,'sROUTERLASTUPDATE'));
+	    	
+	    	Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_RouterRewrite'));
 		}
 	}
 	
