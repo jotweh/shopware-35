@@ -3,6 +3,10 @@
 {* Main content *}
 {block name='frontend_index_content'}
 <div class="blogbox grid_16 last">
+
+	{block name="frontend_detail_index_navigation"}
+		{include file='frontend/detail/navigation.tpl'}
+	{/block}
 	
 	{* Article name *}
 	{block name='frontend_blog_detail_title'}
