@@ -110,6 +110,11 @@ class sOrder
      * @var bool
      */
 	var $sNet; 	// Complete taxfree
+	
+	/**
+	 * @var string
+	 */
+	var $o_attr_1, $o_attr_2,$o_attr_3,$o_attr_4,$o_attr_5,$o_attr_6; 
 
 	/**
 	 * Get a unique ordernumber
@@ -301,50 +306,48 @@ class sOrder
 
 
 		$sql = "
-		INSERT INTO s_order (ordernumber, userID, invoice_amount,invoice_amount_net, invoice_shipping,invoice_shipping_net, ordertime, status, paymentID,  customercomment, net,taxfree, partnerID,temporaryID,referer,language,dispatchID,currency,currencyFactor,subshopID)
-		VALUES ('0',
-		?,
-		?,
-		?,
-		?,
-		?,
-		now(),
-		-1,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?,
-		?
-		)
+			INSERT INTO s_order (ordernumber, userID, invoice_amount,invoice_amount_net, invoice_shipping,invoice_shipping_net, ordertime, status, paymentID,  customercomment, net,taxfree, partnerID,temporaryID,referer,language,dispatchID,currency,currencyFactor,subshopID)
+			VALUES ('0',
+			?,
+			?,
+			?,
+			?,
+			?,
+			now(),
+			-1,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
+			)
 		";
-		$insertOrder = $this->sSYSTEM->sDB_CONNECTION->Execute($sql,
-		array(
-		$this->sUserData["additional"]["user"]["id"],
-		$this->sBasketData["AmountWithTaxNumeric"],
-		$this->sBasketData["AmountNetNumeric"],
-		$this->sShippingcostsNumeric,
-		$this->sShippingcostsNumericNet,
-		$this->sUserData["additional"]["user"]["paymentID"],
-		$this->sComment,
-		$net,
-		$taxfree,
-		(string)$this->sSYSTEM->_SESSION["sPartner"],
-		$this->sSYSTEM->sSESSION_ID,
-		(string)$this->sSYSTEM->_SESSION['sReferer'],
-		$this->sSYSTEM->sLanguageData[$language]["isocode"],
-		$dispatchId,
-		$this->sSYSTEM->sCurrency["currency"],
-		$this->sSYSTEM->sCurrency["factor"],
-		$this->sSYSTEM->sSubShop["id"]
-		)
-		);
+		$insertOrder = $this->sSYSTEM->sDB_CONNECTION->Execute($sql, array(
+			$this->sUserData["additional"]["user"]["id"],
+			$this->sBasketData["AmountWithTaxNumeric"],
+			$this->sBasketData["AmountNetNumeric"],
+			$this->sShippingcostsNumeric,
+			$this->sShippingcostsNumericNet,
+			$this->sUserData["additional"]["user"]["paymentID"],
+			$this->sComment,
+			$net,
+			$taxfree,
+			(string)$this->sSYSTEM->_SESSION["sPartner"],
+			$this->sSYSTEM->sSESSION_ID,
+			(string)$this->sSYSTEM->_SESSION['sReferer'],
+			$this->sSYSTEM->sLanguageData[$language]["isocode"],
+			$dispatchId,
+			$this->sSYSTEM->sCurrency["currency"],
+			$this->sSYSTEM->sCurrency["factor"],
+			$this->sSYSTEM->sSubShop["id"]
+		));
 
 		$orderID = $this->sSYSTEM->sDB_CONNECTION->Insert_ID();
 
@@ -529,12 +532,12 @@ class sOrder
 			'".$this->sSYSTEM->sCurrency["currency"]."',
 			'".$this->sSYSTEM->sCurrency["factor"]."',
 			'".$this->sSYSTEM->sSubShop["id"]."',
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr1"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr2"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr3"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr4"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr5"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["od_attr6"]).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_1).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_2).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_3).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_4).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_5).",
+			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $this->o_attr_6).",
 			".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $_SERVER['REMOTE_ADDR'])."
 		)
 		";
@@ -598,44 +601,44 @@ class sOrder
 
 			$sql = "
 			INSERT INTO s_order_details
-			(orderID,
-			ordernumber,
-			articleID,
-			articleordernumber,
-			price,
-			quantity,
-			name,
-			status,
-			releasedate,
-			modus,
-			esdarticle,
-			taxID,
-			od_attr1,
-			od_attr2,
-			od_attr3,
-			od_attr4,
-			od_attr5,
-			od_attr6
-			)
-			VALUES (
-			$orderID,
-			'$orderNumber',
-			{$basketRow["articleID"]},
-			'{$basketRow["ordernumber"]}',
-			{$basketRow["priceNumeric"]},
-			{$basketRow["quantity"]},
-			'".addslashes($basketRow["articlename"])."',
-			0,
-			'0000-00-00',
-			{$basketRow["modus"]},
-			{$basketRow["esdarticle"]},
-			{$basketRow["taxID"]},
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr1"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr2"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr3"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr4"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr5"]).",
-			".$this->sSYSTEM->sDB_CONNECTION->qstr((string)$basketRow["od_attr6"])."
+				(orderID,
+				ordernumber,
+				articleID,
+				articleordernumber,
+				price,
+				quantity,
+				name,
+				status,
+				releasedate,
+				modus,
+				esdarticle,
+				taxID,
+				od_attr1,
+				od_attr2,
+				od_attr3,
+				od_attr4,
+				od_attr5,
+				od_attr6
+				)
+				VALUES (
+				$orderID,
+				'$orderNumber',
+				{$basketRow["articleID"]},
+				'{$basketRow["ordernumber"]}',
+				{$basketRow["priceNumeric"]},
+				{$basketRow["quantity"]},
+				'".addslashes($basketRow["articlename"])."',
+				0,
+				'0000-00-00',
+				{$basketRow["modus"]},
+				{$basketRow["esdarticle"]},
+				{$basketRow["taxID"]},
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr1"]).",
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr2"]).",
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr3"]).",
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr4"]).",
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr5"]).",
+				".$this->sSYSTEM->sDB_CONNECTION->qstr((string) $basketRow["ob_attr6"])."
 			)";
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Order_SaveOrder_FilterDetailsSQL', $sql, array('subject'=>$this,'row'=>$basketRow,'user'=>$this->sUserData,'order'=>array("id"=>$orderID,"number"=>$orderNumber)));
 
@@ -757,18 +760,18 @@ class sOrder
 		eval($this->sSYSTEM->sCallHookPoint("sOrder.php_sSaveOrder_VariablesAssign"));
 
 		$variables = array(
-		"sOrderDetails"=>$sOrderDetails,
-		"billingaddress"=>$this->sUserData["billingaddress"],
-		"shippingaddress"=>$this->sUserData["shippingaddress"],
-		"additional"=>$this->sUserData["additional"],
-		"sShippingCosts"=>$this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sShippingcosts)." ".$this->sSYSTEM->sCurrency["currency"],
-		"sAmount"=>$this->sAmountWithTax ? $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sAmountWithTax)." ".$this->sSYSTEM->sCurrency["currency"] : $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sAmount)." ".$this->sSYSTEM->sCurrency["currency"],
-		"sAmountNet"=>$this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sBasketData["AmountNetNumeric"])." ".$this->sSYSTEM->sCurrency["currency"],
-		"ordernumber"=>$orderNumber,
-		"sOrderDay"=>$orderDay,
-		"sOrderTime"=>$orderTime,
-		"sComment"=>$this->sComment,
-		"sEsd"=>$esdOrder
+			"sOrderDetails"=>$sOrderDetails,
+			"billingaddress"=>$this->sUserData["billingaddress"],
+			"shippingaddress"=>$this->sUserData["shippingaddress"],
+			"additional"=>$this->sUserData["additional"],
+			"sShippingCosts"=>$this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sShippingcosts)." ".$this->sSYSTEM->sCurrency["currency"],
+			"sAmount"=>$this->sAmountWithTax ? $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sAmountWithTax)." ".$this->sSYSTEM->sCurrency["currency"] : $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sAmount)." ".$this->sSYSTEM->sCurrency["currency"],
+			"sAmountNet"=>$this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($this->sBasketData["AmountNetNumeric"])." ".$this->sSYSTEM->sCurrency["currency"],
+			"ordernumber"=>$orderNumber,
+			"sOrderDay"=>$orderDay,
+			"sOrderTime"=>$orderTime,
+			"sComment"=>$this->sComment,
+			"sEsd"=>$esdOrder
 		);
 
 		if ($dispatchId){
@@ -982,27 +985,27 @@ class sOrder
 		";
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Order_SaveBilling_FilterSQL', $sql, array('subject'=>$this,'address'=>$address,'id'=>$id));
 		$array = array(
-		$address["userID"],
-		$id,
-		$address["company"],
-		$address["department"],
-		$address["salutation"],
-		$address["firstname"],
-		$address["lastname"],
-		$address["street"],
-		$address["streetnumber"],
-		$address["zipcode"],
-		$address["city"],
-		$address["phone"],
-		$address["fax"],
-		$address["countryID"],
-		$address["ustid"],
-		$address["text1"],
-		$address["text2"],
-		$address["text3"],
-		$address["text4"],
-		$address["text5"],
-		$address["text6"]
+			$address["userID"],
+			$id,
+			$address["company"],
+			$address["department"],
+			$address["salutation"],
+			$address["firstname"],
+			$address["lastname"],
+			$address["street"],
+			$address["streetnumber"],
+			$address["zipcode"],
+			$address["city"],
+			$address["phone"],
+			$address["fax"],
+			$address["countryID"],
+			$address["ustid"],
+			$address["text1"],
+			$address["text2"],
+			$address["text3"],
+			$address["text4"],
+			$address["text5"],
+			$address["text6"]
 		);
 		$array = Enlight()->Events()->filter('Shopware_Modules_Order_SaveBilling_FilterArray', $array, array('subject'=>$this,'address'=>$address,'id'=>$id));
 
@@ -1059,24 +1062,24 @@ class sOrder
 		";
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Order_SaveShipping_FilterSQL', $sql, array('subject'=>$this,'address'=>$address,'id'=>$id));
 		$array = array(
-		$address["userID"],
-		$id,
-		$address["company"],
-		$address["department"],
-		$address["salutation"],
-		$address["firstname"],
-		$address["lastname"],
-		$address["street"],
-		$address["streetnumber"],
-		$address["zipcode"],
-		$address["city"],
-		$address["countryID"],
-		$address["text1"],
-		$address["text2"],
-		$address["text3"],
-		$address["text4"],
-		$address["text5"],
-		$address["text6"]
+			$address["userID"],
+			$id,
+			$address["company"],
+			$address["department"],
+			$address["salutation"],
+			$address["firstname"],
+			$address["lastname"],
+			$address["street"],
+			$address["streetnumber"],
+			$address["zipcode"],
+			$address["city"],
+			$address["countryID"],
+			$address["text1"],
+			$address["text2"],
+			$address["text3"],
+			$address["text4"],
+			$address["text5"],
+			$address["text6"]
 		);
 		$array = Enlight()->Events()->filter('Shopware_Modules_Order_SaveShipping_FilterArray', $array, array('subject'=>$this,'address'=>$address,'id'=>$id));
 
