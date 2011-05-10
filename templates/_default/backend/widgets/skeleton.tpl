@@ -1,6 +1,6 @@
 {
 	"init": {
-		"title": "{s name='WindowTitle' force}Widgets{/s}",
+		"title": "{s name='WindowTitle' force}Cockpit{/s}",
 		"width": 860,
 		"height": 550,
 		"minwidth": 860,

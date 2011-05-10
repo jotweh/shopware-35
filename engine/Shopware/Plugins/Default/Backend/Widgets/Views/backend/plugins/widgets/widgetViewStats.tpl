@@ -8,7 +8,6 @@ Ext.define('Swag.Widget.{$item}',
 				height: 150
 			});
 
-
 			{if $widget.configuration.refresh}
 				this.task = {
 					run: this.refreshComponent,
@@ -18,8 +17,8 @@ Ext.define('Swag.Widget.{$item}',
 				Ext.TaskManager.start(this.task);
 			{/if}
 
-			
-			Ext.core.DomHelper.append(document.head, { tag: 'link', href: '{url controller=Widgets action=getStyleSheet css=widgetConversion widget=$widgetType}',rel: 'stylesheet',type: 'text/css'});
+
+			Ext.core.DomHelper.append(document.head, { tag: 'link', href: '{url controller=Widgets action=getStyleSheet css=widgetVisitors widget=$widgetType}',rel: 'stylesheet',type: 'text/css'});
 
 
 
@@ -31,7 +30,7 @@ Ext.define('Swag.Widget.{$item}',
 				'<div class="triangle-widget"><div class="triangle-info">{abs}</div>',
 				'<div class="triangle-{updown}"></div>',
 				'<div class="triangle-data">{percent} %</div></div>',
-				'<div class="triangle-legend">Start bis {datePoint}: {historical} % <br />{datePoint} bis jetzt: {current} %</div>',
+				'<div class="triangle-legend">Min: {min} / Max: {max} <br />Durchschnitt: {avg}</div>',
 				'</tpl>'
 				)
 				{/literal}
@@ -45,18 +44,17 @@ Ext.define('Swag.Widget.{$item}',
 				items: [this.status]
 			};
 			this.refreshComponent();
-
 			this.callParent(arguments);
 		},
 		refreshComponent: function(){
 			var url = this.dataProvider;
 			Ext.Ajax.request({
-				url:  '{url controller=WidgetDataStore action=getConversion id=$widgetUid}',
+				url:  '{url controller=WidgetDataStore action=getVisitors id=$widgetUid}',
 				method: 'post',
 				scope:this,
 				success: function(response){
 					var text = Ext.JSON.decode(response.responseText);
-					this.status.update(this.status.tpl.apply({ abs: text.abs,updown:text.updown,percent:text.percent,datePoint: text.datePoint,historical: text.historical,current: text.current}));
+					this.status.update(this.status.tpl.apply({ abs: text.abs,updown:text.updown,percent:text.percent,min: text.min,max: text.max,avg: text.avg}));
 					this.status.body.highlight('#ED9200', { block:true});
 					//this.html = this.tpl.apply({ state: text.state});
 					//console.log(this.html);

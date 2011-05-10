@@ -9,6 +9,7 @@
 abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Bootstrap
 {	
 	protected $capabilities;
+	protected $widgetXML;
 	
 	/**
 	 * Constructor method
@@ -20,6 +21,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	{
 		parent::__construct($namespace, $name);
 		$this->capabilities = $this->getCapabilities();
+		$this->widgetXML = Shopware()->DocPath()."/files/config/Widgets.xml";
 	}
 	
 	/**
@@ -49,6 +51,16 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		$this->deleteConfig();
 		$this->deleteMenuItems();
 		$this->unsubscribeCron();
+
+		if (is_file($this->widgetXML)){
+			$xml = new Shopware_Components_Xml_SimpleXml();
+			$xml->loadFile($this->widgetXML);
+			$xpath = '//Widget[@object="'.get_class($this).'"]';
+			$xml->SimpleXML->removeNodes($xpath);
+			$xml->setFilename($this->widgetXML);
+			$xml->save();
+		}
+		
 		return true;
 	}
 
@@ -152,6 +164,50 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	 		$this->getId()
 	 	);
 	 	return $event;
+	}
+
+	/**
+	 * Create a new widget for display in backend start panel
+	 * @throws Enlight_Exception|Exception
+	 * @param  $name
+	 * @param  $label
+	 * @param  $configuration
+	 * @param  $template
+	 * @param  $viewDirectory
+	 * @param  $extender
+	 * @return bool
+	 */
+	public function createWidget($name,$label,$configuration,$template,$viewDirectory){
+		
+		if (!$this->widgetXML){
+			throw new Enlight_Exception("\$this->widgetXML is null");
+		}
+		if (!$name){
+			throw new Enlight_Exception("Empty widget name given");
+		}
+
+		$xml = new Shopware_Components_Xml_SimpleXml();
+
+		if (!is_file($this->widgetXML)){
+			$xml->setNamespace('Widgets')->create();
+		}else {
+			$xml->loadFile($this->widgetXML);
+			if ($xml->attributeExists('Widgets','name',$name)==true){
+				throw new Exception("Widget with name $name already exists");
+			}
+		}
+		$temp["Widget"]["@attributes"] = array("name"=>$name,"object"=>get_class($this));
+		$temp["Widget"]["label"] =  $label;
+		$temp["Widget"]["template"] = $template;
+		//$temp["Widget"]["extender"] = $extender;
+		$temp["Widget"]["views"] = str_replace(Shopware()->DocPath(),'',$viewDirectory);
+		$temp["Widget"]["configuration"] = $configuration;
+
+		$xml->set($xml->getXmlAtNode('Widgets'),$temp);
+		$xml->setFilename($this->widgetXML);
+		$xml->save();
+
+		return true;
 	}
 	
 	/**
@@ -357,7 +413,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
     	return array(
     		'version' => $this->getVersion(),
 			'autor' => 'shopware AG',
-			'copyright' => 'Copyright © 2010, shopware AG',
+			'copyright' => 'Copyright © 2011, shopware AG',
 			'label' => $this->getName(),
 			'source' => $this->getSource(),
 			'description' => '',

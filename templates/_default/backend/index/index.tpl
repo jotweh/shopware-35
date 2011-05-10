@@ -28,7 +28,7 @@
 			{if $ShowActivate}
 				openAction('activate');
 			{elseif !{config name=HideStart}}
-				openAction('Widgets');
+				//openAction('Widgets');
 			{/if}
 			
 			myExt.reload.periodical({config name='RefreshDashboard'}, this);
@@ -49,6 +49,8 @@
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
 
 {block name="backend_index_body_inline"}
+
+
 	<div id="header">
 		
 		
@@ -113,7 +115,10 @@
 	{/block}
 	
 	{block name="backend_index_index_body"}
-		<div id="body"></div>
+
+		<div id="body">
+
+		</div><div id="WidgetPanelHide" style="display:none;background-color:#FFF;opacity:1;width:800px;height:600px;z-index:1000" />
 	{/block}
 	
 	{block name="backend_index_index_top"}

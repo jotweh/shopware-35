@@ -1200,7 +1200,8 @@ sWindow = new Class({
 	   		
 	   		var ResizeComplete = function ()
 	   		{
-	   			sWindows.focus.clone.getElement('.ironmask').setStyle('display','none');
+				enableWidgetPanel();
+				sWindows.focus.clone.getElement('.ironmask').setStyle('display','none');
 				obj2.options.width = el.getStyle('width').toInt();					
 				obj2.options.height = el.getStyle('height').toInt();
 				
@@ -1215,6 +1216,7 @@ sWindow = new Class({
 	   		}
 	   		var ResizeStart = function ()
 	   		{
+			    disableWidgetPanel();
 	   			sWindows.focus.clone.getElement('.ironmask').setStyle('display','block');
 	   		}
 	   		var limit = { x: [250, 2500], y: [0, 2500] };
@@ -1271,10 +1273,12 @@ sWindow = new Class({
 					x:[-100,2500]
 				},
 				onComplete: function(){
+					enableWidgetPanel();
 					sWindows.focus.clone.getElement('.ironmask').setStyle('display','none');
 				},
 				onStart: function()
 				{
+					disableWidgetPanel();
 					this.options.parentObject.focus();
 					sWindows.focus.clone.getElement('.ironmask').setStyle('display','block');
 				},

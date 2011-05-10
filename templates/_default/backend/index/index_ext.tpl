@@ -601,10 +601,16 @@ var myExt = function(){
 	            	el: 'body',
 	            	height: 25
 	            }),
-	            new Ext.BoxComponent({ 
-	            	region: 'center',
-	            	el: 'body'
-	            }),
+	           new Ext.ux.IFrameComponent({
+					region:'center',
+					split:true,
+					animate:true,
+					fitToFrame: true,
+					title:'Einstellungen',
+					collapsible: true,
+					id: "WidgetPanel",
+					url: '{url controller=Widgets}'
+				}),
 				{if $SidebarActive}parentPanel{else} 
 				new Ext.BoxComponent({ 
 	            	region: 'left',
@@ -616,6 +622,33 @@ var myExt = function(){
      
 
 }();
+
+function disableWidgetPanel(){
+	var height = Ext.getCmp('WidgetPanel').getHeight();
+	var width = Ext.getCmp('WidgetPanel').getWidth();
+	var position = Ext.getCmp('WidgetPanel').getPosition();
+	
+	$('WidgetPanelHide').setStyles(
+	{
+		height: height,
+		position: 'absolute',
+		opacity: 0.7,
+		display: 'block',
+		width: width,
+		top: position[1],
+		left: position[0]
+	}
+	);
+}
+
+function enableWidgetPanel(){
+	$('WidgetPanelHide').setStyles(
+	{
+		display: 'none'
+	}
+	);
+}
+
 function openAccount(){
 	//loadSkeleton('account');
 	var url = '{$accountUrl}';
