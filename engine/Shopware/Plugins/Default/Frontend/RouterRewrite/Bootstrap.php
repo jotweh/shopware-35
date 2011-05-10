@@ -136,19 +136,19 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		
 		$shopId = Shopware()->Shop()->getId();
 		$cache = (empty(Shopware()->Config()->RouterCache)||Shopware()->Config()->RouterCache<360) ? 86400 : (int) Shopware()->Config()->RouterCache;
-		$current_time = Shopware()->Db()->fetchOne('SELECT NOW()');
+		$current_time = Shopware()->Db()->fetchOne('SELECT ?', array(new Zend_Date()));
 		$cached_time = empty($last_update[$shopId]) ? false : $last_update[$shopId];
-				
+		
 		if(empty($cached_time)
 		  || strtotime($cached_time)<strtotime($current_time)-$cache) {
 			Shopware()->Modules()->RewriteTable()->sCreateRewriteTable();
-	    	
+
 	    	$data = $last_update;
 			$data[$shopId] = $current_time;
 			$data = serialize($data);
 			
 	    	$sql = 'UPDATE `s_core_config` SET `value`=? WHERE `name`=?';
-	    	Shopware()->Db()->query($sql, array($data,'sROUTERLASTUPDATE'));
+	    	Shopware()->Db()->query($sql, array($data, 'sROUTERLASTUPDATE'));
 	    	
 	    	Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('Shopware_RouterRewrite'));
 		}
