@@ -79,16 +79,20 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 				$WidgetModel = new Shopware_Models_Widgets_Widgets($panel["id"],'');
 
 				$PanelConfiguration = $PanelModel->get($panel["id"]);
+				
+				foreach ($PanelConfiguration["widgets"] as &$widget){
+					$widget["label"] = 'Test';
+					//$widgetData = $WidgetModel->get($widget["widgetType"]);
+					//$widget["object"] = $widgetData;
 
-				foreach ($PanelConfiguration["widgets"] as $widget){
-					$widget["label"] = utf8_decode($widget["label"]);
-					$widgetData = $WidgetModel->get($widget["widgetType"]);
-					$widget["object"] = $widgetData;
+					$widget["configuration"]["widgetLabel"] = utf8_decode($widget["configuration"]["widgetLabel"]);
+					//print_r($widget["configuration"]);exit;
 					$widgets[] = $widget;
 				}
 
+				
 				$first = true;
-				for ($i=0;$i<=3;$i++){
+				for ($i=0;$i<$numberCols;$i++){
 					if ($first){
 						$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>0,"width"=>"150","items"=>array());
 						$first = false;
@@ -96,17 +100,19 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 						$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>1,"items"=>array());
 					}
 				}
-				
-				foreach ($PanelConfiguration["widgets"] as $widget){
-					if (!isset($widget["position"])){
-						$widget["position"] = 0;
+				//print_r($PanelConfiguration["widgets"]);exit;
+				foreach ($PanelConfiguration["widgets"] as $tempWidget){
+
+					if (!isset($tempWidget["position"])){
+						$tempWidget["position"] = 0;
 					}
-					if (!isset($widget["column"])){
-						$widget["column"] = 0;
+					if (!isset($tempWidget["column"])){
+						$tempWidget["column"] = 0;
 					}
 
-					$PanelConfiguration["cols"][$widget["column"]]["items"][] = $widget;
+					$PanelConfiguration["cols"][$tempWidget["column"]]["items"][] = $tempWidget;
 				}
+				
 
 				for ($i=0;$i<$numberCols;$i++){
 					if (isset($PanelConfiguration["cols"][$i]["items"][0])){
@@ -117,7 +123,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 				$panelData[] = $PanelConfiguration;
 			}
 		}
-		
+
 		$this->View()->panel = $panelData[0];
 	}
 
@@ -434,7 +440,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 		// Save widget configuration
 		$panelModel->updateWidgetConfiguration($widgetId,$config);
 
-		echo Zend_Json::encode(array("success"=>true,"data"=>array("widgetUid"=>$widgetId)));
+		echo Zend_Json::encode(array("success"=>true,"data"=>array("widgetUid"=>$widgetId,"widgetType"=>$widget)));
 	}
 
 	/**

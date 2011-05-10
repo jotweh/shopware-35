@@ -310,15 +310,22 @@
 									url: '{url action=saveSettings}',
 									success: function(form, action){
 										var result = action.result.data.widgetUid;
+										var widgetType = action.result.data.widgetType;
 										Ext.getCmp('widgetUid').setValue(result);
 										Ext.Msg.show(
 										{
 											title: 'Status',
 											msg: 'Widget added successfully',
 											buttons: Ext.Msg.OK,
-											icon: Ext.window.MessageBox.INFO
+											icon: Ext.window.MessageBox.INFO,
+											fn: function(){
+												document.location.reload();
+											}
 										}
 										);
+
+										
+
 									},
 									failure: function(form,action){
 										Ext.Msg.alert('Failed', action.result.msg);
