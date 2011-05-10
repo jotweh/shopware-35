@@ -2,7 +2,8 @@
 if (!$path) $path = "../../";
 include($path."payment.class.php");
 
-class moneybookersPayment extends sPayment {
+class
+	moneybookersPayment extends sPayment {
   /*{{{Variables*/
   var $version    = '1.0';
 	
@@ -232,7 +233,8 @@ class moneybookersPayment extends sPayment {
 <input type="hidden" name="country" value="{VAR_COUNTRY}">
 <input type="hidden" name="payment_type" value="{VAR_PAYMENT_TYPE}">
 <input type="hidden" name="payment_methods" value="{VAR_PAYMENT_TYPE}">
-<input type="hidden" name="merchant_fields" value="param_sCoreId, param_custom, param_uniqueId, ">
+<input type="hidden" name="merchant_fields" value="param_sCoreId, param_custom, param_uniqueId, platform">
+<input type="hidden" name="platform" value="21477261">
 <input type="hidden" name="param_sCoreId" value="{VAR_COREID}">
 <input type="hidden" name="param_uniqueId" value="{VAR_UNIQUEID}">
 <input type="hidden" name="param_custom" value="{VAR_CUSTOM}">
