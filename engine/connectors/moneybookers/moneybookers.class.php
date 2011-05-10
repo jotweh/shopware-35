@@ -223,8 +223,8 @@ class
 <input type="hidden" name="currency" value="{VAR_CURRENCY}">
 <input type="hidden" name="confirmation_note" value="{VAR_CONFIRMATION_NOTE}">
 
-<input type="hidden" name="firstname" value="{VAR_NAME}">
-<input type="hidden" name="lastname" value="{VAR_SURNAME}">
+<input type="hidden" name="firstname" value="{VAR_SURNAME}">
+<input type="hidden" name="lastname" value="{VAR_NAME}">
 <input type="hidden" name="title" value="{VAR_TITLE}">
 <input type="hidden" name="date_of_birth" value="{VAR_BIRTHDATE}">
 <input type="hidden" name="address" value="{VAR_STREET} {VAR_HOUSENUMBER}">
