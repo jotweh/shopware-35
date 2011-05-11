@@ -76,7 +76,7 @@
 		{block name="frontend_note_item_actions"}
 		<div class="action">
 			{* Place article in basket *}
-			{if !$sBasketItem.sConfigurator}
+			{if !$sBasketItem.sConfigurator && !$sBasketItem.sVariantArticle}
 			<a href="{url controller=checkout action=addArticle sAdd=$sBasketItem.ordernumber}" class="basket" title="{s name='NoteLinkBuy'}{/s}">
 				{s name='NoteLinkBuy'}{/s}
 			</a>
