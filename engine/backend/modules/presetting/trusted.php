@@ -120,24 +120,25 @@ while ($field=mysql_fetch_array($queryOptions)){
 <legend><?php echo $sLang["presettings"]["trusted_Your_store_with_Trusted_Shop_seal"] ?></legend>
 
 <img src="ts.gif" style="float:left;margin-right:15px;">
-<p>
-<?php echo $sLang["presettings"]["trusted_Trusted_Shop_is_the_hallmark_for_online-shops"] ?>
-</p>
-<strong>
-<?php echo $sLang["presettings"]["trusted_Your_Benefits_from_trusted_shop"] ?><br />
-</strong><br />
-<?php echo $sLang["presettings"]["trusted_Improve_your_shop_and_your_ordering_process"] ?>
-<br /><strong>
-<?php echo $sLang["presettings"]["trusted_What_does_your_Trusted_Shop"] ?>
-</strong>
+<strong>Gütesiegel und Käuferschutz </strong><br />
+Trusted Shops ist das bekannte Internet-Gütesiegel für Online-Shops mit Käuferschutz für Ihre<br />
+Kunden. Bei einer Zertifizierung wird Ihr Shop umfassenden Tests unterzogen. Diese Prüfung mit<br />
+mehr als 100 Einzelkriterien orientiert sich an den Forderungen von Verbraucherschützern sowie dem<br />
+nationalen und europäischen Recht.<br />
 <br /><br />
-<?php echo $sLang["presettings"]["trusted_Certification_of_your_online_store"] ?>
-
-<br />
-<?php echo $sLang["presettings"]["trusted_The_Trusted_Shops_effect"] ?></strong><br />
-<?php echo $sLang["presettings"]["trusted_The_combination_of_audit"] ?>
-<br />
-<a href="http://www.trustedshops.de/shopbetreiber/shoploesungen/shopware.html" target="_blank"><?php echo $sLang["presettings"]["trusted_more_informations"] ?></a>
+<strong>Mehr Umsatz durch mehr Vertrauen! </strong><br />
+Das Trusted Shops Gütesiegel ist optimal, um das Vertrauen Ihrer Online-Kunden zu steigern.<br />
+Vertrauen steigert die Bereitschaft Ihrer Kunden, bei Ihnen einzukaufen.<br />
+<br /><br />
+<strong>Weniger Kaufabbrüche </strong><br />
+Sie bieten Ihren Online-Kunden ein starkes Argument: Den Trusted Shops Käuferschutz. Durch diese<br />
+zusätzliche Sicherheit werden weniger Einkäufe abgebrochen.<br />
+<br /><br />
+<strong>Ertragreiche und nachhaltige Kundenbeziehung</strong><br /><br />
+Das Trusted Shops Gütesiegel mit Käuferschutz ist für viele Online-Shopper ein nachhaltiges<br />
+Qualitätsmerkmal für sicheres Einkaufen im Web. Aus Einmalkäufern werden Stammkunden.<br />
+<br /><br />
+<a href="http://www.trustedshops.de/shopbetreiber/mitgliedschaft.html?" target="_blank">Informieren und anmelden!</a>
 
 </fieldset>
 

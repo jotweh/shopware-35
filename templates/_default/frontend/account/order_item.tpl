@@ -108,7 +108,7 @@
 					<div class="textright">
 						{block name='frontend_account_order_item_price'}
 					    {if $article.price}
-					    	{$article.price} {$offerPosition.currency_html}
+					    	{$article.price} {$offerPosition.currency_html}*
 						{else}
 							{se name="OrderItemInfoFree"}{/se}
 						{/if}
@@ -121,7 +121,7 @@
 						<strong>
 							{block name='frontend_account_order_item_amount'}
 							{if $article.amount}
-								{$article.amount} {$offerPosition.currency_html}
+								{$article.amount} {$offerPosition.currency_html}*
 							{else}
 								{se name="OrderItemInfoFree"}{/se}
 							{/if}
