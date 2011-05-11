@@ -210,6 +210,7 @@ $filterGroup
 $filterShop
 $filterDispatch
 $searchSQL
+GROUP BY s_order.id
 ORDER BY {$_POST["sort"]} {$_POST["dir"]}
 LIMIT {$_POST["start"]},{$_POST["limit"]}
 ";
