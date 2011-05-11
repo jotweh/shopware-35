@@ -1509,8 +1509,15 @@ class sArticles
 			if (empty($activeFilters) || !is_array($activeFilters)){
 				$activeFilters = array();
 			}
-			$link = $this->sSYSTEM->sCONFIG['sBASEFILE'].$this->sSYSTEM->sBuildLink(array("sFilterProperties"=>$property["uniqueID"]."|".implode("|",$activeFilters)),false)."";
 
+			//$link = $this->sSYSTEM->sCONFIG['sBASEFILE'].$this->sSYSTEM->sBuildLink(array("sFilterProperties"=>$property["uniqueID"]."|".implode("|",$activeFilters)),false)."";
+
+			//#4599
+			$this->sSYSTEM->_GET["sBackupPage"] = $this->sSYSTEM->_GET["sPage"];
+			$this->sSYSTEM->_GET["sPage"] = "";
+			$link = $this->sSYSTEM->sCONFIG['sBASEFILE'].$this->sSYSTEM->sBuildLink(array("sFilterProperties"=>$property["uniqueID"]."|".implode("|",$activeFilters)),false)."";
+			$this->sSYSTEM->_GET["sPage"] = $this->sSYSTEM->_GET["sBackupPage"];
+			
 			if (!empty($activeFiltersArray["activeOptions"]) && in_array($property["id"],$activeFiltersArray["activeOptions"]))
 			{
 				$optionGroupActive = true;
