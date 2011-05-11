@@ -2553,7 +2553,7 @@ jQuery.fn.liveSearch = function (conf) {
     
     //Checks the user
     $.checkout.checkUser = function (target,event) {
-    	config.target = target;    	
+    	config.target = target;
         $.ajax({
             'url': config.viewport,
             'dataType': 'jsonp',
@@ -2561,18 +2561,25 @@ jQuery.fn.liveSearch = function (conf) {
                 if (result.length) {
                 	var width = 530;
                 	var position = 'fixed';
-                
+
                 	if($.browser.msie && parseInt($.browser.version) == 6) {
                 		var width = 530;
                 		var position = 'absolute';
                 	}
-                
+
                     $.modal(result, config.headline, {
                         'position': position,
                         'textClass': '',
                         'textContainer': '<div>',
                         'width': width+'px'
                     }).find('.close').remove();
+
+                    if($.browser.msie) {
+	                    buttons = $('.modal').find('input[type^=submit]');
+	                    buttons.each(function() {
+	                    	this.fireEvent('onmove');
+	                    });
+                    }
                 
                 // user is logged in                
                 } else {
