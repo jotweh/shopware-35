@@ -1,6 +1,19 @@
 <?php
+/**
+ * Shopware Cron for article ratings
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @package Shopware
+ * @subpackage Plugins/Core/Cron
+ */
 class Shopware_Plugins_Core_CronRating_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Bootstrap Installation method
+	 * @return bool
+	 */
 	public function install()
 	{		
 	 	$event = $this->createEvent(
@@ -11,7 +24,15 @@ class Shopware_Plugins_Core_CronRating_Bootstrap extends Shopware_Components_Plu
 		
 		return true;
 	}
-	
+
+	/**
+	 * Cron-Listener Method
+	 * Get all completed orders within a defined timerange
+	 * and send the rating call
+	 * @static
+	 * @param Shopware_Components_Cron_CronJob $job
+	 * @return bool
+	 */
 	public static function onRun(Shopware_Components_Cron_CronJob $job)
 	{		
 		if( Shopware()->Config()->sVOTESENDCALLING == true) {
@@ -22,7 +43,7 @@ class Shopware_Plugins_Core_CronRating_Bootstrap extends Shopware_Components_Plu
 			list($y,$m,$d) = explode("-",date("Y-m-d"));
 			$time = Shopware()->Adodb()->DBDate(mktime(0,0,0,$m,$d-$sendTime,$y));
 			
-			$orders = $export->sGetOrders (array("where"=>"(o.status = 2 OR o.status = 7) AND DATE(o.ordertime) = $time"));// AND cleareddate = $time AND Status = 2(Komplett Abgeschlossen) or = 7(Komplett ausgeliefert)
+			$orders = $export->sGetOrders (array("where"=>"(o.status = 2 OR o.status = 7) AND DATE(o.ordertime) = $time"));
 			
 			if(empty($orders)) {
 				return true;
