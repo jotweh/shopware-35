@@ -1253,7 +1253,7 @@ jQuery(document).ready(function($) {
 			}
 			
 			// prepare ordernumber for sizzle
-			article.ordernumber = article.ordernumber.replace('\.', '\\.');
+			article.ordernumber = article.ordernumber.replace(/\./g, '\\.');
 			
 			// refresh every second
 			window.setInterval(function () {
