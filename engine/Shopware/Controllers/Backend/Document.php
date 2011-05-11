@@ -4,8 +4,9 @@
  * @link http://www.shopware.de
  * @package Controllers
  * @subpackage Backend/Document
- * @copyright (C) Shopware AG 2002-2010
- * @version Shopware 3.5.0
+ * @copyright (C) Shopware AG 2011
+ * @version Shopware 3.5.4
+ * @author Stefan Hamann
  */
 class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
 {
@@ -27,7 +28,11 @@ class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
      * @var string
      */
 	protected $path;
-	
+
+	/**
+	 * Setting correct url / path to access resources
+	 * @return void
+	 */
 	public function init(){
 		if ($_SERVER["HTTPS"]){
 			$this->path = "https://";
@@ -83,23 +88,31 @@ class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
 		);
 		$document->render();
 	}
-	
+
+	/**
+	 * Empty / Deprecated
+	 * @return void
+	 */
 	public function settingsAction(){
 		
 	}
-	
+
+	/**
+	 * Add a new document type
+	 * @return void
+	 */
 	public function addDocumentAction(){
 		$this->View()->setTemplate();
 		$insert = Shopware()->Db()->query("
 		INSERT INTO s_core_documents (name,template,numbers,`left`,`right`,`top`,`bottom`,pagebreak)
 		VALUES (
-		'Neuer Beleg','index.tpl','own','25','10','20','20','10'
+		'Neuer Beleg','index.tpl','doc','25','10','20','20','10'
 		)
 		");
 		$id = Shopware()->Db()->lastInsertId();
 		$update = Shopware()->Db()->query("
 		UPDATE s_core_documents SET numbers = ? WHERE id = ?
-		",array('own_'.$id,$id));
+		",array('doc_'.$id,$id));
 		$sqlDuplicate = "INSERT IGNORE INTO s_core_documents_box
 		SELECT
 		 NULL AS id,
@@ -114,12 +127,16 @@ class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
 		$insert = Shopware()->Db()->query("
 		INSERT INTO s_order_number (number,name,`desc`)
 		VALUES (
-		'1000','own_$id','Neuer Beleg'
+		'1000','doc_'.$id,'Neuer Beleg'
 		)
 		");
 		
 	}
-	
+
+	/**
+	 * Delete an own document type
+	 * @return void
+	 */
 	public function deleteDocumentAction(){
 		$this->View()->setTemplate();
 		$id = $this->request->id;
@@ -231,7 +248,11 @@ class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
 		echo json_encode($getDocuments);
 		
 	}
-	
+
+	/**
+	 * Duplicate document properties 
+	 * @return void
+	 */
 	public function duplicatePropertiesAction(){
 		$id = $this->Request()->id;
 		
