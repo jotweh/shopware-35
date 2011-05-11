@@ -1,6 +1,7 @@
 <?php
 /**
- * Order model
+ * Shopware Order Model
+ * 
  * @link http://www.shopware.de
  * @package core
  * @subpackage class
@@ -1194,4 +1195,141 @@ class sOrder
 			// --
 		} // - if user found
 	} // Tell-a-friend
+	
+	/**
+	 * Send status mail
+	 *
+	 * @param Enlight_Components_Mail $mail
+	 * @return Enlight_Components_Mail
+	 */
+	public function sendStatusMail(Enlight_Components_Mail $mail)
+	{
+		Enlight()->Events()->notify('Shopware_Controllers_Backend_OrderState_Send_BeforeSend', array(
+			'subject'=>$this, 'mail'=>$mail
+		));
+		
+		if(!empty(Shopware()->Config()->OrderStateMailAck)){
+			$mail->addBcc(Shopware()->Config()->OrderStateMailAck);	
+		}
+
+		return $mail->send();
+	}
+	
+	/**
+	 * Create status mail
+	 *
+	 * @param int $orderId
+	 * @param int $statusId
+	 * @param string $template
+	 * @return Enlight_Components_Mail
+	 */
+	public function createStatusMail($orderId, $statusId, $template=null)
+	{
+		$statusId = (int) $statusId;
+		$orderId = (int) $orderId;
+
+		if (empty($template)){
+			$template = 'sORDERSTATEMAIL' . $statusId;
+		}
+		
+		if(empty($orderId) || empty($statusId)) {
+			return;
+		}
+		
+		$order = Shopware()->Api()->Export()->sGetOrders(array('orderID' => $orderId));
+		$order = current($order);
+		
+		if (!empty($order['dispatchID'])){
+			$dispatch = Shopware()->Db()->fetchRow('
+				SELECT name, description FROM s_shippingcosts_dispatch
+				WHERE id=?
+			', array($order['dispatchID']));
+		}
+		
+		$orderDetails = Shopware()->Api()->Export()->sOrderDetails(array('orderID' => $orderId));
+		$orderDetails = array_values($orderDetails);
+		
+		$user = Shopware()->Api()->Export()->sOrderCustomers(array('orderID' => $orderId));
+		$user = current($user);
+		
+		if(empty($order) || empty($orderDetails) || empty($user)) {
+			return;
+		}
+		
+		$shop = new Shopware_Models_Shop($order['subshopID']);
+		$shop->setCache();
+		$shop->registerResources(Shopware()->Bootstrap());
+		
+		if(empty($shop->Config()->Templates[$template]['content'])) {
+			return;
+		} else {
+			$template = $shop->Config()->Templates[$template];
+		}
+		
+		$templateEngine = Shopware()->Template();
+		$templateData = $templateEngine->createData();
+		
+		$templateData->assign('sConfig', $shop->Config());
+		$templateData->assign('sOrder', $order);
+		$templateData->assign('sOrderDetails', $orderDetails);
+		$templateData->assign('sUser', $user);
+		if (!empty($dispatch)) {
+			$templateData->assign('sDispatch', $dispatch);
+		}
+		
+		$result = Enlight()->Events()->notify('Shopware_Controllers_Backend_OrderState_Notify', array(
+			'subject' => $this,
+			'id' => $orderId, 'status' => $statusId,
+			'mailname'=>$template->name, 'template'=>$template
+		));
+		if (!empty($result)){
+			$templateData->assign('EventResult', $result->getValues());
+		}
+		
+		$return = array(
+			'content' => $templateEngine->fetch('string:'.$template->content, $templateData), 
+			'subject' => trim($templateEngine->fetch('string:'.$template->subject , $templateData)),
+			'email' => trim($user['email']),
+			'frommail' => trim($templateEngine->fetch('string:'.$template->frommail, $templateData)),
+			'fromname' => trim($templateEngine->fetch('string:'.$template->fromname, $templateData))
+		);
+		
+		$return = Enlight()->Events()->filter('Shopware_Controllers_Backend_OrderState_Filter', $return, array(
+			'subject' => $this,
+			'id' => $orderId, 'status' => $statusId,
+			'mailname' => $template->name, 'template' => $template,
+			'engine' => $templateEngine
+		));
+		
+		$mail = clone Shopware()->Mail();
+		
+		$mail->clearRecipients();
+		
+		$mail->setSubject($return['subject']);
+		$mail->setBodyText($return['content']);
+		$mail->setFrom($return['frommail'], $return['fromname']);
+		$mail->addTo($return['email']);
+		
+		return $mail;
+	}
+	
+	/**
+	 * Set payment status by order id
+	 *
+	 * @param int $orderId
+	 * @param int $paymentStatusId
+	 * @param bool $sendStatusMail
+	 */
+	public function setPaymentStatus($orderId, $paymentStatusId, $sendStatusMail=false)
+	{
+		$sql = 'UPDATE `s_order` SET `cleared`=? WHERE `id`=?;';
+		$result = Shopware::Instance()->Db()->query($sql, array($paymentStatusId, $orderId));
+		
+		if(!empty($sendStatusMail) && $result->rowCount()) {
+			$mail = $this->createStatusMail($orderId, $paymentStatusId);
+			if($mail) {
+				$this->sendStatusMail($mail);
+			}
+		}
+	}
 }
