@@ -2315,7 +2315,7 @@ $sLang["presettings"]["customergroups_Module_Features"] = "Modul-Vorstellung";
 $sLang["presettings"]["customergroups_new_customergroup"] = "Neue Kundengruppe";
 $sLang["presettings"]["customergroups_edit_customergroup"] = "Kundengruppe bearbeiten";
 $sLang["presettings"]["customergroups_array"] = array("id"=>"hide",
-		"groupkey"=>"hide",
+		"groupkey"=>"Interne ID",
 		"description"=>"Bezeichnung",
 		"tax"=>"Bruttopreise in Storefront",
 		"taxinput"=>"Eingabe Bruttopreise",

@@ -68,10 +68,12 @@ if ($_POST["sAction"]=="saveArticle"){
 			}
 			
 			
+			$groupkey = !empty($_POST["groupkey"]) ? "`groupkey` = '{$_POST["groupkey"]}'," : "";
 			
 			$sql = "
 			UPDATE s_core_customergroups
 			SET
+			$groupkey
 			description='{$_POST["description"]}',
 			tax={$_POST["tax"]},
 			taxinput={$_POST["taxinput"]},
@@ -81,6 +83,7 @@ if ($_POST["sAction"]=="saveArticle"){
 			minimumordersurcharge={$_POST["minimumordersurcharge"]}
 			WHERE id={$_GET["edit"]}
 			";
+			
 			
 			$insertArticle = mysql_query($sql);
 		}else {
@@ -218,9 +221,9 @@ if ($_GET["edit"] || $_GET["new"]){
 		
 		
 		while ($row = mysql_fetch_assoc($getFields)) {
-		
-			
-		
+
+			// #4849 - Allow editing of customergroup id excepts default
+			if (($row["Field"]=="groupkey" && $getCustomerGroup[$row["Field"]]=="EK") || ($_GET["new"] && $row["Field"]=="groupkey")) continue;
 		   	if ($substitute[$row["Field"]]!="hide"){
 
 		   	$fieldName = $row["Field"];
