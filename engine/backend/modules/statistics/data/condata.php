@@ -65,12 +65,12 @@ if(empty($_REQUEST['table'])) {
 	$sort = "DESC";
 }
 $sql = "
- SELECT
-   SUM(v.uniquevisits) AS `Visits`,
-   SUM(v.pageimpressions) AS `Hits`,
+SELECT
+   v.uniquevisits AS `Visits`,
+   v.pageimpressions AS `Hits`,
    o.`Bestellungen` AS `Bestellungen`,
-   SUM(b.`Abgebrochene Warenkoerbe`) AS `Abgebrochene Warenkoerbe`, 
-   SUM(u.`Neukunden`) AS `Neukunden`,
+   b.`Abgebrochene Warenkoerbe` AS `Abgebrochene Warenkoerbe`,
+   u.`Neukunden` AS `Neukunden`,
    ou.`Umsatz` AS `Umsatz`,
    ROUND(SUM(o.`Bestellungen`)/SUM(u.`Neukunden`)*100,2) as `Order Abandonment Rate`,
    ROUND(SUM(o.`Bestellungen`)/(SUM(b.`Abgebrochene Warenkoerbe`)+SUM(o.`Bestellungen`))*100,2) as `Basket Conversion Rate`,
