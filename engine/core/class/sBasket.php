@@ -1808,9 +1808,7 @@ class sBasket
 					$sqlFetchGroupName = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql,array($article["articleID"],$i));
 
 					if (!count($sqlFetchGroupName)){
-
-						$this->sSYSTEM->E_CORE_WARNING ("BASKET-INSERT CONFIGURATOR #00","GroupName not found".$sql);
-
+						return false;
 					}else {
 						$pictureGroup = $sqlFetchGroupName["groupname"];
 						if (!empty($groupTranslation["groups"][$i]["gruppenName"])){
