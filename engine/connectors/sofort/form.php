@@ -11,7 +11,8 @@ $payment->initUser();
 $choosenPaymentMean = $payment->sUser["additional"]["payment"]["name"];
 $userData = $payment->sUser;
 $value = $payment->getAmount();
-round(&$value,2);
+$value = round($value,2);
+
 
 //2do >> payment.class metode
 $http = !empty($_SERVER["HTTPS"]) ? "https://" : "http://"; 
