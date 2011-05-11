@@ -79,7 +79,7 @@ while ($entry = mysql_fetch_assoc($result))
 	$entry['instock_save'] = $entry['instock'];
 	$entry['total'] = $entry['amount'];
 	$entry['options2'] = "<a href=\"#\" onclick=\"deleteOrder()\" style=\"cursor: pointer;\" class=\"ico cross\"></a>";
-	$entry['templatechar'] = " EUR";
+	$entry['templatechar'] = " ".htmlentities($entry["currency"]);
 	#echo "<!--";
 	#print_r($entry);
 	#echo "-->";
