@@ -62,27 +62,26 @@ if(mysql_num_rows($query_check) != 0)
 		$tbls = json_decode($tbls);
 		foreach ($tbls as $key=>$tbl)
 		{
-			$sqlFields = "";
-			$sqlValues = "";
-			$sqlTbl = $key;
-			
-			$sqlFields = "`userID`";
-			$sqlValues = "'".$user_id."'";
-			
-			foreach($tbls->$key as $field => $value)
-			{
-				$sqlVal = $tbls->$key->$field->value;
-				$sqlFields .= " ,`".$field."`";
-				$sqlValues .= " ,'".$sqlVal."'";
-			}
-			$sql = sprintf("INSERT INTO `%s` 
-			(%s) VALUES (%s)",
-			$sqlTbl,
-			mysql_real_escape_string(htmlspecialchars(utf8_decode($sqlFields))),
-			mysql_real_escape_string(htmlspecialchars(utf8_decode($sqlValues)))
-			);
-			
-			mysql_query($sql);
+				$sqlFields = "";
+				$sqlValues = "";
+				$sqlTbl = $key;
+
+				$sqlFields = "`userID`";
+				$sqlValues = "'".$user_id."'";
+
+				foreach($tbls->$key as $field => $value)
+				{
+						$sqlVal = $tbls->$key->$field->value;
+						$sqlFields .= " ,`".mysql_real_escape_string(htmlspecialchars(utf8_decode($field)))."`";
+						$sqlValues .= " ,'".mysql_real_escape_string(htmlspecialchars(utf8_decode($sqlVal)))."'";
+				}
+				$sql = sprintf("INSERT INTO `%s`
+				(%s) VALUES (%s)",
+				$sqlTbl,
+				$sqlFields,
+				$sqlValues
+				);
+				mysql_query($sql);
 		}
 	}
 	
