@@ -200,6 +200,11 @@ WHERE s_order.id={$_GET["id"]}
 if (!@mysql_num_rows($queryOrder)) die($sLang["orders"]["main_order_not"]."{$_GET["id"]} ".$sLang["orders"]["main_order_not_found"]);
 
 $orderMain = mysql_fetch_array($queryOrder);
+if (strpos($orderMain["remote_addr"],".")!==false){
+	$ip = explode(".",$orderMain["remote_addr"]);
+	$ip[3] = "xxx";
+	$orderMain["remote_addr"] = implode(".",$ip);
+}
 
 
 

@@ -57,3 +57,5 @@ ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NUL
  */
 UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
 UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
+
+

@@ -885,6 +885,13 @@ echo "
    var viewport = new Ext.Viewport({
         layout:'border',
         items:[
+			new Ext.Panel(
+			{
+				region: 'north',
+				height: 40,
+				html: 'Achtung! Sie dürfen die Funktionen "Grund erfragen" und "Gutschein schicken" nur im Rahmen Ihrer Trusted-Shops Zertifizierung verwenden, wenn Sie das Einverständnis Ihrer Kunden haben!'
+			}
+			),
             leftPanel,myTab
          ]
     });
