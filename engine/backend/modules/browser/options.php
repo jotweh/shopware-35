@@ -76,7 +76,7 @@ if ($_FILES["filecontent"]["tmp_name"]){
 	// Datei-Endung
 	$filename = explode(".", $filename);
 	$filenameext = $filename[count($filename)-1];
-	if (in_array($filenameext,array("php","php5","php4","phtml","cgi","pl"))){
+	if (in_array(strtolower($filenameext),array("php","php5","php4","phtml","cgi","pl","php3","py","exe","bat","com"))){
 		//echo $filenameext;
 		die("Upload of $filenameext files is forbidden");
 	}
