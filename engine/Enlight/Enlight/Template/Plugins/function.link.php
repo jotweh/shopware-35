@@ -10,7 +10,7 @@
 function smarty_function_link($params, $smarty, $template)
 {
 	if(empty($params['file'])) {
-		return '';
+		return false;
 	}
 	$file = $params['file'];
 	$docPath = Enlight::Instance()->DocPath();
@@ -24,13 +24,16 @@ function smarty_function_link($params, $smarty, $template)
 				break;
 			}
 		}
-		if(strpos($file, $docPath)===0) {
+		if(strpos($file, $docPath) === 0) {
 			$file = substr($file, strlen($docPath));
 		}
-		if(Enlight::Instance()->DS()!='/') {
+		if(Enlight::Instance()->DS() !== '/') {
 			$file = str_replace(Enlight::Instance()->DS(), '/', $file);
 		}
-		if (strpos($file, '/')!==0) {
+		if (strpos($file, '/') !== 0) {
+			if(!file_exists($docPath . $file)) {
+				return false;
+			}
 			$request = Enlight::Instance()->Front()->Request();
 			$file = $request->getBasePath().'/'.$file;
 		}

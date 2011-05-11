@@ -17,6 +17,14 @@ class Shopware_Plugins_Frontend_Payment_Bootstrap extends Shopware_Components_Pl
 	 */
 	public function install()
 	{
+		$sql = '
+			ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL ,
+			ADD `pluginID` INT( 11 ) UNSIGNED NULL;
+		';
+		try {
+			Shopware()->Db()->exec($sql);
+		} catch (Exception $e) { }
+		
 		$event = $this->createEvent(
 	 		'Enlight_Bootstrap_InitResource_Payments',
 	 		'onInitResourcePayments'

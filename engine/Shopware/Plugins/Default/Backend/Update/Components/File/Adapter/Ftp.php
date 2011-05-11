@@ -71,6 +71,9 @@ class	Shopware_Components_File_Adapter_Ftp
 	public function fileExists($remoteFile)
 	{
     	$remoteDir = dirname($remoteFile);
+    	if($remoteDir == '.') {
+    		$remoteDir = '';
+    	}
     	$remoteFile = basename($remoteFile);  	
     	$list = $this->execute('nlist', array($remoteDir), false);
         if (empty($list)) {

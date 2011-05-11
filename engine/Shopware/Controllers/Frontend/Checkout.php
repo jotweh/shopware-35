@@ -215,8 +215,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			
 			$this->View()->sEmbedded = $embedded;
 		} else {
-			list($controller, $action) = explode('/', $this->View()->sPayment['action']);
-			$this->redirect(array('controller' => $controller, 'action' => $action));	
+			$action = explode('/', $this->View()->sPayment['action']);
+			$this->redirect(array('controller' => $action[0], 'action' => empty($action[1]) ? 'index' : $action[1]));	
 		}
 	}
 	

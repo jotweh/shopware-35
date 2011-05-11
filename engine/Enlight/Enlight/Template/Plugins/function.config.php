@@ -2,7 +2,7 @@
 function smarty_function_config($params, $smarty, $template)
 {
 	if(empty($params['name'])
-	  || !Enlight()->Bootstrap()->issetResource('Config')) {
+	  || !Enlight()->Bootstrap()->hasResource('Config')) {
 		return null;
 	}
 	return Enlight()->Config()->get(
