@@ -51,13 +51,13 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$secret = md5(uniqid(mt_rand(), true));
 		
 		$params = array();
-		$params['haendlerid'] = Shopware()->Config()->get('sCLICKPAYMERCHANTID');
-		$params['haendlercode'] = Shopware()->Config()->get('sCLICKPAYMERCHANTCODE');
+		$params['haendlerid'] = Shopware()->Config()->ClickPayMerchantId;
+		$params['haendlercode'] = Shopware()->Config()->ClickPayMerchantCode;
 		$params['referenz'] = $this->getEosReferenz($user);
-		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '.');
+		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '');
 		$params['waehrung'] = Shopware()->Currency()->getShortName();
 		$params['_language'] = Shopware()->Locale()->getLanguage();
-		$params['_buchen'] = (int) Shopware()->Config()->get('sCLICKPAYDIRECTBOOK'); 
+		$params['_buchen'] = (int) Shopware()->Config()->ClickPayDirectBook; 
 		$params['_stylesheet'] = $router->assemble(array(
 			'action' => 'style'
 		));
@@ -332,6 +332,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$result = null;
 		parse_str($respone->getBody(), $result);
 		*/
+		
 		$respone = file_get_contents($url . '?' . http_build_query($params, '', '&'));
 		$result = null;
 		$respone = str_replace('&#37;2B' , ' ', $respone);

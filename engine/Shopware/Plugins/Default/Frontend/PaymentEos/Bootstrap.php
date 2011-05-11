@@ -17,6 +17,8 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 	 */
 	public function install()
 	{
+		$this->uninstall();
+		
 		$paymentRow = Shopware()->Payments()->createRow(array(
 			'name' => 'eos_credit',
 			'description' => 'EOS - Kreditkarte',
@@ -51,12 +53,17 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 		
 		$event = $this->createEvent(
 			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_PaymentEos',
-			'onGetControllerPath'
+			'onGetControllerPathFrontend'
+		);
+		$this->subscribeEvent($event);
+		
+		$event = $this->createEvent(
+			'Enlight_Controller_Dispatcher_ControllerPath_Backend_PaymentEos',
+			'onGetControllerPathBackend'
 		);
 		$this->subscribeEvent($event);
 		
 		$sql = '
-			-- DROP TABLE IF EXISTS `s_plugin_payment_eos`;
 			CREATE TABLE IF NOT EXISTS `s_plugin_payment_eos` (
 			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 			  `userID` int(11) unsigned NOT NULL,
@@ -85,13 +92,46 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 	}
 	
 	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
+	public function uninstall()
+	{
+		$rows = Shopware()->Payments()->fetchAll(
+			array('name LIKE ?' => 'eos_%')
+		);
+		foreach ($rows as $row) {
+			$row->delete();
+		}
+		
+		$sql = '
+			DROP TABLE IF EXISTS `s_plugin_payment_eos`;
+		';
+		Shopware()->Db()->exec($sql);
+		return parent::uninstall();
+	}
+	
+	/**
 	 * Event listener method
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
-	public static function onGetControllerPath(Enlight_Event_EventArgs $args)
+	public static function onGetControllerPathFrontend(Enlight_Event_EventArgs $args)
     {
-		return dirname(__FILE__).'/Controllers/PaymentEos.php';
+    	Shopware()->Template()->addTemplateDir(dirname(__FILE__).'/Views/');
+		return dirname(__FILE__).'/Controllers/Frontend/PaymentEos.php';
+    }
+    
+    /**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public static function onGetControllerPathBackend(Enlight_Event_EventArgs $args)
+    {
+    	Shopware()->Template()->addTemplateDir(dirname(__FILE__).'/Views/');
+		return dirname(__FILE__).'/Controllers/Backend/PaymentEos.php';
     }
     
     /**
@@ -110,7 +150,8 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 		  || $request->getModuleName()!='frontend') {
 			return;
 		}
-					
-		$view->extendsTemplate('frontend/plugins/paypal/index.tpl');
+		
+		$view->addTemplateDir(dirname(__FILE__).'/Views/');
+		//$view->extendsTemplate('frontend/payment_eos/index.tpl');
 	}
 }
