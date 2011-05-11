@@ -17,8 +17,8 @@ INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description
  * @author h.lohaus 
  * @since 3.5.4 - 2011/03/30
  */
- 
-DELETE FROM `s_core_snippets` WHERE `namespace` LIKE 'backend/%' OR `namespace` LIKE 'templates/%' OR `localeID` = 0;
+DELETE FROM `s_core_snippets` WHERE `namespace` LIKE '/%' OR `namespace` LIKE 'templates/%';
+UPDATE `s_core_snippets` SET `shopID` = 1 WHERE `shopID` = 0;
 
 INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
 (NULL, 'backend/index/menu', 1, 2, 'Alle schliessen', 'Close all', '2011-03-31 11:47:42', '2011-03-31 11:47:42'),
@@ -58,4 +58,10 @@ ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NUL
 UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
 UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
 
-
+/*
+ * @ticket 5124
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/04/29
+ */
+ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL ,
+ADD `pluginID` INT( 11 ) UNSIGNED NULL 
