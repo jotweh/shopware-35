@@ -217,8 +217,16 @@ jQuery(document).ready(function($) {
 			event.preventDefault();
 			$.post($.controller.ajax_logout, function(data) {
 				var position = 'fixed';
-				if($.browser.msie && parseInt($.browser.version, 10) == 6) {position = 'absolute';}
-				$.modal(data, '', {'position':position}).find('.close').remove();			
+				if($.browser.msie && parseInt($.browser.version, 10) == 6) {
+					position = 'absolute';
+				}
+				$.modal(data, '', {'position':position}).find('.close').remove();
+				if($.browser.msie && ~~$.browser.version <= 7) {
+					buttons = $('.modal').find('.button-right');
+					buttons.each(function() {
+						this.fireEvent('onmove');
+					});
+				}
 			});
 		});
 		
