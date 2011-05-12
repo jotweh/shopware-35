@@ -38,25 +38,26 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	/**
 	 * Save and complete order
 	 *
-	 * @param unknown_type $transactionID
-	 * @param unknown_type $uniqueID
-	 * @param unknown_type $paymentStatus
-	 * @param unknown_type $sendStatusMail
-	 * @return unknown
+	 * @param string $transactionId
+	 * @param string $paymentUniqueId
+	 * @param int $paymentStatusId
+	 * @param bool $sendStatusMail
+	 * @return int
 	 */
-	public function saveOrder($transactionID, $uniqueID, $paymentStatus=null, $sendStatusMail=false)
+	public function saveOrder($transactionId, $paymentUniqueId, $paymentStatusId = null, $sendStatusMail=false)
 	{
-		if(empty($transactionID) || empty($uniqueID)) {
+		if(empty($transactionId) || empty($paymentUniqueId)) {
 			return false;
 		}
 		
 		$sql = '
 			SELECT ordernumber FROM s_order
-			WHERE transactionID=? AND status!=-1 AND userID=?
+			WHERE transactionID=? AND temporaryID=?
+			AND status!=-1 AND userID=?
 		';
 		$orderNumber = Shopware()->Db()->fetchOne($sql, array(
-			$transactionID,
-			$uniqueID,
+			$transactionId,
+			$paymentUniqueId,
 			Shopware()->Session()->sUserId
 		));
 		
@@ -74,10 +75,10 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 			$order->sShippingcosts = $basket['sShippingcosts'];
 			$order->sShippingcostsNumeric = $basket['sShippingcostsWithTax'];
 			$order->sShippingcostsNumericNet = $basket['sShippingcostsNet'];
-			$order->bookingId = $transactionID;
+			$order->bookingId = $transactionId;
 			$order->dispatchId = Shopware()->Session()->sDispatch;
 			$order->sNet = empty($user['additional']['charge_vat']);
-			$order->uniqueID = $uniqueID;
+			$order->uniqueID = $paymentUniqueId;
 			$orderNumber = $order->sSaveOrder();
 			
 			if(!empty(Shopware()->Config()->DeleteCacheAfterOrder)) {
@@ -85,17 +86,35 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 			}
 		}
         
-        if (!empty($orderNumber) && !empty($paymentStatus)) {
-        	$sql = 'SELECT id FROM s_order WHERE ordernumber=?';
-			$orderId = Shopware()->Db()->fetchOne($sql, array(
-				$orderNumber
-			));
-        	
-        	$order = Shopware()->Modules()->Order();
-        	$order->setPaymentStatus($orderId, $paymentStatus, $sendStatusMail);
+        if (!empty($orderNumber) && !empty($paymentStatusId)) {
+        	$this->savePaymentStatus($transactionId, $paymentUniqueId, $paymentStatusId, $sendStatusMail);
 		}
 		
 		return $orderNumber;
+	}
+	
+	/**
+	 * Save payment status
+	 *
+	 * @param string $transactionId
+	 * @param string $paymentUniqueId
+	 * @param int $paymentStatusId
+	 * @param bool $sendStatusMail
+	 * @return unknown
+	 */
+	public function savePaymentStatus($transactionId, $paymentUniqueId, $paymentStatusId, $sendStatusMail=false)
+	{
+		$sql = '
+			SELECT id FROM s_order
+			WHERE transactionID=? AND temporaryID=?
+			AND status!=-1
+		';
+		$orderId = Shopware()->Db()->fetchOne($sql, array(
+			$transactionId,
+			$paymentUniqueId
+		));
+		$order = Shopware()->Modules()->Order();
+        $order->setPaymentStatus($orderId, $paymentStatusId, $sendStatusMail);
 	}
 	
 	/**

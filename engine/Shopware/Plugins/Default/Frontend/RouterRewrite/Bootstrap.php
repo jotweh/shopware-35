@@ -93,7 +93,8 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		  || $request->isPost()
 		  || $request->isXmlHttpRequest()
 		  || ($request->getModuleName() && $request->getModuleName()!='frontend')
-		  || (!$request->getParam('RewriteAlias') && !$request->getParam('RewriteOld'))) {
+		  || (!$request->getParam('RewriteAlias') && !$request->getParam('RewriteOld'))
+		  || !Shopware()->Session()->Bot && !$request->getCookie()) {
 			return;	
 		}
 		
@@ -104,7 +105,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		unset($query['RewriteOld'], $query['RewriteAlias'], $query['RewriteUrl']);
 		$location = $router->assemble($query);
 				
-		if($currentLocation!=$location) {
+		if($currentLocation != $location) {
 			$response->setRedirect($location, 301);
 		}
 	}

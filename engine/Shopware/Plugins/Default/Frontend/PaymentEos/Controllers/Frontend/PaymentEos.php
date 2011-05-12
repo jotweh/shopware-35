@@ -51,16 +51,21 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$secret = md5(uniqid(mt_rand(), true));
 		
 		$params = array();
-		$params['haendlerid'] = Shopware()->Config()->ClickPayMerchantId;
-		$params['haendlercode'] = Shopware()->Config()->ClickPayMerchantCode;
+		$params['haendlerid'] = $this->Config()->merchantId;
+		$params['haendlercode'] = $this->Config()->merchantCode;
 		$params['referenz'] = $this->getEosReferenz($user);
 		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '');
 		$params['waehrung'] = Shopware()->Currency()->getShortName();
 		$params['_language'] = Shopware()->Locale()->getLanguage();
-		$params['_buchen'] = (int) Shopware()->Config()->ClickPayDirectBook; 
+		if($this->getPaymentShortName() == 'eos_credit') {
+			$params['_buchen'] = (int) $this->Config()->creditDirectBook;
+		} else {
+			$params['_buchen'] = (int) $this->Config()->elvDirectBook;
+		}
 		$params['_stylesheet'] = $router->assemble(array(
 			'action' => 'style'
 		));
+		
 		//$params['_text'] = Shopware()->Config()->get('sCLICKPAYTEXT');
 		//if($sClickPay->sGetSnippet('sClickPayButtonCancel'))
 		//	$params['_ButtonTextCancel'] = $sClickPay->sGetSnippet('sClickPayButtonCancel');
@@ -68,7 +73,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		//	$params['_ButtonTextOK'] = $sClickPay->sGetSnippet('sClickPayButtonOK');
 			
 		$params['karteninhaber'] = $user['billingaddress']['firstname'].' '.$user['billingaddress']['lastname'];
-		
+				
 		$params['NotifyURL'] = $router->assemble(array(
 			'action' => 'notify',
 			'secret' => $secret
@@ -110,6 +115,13 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params['EndURL'] = $router->assemble(array(
 			'action' => 'end'
 		));
+		
+		foreach ($params as $key => &$param) {
+			if($key == '_stylesheet' || $key == 'EndURL') {
+				continue;
+			}
+			$param = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $param);
+		}
 		
 		if($this->getPaymentShortName() == 'eos_credit') {
 			$requestUrl = 'https://www.eos-payment.de/PaymentGatewayMini_CC.acgi';
@@ -176,7 +188,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		if($this->getPaymentShortName() == 'eos_ideal') {
 			$params['provider'] = 'iDEAL';
 		} else {
-			$params['provider'] = '';
+			$params['provider'] = $this->Config()->giropayProvider;
 		}
 		
 		$params['NotifyURL'] = $router->assemble(array(
@@ -318,9 +330,9 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	/**
 	 * Do request method
 	 *
-	 * @param unknown_type $url
-	 * @param unknown_type $params
-	 * @return unknown
+	 * @param string $url
+	 * @param array $params
+	 * @return array
 	 */
 	public function doEosRequest($url, $params=array())
 	{
@@ -343,35 +355,12 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	/**
 	 * Save eos status method
 	 *
-	 * @param unknown_type $status
-	 * @param unknown_type $transactionId
-	 * @param unknown_type $secret
+	 * @param string $status
+	 * @param string $transactionId
+	 * @param string $secret
 	 */
 	public function saveEosStatus($status, $transactionId, $secret)
 	{
-		if($status == 'success') {
-			$sql = '
-				SELECT `id`
-				FROM s_plugin_payment_eos
-				WHERE `added` > DATE_SUB(NOW(), INTERVAL 6 HOUR)
-				AND `userID`=?
-				AND `transactionId`=?
-				AND `secret`=?
-				AND `amount`=?
-				AND `currency`=?
-			';
-			$test = Shopware()->Db()->fetchOne($sql, array(
-				Shopware()->Session()->sUserId,
-				$transactionId,
-				$secret,
-				$this->getAmount(),
-				$this->getCurrencyShortName()
-			));
-			if(!empty($test)) {
-				$this->saveOrder($transactionId, $secret);
-			}
-		}
-		
 		switch ($status) {
 			case 'fail':
 			case 'back':
@@ -393,18 +382,73 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 				));
 				break;
 			default:
-				if(!empty($status)) {
-					$sql = '
-						UPDATE s_plugin_payment_eos
-						SET clear_status=?, `changed`=NOW()
-						WHERE transactionID=? AND secret=?';
-					Shopware()->Db()->query($sql, array(
-						$status,
-						$transactionId,
-						$secret
-					));
-				}
 				break;
+		}
+		
+		if($status == 'success') {
+			$sql = '
+				SELECT `id`, `clear_status`
+				FROM s_plugin_payment_eos
+				WHERE `added` > DATE_SUB(NOW(), INTERVAL 6 HOUR)
+				AND `userID`=?
+				AND `transactionId`=?
+				AND `secret`=?
+				AND `amount`=?
+				AND `currency`=?
+			';
+			$payment = Shopware()->Db()->fetchRow($sql, array(
+				Shopware()->Session()->sUserId,
+				$transactionId,
+				$secret,
+				$this->getAmount(),
+				$this->getCurrencyShortName()
+			));
+			if(!empty($payment)) {
+				$this->saveOrder($transactionId, $secret);
+			}
+			if(!empty($payment['clear_status'])) {
+				$this->saveEosStatus($payment['clear_status'], $transactionId, $secret);
+			}
+		}		
+			
+		$sql = '
+			UPDATE s_plugin_payment_eos
+			SET clear_status=?, `changed`=NOW()
+			WHERE transactionID=? AND secret=?';
+		$result = Shopware()->Db()->query($sql, array(
+			$status,
+			$transactionId,
+			$secret
+		));
+			
+		switch ($status) {
+			case 1:
+				$paymentStatus = 18;
+				break;
+			case 2:
+				$paymentStatus = 12;
+				break;
+			case 6:
+				$paymentStatus = 20;
+				break;
+			case 4:
+			case 5:
+				$paymentStatus = 17;
+				break;
+			case 10:
+			case 11:
+				$paymentStatus = 21;
+				break;
+			default:
+				break;
+		}
+		
+		if(!empty($paymentStatus)) {
+			$this->savePaymentStatus(
+				$transactionId, $secret,
+				$paymentStatus,
+				$this->Config()->paymentStatusMail
+			);
 		}
 	}
 	
@@ -604,5 +648,15 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		);
 		$referenz = preg_replace('#[^A-Za-z0-9_]#', '', $referenz);
 		return $referenz;
+	}
+	
+	/**
+	 * Returns payment plugin config
+	 *
+	 * @return unknown
+	 */
+	public function Config()
+	{
+		return Shopware()->Plugins()->Frontend()->PaymentEos()->Config();
 	}
 }

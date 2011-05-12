@@ -19,6 +19,38 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 	{
 		$this->uninstall();
 		
+		$this->createEvents();
+		$this->createPayments();
+		$this->createTable();
+		$this->createMenu();
+		$this->createForm();
+				
+		return true;
+	}
+	
+	/**
+	 * Create and subscribe events
+	 */
+	protected function createEvents()
+	{
+		$event = $this->createEvent(
+			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_PaymentEos',
+			'onGetControllerPathFrontend'
+		);
+		$this->subscribeEvent($event);
+		
+		$event = $this->createEvent(
+			'Enlight_Controller_Dispatcher_ControllerPath_Backend_PaymentEos',
+			'onGetControllerPathBackend'
+		);
+		$this->subscribeEvent($event);
+	}
+	
+	/**
+	 * Create and save payments
+	 */
+	protected function createPayments()
+	{
 		$paymentRow = Shopware()->Payments()->createRow(array(
 			'name' => 'eos_credit',
 			'description' => 'EOS - Kreditkarte',
@@ -50,19 +82,13 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 			'active' => 1,
 			'pluginID' => $this->getId()
 		))->save();
-		
-		$event = $this->createEvent(
-			'Enlight_Controller_Dispatcher_ControllerPath_Frontend_PaymentEos',
-			'onGetControllerPathFrontend'
-		);
-		$this->subscribeEvent($event);
-		
-		$event = $this->createEvent(
-			'Enlight_Controller_Dispatcher_ControllerPath_Backend_PaymentEos',
-			'onGetControllerPathBackend'
-		);
-		$this->subscribeEvent($event);
-		
+	}
+	
+	/**
+	 * Create payment table
+	 */
+	protected function createTable()
+	{
 		$sql = '
 			CREATE TABLE IF NOT EXISTS `s_plugin_payment_eos` (
 			  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -87,12 +113,67 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
 		';
 		Shopware()->Db()->exec($sql);
-				
-		return true;
 	}
 	
 	/**
-	 * Install plugin method
+	 * Create payment menu item
+	 */
+	protected function createMenu()
+	{
+		$parent = $this->Menu()->findOneBy('label', 'Zahlungen');
+		$item = $this->createMenuItem(array(
+			'label' => 'EOS Payment',
+			'onclick' => 'openAction(\'payment_eos\');',
+			'class' => 'ico2 date2',
+			'active' => 1,
+			'parent' => $parent,
+			'style' => 'background-position: 5px 5px;'
+		));
+		$this->Menu()->addItem($item);
+		$this->Menu()->save();
+	}
+	
+	/**
+	 * Create payment config form 
+	 */
+	protected function createForm()
+	{
+		$form = $this->Form();
+		$form->setElement('text', 'merchantId', array(
+			'label' => 'Händler ID',
+			'value' => Shopware()->Config()->clickPayMerchantId,
+			'required' => true
+		));
+		$form->setElement('text', 'merchantCode', array(
+			'label' => 'Händler Code',
+			'value' => Shopware()->Config()->clickPayMerchantCode,
+			'required' => true
+		));
+		$form->setElement('text', 'giropayProvider', array(
+			'label' => 'Giropay-Provider',
+			'value' => '',
+			'required' => false
+		));
+		$form->setElement('checkbox', 'elvDirectBook', array(
+			'label' => 'Sofortbuchung ELV',
+			'value' => Shopware()->Config()->clickPayElvDirectBook,
+			'required' => true
+		));
+		$form->setElement('checkbox', 'creditDirectBook', array(
+			'label' => 'Sofortbuchung Kreditkarte',
+			'value' => Shopware()->Config()->clickPayDirectBook,
+			'required' => true
+		));
+		$form->setElement('checkbox', 'paymentStatusMail', array(
+			'label' => 'eMail bei Zahlstatus-Änderung verschicken',
+			'value' => false,
+			'required' => true
+		));
+		$form->save();
+	}
+	
+	/**
+	 * Uninstall plugin method
 	 *
 	 * @return bool
 	 */
