@@ -104,6 +104,8 @@ if(!empty($_REQUEST["feedID"])&&is_numeric($_REQUEST["feedID"]))
 	$feedID = (int)$_REQUEST["feedID"];
 }
 
+
+
 if(!empty($upset)&&!empty($feedID))
 {
 	$upset = implode(",",$upset);
@@ -115,8 +117,27 @@ elseif (!empty($upset))
 	$upset = implode(",",$upset);
 	$sql = "REPLACE INTO s_premium_dispatch SET $upset";
 	mysql_query($sql);
+	/**
+	 * @ticket 4904
+	 * Duplicate translations
+	 */
+	if (empty($feedID) && !empty($_REQUEST["duplicateFeed"])){
+		$getTranslations = mysql_query("
+		SELECT * FROM s_core_translations WHERE `objecttype` = 'config_dispatch'
+		");
+		while ($result = mysql_fetch_assoc($getTranslations)){
+			$serializedTranslation = unserialize($result["objectdata"]);
+			if (!empty($serializedTranslation[$_REQUEST["duplicateFeed"]])){
+				$serializedTranslation[mysql_insert_id()] = $serializedTranslation[$_REQUEST["duplicateFeed"]];
+			}
+			mysql_query("
+			UPDATE s_core_translations SET `objectdata` = '".serialize($serializedTranslation)."' WHERE id = ".$result["id"]);
+		}
+	}
 	$feedID = mysql_insert_id();
 }
+
+
 
 if(isset($_REQUEST["holidays"]))
 {

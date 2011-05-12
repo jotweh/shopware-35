@@ -447,6 +447,7 @@ Ext.onReady(function(){
             	var feedID = Ext.getCmp('grid').selModel.getSelected().id;
             	edittabs.getForm().load({url:'ajax/getFeeds.php', params: {feedID: feedID}, waitMsg:'Laden...', success: function(){
             		loadTab(feedID);
+					edittabs.baseParams.duplicateFeed = feedID;
             		edittabs.baseParams.feedID = 0;
             		Ext.getCmp('categories').loader.baseParams.feedID = 0;
 	            	Ext.getCmp('paymentmeans').fromStore.baseParams.feedID = 0;
@@ -489,7 +490,12 @@ Ext.onReady(function(){
             		}
 	            });
             },
-            iconCls:'delete'
+            iconCls:'refresh'
+        },'-',{
+            text:'Aktualisieren',
+            handler: function (a, b, c){
+            	store.load();
+            }
         }
         <?php if(empty($sCore->sCONFIG['sPREMIUMSHIPPIUNGADOPTION'])) { ?>
         ,'-',{

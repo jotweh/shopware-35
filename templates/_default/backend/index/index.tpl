@@ -43,8 +43,7 @@
 	{/block}
 {/block}
 {block name='backend_index_header_title'}
-	Shopware {config name='Version'} - 08.12.2010 - Backend (c) 2010,2011 shopware AG
-{/block}
+	Shopware {config name='Version'} - 29.05.2011 (Rev. 5277)- Backend (c) 2011 shopware AG{/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
 
