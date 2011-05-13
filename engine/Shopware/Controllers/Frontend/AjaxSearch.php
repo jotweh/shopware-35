@@ -1,6 +1,20 @@
 <?php
+/**
+ * Suggest search controller
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
-{	
+{
+	/**
+	 * Index action - get searchterm from request (sSearch) and start search
+	 * @return
+	 */
 	public function indexAction()
 	{		
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
@@ -23,7 +37,8 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 		$this->view->sSearchRequest = $search_request;
 		$this->view->sSearchResults = $search_results;
 	}
-	
+
+	/**
 	public function jsonSearchAction()
 	{
 		$this->View()->setTemplate();
@@ -50,8 +65,9 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 			}
 		}
 		echo json_encode(array('sResults'=>$search_results['sResults']));
-	}
-	
+	}**/
+
+	/**
 	public function openSearchAction()
 	{
 		$this->View()->setTemplate();
@@ -77,10 +93,21 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 			}
 		}
 		echo json_encode(array($sRequests['sSearch'], $sSearchResultsNames, $sSearchResultsDesc, $sSearchResultsLinks));
-	}
-	
+	}**/
+
+	/**
+	 * Start suggest search and return results
+	 * @param  $sRequests
+ 	 * 			$sRequests = array(
+	 *				'sSuggestSearch'=>true,
+	 *				'sSearch'=>$search,
+	 *				'sPerPage
+	 * 			)
+	 * @return
+	 */
 	public function doSearch($sRequests)
 	{
+		
 		Shopware()->Modules()->Search()->sInit();
 		
 		$search_results = Shopware()->Modules()->Search()->sStartSearch($sRequests);
