@@ -48,7 +48,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$user = $this->getUser();
 		$router = $this->Front()->Router();
 		$request = $this->Request();
-		$secret = md5(uniqid(mt_rand(), true));
+		$secret = $this->createPaymentUniqueId();
 		
 		$params = array();
 		$params['haendlerid'] = $this->Config()->merchantId;
@@ -171,7 +171,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$user = $this->getUser();
 		$router = $this->Front()->Router();
 		$request = $this->Request();
-		$secret = md5(uniqid(mt_rand(), true));
+		$secret = $this->createPaymentUniqueId();
 		
 		$params = array();
 		$params['haendlerid'] = Shopware()->Config()->get('sCLICKPAYMERCHANTID');
@@ -267,13 +267,13 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	{		
 		$this->View()->setTemplate();
 		
-		$mail = clone Shopware()->Mail();
-		
-		$mail->setSubject('test eos');
-		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
-		$mail->addTo('hl@shopware.de');
-				
-		$mail->send();
+//		$mail = clone Shopware()->Mail();
+//		
+//		$mail->setSubject('test eos');
+//		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
+//		$mail->addTo('hl@shopware.de');
+//				
+//		$mail->send();
 		
 		$status = $this->Request()->getParam('status');
 		$transactionId = $this->Request()->getParam('transactionId');
@@ -336,16 +336,19 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function doEosRequest($url, $params=array())
 	{
-		/*
 		$client = new Zend_Http_Client($url);
 		$client->setParameterGet($params);
-		//$client->setAdapter(new Zend_Http_Client_Adapter_Curl());
+		if (extension_loaded('curl')) {
+			$adapter = new Zend_Http_Client_Adapter_Curl();
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
+			$client->setAdapter($adapter);
+		}
 		$respone = $client->request();
-		$result = null;
-		parse_str($respone->getBody(), $result);
-		*/
+		$respone = $respone->getBody();
 		
-		$respone = file_get_contents($url . '?' . http_build_query($params, '', '&'));
+		//$respone = file_get_contents($url . '?' . http_build_query($params, '', '&'));
+		
 		$result = null;
 		$respone = str_replace('&#37;2B' , ' ', $respone);
 		parse_str($respone, $result);

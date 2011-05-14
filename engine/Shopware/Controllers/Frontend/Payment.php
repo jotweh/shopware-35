@@ -36,6 +36,16 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
+	 * Create payment unique id
+	 *
+	 * @return unknown
+	 */
+	public function createPaymentUniqueId()
+	{
+		return md5(uniqid(mt_rand(), true));
+	}
+	
+	/**
 	 * Save and complete order
 	 *
 	 * @param string $transactionId
@@ -44,7 +54,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	 * @param bool $sendStatusMail
 	 * @return int
 	 */
-	public function saveOrder($transactionId, $paymentUniqueId, $paymentStatusId = null, $sendStatusMail=false)
+	public function saveOrder($transactionId, $paymentUniqueId, $paymentStatusId = null, $sendStatusMail = false)
 	{
 		if(empty($transactionId) || empty($paymentUniqueId)) {
 			return false;
@@ -102,7 +112,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	 * @param bool $sendStatusMail
 	 * @return unknown
 	 */
-	public function savePaymentStatus($transactionId, $paymentUniqueId, $paymentStatusId, $sendStatusMail=false)
+	public function savePaymentStatus($transactionId, $paymentUniqueId, $paymentStatusId, $sendStatusMail = false)
 	{
 		$sql = '
 			SELECT id FROM s_order
