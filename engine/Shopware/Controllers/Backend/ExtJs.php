@@ -23,22 +23,34 @@ abstract class Shopware_Controllers_Backend_ExtJs extends Enlight_Controller_Act
 	 */
 	public function loadAction()
 	{
-		$path = $this->Request()->getPathInfo();
-		$path = explode('/', $path);
-		$path = array_slice($path, 4);
-		$path = implode('/', $path);
-		
 		$request = $this->Request();
+		
+		switch (true) {
+			case $request->view!==null:
+				$path = 'view/' . $request->view;
+				break;
+			case $request->store!==null:
+				$path = 'store/' . $request->store;
+				break;
+			case $request->model!==null:
+				$path = 'model/' . $request->model;
+				break;
+			case $request->controller!==null:
+				$path = 'controller/' . $request->controller;
+				break;
+			default:
+				return;
+		}
+		
 		$moduleName = $this->Front()->Dispatcher()->formatModuleName($request->getModuleName());
 		$controllerName = $this->Front()->Dispatcher()->formatControllerName($request->getControllerName());
-		$actionName = $this->Front()->Dispatcher()->formatActionName($request->getActionName());
 		
-		$path = $moduleName . '/' . $controllerName . '/' . $actionName . '/' . $path;
+		$path = $moduleName . '/' . $controllerName . '/' . $path;
 				
 		$path = Zend_Filter::filterStatic($path, 'Word_CamelCaseToUnderscore');
 		$path = Zend_Filter::filterStatic($path, 'StringToLower');
 		$path = Zend_Filter::filterStatic($path, 'PregReplace', array('#[^a-z_/]#'));
-				
+		
 		$this->View()->loadTemplate($path . '.js');
 		$this->Response()->setHeader('Content-Type', 'application/javascript;charset=iso-8859-1');
 	}

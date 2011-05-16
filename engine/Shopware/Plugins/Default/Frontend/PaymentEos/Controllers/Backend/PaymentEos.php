@@ -15,7 +15,7 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 	 */
 	public function preDispatch()
 	{
-		if(!in_array($this->Request()->getActionName(), array('index', 'skeleton', 'view', 'model', 'controller'))) {
+		if(!in_array($this->Request()->getActionName(), array('index', 'skeleton', 'load'))) {
 			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		}
 	}
