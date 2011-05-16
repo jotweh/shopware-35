@@ -46,10 +46,14 @@ window.addEvent('domready',function(){
 			if(hideresults)
 				hideSuggestSearch();
 		});
+		var defaultValue = $('search').getProperty('value');
 		$('search').addEvent('focus',function(e){
-			if ($('search').getProperty('value')=="Suche") $('search').setProperty('value',"");
-			if(!suggestTimer)
-				suggestTimer = window.setInterval("doSuggestSearch($('search').value)",500);
+			if ($('search').getProperty('value')==defaultValue) {
+				$('search').setProperty('value',"");
+			}
+			if(!suggestTimer) {
+				suggestTimer = window.setInterval("doSuggestSearch($('search').value)", 500);
+			}
 		});
 		
 		$('searchfocus').addEvent('click',function(e){

@@ -121,11 +121,11 @@ jQuery(document).ready(function($) {
 		
 		//Suggest Search
 		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults'});
+		var defaultValue = $('#searchfield').val();
 		$('#searchfield').focus(function(){
-			if ($('#searchfield').val() == "Suche:"){
-				$('#searchfield').val("");
+			if ($('#searchfield').val() == defaultValue){
+				$('#searchfield').val('');
 			}
-			
 		});
 		
 		//Get's the servertime for liveshopping articles
