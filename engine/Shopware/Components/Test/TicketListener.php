@@ -99,6 +99,12 @@ class Shopware_Components_Test_TicketListener extends PHPUnit_Extensions_TicketL
     {
     	if($this->client === null) {
     		$this->client = new Zend_XmlRpc_Client($this->serverAddress);
+    		if (extension_loaded('curl')) {
+				$adapter = new Zend_Http_Client_Adapter_Curl();
+				$adapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
+				$adapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
+				$this->client->getHttpClient()->setAdapter($adapter);
+			}
     	}
         return $this->client;
     }
