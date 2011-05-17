@@ -10,7 +10,7 @@
  */
 abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensions_SeleniumTestCase
 {
-    protected $browserUrl = 'http://daily.shopvm.de/';
+    protected $browserUrl = 'http://192.168.178.16/';
     protected $captureScreenshotOnFailure = true;
     protected $screenshotUrl = 'http://hl.shopvm.de/screenshots';
     protected $screenshotPath = 'D:\\XAMPP\\xampplite\\htdocs\\screenshots\\';
@@ -37,6 +37,17 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
     public function verifyText($selector, $content)
     {
     	return $this->assertElementContainsText($selector, $content);
+    }
+    
+    /**
+     * Verify text present method
+     *
+     * @param string $content
+     * @return void
+     */
+    public function verifyTextPresent($content)
+    {
+    	return $this->assertElementContainsText('body', $content);
     }
     
     /**
