@@ -47,7 +47,7 @@ abstract class Enlight_Components_Test_Selenium_TestCase extends PHPUnit_Extensi
      */
     public function verifyTextPresent($content)
     {
-    	return $this->assertElementContainsText('body', $content);
+    	return $this->assertElementContainsText('css=body', $content);
     }
     
     /**
