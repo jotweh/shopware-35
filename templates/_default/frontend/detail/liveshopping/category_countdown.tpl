@@ -127,7 +127,9 @@
 			{* Basket buttons *}
 			<div class="actions">
 				<form method="get" action="{url controller='checkout' action='addArticle'}">
+					{if !$sLiveshoppingData.sDetails.sConfigurator && !$sLiveshoppingData.sDetails.sVariantArticle}
 					<input type="submit" class="button-right small" value="In den Warenkorb" name="In den Warenkorb" title="{$sLiveshoppingData.sDetails.articleName} in den Warenkorb legen" />
+					{/if}
 					<input type="hidden" name="sAdd" class="ordernumber" value="{$sLiveshoppingData.sDetails.ordernumber}" />
 				</form>
 			</div>
