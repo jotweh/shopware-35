@@ -64,7 +64,7 @@
 		    {/foreach}
 		    
 		    {if $sSuppliersRest}
-		    <form name="frmsup" method="get" action="{$sLinks.sSupplier}" id="frmsup">
+		    <form name="frmsup" method="POST" action="{$sLinks.sFilter.supplier}" id="frmsup">
 		    <select name="sFilter_supplier" class="auto_submit">
 		        <option value="">{se name='SearchLeftInfoSuppliers'}{/se}</option>
 		    {foreach from=$sSuppliersRest item=supplier}
