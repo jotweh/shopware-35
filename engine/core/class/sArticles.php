@@ -181,7 +181,7 @@ class sArticles
 		$article = intval($article);
 		$filtergroupID = intval($filtergroupID);
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleProperties_Start"));
+
 		$language = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["isocode"];
 
 		// Read all assigned properties
@@ -199,7 +199,7 @@ class sArticles
 		ORDER BY 
 			fr.position ASC
 		";
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleProperties_AfterSQL"));
+
 		//die($sql);
 		$getProperties = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
 
@@ -228,9 +228,6 @@ class sArticles
 			}
 		}
 
-
-		//$this->sGetTranslation($articles[$articleKey],$articles[$articleKey]["articleID"],"article",$this->sSYSTEM->sLanguage);
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleProperties_BeforeEnd"));
 		return $getProperties;
 
 	}
@@ -247,13 +244,12 @@ class sArticles
 		AND active=1
 		GROUP BY articleID
 		";
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesAverangeVote_AfterSQL"));
+
 		$getArticles = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql,array($article),"article_$article");
 
 		if (empty($getArticles["averange"])) $getArticles["averange"] = "0.00";
 		if (empty($getArticles["number"])) $getArticles["number"] = "0";
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesAverangeVote_BeforeEnd"));
 		return array("averange"=>$getArticles["averange"],"count"=>$getArticles["number"]);
 	}
 
@@ -273,7 +269,7 @@ class sArticles
 		$this->sSYSTEM->_POST["sVoteStars"] = doubleval($this->sSYSTEM->_POST["sVoteStars"]);
 
 		if ($this->sSYSTEM->_POST["sVoteStars"] < 1 || $this->sSYSTEM->_POST["sVoteStars"] > 10) $this->sSYSTEM->_POST["sVoteStars"] = 0;
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sSaveComment_AfterAssign"));
+
 		$this->sSYSTEM->_POST["sVoteStars"] /= 2;
 
 		$datum = date("Y-m-d H:i:s");
@@ -283,7 +279,7 @@ class sArticles
 		}else {
 			$active = 1;
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sSaveComment_BeforeSQL"));
+
 		$sBADWORDS = array(
 		"sex",
 		"porn",
@@ -312,7 +308,7 @@ class sArticles
 		VALUES (?,?,?,?,?,?,?)
 		";
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sSaveComment_AfterSQL"));
+
 		$insertComment = $this->sSYSTEM->sDB_CONNECTION->Execute($sql,$data);
 
 		if ($insertComment){
@@ -681,7 +677,7 @@ class sArticles
 		$ret['sPerPage'] = $arrayArticlesToShow;
 		$ret['sNumberArticles'] = $sCountArticles;
 		$ret['sNumberPages'] = $numberPages;
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByName_BeforeEnd"));
+
 
 		return $ret;
 	}
@@ -722,7 +718,7 @@ class sArticles
 		if (Enlight()->Events()->notifyUntil('Shopware_Modules_Articles_sGetArticlesByCategory_Start', array('subject'=>$this,'id'=>$id,'blog'=>$blog,'limit'=>$limit))){
 			return false;
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_Start"));
+
 		// If no category, left
 		if (!empty($id)){
 			$backupCategory = isset($this->sSYSTEM->_GET["sCategory"]) ? $this->sSYSTEM->_GET["sCategory"] : 0;
@@ -915,7 +911,7 @@ class sArticles
 		if (!isset($addAlias)) $addAlias = "";
 		if (!isset($addFilterHaving)) $addFilterHaving = "";
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_BeforeSQL"));
+
 		if (empty($blogCategory)){
 			$sql = "
 			SELECT SQL_CALC_FOUND_ROWS
@@ -1064,7 +1060,7 @@ class sArticles
 			LIMIT $sLimitStart,$sLimitEnd
 		";
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_AfterSQL"));
+
 
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_sGetArticlesByCategory_FilterSql', $sql, array('subject'=>$this,'id'=>$this->sSYSTEM->_GET['sCategory']));
 
@@ -1199,7 +1195,7 @@ class sArticles
 			} // -- for every possible value
 		} // -- Building array
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_AfterCalculatingPages"));
+
 
 		// Iterate through articles and complete data
 		if (count($articles)){
@@ -1245,13 +1241,13 @@ class sArticles
 				}
 
 				$articles[$articleKey]["sVariantArticle"] = false;
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_LoopArticlesStart"));
+
 				// Translate base
 
 
 				// Check if price is set for this customergroup
 
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_LoopArticlesStart1"));
+
 				if ($blog!=true){
 					$cheapestPrice =  $this->sGetCheapestPrice($articles[$articleKey]["articleID"],$articles[$articleKey]["pricegroup"],$articles[$articleKey]["pricegroupID"],$articles[$articleKey]["pricegroupActive"],false,true);
 
@@ -1310,7 +1306,7 @@ class sArticles
 				$articles[$articleKey]["linkBasket"] = "http://".$this->sSYSTEM->sCONFIG['sBASEPATH']."/".$this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$articles[$articleKey]["ordernumber"];
 				$articles[$articleKey]["linkDetails"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle=".$articles[$articleKey]["articleID"]."&sCategory=".$this->sSYSTEM->_GET['sCategory'];
 				$articles[$articleKey]["priceNumeric"] = floatval(str_replace(",",".",$articles[$articleKey]["price"]));
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_LoopArticlesEnd"));
+
 				if ($articles[$articleKey]["purchaseunit"]  > 0 && !empty($articles[$articleKey]["referenceunit"])){
 
 					$basePrice = $this->sCalculatingPriceNum(str_replace(",",".",$articles[$articleKey]["price"]),0,$articles[$articleKey],$articles[$articleKey],array("liveshoppingID"=>1),true);
@@ -1353,7 +1349,7 @@ class sArticles
 				$result['sSort'] = $this->sSYSTEM->_SESSION['sSort'];
 			}
 
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticlesByCategory_BeforeEnd"));
+
 
 			if (!empty($this->sSYSTEM->sCONFIG['sTEMPLATEOLD']) && (!empty($this->sSYSTEM->_GET["sRss"]) || !empty($this->sSYSTEM->_GET["sAtom"])))
 			{
@@ -1557,7 +1553,7 @@ class sArticles
 		if (!isset($propertyArray)){
 			$propertyArray["filterOptions"] = array();
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCategoryProperties_BeforeEnd"));
+
 		return $propertyArray;
 	}
 
@@ -1611,7 +1607,7 @@ class sArticles
 			$getSupplier[$supplierKey]["link"] = Shopware()->Router()->assemble($query);
 		}
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAffectedSuppliers_BeforeEnd"));
+
 		return $getSupplier;
 	}
 
@@ -1624,7 +1620,7 @@ class sArticles
 	 * @return double $price formated price
 	 */
 	public function sCalculatingPrice($price,$tax,$article=0){
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCalculatingPrice_Start"));
+
 		$price = (float) $price;
 		$tax = (float) $tax;
 		// Calculate global discount
@@ -1641,7 +1637,7 @@ class sArticles
 		}else {
 			$price = $this->sFormatPrice(round($price*(100+$tax)/100,3));
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCalculatingPrice_BeforeEnd"));
+
 		return $price;
 
 	}
@@ -1658,7 +1654,7 @@ class sArticles
 	 * @return double $price  price unformated
 	 */
 	public function sCalculatingPriceNum($price,$tax,$considerTax=false, $donotround=false,$article=0,$ignoreCurrency=false){
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCalculatingPriceNum_Start"));
+
 		// Calculating global discount
 		if ($this->sSYSTEM->sUSERGROUPDATA["mode"] && $this->sSYSTEM->sUSERGROUPDATA["discount"] && empty($article['liveshoppingID']) && empty($article['liveshoppingData'])){
 			//echo "Price before $price <br />";
@@ -1686,7 +1682,7 @@ class sArticles
 				$price = round($price*(100+$tax)/100,3);
 			}
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCalculatingPriceNum_BeforeEnd"));
+
 		return $price;
 
 	}
@@ -1748,7 +1744,7 @@ class sArticles
 	        LIMIT $sLimitChart 		
 		";
 		
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleCharts_AfterSQL"));
+
 		$queryChart = $this->sSYSTEM->sDB_CONNECTION->CacheGetAssoc($this->sSYSTEM->sCONFIG['sCACHECATEGORY'], $sql);
 
 		$articles = array();
@@ -1807,7 +1803,7 @@ class sArticles
 		$article = intval($article);
 		$this->sSYSTEM->_GET['sCategory'] = intval($this->sSYSTEM->_GET['sCategory']);
 		// If no category, left
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAllArticlesInCategory_Start"));
+
 		if (!$this->sSYSTEM->_GET['sCategory']) return;
 
 		if (!empty($this->sSYSTEM->_POST['sSort'])){
@@ -1927,7 +1923,6 @@ class sArticles
 			ORDER BY  $orderBy
 		";
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAllArticlesInCategory_AfterSQL"));
 
 		$getAllArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,false,"category_".$this->sSYSTEM->_GET["sCategory"]);
 
@@ -1936,7 +1931,7 @@ class sArticles
 		if(!empty($getAllArticles))
 		foreach ($getAllArticles as $allArticlesKey => $allArticlesValue)
 		{
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAllArticlesInCategory_LoopStart"));
+
 			$i++;
 			if ($allArticlesValue["id"]==$article){
 				if ($getAllArticles[$allArticlesKey-1]["id"]){
@@ -1959,10 +1954,10 @@ class sArticles
 				$getCategoryName = $this->sSYSTEM->sMODULES["sCategories"]->sGetCategoryContent($this->sSYSTEM->_GET["sCategory"]);
 				$sNavigation["sCurrent"]["sCategoryName"] = $getCategoryName["description"];
 			}
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAllArticlesInCategory_LoopEnd"));
+
 		}
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetAllArticlesInCategory_BeforeEnd"));
+
 		return $sNavigation;
 
 	}
@@ -2049,7 +2044,7 @@ class sArticles
 				}
 			}
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleAccessories_BeforeEnd"));
+
 		return $fetchGroups;
 	}
 
@@ -2150,7 +2145,7 @@ class sArticles
 			return false;
 		}
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sCreateTranslationTable_BeforeEnd"));
+
 		return true;
 	}
 
@@ -2281,7 +2276,7 @@ class sArticles
 		GROUP BY discount
 		ORDER BY discountstart ASC
 		";
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPricegroupDiscount_Start"));
+
 		$getGroups = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
 
 		if (count($getGroups)){
@@ -2313,7 +2308,7 @@ class sArticles
 
 				if ($matchingPercent){
 					//echo "Percent discount via pricegroup $groupID - $matchingPercent Discount\n";
-					eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPricegroupDiscount_BeforeEnd1"));
+
 					$val = ($listprice / 100 * (100-$matchingPercent));
 
 					return ($listprice / 100 * (100-$matchingPercent));
@@ -2342,16 +2337,16 @@ class sArticles
 					$i++;
 
 				}
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPricegroupDiscount_BeforeEnd2"));
+
 
 				return $getBlockPricings;
 			}
 		}
 		if (!empty($doMatrix)){
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPricegroupDiscount_BeforeEnd3"));
+
 			return;
 		}else {
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPricegroupDiscount_BeforeEnd4"));
+
 			return $listprice;
 		}
 	}
@@ -2371,7 +2366,7 @@ class sArticles
 		}else {
 			$fetchGroup = $this->sSYSTEM->sUSERGROUP;
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_Start"));
+
 
 		if (empty($usepricegroups)){
 			$sql = "
@@ -2397,7 +2392,7 @@ class sArticles
 			";			
 		}
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_AfterSQL"));
+
 		$queryCheapestPrice = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($realtime==true ? 0 : $this->sSYSTEM->sCONFIG['sCACHEPRICES'],$sql,false,"article_$article");
 
 		if (count($queryCheapestPrice)>1){
@@ -2415,7 +2410,7 @@ class sArticles
 				ORDER BY price ASC
 				LIMIT 2
 				";
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_AfterSQL2"));
+
 				$queryCheapestPrice = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($realtime==true ? 0 : $this->sSYSTEM->sCONFIG['sCACHEPRICES'],$sql,false,"article_$article");
 				if (count($queryCheapestPrice)>1){
 					$cheapestPrice = $queryCheapestPrice[0]["price"];
@@ -2456,7 +2451,7 @@ class sArticles
 			AND sp.groupkey='$fetchGroup' AND sp.price!=0 AND sv.active = 1 $instock GROUP BY ROUND(sp.price,2) ORDER BY price ASC LIMIT 2
 			";
 
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_AfterSQL3"));
+
 
 			$queryCheapestPrice = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($realtime==true ? 0 : $this->sSYSTEM->sCONFIG['sCACHEPRICES'],$sql,false,"article_$article");
 			if (!empty($queryCheapestPrice[0])){
@@ -2487,13 +2482,13 @@ class sArticles
 
 			if (!empty($returnPrice) && $foundPrice){
 
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_BeforeEnd1"));
+
 				$cheapestPrice = $returnPrice;
 			}elseif (!empty($foundPrice) && $returnPrice==0.00){
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_BeforeEnd3"));
+
 				$cheapestPrice = "0.00";
 			}else {
-				eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_BeforeEnd2"));
+
 				$cheapestPrice = "0";
 			}
 		}
@@ -2514,7 +2509,7 @@ class sArticles
 		 */
 
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetCheapestPrice_BeforeEnd3"));
+
 		if (isset($queryCheapestPrice[0]) && $queryCheapestPrice[0]["count"]>1 && empty($queryCheapestPrice[1]["price"]) && !empty($returnArrayIfConfigurator)){
 			return (array($cheapestPrice,$queryCheapestPrice[0]["count"]));
 		}
@@ -2529,7 +2524,7 @@ class sArticles
 	 */
 	public function sGetArticleById ($id = 0){
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_Start"));
+
 
 		//error_reporting(E_ALL);
 		if ($id) {
@@ -2540,10 +2535,6 @@ class sArticles
 		$isBlog = $this->sSYSTEM->sDB_CONNECTION->GetOne("
 		SELECT mode FROM s_articles WHERE id = ?
 		",array($this->sSYSTEM->_GET["sArticle"] ));
-
-
-
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_Start2"));
 
 		/*
 		Fetch article-data
@@ -2682,7 +2673,7 @@ class sArticles
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetArticleById_FilterSQL', $sql, array('subject'=>$this,'id'=>$this->sSYSTEM->_GET['sArticle'],'isBlog'=>$isBlog,'customergroup'=>$this->sSYSTEM->sUSERGROUP));
 
 		$this->sSYSTEM->_SESSION["sLastArticle"] = $this->sSYSTEM->_GET['sArticle']; // r302 save last visited article
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterSQL"));
+
 		$getArticle = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql,false,"article_".$this->sSYSTEM->_GET["sArticle"]);
 
 		//Bei Konfiguratorartikeln wird der Wert laststock
@@ -2708,7 +2699,7 @@ class sArticles
 			SELECT instock FROM s_articles_details WHERE id=?
 			",array($getArticle["articleDetailsID"]));
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterQuery"));
+
 
 		// Translate main - data
 		$getArticle = $this->sGetTranslation($getArticle,$this->sSYSTEM->_GET['sArticle'],"article",$this->sSYSTEM->sLanguage);
@@ -2753,7 +2744,6 @@ class sArticles
 			"link"=>$link,"target"=>"_parent");
 
 			$getArticle["sLinks"] = $getRelatedLinks;
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterLinks"));
 
 			if (function_exists("htmlspecialchars_decode")){
 				$getArticle["description_long"] = htmlspecialchars_decode($getArticle["description_long"]);
@@ -2841,9 +2831,6 @@ class sArticles
 					$getArticle["sSimilarArticles"] = array();
 				}
 			}
-
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterCrossSelling"));
-
 			// Check if available as esd-article
 			$getArticle["esd"] = $this->sCheckIfEsd($getArticle["articleID"],$getArticle["articleDetailsID"]);
 
@@ -2893,7 +2880,7 @@ class sArticles
 				}
 			}
 
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterBlockPrices"));
+
 			// Get article variants (one-dimensional)
 			// =================================================.
 			$sql = "
@@ -2911,7 +2898,7 @@ class sArticles
 				GROUP BY articleDetailsID
 				ORDER BY s_articles_details.kind ASC, s_articles_details.position ASC
 				";
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_AfterVariantSQL"));
+
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetArticleById_FilterSqlVariants', $sql, array('subject'=>$this,'id'=>$this->sSYSTEM->_GET['sArticle'],'isBlog'=>$isBlog,'customergroup'=>$this->sSYSTEM->sUSERGROUP));
 
 			$getArticleVariants =$this->sSYSTEM->sDB_CONNECTION->CacheGetAssoc($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql,false,"article_".$getArticle["articleID"]);
@@ -2927,7 +2914,7 @@ class sArticles
 							SELECT instock FROM s_articles_details WHERE id = {$variantValue["articleDetailsID"]}
 							");
 					}
-					eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_VariantLoopStart"));
+
 					// r302
 					if (empty($getArticleVariants[$variantKey]["shippingtime"])){
 						// Fix the bug, that shippingtime is only available for the first article
@@ -3069,7 +3056,7 @@ class sArticles
 					} // Check for price groups
 					// --- block prices
 					$getArticleVariants[$variantKey]["linkNote"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=note&sAdd=".$getArticleVariants[$variantKey]["ordernumber"];
-					eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_VariantLoopEnd"));
+
 
 				} // For every variant
 				$getArticle["sVariants"] = $getArticleVariants;
@@ -3255,7 +3242,7 @@ class sArticles
 			arsort($words);
 			$getArticle["sDescriptionKeywords"] = htmlentities(implode(", ",array_slice(array_keys($words),0,20)));
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetArticleById_BeforeReturn"));
+
 
 		if (!$this->sSYSTEM->sCheckLicense("","",$this->sSYSTEM->sLicenseData["sBUNDLE"])){
 			$getArticle['crossbundlelook'] = false;
@@ -3361,7 +3348,7 @@ class sArticles
 				$price .= ",00";
 			}
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sFormatPrice_BeforeEnd"));
+
 		return $price;
 	}
 
@@ -3373,13 +3360,13 @@ class sArticles
 	 */
 	public function sRound ($moneyfloat = null)
 	{
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sRound_Start"));
+
 		$money_str = explode(".",$moneyfloat);
 		if (empty($money_str[1])) $money_str[1] = 0;
 		$money_str[1] = substr($money_str[1],0, 3); // convert to rounded (to the nearest thousandth) string
 
 		$money_str = $money_str[0].".".$money_str[1];
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sRound_BeforeEnd"));
+
 		return round($money_str,2);
 	}
 
@@ -3396,7 +3383,7 @@ class sArticles
 		if (Enlight()->Events()->notifyUntil('Shopware_Modules_Articles_GetPromotionById_Start', array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value))){
 			return false;
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_Start"));
+
 		$cacheSQL = "";
 		$category = intval($category);
 		if ($mode!="fix"){
@@ -3414,7 +3401,7 @@ class sArticles
 			$categorySQL = "";
 			$categoryFrom = "";
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_BeforeSwitch"));
+
 		switch ($mode){
 			case "random":	// Random
 			if (!is_array($this->sCachePromotions)) $this->sCachePromotions = array();
@@ -3515,7 +3502,7 @@ class sArticles
 			$articleID = $value;
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlPremium', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_Premium"));
+
 		}
 		else
 		{
@@ -3583,7 +3570,7 @@ class sArticles
 			";
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSql', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_AfterSQL"));
+
 		}
 		if ($mode=="random")
 		{
@@ -3619,7 +3606,7 @@ class sArticles
 		}
 
 		$getPromotionResult = $this->sGetTranslation($getPromotionResult,$getPromotionResult["articleID"],"article",$this->sSYSTEM->sLanguage);
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_QueryStart"));
+
 
 		$checkVariantsSQL = 'SELECT COUNT(*) FROM `s_articles_details` WHERE `articleID` = ?';
 		$checkVariants = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $checkVariantsSQL, $getPromotionResult['articleID']);
@@ -3699,11 +3686,11 @@ class sArticles
 		if(!empty($category)&&$category!=$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"])
 		$getPromotionResult["linkDetails"] .= "&sCategory=$category";
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_QueryEnd"));
+
 
 		$getPromotionResult["mode"] = $mode;
 
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotionById_BeforeEnd"));
+
 
 		$getPromotionResult = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterResult', $getPromotionResult, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 
@@ -3718,14 +3705,14 @@ class sArticles
 	 */
 	public function sOptimizeText($text)
 	{
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sOptimizeText_Start"));
+
 		$text = html_entity_decode($text);
 		$text = preg_replace('!<[^>]*?>!', ' ', $text);
 		$text = str_replace(chr(0xa0), " ", $text);
 		$text = preg_replace('/\s\s+/', ' ', $text);
 		$text = htmlspecialchars($text, ENT_COMPAT, 'ISO-8859-1', false);
 		$text = trim($text);
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sOptimizeText_BeforeEnd"));
+
 		return $text;
 	}
 
@@ -3999,7 +3986,7 @@ class sArticles
 	 */
 	public function sGetPromotions($category){
 		$category = intval($category);
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotions_Start"));
+
 		$sToday = date("Y-m-d");
 		$sql = "
 			SELECT category,mode, TRIM(ordernumber) as ordernumber, link, description, link_target, img, liveshoppingID
@@ -4009,7 +3996,7 @@ class sArticles
 			(valid_from='0000-00-00' AND valid_to='0000-00-00')) ORDER BY position ASC
 		";
 		$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotions_FilterSQL', $sql, array('subject'=>$this,'category'=>$category));
-		eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotions_AfterSQL"));
+
 		$getAffectedPromitions = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql);
 		
 		// Clearing cache
@@ -4069,7 +4056,7 @@ class sArticles
 				} // end switch
 
 			} // end foreach
-			eval($this->sSYSTEM->sCallHookPoint("sArticles.php_sGetPromotions_BeforeEnd"));
+
 			$promote = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotions_FilterResult', $promote, array('subject'=>$this,'category'=>$category));
 
 			return $promote;
