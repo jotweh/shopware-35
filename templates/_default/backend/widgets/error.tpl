@@ -50,7 +50,7 @@
 							flex: 1,
 							items: [
 								{
-									html: 'Fügen Sie Widgets zu Ihrer Startseite hinzu!'
+									html: '{$error}'
 								}
 							]
 						}
