@@ -1,6 +1,7 @@
 <?php
 /**
  * Shopware form generation
+ * 
  * @link http://www.shopware.de
  * @package core
  * @subpackage class
@@ -9,12 +10,6 @@
  */
 class sCmsSupport
 {
-	/**
-	* Pointer to Shopware-Core-public functions
-	*
-	* @var    object
-	* @access private
-	*/
 	var $sSYSTEM;
 	var $sFORMNAME;
 	var $sSUPPORT;
@@ -25,6 +20,12 @@ class sCmsSupport
 	var $sERRORS;
 	var $sID;
 	
+	/**
+	 * Construct form method
+	 *
+	 * @param unknown_type $id
+	 * @return unknown
+	 */
 	public function sConstruct ($id=false) {
 		
 		$this->sID = !empty($id) ? $id : intval($this->sSYSTEM->_GET['sFid']);
@@ -56,6 +57,11 @@ class sCmsSupport
 		return true;
 	}
 	
+	/**
+	 * Create form method
+	 *
+	 * @return unknown
+	 */
 	public function create_form ()
 	{
 		$ret = "<form name=\"{$this->sSUPPORT['name']}\" class=\"{$this->sSUPPORT['class']}\" method=\"post\" action=\"\" enctype=\"multipart/form-data\">\r\n";
@@ -70,6 +76,11 @@ class sCmsSupport
 		return $ret;
 	}
 
+	/**
+	 * Create input element method
+	 *
+	 * @return unknown
+	 */
 	public function create_input_element ($element,$post)
 	{
 		if ($element['required']==1)
@@ -150,6 +161,11 @@ class sCmsSupport
 		return $ret;
 	}
 	
+	/**
+	 * Create label element method
+	 *
+	 * @return unknown
+	 */
 	public function create_label_element ($element)
 	{
 		$ret = "<label for=\"{$element['name']}\">{$element['label']}";
@@ -159,10 +175,13 @@ class sCmsSupport
 		return $ret;
 	}
 	
+	/**
+	 * Validate input method
+	 *
+	 * @return unknown
+	 */
 	public function validate_input ($inputs,$elements)
 	{
-		//get_magic_quotes_gpc();
-		//stripslashes();
 		foreach ($elements as $element)
 		{
 			$valide = true;
@@ -208,14 +227,11 @@ class sCmsSupport
 						break;
 					case "email":
 						$value = strtolower($value);
-						$reg = "/^[a-z]+[a-z0-9]*[\.|\-|_]?[a-z0-9]+@([a-z]+[a-z0-9]*[\.|\-]?[a-z]+[a-z0-9]*[a-z0-9]+){1,4}\.[a-z]{2,4}$/";
-						if (!preg_match($reg,$value))
-						{
+						if (!Zend_Validate::is($value, 'EmailAddress')) {
 							unset($value); $valide=false;
 						}
-						$host = trim(substr($value,strpos($value,"@")+1));
-						if(empty($host)||!gethostbyname($host))
-						{
+						$host = trim(substr($value, strpos($value, '@') + 1));
+						if(empty($host) || !gethostbyname($host)) {
 							unset($value); $valide=false;
 						}
 						break;
@@ -257,4 +273,3 @@ class sCmsSupport
 		return ($ret);
 	}
 }
-?>
