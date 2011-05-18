@@ -9,6 +9,20 @@
 	<script type="text/javascript">
 		Ext.Loader.setConfig({ enabled:true});
 		Ext.Loader.setPath('Ext.app', '{link file="backend/_resources/javascript/plugins"}');
+		Ext.require([
+			'Ext.layout.container.*',
+			'Ext.resizer.Splitter',
+			'Ext.fx.target.Element',
+			'Ext.fx.target.Component',
+			'Ext.window.Window',
+			'Ext.app.Portal',
+			'Ext.app.PortalColumn',
+			'Ext.app.PortalPanel',
+			'Ext.app.Portlet',
+			'Ext.app.PortalDropZone',
+			'Ext.app.GridPortlet',
+			'Ext.app.ChartPortlet'
+		]);
 		Ext.define('Ext.app.Portal', {
 
 			extend: 'Ext.container.Viewport',
