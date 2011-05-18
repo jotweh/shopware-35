@@ -8,7 +8,7 @@
 	<script type="text/javascript" src="{link file='backend/_resources/javascript/ext-4.0.0/bootstrap.js'}"></script>
 	<script type="text/javascript">
 		Ext.Loader.setConfig({ enabled:true});
-	
+		Ext.Loader.setPath('Ext.app', '{link file="backend/_resources/javascript/plugins"}');
 		Ext.define('Ext.app.Portal', {
 
 			extend: 'Ext.container.Viewport',
