@@ -44,13 +44,13 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 		if (!is_dir($dir)){
 			$error = "Directory $dir not found. Please create!";
 		}
-		if (!is_writeable($dir)){
+		if (!is_writeable($dir) && empty($error)){
 			$error = "Directory $dir does not have sufficient rights (0777)";
 		}
-		if (!is_file($dir."/.htaccess")){
+		if (!is_file($dir."/.htaccess") && empty($error)){
 			$error = "File .htaccess in directory $dir does not exists!";
 		}
-		if (strpos(file_get_contents($dir."/.htaccess"),"Deny from all")===false){
+		if (strpos(file_get_contents($dir."/.htaccess"),"Deny from all")===false && empty($error)){
 			$error = "File .htaccess in directory $dir must have \"deny from all\" option set!";
 		}
 
