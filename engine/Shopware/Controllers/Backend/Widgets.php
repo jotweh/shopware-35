@@ -39,92 +39,98 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 		
 		$dir = Shopware()->DocPath()."/files/config";
 
+		$error = "";
 		// Check permissions
 		if (!is_dir($dir)){
-			die("Directory $dir not found. Please create!");
+			$error = "Directory $dir not found. Please create!";
 		}
 		if (!is_writeable($dir)){
-			die("Directory $dir does not have sufficient rights (0777)");
+			$error = "Directory $dir does not have sufficient rights (0777)";
 		}
 		if (!is_file($dir."/.htaccess")){
-			die("File .htaccess in directory $dir does not exists!");
+			$error = "File .htaccess in directory $dir does not exists!";
 		}
 		if (strpos(file_get_contents($dir."/.htaccess"),"Deny from all")===false){
-			die("File .htaccess in directory $dir must have 'deny from all option' set!");
+			$error = "File .htaccess in directory $dir must have 'deny from all option' set!";
 		}
 
-		$this->View()->UserName = $_SESSION['sName'];
-		$this->View()->isAdmin = $_SESSION["sAdmin"];
-
-		// Load panel and widgets
-		$userID =  $_SESSION["Shopware"]["Auth"]->id;
-		$userID = md5($userID);
-
-		$firstUse = false;
-		if (!is_file($dir."/Panels.xml")){
-			$firstUse = true;
-		}elseif (strpos(file_get_contents($dir."/Panels.xml"),$userID)===false){
-			$firstUse = true;
-		}
-
-		if ($firstUse){
-			$this->View()->firstUse = true;
-			
+		if (!empty($error)){
+			$this->View()->error =$error;
+			$this->View()->loadTemplate("error.tpl");
 		}else {
-			$this->View()->firstUse = false;
-			$panels = array(0=>array("id"=>$userID));
+			$this->View()->UserName = $_SESSION['sName'];
+			$this->View()->isAdmin = $_SESSION["sAdmin"];
 
-			foreach ($panels as $panel){
-				$PanelModel = new Shopware_Models_Widgets_Panel($panel["id"]);
-				$WidgetModel = new Shopware_Models_Widgets_Widgets($panel["id"],'');
+			// Load panel and widgets
+			$userID =  $_SESSION["Shopware"]["Auth"]->id;
+			$userID = md5($userID);
 
-				$PanelConfiguration = $PanelModel->get($panel["id"]);
-				
-				foreach ($PanelConfiguration["widgets"] as &$widget){
-					$widget["label"] = 'Test';
-					//$widgetData = $WidgetModel->get($widget["widgetType"]);
-					//$widget["object"] = $widgetData;
-
-					$widget["configuration"]["widgetLabel"] = utf8_decode($widget["configuration"]["widgetLabel"]);
-					//print_r($widget["configuration"]);exit;
-					$widgets[] = $widget;
-				}
-
-				
-				$first = true;
-				for ($i=0;$i<$numberCols;$i++){
-					if ($first){
-						$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>0,"width"=>"150","items"=>array());
-						$first = false;
-					}else {
-						$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>1,"items"=>array());
-					}
-				}
-				//print_r($PanelConfiguration["widgets"]);exit;
-				foreach ($PanelConfiguration["widgets"] as $tempWidget){
-
-					if (!isset($tempWidget["position"])){
-						$tempWidget["position"] = 0;
-					}
-					if (!isset($tempWidget["column"])){
-						$tempWidget["column"] = 0;
-					}
-
-					$PanelConfiguration["cols"][$tempWidget["column"]]["items"][] = $tempWidget;
-				}
-				
-
-				for ($i=0;$i<$numberCols;$i++){
-					if (isset($PanelConfiguration["cols"][$i]["items"][0])){
-						$this->multiArraySort($PanelConfiguration["cols"][$i]["items"],"position");
-					}
-				}
-
-				$panelData[] = $PanelConfiguration;
+			$firstUse = false;
+			if (!is_file($dir."/Panels.xml")){
+				$firstUse = true;
+			}elseif (strpos(file_get_contents($dir."/Panels.xml"),$userID)===false){
+				$firstUse = true;
 			}
-		}
 
-		$this->View()->panel = $panelData[0];
+			if ($firstUse){
+				$this->View()->firstUse = true;
+
+			}else {
+				$this->View()->firstUse = false;
+				$panels = array(0=>array("id"=>$userID));
+
+				foreach ($panels as $panel){
+					$PanelModel = new Shopware_Models_Widgets_Panel($panel["id"]);
+					$WidgetModel = new Shopware_Models_Widgets_Widgets($panel["id"],'');
+
+					$PanelConfiguration = $PanelModel->get($panel["id"]);
+
+					foreach ($PanelConfiguration["widgets"] as &$widget){
+						$widget["label"] = 'Test';
+						//$widgetData = $WidgetModel->get($widget["widgetType"]);
+						//$widget["object"] = $widgetData;
+
+						$widget["configuration"]["widgetLabel"] = utf8_decode($widget["configuration"]["widgetLabel"]);
+						//print_r($widget["configuration"]);exit;
+						$widgets[] = $widget;
+					}
+
+
+					$first = true;
+					for ($i=0;$i<$numberCols;$i++){
+						if ($first){
+							$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>0,"width"=>"150","items"=>array());
+							$first = false;
+						}else {
+							$PanelConfiguration["cols"][$i] = array("id"=>md5(uniqid(rand())),"flex"=>1,"items"=>array());
+						}
+					}
+					//print_r($PanelConfiguration["widgets"]);exit;
+					foreach ($PanelConfiguration["widgets"] as $tempWidget){
+
+						if (!isset($tempWidget["position"])){
+							$tempWidget["position"] = 0;
+						}
+						if (!isset($tempWidget["column"])){
+							$tempWidget["column"] = 0;
+						}
+
+						$PanelConfiguration["cols"][$tempWidget["column"]]["items"][] = $tempWidget;
+					}
+
+
+					for ($i=0;$i<$numberCols;$i++){
+						if (isset($PanelConfiguration["cols"][$i]["items"][0])){
+							$this->multiArraySort($PanelConfiguration["cols"][$i]["items"],"position");
+						}
+					}
+
+					$panelData[] = $PanelConfiguration;
+				}
+			}
+
+			$this->View()->panel = $panelData[0];
+		}
 	}
 
 	/**
