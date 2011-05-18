@@ -93,9 +93,10 @@
 	</div>
 	{/if}
 {/block}
+{block name="frontend_listing_actions_close"}
 </div>
 <div class="space">&nbsp;</div>
-
+{/block}
 {else}
 	{if $sCategoryContent.parent != 1}
 	<div class="listing_actions normal">
