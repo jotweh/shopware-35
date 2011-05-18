@@ -38,16 +38,12 @@ Ext.define('Ext.app.PortalPanel', {
             i = 0,
             item;
 
-        for (; i < len; i++) {
-            item = items[i];
-           	if (item.flex){
-				item.columnWidth = (1 / (len)) - (0.2 / len) ;
-				console.log(item.columnWidth,len);
-			}else {
-				item.columnWidth =  "0.2";
-			}
-            item.removeCls(['x-portal-column-first', 'x-portal-column-last']);
-        }
+		for (; i < len; i++) {
+			item = items[i];
+			item.columnWidth = 1 / len;
+			item.removeCls(['x-portal-column-first', 'x-portal-column-last']);
+		}
+
         items[0].addCls('x-portal-column-first');
         items[len - 1].addCls('x-portal-column-last');
         return this.callParent(arguments);
