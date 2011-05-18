@@ -39,7 +39,7 @@
 	        
 	        <p class="buttons">
 	            <a href="javascript:history.back();" class="button-left large">{se name="PasswordLinkBack"}{/se}</a>
-	            <input type="submit" class="button-right large" />
+	            <input type="submit" class="button-right large" value="{s name="PasswordSendAction"}Passwort anfordern{/s}" />
 	            <div class="clear">&nbsp;</div>
 	        </p>
 	    </form>

@@ -22,7 +22,7 @@ UPDATE `s_core_snippets` SET `shopID` = 1 WHERE `shopID` = 0;
 
 INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
 (NULL, 'backend/index/menu', 1, 2, 'Alle schliessen', 'Close all', '2011-03-31 11:47:42', '2011-03-31 11:47:42'),
-(NULL, 'backend/index/menu', 1, 2, 'Anlegen', 'Create', '2011-03-31 11:48:05', '2011-03-31 11:48:56'),
+(NULL, 'backend/index/menu', 1, 2, 'Anlegen', 'New', '2011-03-31 11:48:05', '2011-03-31 11:48:56'),
 (NULL, 'backend/index/menu', 1, 2, 'Artikel', 'Products', '2011-03-31 11:49:30', '2011-04-01 11:42:15'),
 (NULL, 'backend/index/menu', 1, 2, 'Artikel + Kategorien', 'Products + Categories', '2011-03-31 11:50:05', '2011-03-31 11:50:05'),
 (NULL, 'backend/index/menu', 1, 2, 'Einstellungen', 'Settings', '2011-03-31 11:50:26', '2011-03-31 11:50:26'),
@@ -57,6 +57,16 @@ ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NUL
  */
 UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
 UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
+
+
+/*
+ * @ticket 4836
+ * @author st.hamann
+ * @since 3.5.4 - 2011/05/18
+ */
+INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
+(NULL, 'frontend/account/password', 1, 1, 'PasswordSendAction', 'Passwort anfordern', '2011-05-17 11:47:42', '2011-05-17 11:47:42');
+
 
 /*
  * @ticket 5124
