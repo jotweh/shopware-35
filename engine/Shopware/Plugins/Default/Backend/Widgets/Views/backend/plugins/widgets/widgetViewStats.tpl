@@ -18,7 +18,7 @@ Ext.define('Swag.Widget.{$item}',
 			{/if}
 
 
-			Ext.core.DomHelper.append(document.head, { tag: 'link', href: '{url controller=Widgets action=getStyleSheet css=widgetVisitors widget=$widgetType}',rel: 'stylesheet',type: 'text/css'});
+			Ext.core.DomHelper.append(Ext.getHead(), { tag: 'link', href: '{url controller=Widgets action=getStyleSheet css=widgetVisitors widget=$widgetType}',rel: 'stylesheet',type: 'text/css'});
 
 
 
