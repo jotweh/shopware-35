@@ -58,7 +58,6 @@ ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NUL
 UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
 UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
 
-
 /*
  * @ticket 4836
  * @author st.hamann
@@ -67,7 +66,6 @@ UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
 INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
 (NULL, 'frontend/account/password', 1, 1, 'PasswordSendAction', 'Passwort anfordern', '2011-05-17 11:47:42', '2011-05-17 11:47:42');
 
-
 /*
  * @ticket 5124
  * @author h.lohaus 
@@ -75,3 +73,11 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  */
 ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL ,
 ADD `pluginID` INT( 11 ) UNSIGNED NULL 
+
+
+/*
+ * @ticket 5125
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/05/18
+ */
+UPDATE `s_core_config_mails` SET `name` = TRIM(`name`);
