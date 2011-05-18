@@ -266,7 +266,7 @@ $userData = $payment->sUser;
 	// Stop if php-curl is not working
 	// **************************************************
 
-	if( strtolower( substr( $payment_url, 0, 36 ) ) != "https://www.saferpay.com/vt/pay.asp?" ) {
+	if(empty($payment_url) || strpos($payment_url, 'https://www.saferpay.com/') !== 0) {
 		$msg = "<h1>".$sLang["saferpay"]["curlNotWorking"]."</h1>\r\n";
 		$msg .= "<h2><font color=\"red\">".htmlentities($payment_url)."&nbsp;</font></h2>\r\n";
 		$msg .= "<h2><font color=\"red\">".htmlentities($ce)."&nbsp;</font></h2>\r\n";
