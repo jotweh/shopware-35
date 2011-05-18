@@ -56,7 +56,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 
 		if (!empty($error)){
 			$this->View()->error =$error;
-			$this->View()->loadTemplate("error.tpl");
+			$this->View()->loadTemplate("backend/widgets/error.tpl");
 		}else {
 			$this->View()->UserName = $_SESSION['sName'];
 			$this->View()->isAdmin = $_SESSION["sAdmin"];
