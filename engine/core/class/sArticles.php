@@ -1799,12 +1799,15 @@ class sArticles
 	 */
 	public function sGetAllArticlesInCategory($article)
 	{
-
-		$article = intval($article);
+		$article = (int) $article;
+		$sql = 'SELECT mode FROM s_articles WHERE id = ?';
+		$blog = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql, array($article));
+		
 		$this->sSYSTEM->_GET['sCategory'] = intval($this->sSYSTEM->_GET['sCategory']);
-		// If no category, left
 
-		if (!$this->sSYSTEM->_GET['sCategory']) return;
+		if (!$this->sSYSTEM->_GET['sCategory']) {
+			return;
+		}
 
 		if (!empty($this->sSYSTEM->_POST['sSort'])){
 			$this->sSYSTEM->_SESSION['sSort'] = $this->sSYSTEM->_POST['sSort'];
@@ -1835,6 +1838,10 @@ class sArticles
 				break;
 			default:
 				$orderBy  = $this->sSYSTEM->sCONFIG['sORDERBYDEFAULT'].', a.id';
+		}
+		
+		if(!empty($blog)) {
+			$orderBy = 'a.changetime DESC, a.id';
 		}
 
 		if(strpos($orderBy,'price')!==false)
@@ -1889,8 +1896,7 @@ class sArticles
 		{
 			$select_price = '0';
 		}
-
-
+		
 		$sql = "
 			SELECT a.id, name AS articleName,
 				($select_price*100/100-IFNULL(cd.discount,0)) as price
