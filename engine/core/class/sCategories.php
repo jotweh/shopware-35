@@ -74,7 +74,7 @@ class sCategories
 	
 				if(!empty($getCategories)) {
 					foreach ($getCategories as $categoryKey => $categoryObject){
-						eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_LoopStart"));
+
 						if ($getCategories[$categoryKey]["id"]==$id){
 							
 							$getCategories[$categoryKey]["flag"] = true;
@@ -137,7 +137,7 @@ class sCategories
 				$getCategories[$categoryKey]["flag"] = false;
 				$getCategories[$categoryKey]["subcategories"] = array();
 				$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=cat&sCategory={$categoryObject['id']}";
-				eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_Loop2Start"));		
+					
 			}
 		}
 		
