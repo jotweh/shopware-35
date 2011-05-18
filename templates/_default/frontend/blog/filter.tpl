@@ -53,7 +53,7 @@
 	{/block}
 {/if}
 
-{if $sPropertiesOptionsOnly && $sPropertiesOptionsOnly|@count > 1}
+{if $sPropertiesOptionsOnly}
 	
 	{* Filter by properties *}
 	<h2 class="headingbox_nobg">{s name='BlogHeaderFilterProperties'}{/s}</h2>

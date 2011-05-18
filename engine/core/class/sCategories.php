@@ -2,17 +2,21 @@
 /**
  * Managing shopware categories
  * @link http://www.shopware.de
- * @package core
- * @subpackage class
- * @copyright (C) Shopware AG 2002-2010
- * @version Shopware 3.5.0
+ * @package Shopware
+ * @subpackage Core\Class
+ * @copyright (C) Shopware AG 211
+ * @version Shopware 3.5.4
  */
 class sCategories
 {
 
 	var $sSYSTEM;
 	
-	// Deprecated
+	/**
+	 * This function is deprecated
+	 * @param int $id
+	 * @return array
+	 */
 	public function sGetCategoriesAsArrayByIdTest($id=0)
 	{
 		return $this->sGetCategories($id);
@@ -25,7 +29,7 @@ class sCategories
 	**/
 	public function sGetCategories($id=0)
 	{
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_Start"));
+
 		if (empty($id)){
 			$id = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"];
 			if (!$id){
@@ -66,7 +70,7 @@ class sCategories
 				
 				$getCategories = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,array($pId));
 				
-				eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_AfterSQL2"));
+
 	
 				if(!empty($getCategories)) {
 					foreach ($getCategories as $categoryKey => $categoryObject){
@@ -85,18 +89,21 @@ class sCategories
 						
 						
 						if ($categoryObject["countArticles"]==1 && !empty($this->sSYSTEM->sCONFIG["sCATEGORYDETAILLINK"])){
+
 							$getArticle = $this->sSYSTEM->sDB_CONNECTION->GetRow("
 							SELECT s_articles.id, name FROM s_articles, s_articles_categories WHERE s_articles.id = s_articles_categories.articleID
 							AND s_articles_categories.categoryID = ? AND s_articles.active = 1
 							",array($categoryObject["id"]));
+							
 							$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sMODULES['sCore']->sRewriteLink($this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle={$getArticle['id']}",$getArticle["name"]);
+							
 						}elseif($categoryObject["external"]){
 							// Task
 							$getCategories[$categoryKey]["link"] = $categoryObject["external"];
 						}else {
 							$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=cat&sCategory={$categoryObject['id']}";	
 						}
-						eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_LoopEnd"));					
+
 					}
 				}
 				$backupId = $pId;
@@ -122,7 +129,7 @@ class sCategories
 			)
 			ORDER BY position, description
 			";
-			eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_AfterSQL3"));		
+
 			$getCategories = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,array($id));
 			
 			
@@ -134,7 +141,7 @@ class sCategories
 			}
 		}
 		
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayByIdTest_BeforeEnd"));		
+
 		return $getCategories;
 	}
 
@@ -225,7 +232,7 @@ class sCategories
 					}
 				} // -- for every category
 		} // no sub-categories
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesAsArrayById_BeforeEnd"));	
+
 		return $getCategories;
 	}
 	
@@ -254,7 +261,7 @@ class sCategories
 	
 		$mainCategories = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,array($baseId));
 		
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetMainCategories_AfterSQL"));	
+
 		if (isset($this->sSYSTEM->_GET['sCategory'])){
 			// Grep parent of the current choosen category
 			$getParent = $this->sGetCategoriesByParent($this->sSYSTEM->_GET['sCategory']);
@@ -292,10 +299,10 @@ class sCategories
 			}else {
 				$mainCategories[$categoryKey]["flag"] = false;
 			}
-			eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetMainCategories_LoopEnd"));	
+
 		}
-		
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetMainCategories_BeforeEnd"));	
+
+
 		return $mainCategories;
 	}
 	
@@ -316,7 +323,7 @@ class sCategories
 			$tmp =  $this->sGetCategoryIdsByParent($id);
 			$show = array_merge($show,$tmp);
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoryIdsByParent_BeforeEnd"));
+
 		return $show;
 	}
 	
@@ -348,7 +355,7 @@ class sCategories
 			$tmp =  $this->sGetCategoriesByParent($id);
 			$getCategoriesArray = array_merge($getCategoriesArray,$tmp);
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetCategoriesByParent_BeforeEnd"));
+
 		return $getCategoriesArray;
 	}
 	
@@ -377,7 +384,7 @@ class sCategories
 		";
 		
 		$getCategories = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,array($parent)); 
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetWholeCategoryTree_AfterSQL"));
+
 		$getCategoriesArray = array();
 		$subCategories = array();
 		foreach ($getCategories as $category){
@@ -408,9 +415,9 @@ class sCategories
 			
 			$getCategoriesArray[] = array("link"=>$link,"name"=>$name,"sub"=>$subCategories);
 			
-			eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetWholeCategoryTree_LoopEnd"));
+
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sCategories.php_sGetWholeCategoryTree_BeforeEnd"));
+
 		return $getCategoriesArray;
 	}
 	
