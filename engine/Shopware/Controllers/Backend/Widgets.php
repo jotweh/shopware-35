@@ -51,7 +51,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 			$error = "File .htaccess in directory $dir does not exists!";
 		}
 		if (strpos(file_get_contents($dir."/.htaccess"),"Deny from all")===false){
-			$error = "File .htaccess in directory $dir must have 'deny from all option' set!";
+			$error = "File .htaccess in directory $dir must have \"deny from all\" option set!";
 		}
 
 		if (!empty($error)){
