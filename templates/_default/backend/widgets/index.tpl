@@ -3,7 +3,9 @@
 {block name="backend_index_css" replace}
 <link href="{link file='backend/_resources/javascript/ext-4.0.0/resources/css/ext-all.css'}" rel="stylesheet" type="text/css" />
 <style>
-	#app-header {
+-moz-linear-gradient(center top , #D9EDF6, #D5EBF5 45%, #C4E3F1 46%, #C5E4F1 50%, #C5E4F1 51%, #D4EBF5);
+
+#app-header {
     color: #596F8F;
     font-size: 22px;
     font-weight: 200;
