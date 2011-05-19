@@ -81,3 +81,12 @@ ADD `pluginID` INT( 11 ) UNSIGNED NULL
  * @since 3.5.4 - 2011/05/18
  */
 UPDATE `s_core_config_mails` SET `name` = TRIM(`name`);
+
+/*
+ * @ticket 5125
+ * @author h.lohaus 
+ * @since 3.5.4 - 2011/05/18
+ */
+DELETE FROM `s_core_subscribes` WHERE `listener` LIKE 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::%';
+INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
+(NULL, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onRouteStartup', 35, -100);
