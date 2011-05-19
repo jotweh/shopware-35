@@ -1849,51 +1849,27 @@ class sShopwareImport
 	 * @access public
 	 * @return
 	 */
-	function sDeleteOtherArticleImages  ($articleID, $images = array())
+	function sDeleteOtherArticleImages ($articleID, $imageIds = null)
 	{
 		$articleID = (int) $articleID;
-		if(empty($articleID)) return false;
-		
-		if(!empty($images)&&!is_array($images))
-		{
-			$images = array($images);
-		}
-					
-		if(!empty($images))
-		{
-			foreach ($images as &$image)
-			{
-				$image = (int) $image;
-			}
+		if(empty($articleID)) {
+			return false;
 		}
 		
-		if(!empty($images))
-		{
-			$sql = 'DELETE FROM s_articles_img WHERE id NOT IN ('.implode(',',$images).') AND articleID='.$articleID;
-		}
-		else 
-		{
-			$sql = 'DELETE FROM s_articles_img WHERE articleID='.$articleID;
-		}
-		$result = $this->sDB->Execute($sql);
-		if($result===false) return false;
-		
-		if(!empty($images))
-		{
+		if(!empty($imageIds)) {
+			$imageIds = $this->sDB->qstr($imageIds);
 			$sql = '
 				SELECT ai.img
 				FROM s_articles_img ai
 				LEFT JOIN s_articles_img ai2
 				ON ai2.img=ai.img
 				AND (ai.articleID!='.$articleID.'
-				OR ai2.id IN ('.implode(',',$images).'))
+				OR ai2.id IN ('.$imageIds.'))
 				WHERE ai.articleID='.$articleID.'
-				AND ai.id NOT IN ('.implode(',',$images).')
+				AND ai.id NOT IN ('.$imageIds.')
 				AND ai2.id IS NULL
 			';
-		}
-		else 
-		{
+		} else {
 			$sql = '
 				SELECT ai.img
 				FROM s_articles_img ai
@@ -1905,20 +1881,31 @@ class sShopwareImport
 			';
 		}
 		$images = $this->sDB->GetCol($sql);
-		if($images===false) return false;
+		if($images === false) {
+			return false;
+		}
 		
-		if(!empty($images))
-		{
-			$path = realpath($this->sPath.$this->sSystem->sCONFIG['sARTICLEIMAGES']);
-			foreach ($images as $image)
-			{
-				foreach (glob("$path/$image*") as $file)
-				{
-					if(file_exists($file))
+		if(!empty($images)) {
+			$path = realpath($this->sPath . $this->sSystem->sCONFIG['sARTICLEIMAGES']);
+			foreach ($images as $image) {
+				foreach (glob("$path/$image*") as $file) {
+					if(file_exists($file)) {
 						@unlink($file);
+					}
 				}
 			}
 		}
+		
+		if(!empty($imageIds)) {
+			$sql = 'DELETE FROM s_articles_img WHERE id NOT IN ('.$imageIds.') AND articleID='.$articleID;
+		} else {
+			$sql = 'DELETE FROM s_articles_img WHERE articleID='.$articleID;
+		}
+		$result = $this->sDB->Execute($sql);
+		if($result === false) {
+			return false;
+		}
+		
 		return true;
 	}
 	
