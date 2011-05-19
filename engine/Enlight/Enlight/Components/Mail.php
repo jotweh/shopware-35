@@ -142,7 +142,7 @@ class Enlight_Components_Mail extends Zend_Mail
     	return parent::setBodyHtml($html, $charset, $encoding);
     }
     
-     /**
+	/**
      * Returns plain body html
      *
      * @return string|null

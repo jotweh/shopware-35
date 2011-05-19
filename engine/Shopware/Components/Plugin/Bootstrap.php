@@ -168,7 +168,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 
 	/**
 	 * Create a new widget for display in backend start panel
-	 * @throws Enlight_Exception|Exception
+	 * 
 	 * @param  $name
 	 * @param  $label
 	 * @param  $configuration
@@ -177,7 +177,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	 * @param  $extender
 	 * @return bool
 	 */
-	public function createWidget($name,$label,$configuration,$template,$viewDirectory){
+	public function createWidget($name, $label, $configuration, $template, $viewDirectory){
 		
 		if (!$this->widgetXML){
 			throw new Enlight_Exception("\$this->widgetXML is null");

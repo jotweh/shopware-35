@@ -24,6 +24,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	protected $_dirtyFields = array();
 	protected $_createdColumn = 'created';
 	protected $_updatedColumn = 'updated';
+    protected $_data = array();
 	
 	/**
 	 * Constructor method
@@ -32,18 +33,16 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	 */
 	public function __construct(array $config)
     {
-    	if($this->_name!==null&&!isset($config['name'])) {
+    	if($this->_name!==null && !isset($config['name'])) {
   			$config['name'] = $this->_name;
   		}
   		
-    	$this->_dbTable = new Zend_Db_Table($config);
+    	$this->_dbTable = new Enlight_Components_Table($config);
 
     	$this->setOptions($config);
 
     	if(!$this->testCache()) {
-    		$this->_data = $this->load();
-    	} else {
-    		$this->_data = array();
+    		$this->load();
     	}
     	
     	parent::__construct($this->_data, $this->_allowModifications);
@@ -58,10 +57,10 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Set options method
      *
-     * @param unknown_type $options
-     * @return unknown
+     * @param array $options
+     * @return Shopware_Components_Config_DbTable
      */
-    public function setOptions($options)
+    public function setOptions(array $options)
     {
     	foreach ($options as $key=>$option) {
     		switch ($key) {
@@ -82,6 +81,9 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     			case 'allowModifications':
     				$this->{'_'.$key} = (bool) $option;
     				break;
+    			case 'data':
+    				$this->{'_'.$key} = (array) $option;
+    				break;
     			default:
     				break;
     		}
@@ -92,8 +94,8 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Set section method
      *
-     * @param unknown_type $section
-     * @return unknown
+     * @param array|string $section
+     * @return Shopware_Components_Config_DbTable
      */
     public function setSection($section)
     {
@@ -105,10 +107,10 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Set section method
+     * Set extends method
      *
-     * @param unknown_type $extends
-     * @return unknown
+     * @param array|string $extends
+     * @return Shopware_Components_Config_DbTable
      */
     public function setExtends($extends)
     {
@@ -133,9 +135,9 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Set extend method
      *
-     * @param unknown_type $extendingSection
-     * @param unknown_type $extendedSection
-     * @return unknown
+     * @param string $extendingSection
+     * @param string $extendedSection
+     * @return Shopware_Components_Config_DbTable
      */
     public function setExtend($extendingSection, $extendedSection = null)
     {
@@ -148,7 +150,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Returns cache id method
      *
-     * @return unknown
+     * @return string
      */
     public function getCacheId()
     {
@@ -167,7 +169,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Test cache method
      *
-     * @return unknown
+     * @return bool
      */
     public function testCache()
     {
@@ -180,7 +182,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Load cache method
      *
-     * @return unknown
+     * @return bool
      */
     protected function loadCache()
     {
@@ -194,7 +196,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Save cache method
      *
-     * @return unknown
+     * @return void
      */
     protected function saveCache()
     {
@@ -207,19 +209,18 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Load data method
      *
-     * @return unknown
+     * @return void
      */
     protected function load()
     {
     	$extendingSection = $this->_section;
-    	$data = $this->readSection($extendingSection);
+    	$this->_data = $this->_arrayMergeRecursive($this->readSection($extendingSection), $this->_data);
     	if(!empty($this->_extends)) {
     		while (isset($this->_extends[$extendingSection])) {
 	    		$extendingSection = $this->_extends[$extendingSection];
-	    		$data = $this->_arrayMergeRecursive($this->readSection($extendingSection), $data);
+	    		$this->_data = $this->_arrayMergeRecursive($this->readSection($extendingSection), $this->_data);
 	    	}
     	};
-    	return $data;
     }
     
     /**
@@ -263,10 +264,10 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Returns value method
      *
-     * @param unknown_type $name
-     * @param unknown_type $default
-     * @param unknown_type $save
-     * @return unknown
+     * @param string $name
+     * @param mixed $default
+     * @param bool $save
+     * @return mixed
      */
     public function get($name, $default=null, $save=false)
 	{
@@ -281,14 +282,14 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	/**
 	 * Set value method
 	 *
-	 * @param unknown_type $name
-	 * @param unknown_type $value
-	 * @return unknown
+	 * @param string $name
+	 * @param mixed $value
+	 * @return void
 	 */
     public function __set($name, $value)
 	{
 		$this->_dirtyFields[] = $name;
-		return parent:: __set($name, $value);
+		return parent::__set($name, $value);
 	}
 	
 	/**
@@ -302,7 +303,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	/**
 	 * Returns dirty fields
 	 *
-	 * @return unknown
+	 * @return array
 	 */
 	public function getDirtyFields()
 	{
@@ -313,9 +314,9 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	/**
 	 * Insert value method
 	 *
-	 * @param unknown_type $name
-	 * @param unknown_type $value
-	 * @return unknown
+	 * @param string $name
+	 * @param mixed $value
+	 * @return bool
 	 */
 	public function insert($name, $value)
     {
@@ -326,9 +327,9 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     /**
      * Save data method
      *
-     * @param unknown_type $fields
-     * @param unknown_type $update
-     * @return unknown
+     * @param null|string|array $fields
+     * @param bool $update
+     * @return bool
      */
     public function save($fields=null, $update=true)
     {

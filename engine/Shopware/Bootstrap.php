@@ -275,7 +275,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init config method
      *
-     * @return unknown
+     * @return Shopware_Models_Config
      */
     protected function initConfig()
     {

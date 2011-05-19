@@ -17,6 +17,7 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	protected $locale;
 	protected $currency;
 	protected $config;
+	protected $configOptions;
 	protected $template;
 	protected $properties = array();
 	
@@ -154,6 +155,9 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 				case 'template':
 					$this->setTemplate($option);
 					$this->properties[$key] = $option;
+					break;
+				case 'config':
+					$this->configOptions = (array) $option;
 					break;
 				default:
 					$this->properties[$key] = $option;
@@ -350,11 +354,16 @@ class Shopware_Models_Shop extends Enlight_Class implements Enlight_Hook
 	 */
 	public function initConfig()
 	{
-		$this->config = new Shopware_Models_Config(array('cache'=>$this->Cache(), 'shop'=>$this));
+		$configOptions = $this->configOptions!==null ? $this->configOptions : array();
+		if(!isset($configOptions['cache'])) {
+			$configOptions['cache'] = $this->Cache();
+		}
+		$configOptions['shop'] = $this;
+		$this->config = new Shopware_Models_Config($configOptions);
 		
-		$this->config['sDefaultCustomerGroup'] = $this->get('defaultcustomergroup');
-		if($this->config['sHOSTORIGINAL'] === null) {
-			$this->config['sHOSTORIGINAL'] = $this->config['sHOST'];
+		$this->config->defaultCustomerGroup = $this->get('defaultcustomergroup');
+		if($this->config->hostOriginal === null) {
+			$this->config->hostOriginal = $this->config->host;
 		}
 		
 		$this->setTemplate($this->getTemplate());
