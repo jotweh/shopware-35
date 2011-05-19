@@ -72,7 +72,7 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  * @since 3.5.4 - 2011/04/29
  */
 ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL ,
-ADD `pluginID` INT( 11 ) UNSIGNED NULL 
+ADD `pluginID` INT( 11 ) UNSIGNED NULL;
 
 
 /*
