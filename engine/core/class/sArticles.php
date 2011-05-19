@@ -3404,7 +3404,7 @@ class sArticles
 		$category = intval($category);
 		if ($mode!="fix"){
 			if (!empty($this->sCachePromotions)){
-				$cacheSQL = "AND a.id!=".implode(" AND a.id!=",$this->sCachePromotions);
+				$cacheSQL = "AND a.id NOT IN (" . implode(",", $this->sCachePromotions) . ")";
 			}
 		}
 		if (empty($category) && $mode!="fix"){
@@ -3451,14 +3451,37 @@ class sArticles
 				}
 				break;
 			case "new":
-				$sql = "SELECT a.datum as date, COUNT(a.id) as count FROM s_articles a $categoryFrom WHERE a.mode=0 AND a.active=1 $categorySQL $cacheSQL GROUP BY a.datum ORDER BY a.datum DESC LIMIT 1";
+				$sql = "
+					SELECT a.datum as date, COUNT(a.id) as count
+					FROM s_articles a $categoryFrom
+					WHERE a.mode=0 AND a.active=1 $categorySQL $cacheSQL
+					AND (
+						SELECT articleID 
+						FROM s_articles_avoid_customergroups 
+						WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+					) IS NULL
+					GROUP BY a.datum ORDER BY a.datum DESC LIMIT 1
+				";
 				$results = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
 				$randLimit = rand(0,$results["count"]-1);
 				$results["date"] = $this->sSYSTEM->sDB_CONNECTION->qstr($results["date"]);
-				$sql = "SELECT a.id as articleID FROM s_articles a $categoryFrom WHERE a.mode=0 AND a.active=1 AND datum>={$results["date"]} $categorySQL $cacheSQL LIMIT $randLimit,1";
+				$sql = "
+					SELECT a.id as articleID
+					FROM s_articles a $categoryFrom
+					WHERE a.mode=0 AND a.active=1
+					AND datum>={$results["date"]}
+					AND (
+						SELECT articleID 
+						FROM s_articles_avoid_customergroups 
+						WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+					) IS NULL
+					$categorySQL $cacheSQL LIMIT $randLimit,1
+				";
 				$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlNew', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 				$value = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
-				if(empty($value)) return false;
+				if(empty($value)) {
+					return false;
+				}
 				$valueSQL = "a.id=$value";
 				break;
 			case "top":
