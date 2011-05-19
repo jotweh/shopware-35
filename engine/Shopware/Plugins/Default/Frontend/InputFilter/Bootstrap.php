@@ -41,6 +41,16 @@ class Shopware_Plugins_Frontend_InputFilter_Bootstrap extends Shopware_Component
 				
 		return true;
 	}
+	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public static function onPreDispatch(Enlight_Event_EventArgs $args)
+	{
+		
+	}
 
 	/**
 	 * Event listener method
