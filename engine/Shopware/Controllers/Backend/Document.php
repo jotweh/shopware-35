@@ -123,13 +123,15 @@ class Shopware_Controllers_Backend_Document extends Enlight_Controller_Action
 		FROM s_core_documents_box WHERE `documentID` = ?;
 		";
 		Shopware()->Db()->query($sqlDuplicate,array($id,1));
-		
-		$insert = Shopware()->Db()->query("
+
+		$sql = "
 		INSERT INTO s_order_number (number,name,`desc`)
 		VALUES (
-		'1000','doc_'.$id,'Neuer Beleg'
+		'1000','doc_".$id."','Neuer Beleg'
 		)
-		");
+		";
+		
+		$insert = Shopware()->Db()->query($sql);
 		
 	}
 
