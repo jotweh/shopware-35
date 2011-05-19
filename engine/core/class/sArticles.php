@@ -564,6 +564,11 @@ class sArticles
 			AND s.id=a.supplierID
 			AND a.active=1 AND a.mode = 0
 			AND a.id = d.articleID
+			AND (
+					SELECT articleID
+					FROM s_articles_avoid_customergroups
+					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+			) IS NULL
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
@@ -600,6 +605,11 @@ class sArticles
 			AND s.id=a.supplierID
 			AND a.active=1 AND a.mode = 0
 			AND a.id = d.articleID
+			AND (
+					SELECT articleID
+					FROM s_articles_avoid_customergroups
+					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+			) IS NULL
 		";
 
 		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
