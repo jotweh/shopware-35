@@ -529,7 +529,7 @@ div.inner_searchcontainer #submit_search {background:transparent url(../images/a
 .artbox .actions a, .listing_actions .offers, div#notes .table_row .action a, .blogbox a.more_info, .content_listing a.more_info, .bt_allsupplier, div#notes .table_row .action a.basket, .blogbox a.more_info:hover, .content_listing a.more_info:hover, .bt_allsupplier:hover {background-image: url("../images/sprite_listing_buttons.png");}
 #content #left ul li.active.sub a.active {background-image: url("../images/arrows/bg_arrow_down.png")}
 .listing_actions .list-settings .table-view, .listing_actions .list-settings .list-view {background-image: url("../images/icons/ico_view.png")}
-#compareContainerResults div, #compareContainerResults a, #content #left .filter_search .searchbox li.active, div.supplier_filter ul li:hover, div.supplier_filter ul li.active {background-image: url("../images/icons/ico_search_active.png")}
+#compareContainerResults div, #compareContainerResults a, #content #left .filter_search .searchbox li.active a, div.supplier_filter ul li a:hover, div.supplier_filter ul li.active {background-image: url("../images/icons/ico_search_active.png")}
 div.step_box ul li.active .icon {background-image: url("../images/backgrounds/bg_stepnumber-active.png")}
 div.supplier_filter div span.expandcollapse, div.supplier_filter div.active span.expandcollapse {background-image: url("../images/icons/ico_filter.gif")}
 div.supplier_filter div.active {background-image: url("../images/backgrounds/bg_filter_active.jpg")}

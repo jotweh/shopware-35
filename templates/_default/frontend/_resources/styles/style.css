@@ -209,12 +209,14 @@ div.supplier_filter h5 {border-left: 1px solid;margin-bottom:0; padding: 5px 0 5
 div.supplier_filter div.active {background: url(../images/backgrounds/bg_filter_active.jpg) repeat-x;font-weight: 700;}
 div.supplier_filter div span.expandcollapse {position: absolute; right: 10px; top:5px; border-bottom: 0 none;margin:0;height: 13px; width: 13px; text-indent: -9999px; background: url(../images/icons/ico_filter.gif) 0 -13px no-repeat;}
 div.supplier_filter div.active span.expandcollapse {background: url(../images/icons/ico_filter.gif) 0 0 no-repeat;}
-div.supplier_filter ul li {border-left: 1px solid;padding: 6px 0 6px 22px;background: url(../images/icons/ico_search_inactive.png) 5px 7px no-repeat;}
-div.supplier_filter ul li:hover, div.supplier_filter ul li.active {background: url(../images/icons/ico_search_active.png) 5px center no-repeat;}
+div.supplier_filter ul li {border-left: 1px solid; display: inline-block;}
+div.supplier_filter ul li a, div.supplier_filter ul li.active {padding: 6px 0 6px 22px;background: url(../images/icons/ico_search_inactive.png) 5px 7px no-repeat;display: block;}
+div.supplier_filter ul li:hover a, div.supplier_filter ul li.active {background: url(../images/icons/ico_search_active.png) 5px center no-repeat;}
 div.supplier_filter ul li:hover a, div.supplier_filter ul li.active a {text-decoration: none;}
 div.supplier_filter ul li.active {font-weight: 700;text-decoration:none;}
 div.supplier_filter ul li.close span {background: #fff none;border: 0 none;font-weight: 700;padding:0;}
-div.supplier_filter ul li.close:hover {background: url(../images/icons/ico_search-delete.png) 5px center no-repeat;}
+div.supplier_filter ul li.close:hover a {background: url(../images/icons/ico_search-delete.png) 5px center no-repeat;}
+div.supplier_filter .space { display: none; }
 #right div.supplier_filter.blog {width:140px;}
 div.supplier, div.blogFilter, div.blogInteract {border:1px solid; border-right: 0 none; border-top: 0 none; right:0;margin: 0 0 20px 0;padding: 0 0 0 0;}
 .filter_actions {position: absolute;right: 5px;top: 25px;}
