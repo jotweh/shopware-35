@@ -192,3 +192,5 @@ div.table_foot .box .text  {width: 150px !important;}
 #content .supplier_slider div.logo {width: 25%; margin:0 0;}
 #content .supplier_slider div.text {width: 23%; margin-left:1%; margin-right: 1%;}
 #detail #detailinfo {overflow: hidden;padding-bottom: 10px; margin-bottom: 0;}
+
+#basket .table .voucher { height: 55px !important }

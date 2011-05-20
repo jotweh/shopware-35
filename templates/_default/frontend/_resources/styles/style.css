@@ -588,7 +588,7 @@ div.comment_block .author, div.comment_block .date {font-weight: 700;}
 #basket .actions a.button-right {position: absolute; right:0;margin: 0;}
 #notes .table .table_row .basket_details {left:125px;width: 260px;}
 #confirm .table .table_row, #finished .table .table_row {min-height:85px}
-.table .voucher .action a.del, .table .selected_premium a.del {top: 0px;}
+#basket .table .voucher .action a.del, #basket .table .selected_premium a.del {top: 6px;}
 .table .selected_premium, #basket .table .selected_premium {min-height: 50px;}
 #basket .table .voucher, #basket .table .rebate, #basket .table .small_quantities, #basket .table .bundle_row, #confirm .table .voucher, #confirm .table .rebate, #confirm .table .small_quantities, #confirm .table .bundle_row {min-height: 30px;}
 #basket .table .ordernumber, #confirm .table .ordernumber, #finished .table .ordernumber {margin: 0 0 5px 0;}
