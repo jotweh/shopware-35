@@ -2374,10 +2374,10 @@ jQuery.fn.liveSearch = function (conf) {
 	    config.top = modal.css('top');
 	    modal.hide();
 	    
-	    var close = $('<a>', {
+	    /*var close = $('<a>', {
 	        'text': 'Schlieﬂen',
 	        'class': 'close'
-	    }).appendTo(modal);
+	    }).appendTo(modal);*/
 	    close.bind('click', function (event) {
 	        event.preventDefault();
 	        if (config.useOverlay == true) {
