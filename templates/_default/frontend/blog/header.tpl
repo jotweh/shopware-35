@@ -1,5 +1,11 @@
 {extends file='frontend/index/header.tpl'}
 
+{* Keywords *}
+{block name="frontend_index_header_meta_keywords"}{if $sCategoryContent.metakeywords}{$sCategoryContent.metakeywords}{/if}{/block}
+
+{* Description *}
+{block name="frontend_index_header_meta_description"}{if $sCategoryContent.metadescription}{$sCategoryContent.metadescription|strip_tags|escape}{/if}{/block}
+
 {* Canonical link *}
 {block name='frontend_index_header_canonical'}
 <link rel="canonical" href="{$sCategoryContent.sSelf}" title="{if $sCategoryContent.description}{$sCategoryContent.description}{else}{$sShopname}{/if}" />
