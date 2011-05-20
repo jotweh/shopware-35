@@ -174,8 +174,8 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$secret = $this->createPaymentUniqueId();
 		
 		$params = array();
-		$params['haendlerid'] = Shopware()->Config()->get('sCLICKPAYMERCHANTID');
-		$params['haendlercode'] = Shopware()->Config()->get('sCLICKPAYMERCHANTCODE');
+		$params['haendlerid'] = $this->Config()->merchantId;
+		$params['haendlercode'] = $this->Config()->merchantCode;
 		$params['referenz'] = $this->getEosReferenz($user);
 		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '.');
 		$params['waehrung'] = $this->getCurrencyShortName();
@@ -326,7 +326,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		}
 		$this->View()->Payment = $payment;
 	}
-	
+		
 	/**
 	 * Do request method
 	 *
@@ -600,39 +600,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 			return str_replace('xxx', $errorValue, $errorSubList[(int) $errorCodeSub]);
 		}
 	}
-	
-	/**
-	 * Returns eos status message
-	 *
-	 * @param unknown_type $statusCode
-	 * @return unknown
-	 */
-	public function getEosStatusMessage($statusCode)
-	{
-		$sClickPayStatus = array(
-			0 => 'Offen',
-			1 => 'Reserviert',
-			2 => 'Gebucht',
-			3 => 'Storniert',
-			4 => 'Reservierung fehlgeschlagen',
-			5 => 'Buchung abgebrochen',
-			6 => 'Gutschrift',
-			7 => 'Status unbekannt',
-			8 => 'Geldeingang',
-			9 => 'Geldauszahlung',
-			10 => 'Buchung fehlgeschlagen',
-			11 => '3-D Secure fehlgeschlagen',
-			12 => 'User Accepted',
-			13 => 'InitFolgezahlung',
-			14 => 'Rückbuchung',
-			15 => 'Warte auf Zahlungseingang'
-		);
-		if(isset($sClickPayStatus[$statusCode])) {
-			return $sClickPayStatus[$statusCode];
-		}
-		return 'Status unbekannt';
-	}
-	
+
 	/**
 	 * Returns eos payment referenz
 	 *

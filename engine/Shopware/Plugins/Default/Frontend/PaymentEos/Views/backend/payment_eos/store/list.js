@@ -1,28 +1,15 @@
 Ext.define('PaymentEos.store.List', {
-
-	extend: 'Ext.data.JsonStore',
-	
-	model: 'PaymentEos.model.List'/*,
-    proxy: {
+	extend: 'Ext.data.Store',
+	model: 'PaymentEos.model.List',
+	proxy: {
         type: 'ajax',
-        url: '{url action=getList}',
+        url : '{url action=list}',
         reader: {
             type: 'json',
             root: 'data'
         }
     },
-    proxy: {
-    type: 'ajax',
-    api: {
-        read: 'data/users.json',
-        update: 'data/updateUsers.json'
-    },
-    reader: {
-        type: 'json',
-        root: 'users',
-        successProperty: 'success'
-    }
-}
-    autoLoad: true
-    */
+    autoLoad: true,
+    remoteSort: true,
+    remoteFilter: true
 });

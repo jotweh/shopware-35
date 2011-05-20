@@ -8,11 +8,13 @@ Ext.define('PaymentEos.controller.List', {
     ],
     
     models: [
-    	'List'
+    	'List',
+    	'Status'
     ],
     
     stores: [
-    	'List'
+    	'List',
+    	'Status'
     ],
     
     init: function() {
@@ -24,7 +26,8 @@ Ext.define('PaymentEos.controller.List', {
     	    	
     	this.getView('Viewport').create({
     		items: this.getListView().create({
-    			store: this.getListStore()
+    			statusStore: this.getStatusStore().load(),
+    			store: this.getListStore().load()
     		})
     	});
     	
