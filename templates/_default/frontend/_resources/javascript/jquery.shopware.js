@@ -3734,32 +3734,35 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                 opts = $.extend({}, opts, relOpts);
                 $(this).data('zoom', new CloudZoom($(this), opts));
             } else if ($(this).is('.cloud-zoom-gallery')) {
-                relOpts = {
-                    useZoom: 'zoom1',
-                    smallImage: $(this).attr('src')
-                };
-              	if(!$(this).parent().attr('id')) {
-              		relOpts.smallImage = $(this).attr('rev');
-              	} else {
-              		relOpts.smallImage = $(this).attr('src');
-              	}
-                opts = $.extend({}, relOpts, options);
-                $(this).data('relOpts', opts);
-                $(this).bind('click', $(this), function (event) {
-                	event.preventDefault();
-                    var data = event.data.data('relOpts');
-                   	$('#' + data.useZoom).data('zoom').destroy();
-                    $('#' + data.useZoom).attr('href', event.data.attr('href'));
-                    $('#' + data.useZoom + ' img').attr('src', relOpts.smallImage);
-                    $('#' + event.data.data('relOpts').useZoom).CloudZoom();
-                    
-                    //fading picture
-                    if ($.browser.msie && parseInt($.browser.version) > 8) {
-                    	$('#wrap').fadeTo(0,0.01).delay(200).fadeTo(200,1);
-                    }
-                    return false;
-                });
-            }
+				relOpts = {
+					useZoom: 'zoom1',
+					smallImage: $(this).attr('src')
+				};
+				if(!$(this).parent().attr('id')) {
+					relOpts.smallImage = $(this).attr('rev');
+				} else {
+					relOpts.smallImage = $(this).attr('src');
+				}
+				opts = $.extend({}, relOpts, options);
+				$(this).data('relOpts', opts);
+				$(this).bind('click', $(this), function (event) {
+					event.preventDefault();
+					var data = event.data.data('relOpts');
+					$('#' + data.useZoom).data('zoom').destroy();
+					$('#' + data.useZoom).attr('href', event.data.attr('href'));
+					$('#' + data.useZoom + ' img').attr('src', relOpts.smallImage);
+					$('#' + event.data.data('relOpts').useZoom).CloudZoom();
+
+					// change title
+					$('#zoom1 img').attr('title', $(this).attr('title'));
+
+					//fading picture
+					if ($.browser.msie && parseInt($.browser.version) > 8) {
+						$('#wrap').fadeTo(0,0.01).delay(200).fadeTo(200,1);
+					}
+					return false;
+				});
+			}
         });
         return this
     };

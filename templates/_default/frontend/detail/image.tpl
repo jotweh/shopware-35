@@ -13,9 +13,10 @@
 			    	</a>
 				</div>
 			{/if}
-			<a id="zoom1" href="{$sArticle.image.src.5}" title="{if $sArticle.image.res.description}{$sArticle.image.res.description}{else}{$sArticle.articleName}{/if}" {if $this->config('USEZOOMPLUS')}class="cloud-zoom"{/if} rel="lightbox[{$sArticle.ordernumber}]">
+
+			<a id="zoom1" href="{$sArticle.image.src.5}" title="{if $sArticle.image.description}{$sArticle.image.description}{else}{$sArticle.articleName}{/if}" {if $this->config('USEZOOMPLUS')}class="cloud-zoom"{/if} rel="lightbox[{$sArticle.ordernumber}]">
 			    	
-				<img src="{$sArticle.image.src.4}" alt="{$sArticle.articleName}" title="{if $sArticle.image.res.description}{$sArticle.image.res.description}{else}{$sArticle.articleName}{/if}" />
+				<img src="{$sArticle.image.src.4}" alt="{$sArticle.articleName}" title="{if $sArticle.image.description}{$sArticle.image.description}{else}{$sArticle.articleName}{/if}" />
 			</a>
 	    {/block}
 	
