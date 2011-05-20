@@ -9,10 +9,6 @@
 		</a>
 	</div>
 
-	<!-- <p>
-		<input type="button" class="button-left large modal_close" value="{s name='CustomAjaxActionClose'}{/s}" />
-		<a href="{url sCustom=$sCustomPage.id title=$sCustomPage.description}" class="button-right large right" target="_blank">{se name='CustomAjaxActionNewWindow'}{/se}</a>
-	</p> -->
 	{/block}
 	{* Article content *}
 	{block name='frontend_custom_ajax_article_content'}

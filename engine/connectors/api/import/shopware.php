@@ -122,8 +122,6 @@ class sShopwareImport
 			$article['active'] = empty($article['active']) ? 0 : 1;
 		if(isset($article['pricegroupActive']))
 			$article['pricegroupActive'] = empty($article['pricegroupActive']) ? 0 : 1;
-		elseif(!empty($article['filtergroupID']))
-			$article['pricegroupActive'] = 1;	
 		if(!empty($article["releasedate"]))
 			$article['releasedate'] = $this->sDB->DBDate($article['releasedate']);
 		elseif(isset($article['releasedate']))
