@@ -97,6 +97,8 @@ abstract class Enlight_Components_Test_TestCase extends PHPUnit_Framework_TestCa
     	}
     	
         $this->databaseTester = null;
+        
+        set_time_limit(0);
     }
     
     /**
