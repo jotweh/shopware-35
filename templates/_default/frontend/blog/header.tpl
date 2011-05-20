@@ -1,6 +1,6 @@
 {extends file='frontend/index/header.tpl'}
 
-{* Keywords *} 
+{* Keywords *}
 {block name="frontend_index_header_meta_keywords"}{if $sCategoryContent.metakeywords}{$sCategoryContent.metakeywords}{/if}{/block}
 
 {* Description *}
