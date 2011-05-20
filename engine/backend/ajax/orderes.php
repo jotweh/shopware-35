@@ -270,15 +270,19 @@ elseif ($_REQUEST['action'] == 'getDetailsForExt')
 		$entry['taxID'] == 0 ? $taxID = 1 : $taxID = $entry['taxID'];
 		//Skonto
 		if($entry['modus'] == 4) $taxID = "";
+		// Voucher
+		if ($entry["modus"]==2){
+			
+		}
 		
 		$data['id'] 		= $entry['id'];
 		$data['articleID'] 	= $entry['articleID'];
 		$data['articleordernumber'] = utf8_encode(htmlentities($entry['articleordernumber']));
 		$data['name'] = utf8_encode(htmlspecialchars(str_replace(array('\n','\r','<br>','<br />'),'',$entry['name'])));
 		$data['quantity'] = $entry['quantity'];
-		$data['price'] = ereg_replace("\.",",", $entry['price']);
+		$data['price'] = str_replace(".",",", $entry['price']);
 		$data['total'] = ($entry['price'] * $entry['quantity']);
-		$data['total'] = ereg_replace("\.",",", $data['total']);
+		$data['total'] = str_replace(".",",", $data['total']);
 		$data['status'] = $entry['status'];
 		$data['tax'] = $entry['taxID'];
 		$data['instock'] = $instock;
