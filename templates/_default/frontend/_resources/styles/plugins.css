@@ -348,3 +348,25 @@ a.searchthumb {
 .ajax_add_article .slider_modal {width: 630px;}
 .ajax_add_article .slider_modal .ajaxSlider {width: 630px; height: 210px; position: relative; margin: 0px 0px 15px 15px;}
 .ajax_add_article .slider_modal .ajaxSlider .sliding_outer {position: relative; overflow: hidden; left: 26px; width: 578px; height: 210px;}
+
+/*	IPAD RELATED STYLES
+	------------------------ */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+	div.inner_searchcontainer { width: 280px }
+	div.inner_searchcontainer #submit_search, input#searchfield {
+		-webkit-appearance: none;
+		-webkit-border-radius: 0;
+	}
+	.ui-tabs .ui-tabs-nav:after {
+		content: ' ';
+		clear: both;
+		float: none;
+		display: block;
+		height: 0; line-height: 0;
+	}
+	#detail #detailinfo .inner_tabs {
+		position: relative;
+		top: -1px;
+	}
+	#lbOverlay { padding: 30px 30px 30px 0 }
+}
