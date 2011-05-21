@@ -2,7 +2,7 @@ Ext.define('PaymentEos.view.Viewport', {
 
 	extend: 'Ext.container.Viewport',
 	
-	layout: 'fit',
+	layout: 'border',
 	
 	/*
     items: [{

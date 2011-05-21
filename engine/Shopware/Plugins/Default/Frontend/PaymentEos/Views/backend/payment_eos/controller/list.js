@@ -4,7 +4,8 @@ Ext.define('PaymentEos.controller.List', {
 	
 	views: [
 		'Viewport',
-    	'List'
+    	'List',
+    	'Detail'
     ],
     
     models: [
@@ -18,19 +19,26 @@ Ext.define('PaymentEos.controller.List', {
     ],
     
     init: function() {
-    	//console.log(this.getView('Viewport'));
+    	this.listView = this.getListView().create({
+			statusStore: this.getStatusStore().load(),
+			store: this.getListStore().load(),
+			region: 'center'
+		});
+		
+		this.detailView = this.getDetailView().create({
+			region: 'east'
+		});
     	
-    	//this.getView('Viewport').add(
-    	//	this.getView('List').create()
-    	//);
-    	    	
     	this.getView('Viewport').create({
-    		items: this.getListView().create({
-    			statusStore: this.getStatusStore().load(),
-    			store: this.getListStore().load()
-    		})
+    		items: [this.listView, this.detailView]
     	});
     	
-    	//console.log(this.getView('List'));
+    	this.listView.getSelectionModel().on('selectionchange', function(sm, records) {
+            if (records.length) {
+            	this.detailView.updateDetail(records[0]);
+            }
+        }, this);
+        
+        //this.listView.getSelectionModel().select(0);
     }
 });

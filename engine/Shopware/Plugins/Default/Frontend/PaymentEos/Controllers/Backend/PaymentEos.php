@@ -90,7 +90,17 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 			->joinLeft(
 				array('o' => 's_order'),
 				'o.transactionID = p.transactionID AND o.userID = p.userID',
-				array('orderID' => 'id', 'clearedID' => 'cleared')
+				array('
+					orderID' => 'id', 'clearedID' => 'cleared',
+					'order_date' => 'ordertime', 'order_number' => 'ordernumber',
+				)
+			)
+			->joinLeft(
+				array('a' => 's_core_paymentmeans'),
+				'a.id = o.paymentID',
+				array(
+					'payment_description' => 'a.description'
+				)
 			)
 			->joinLeft(
 				array('b' => 's_order_billingaddress'),
@@ -99,7 +109,7 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 			)
 			->order(array($property . ' ' . $direction))
 			->limit($limit, $start);
-			
+
 		if($search = $this->Request()->getParam('search')) {
 			$search = trim($search);
 			$search = '%'.$search.'%';
@@ -118,6 +128,9 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 			} else {
 				$rows[$key]['customer'] = utf8_encode(html_entity_decode($row['customer'], ENT_NOQUOTES));
 			}
+			
+			$rows[$key]['amount_format'] = Shopware()->Currency()->toCurrency($row['amount'], array('currency' => $row['currency']));
+			$rows[$key]['book_amount_format'] = Shopware()->Currency()->toCurrency($row['book_amount'], array('currency' => $row['currency']));
 		}
 		
 		$total = Shopware()->Db()->fetchOne('SELECT FOUND_ROWS()');

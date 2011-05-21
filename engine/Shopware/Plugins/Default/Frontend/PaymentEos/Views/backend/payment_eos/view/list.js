@@ -2,12 +2,12 @@ Ext.define('PaymentEos.view.List', {
 
 	extend: 'Ext.grid.Panel',
 	
-	title: 'Users',
+	title: 'Zahlungen',
 	layout: 'fit',
 	viewConfig: {
         stripeRows: true
     },
-    //<tpl if="age > 1 && age < 10">Child</tpl>
+    
     columns: [{
         text     : 'Datum',
         width    : 85,
@@ -15,36 +15,46 @@ Ext.define('PaymentEos.view.List', {
         xtype    : 'datecolumn',
         dataIndex: 'added'
     },{
-        text     : 'Transaktion',
+        text     : 'Bestellnummer',
+        width    : 85,
+        sortable : true,
+        dataIndex: 'order_number'
+    },{
+        text     : 'Transaktions-ID',
         width     : 85,
         sortable : true,
         dataIndex: 'transactionID'
     },{
+        text     : 'Zahlungsart',
+        width    : 120,
+        sortable : true,
+        dataIndex: 'payment_description'
+    },{
         text     : 'Kunde',
-        width    : 200,
+        width    : 120,
         sortable : true,
         dataIndex: 'customer'
     },{
-        text     : 'Referenz',
-        width    : 200,
+        text     : 'Reservierter Betrag',
+        width    : 120,
         sortable : true,
-        dataIndex: 'reference'
-    },{
-        text     : 'Betrag',
-        width    : 75,
-        sortable : true,
+        align    : 'right',
         renderer : function(value, column, model) {
-        	return Ext.util.Format.currency(value, model.data.currency);
+        	return model.data.amount_format;
         },
         dataIndex: 'amount'
     },{
-        text     : 'Kontonummer',
-        width    : 85,
+        text     : 'Gebuchter Betrag',
+        width    : 120,
         sortable : true,
-        dataIndex: 'account_number'
+        align    : 'right',
+        renderer : function(value, column, model) {
+        	return model.data.book_amount_format;
+        },
+        dataIndex: 'book_amount'
     },{
         text     : 'EOS-Status',
-        width    : 85,
+        width    : 100,
         sortable : true,
         dataIndex: 'clear_status',
         renderer : function(value, column, model) {
@@ -54,14 +64,23 @@ Ext.define('PaymentEos.view.List', {
         xtype:'actioncolumn', 
         width:50,
         items: [{
-            iconCls: 'ico edit',
-            tooltip: 'Edit',
+            icon: "{link file='engine/backend/img/default/icons/user.png'}",
+            iconCls: 'action_icon',
+            tooltip: 'Kundenkonto öffnen',
             handler: function(grid, rowIndex, colIndex) {
-                var rec = grid.getStore().getAt(rowIndex);
-                alert("Edit " + rec.get('firstname'));
+                var record = grid.getStore().getAt(rowIndex);
+                parent.loadSkeleton('userdetails', false, { 'user': record.get('userID') });
             }
-        },{
-            iconCls: 'ico delete',
+        }, {
+            icon: "{link file='engine/backend/img/default/icons4/sticky_notes.png'}",
+            iconCls: 'action_icon',
+            tooltip: 'Bestellung öffnen',
+            handler: function(grid, rowIndex, colIndex) {
+            	 var record = grid.getStore().getAt(rowIndex);
+                parent.loadSkeleton('orders', false, { 'id': record.get('orderID') });
+            }
+        }, {
+            iconCls: 'delete',
             tooltip: 'Delete',
             handler: function(grid, rowIndex, colIndex) {
                 var rec = grid.getStore().getAt(rowIndex);

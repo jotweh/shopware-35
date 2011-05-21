@@ -29,6 +29,16 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	}
 	
 	/**
+	 * Pre dispatch action method
+	 */
+	public function preDispatch()
+	{
+		if(in_array($this->Request()->getActionName(), array('notify', 'book', 'cancel'))) {
+			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
+		}
+	}
+	
+	/**
 	 * Style action method
 	 */
 	public function styleAction()
@@ -54,7 +64,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params['haendlerid'] = $this->Config()->merchantId;
 		$params['haendlercode'] = $this->Config()->merchantCode;
 		$params['referenz'] = $this->getEosReferenz($user);
-		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '');
+		$params['bruttobetrag'] = $this->formatEosNumber($this->getAmount());
 		$params['waehrung'] = Shopware()->Currency()->getShortName();
 		$params['_language'] = Shopware()->Locale()->getLanguage();
 		if($this->getPaymentShortName() == 'eos_credit') {
@@ -128,7 +138,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		} else {
 			$requestUrl = 'https://www.eos-payment.de/PaymentGateway_ELV.acgi';
 		}
-
+		
 		$respone = $this->doEosRequest($requestUrl, $params);
 		
 		if(!empty($respone['kontaktid'])) {
@@ -177,7 +187,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params['haendlerid'] = $this->Config()->merchantId;
 		$params['haendlercode'] = $this->Config()->merchantCode;
 		$params['referenz'] = $this->getEosReferenz($user);
-		$params['bruttobetrag'] = number_format($this->getAmount(), 2, ',', '.');
+		$params['bruttobetrag'] = $this->formatEosNumber($this->getAmount());
 		$params['waehrung'] = $this->getCurrencyShortName();
 		$params['kontonummer'] = $this->Request()->getParam('account_number');
 		$params['blz'] = $this->Request()->getParam('account_bank');
@@ -265,15 +275,11 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function notifyAction()
 	{		
-		$this->View()->setTemplate();
+		$mail = clone Shopware()->Mail();
 		
-//		$mail = clone Shopware()->Mail();
-//		
-//		$mail->setSubject('test eos');
-//		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
-//		$mail->addTo('hl@shopware.de');
-//				
-//		$mail->send();
+		$mail->setSubject('test eos');
+		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
+		$mail->addTo('hl@shopware.de');
 		
 		$status = $this->Request()->getParam('status');
 		$transactionId = $this->Request()->getParam('transactionId');
@@ -325,6 +331,99 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 			}
 		}
 		$this->View()->Payment = $payment;
+	}
+	
+	/**
+	 * Book action method
+	 */
+	public function bookAction()
+	{		
+		$book_date = new Zend_Date();
+		if(!empty($this->Request()->book_date)) {
+			$book_date->set($this->Request()->book_date);
+		}
+		$book_date->sub(Zend_Date::now());
+	
+		if(!empty($this->Request()->book_amount)) {
+			$book_amount = str_replace(',', '.', $this->Request()->book_amount);
+		} else {
+			$book_amount = str_replace(',', '.', $this->Request()->amount);
+		}
+		
+		$secret = $this->Request()->secret;
+		$transactionId = $this->Request()->transactionID;
+				
+		$params = array();
+		$params['kontaktid'] = $transactionId;
+		$params['werbecode'] = $this->Request()->werbecode;
+		$params['spb_referenz'] = $this->Request()->reference;
+		$params['spb_betrag'] = $this->formatEosNumber($book_amount);
+		$params['spb_warten'] = 5;
+		$params['BuchungDelayTage'] = $book_date->toValue(Zend_Date::DAY);
+		
+		$requestUrl = 'https://www.eos-payment.de/kartebuch.acgi';
+		
+		$respone = $this->doEosRequest($requestUrl, $params);
+		
+		$sql = '
+			UPDATE s_plugin_payment_eos
+			SET
+				`book_amount`=?,
+				`book_date`=?,
+				`changed`=NOW()
+			WHERE transactionID=? AND secret=?';
+		$result = Shopware()->Db()->query($sql, array(
+			$book_amount,
+			$book_date,
+			$transactionId,
+			$secret
+		));
+		
+		$errorMessages = $this->checkEosResponse($respone);
+		$errorMessages = utf8_encode(implode("\n", $errorMessages));
+		
+		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? $errorMessages : ''));
+	}
+	
+	/**
+	 * Cancel action method
+	 */
+	public function cancelAction()
+	{
+		$params = array();
+		$params['kontaktid'] = $this->Request()->transactionID;
+		$params['werbecode'] = $this->Request()->werbecode;
+		$params['spb_warten'] = 5;
+		
+		$requestUrl = 'https://www.eos-payment.de/KarteStorno.acgi';
+		
+		$respone = $this->doEosRequest($requestUrl, $params);
+				
+		$errorMessages = $this->checkEosResponse($respone);
+		$errorMessages = utf8_encode(implode("\n", $errorMessages));
+		
+		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? $errorMessages : ''));
+	}
+	
+	/**
+	 * Memo action method
+	 */
+	public function memoAction()
+	{
+		//https://www.eos-payment.de/gutschrift_elv_Folge.acgi
+		//https://www.eos-payment.de/gutschrift_cc_Folge.acgi
+	}
+	
+	/**
+	 * Format eos number
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	public function formatEosNumber($value)
+	{
+		$value = str_replace(',', '.', $value);
+		return number_format($value, 2, ',', '');
 	}
 		
 	/**
@@ -423,6 +522,19 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 			$transactionId,
 			$secret
 		));
+		
+		if($status == 2) {
+			$sql = '
+				UPDATE s_plugin_payment_eos
+				SET
+					`book_amount`=IFNULL(`book_amount`, `amount`),
+					`book_date`=IFNULL(`book_date`, NOW()),
+				WHERE transactionID=? AND secret=?';
+			$result = Shopware()->Db()->query($sql, array(
+				$transactionId,
+				$secret
+			));
+		}
 			
 		switch ($status) {
 			case 1:
