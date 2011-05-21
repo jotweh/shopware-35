@@ -2944,9 +2944,9 @@ class sArticles
 					// Set variant release-date to release-date of main-article if instock is null
 					list($Y,$M,$D) = explode("-",$getArticle["releasedate"]);
 					if (mktime(0,0,0,$M,$D,$Y)>mktime(0,0,0,date("m"),date("d"),date("Y")) && $variantValue["instock"] <= 0){
-						$getArticle["sReleaseDate"] = $D.".".$M.".".$Y;
+						$getArticleVariants[$variantKey]["sReleaseDate"] = $D.".".$M.".".$Y;
 					}
-
+					
 					/*
 					SW 2.1 // Pricegroups
 					*/
