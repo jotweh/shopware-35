@@ -575,6 +575,8 @@ div.comment_block .author, div.comment_block .date {font-weight: 700;}
 .table .table_row a.thumb_image img {margin: 0 auto;display: block;}
 .table .table_row .basket_details {position: absolute; top:0px;left: 95px;}
 
+.noteUnit {font-size: 10px; position: absolute;top: 25px;font-weight: 700;right: 85px}
+
 /* Nested tables */
 .table .table .table_head {border-top: 0 none;}
 

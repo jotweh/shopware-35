@@ -51,6 +51,7 @@
 			{* Article Description *}
 			<p class="desc">
 				{$sBasketItem.description_long|strip_tags|truncate:350}
+				
 			</p>
 			{block name="frontend_note_index_items"}{/block}
 		</div>
@@ -65,6 +66,13 @@
 			{$sBasketItem.itemInfo}
 		{else}
 			<strong class="price">{$sBasketItem.price|currency}*</strong>
+			{if $sBasketItem.purchaseunit}
+				{if $sBasketItem.purchaseunit == $sBasketItem.referenceunit} {else}
+					<div class="noteUnit">
+						{if $sBasketItem.referenceunit}{$sBasketItem.referenceunit} {$sBasketItem.sUnit.description} = {$sBasketItem.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}{/if}
+					</div>
+				{/if}
+			{/if}
 		{/if}
 		
 		{* Remove article *}
