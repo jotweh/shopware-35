@@ -317,6 +317,24 @@ class sBasket
 	}
 
 	/**
+	 * Get the max used tax-rate in basket in percent
+	 * @return 
+	 */
+	public function getMaxTax(){
+
+		$sql = "
+			SELECT
+				MAX(t.tax) as max_tax
+			FROM s_order_basket b
+			LEFT JOIN s_core_tax t
+			ON t.id=a.taxID
+			WHERE b.sessionID=?
+			GROUP BY b.sessionID
+		";
+		$taxRate = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql,array(empty($this->sSYSTEM->sSESSION_ID) ? session_id() : $this->sSYSTEM->sSESSION_ID));
+		return $taxRate;
+	}
+	/**
 	 * Gutschein in den Warenkorb legen
 	 * @param string $sTicket - Gutschein-Code
 	 * @access public
@@ -365,6 +383,7 @@ class sBasket
 			// Check for individual voucher - code
 			$sql = "
 			SELECT s_emarketing_voucher_codes.id AS id, s_emarketing_voucher_codes.code AS vouchercode,description, numberofunits,customergroup, value,restrictarticles, minimumcharge, shippingfree, bindtosupplier,
+			taxconfig,
 			valid_from,valid_to,ordercode, modus,percental,strict,subshopID FROM s_emarketing_vouchers, s_emarketing_voucher_codes
 			WHERE
 				modus = 1
@@ -504,10 +523,32 @@ class sBasket
 			$ticketResult["value"] = ($amount["totalAmount"] / 100) * floatval($value);
 		}
 
+
+		// Free tax configuration for vouchers
+		// Trac ticket 4708 st.hamann
 		if ((!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"])){
+			// if net customergroup - calculate without tax
 			$tax = $ticketResult["value"] * -1;
 		}else {
-			$tax = round($ticketResult["value"]/(100+$this->sSYSTEM->sCONFIG['sVOUCHERTAX'])*100,3)*-1;
+			if ($ticketResult["taxconfig"] == "default" || empty($ticketResult["taxconfig"])){
+				$tax = round($ticketResult["value"]/(100+$this->sSYSTEM->sCONFIG['sVOUCHERTAX'])*100,3)*-1;
+				// Pre 3.5.4 behaviour
+			}elseif ($ticketResult["taxconfig"]=="auto"){
+				// Check max. used tax-rate from basket
+				$tax = $this->getMaxTax();
+				$tax = round($ticketResult["value"]/(100+$tax)*100,3)*-1;
+			}elseif (strpos($ticketResult["taxconfig"],"fix_")!==false){
+				// Fix defined tax
+				$temporaryTax = explode("_",$ticketResult["taxconfig"]);
+				$temporaryTax = $temporaryTax[1];
+				$getTaxRate = $this->sSYSTEM->sDB_CONNECTION->getOne("
+				SELECT tax FROM s_core_tax WHERE id = ?
+				",array($temporaryTax));
+				$tax = round($ticketResult["value"]/(100+$getTaxRate)*100,3)*-1;
+			}else {
+				// No tax
+				$tax = $ticketResult["value"] * -1;
+			}
 		}
 
 		$ticketResult["value"] = $ticketResult["value"] * -1;

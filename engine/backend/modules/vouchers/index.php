@@ -55,7 +55,7 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 				totalProperty: 'count',
 				id: 'id',
 				fields: [
-				'id', 'description', 'vouchercode', 'numberofunits', 'customergroup', 'value', 'valid_from', 'valid_to', 'checkedIn', 'percental', 'modus','subshop'
+				'id', 'description', 'vouchercode', 'numberofunits', 'customergroup', 'value', 'valid_from', 'valid_to', 'checkedIn', 'percental', 'modus','subshop','taxConfiguration'
 				]
 			})
 		});
@@ -353,6 +353,7 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 					edittabs.getForm().load({url:'ajax/getVouchers.php', waitMsg:'Laden...', success: function(){
 						edittabs.enable();
 						tabs.activate(1);
+					 
 						if(Ext.getCmp('modusCB').getValue() == 0){
 							hide();
 						}
@@ -405,7 +406,21 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 		     [1, 'Prozentual']
 		];
 		
-		
+		var taxData = [
+		     ['default', 'Standard'],
+		     ['auto', 'Auto-Ermittlung'],
+		<?php
+			$query = mysql_query("
+			SELECT * FROM s_core_tax ORDER BY ID ASC
+			");
+			while ($result = mysql_fetch_assoc($query)){
+		?>
+			 ['fix_' + <?php echo $result["id"] ?> , '<?php echo $result["description"] ?>'],
+		<?php
+			}
+		?>
+			 ['none', 'Steuerfrei']
+		];
 
 		var weekdays = Array();
 		Date.dayNames.each(function(d,i){
@@ -585,7 +600,26 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 					    valueField:'id',
 					    displayField:'text',
 					    mode:'local'
-					    
+
+					}),
+					new Ext.form.ComboBox({
+						fieldLabel: 'Steuer-Konfiguration',
+						name: 'taxConfiguration',
+						hiddenName: 'taxConfiguration',
+						editable: false,
+						typeAhead: true,
+					    triggerAction: 'all',
+					    forceSelection: true,
+					    allowBlank: false,
+					    store: new Ext.data.SimpleStore({
+					        fields:
+					            ['id', 'text']
+					        ,data: taxData
+					    }),
+					    valueField:'id',
+					    displayField:'text',
+					    mode:'local'
+
 					})	
 					
 					

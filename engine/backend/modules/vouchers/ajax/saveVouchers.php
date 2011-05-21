@@ -67,6 +67,8 @@ if(!empty($_REQUEST["feedID"])&&is_numeric($_REQUEST["feedID"]))
 	$upset[] = "customergroup=".((empty($_REQUEST["customergroup"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["customergroup"])))."'");
 	$upset[] = "strict=".((empty($_REQUEST["strict"])) ? "'0'" : "'1'");
 	$upset[] = "subshopID=".((empty($_REQUEST["subshop"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["subshop"])))."'");
+	$upset[] = "taxconfig=".((empty($_REQUEST["taxConfiguration"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["taxConfiguration"])))."'");
+		
 //	
 	$upset = implode(",",$upset);
 	$sql = "UPDATE s_emarketing_vouchers SET $upset WHERE id=$feedID";
@@ -105,6 +107,8 @@ else {
 	$upset[] = (empty($_REQUEST["customergroup"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["customergroup"])))."'";
 	$upset[] = (empty($_REQUEST["strict"])) ? 0 : 1;
 	$upset[] = (empty($_REQUEST["subshop"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["subshop"])))."'";
+	$upset[] = (empty($_REQUEST["taxConfiguration"])) ? "''" : "'".utf8_decode(mysql_real_escape_string(trim($_REQUEST["taxConfiguration"])))."'";
+		
 	$upset = implode(",",$upset);
 	$sql = "INSERT INTO `s_emarketing_vouchers` (
 			`description` ,
@@ -123,7 +127,8 @@ else {
 			`numorder` ,
 			`customergroup`,
 			`strict`,
-			`subshopID`
+			`subshopID`,
+			`taxconfig`
 			)
 			VALUES (
 			$upset

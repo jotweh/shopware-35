@@ -109,6 +109,7 @@ else {
 			$row['valid_from'] = formatdate_ret($row['valid_from']);
 			$row['valid_to'] = formatdate_ret($row['valid_to']);
 			$row["checkedIn"] = intval($row["checkedIn"]);
+			$row["taxConfiguration"] = utf8_encode($row["taxconfig"]);
 			//++++++++++++++++++End: Validate the DB Data+++++++++++++++
 			
 			//clone function

@@ -96,3 +96,10 @@ INSERT IGNORE INTO `s_core_plugin_configs` (`id`, `name`, `value`, `pluginID`, `
 INSERT IGNORE INTO `s_core_plugin_elements` (`id`, `pluginID`, `name`, `value`, `label`, `description`, `type`, `required`, `order`, `scope`, `filters`, `validators`) VALUES
 (NULL, 35, 'rfi_protection', 'i:1;', 'RemoteFileInclusion-Schutz aktivieren', '', 'Text', 0, 0, 0, NULL, NULL),
 (NULL, 35, 'rfi_regex', 's:33:"\\.\\./|\\0|2\\.2250738585072011e-308";', 'RemoteFileInclusion-Filter', '', 'Text', 0, 0, 0, NULL, NULL);
+
+/*
+ * @ticket 4708
+ * @author st.hamann
+ * @since 3.5.4 - 2011/05/21
+ */
+ALTER TABLE `s_emarketing_vouchers` ADD `taxconfig` VARCHAR( 15 ) NOT NULL;
