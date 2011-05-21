@@ -113,6 +113,18 @@ switch ($_REQUEST["name"])
 				";
 		}
 		break;
+	case "tax":
+		$tax[] = array("id"=>"default","name"=>"Standard");
+		$tax[] = array("id"=>"auto","name"=>"Auto-Ermittlung");
+		$query = mysql_query("
+		SELECT * FROM s_core_tax ORDER BY ID ASC
+		");
+		while ($result = mysql_fetch_assoc($query)){
+			$tax[] = array("id"=>"fix_"+$result["id"],"name"=>$result["description"]);
+		}
+		$tax[] = array("id"=>"none","name"=>"Steuerfrei");
+		echo  $json->encode(array("articles"=>$tax,"count"=>count($tax)));
+		exit;
 	default:
 		exit();
 }

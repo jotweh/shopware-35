@@ -406,22 +406,7 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 		     [1, 'Prozentual']
 		];
 		
-		var taxData = [
-		     ['default', 'Standard'],
-		     ['auto', 'Auto-Ermittlung'],
-		<?php
-			$query = mysql_query("
-			SELECT * FROM s_core_tax ORDER BY ID ASC
-			");
-			while ($result = mysql_fetch_assoc($query)){
-		?>
-			 ['fix_' + <?php echo $result["id"] ?> , '<?php echo $result["description"] ?>'],
-		<?php
-			}
-		?>
-			 ['none', 'Steuerfrei']
-		];
-
+		
 		var weekdays = Array();
 		Date.dayNames.each(function(d,i){
 			if(!i) return;
@@ -604,25 +589,33 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 					}),
 					new Ext.form.ComboBox({
 						fieldLabel: 'Steuer-Konfiguration',
-						name: 'taxConfiguration',
-						hiddenName: 'taxConfiguration',
-						editable: false,
-						typeAhead: true,
-					    triggerAction: 'all',
-					    forceSelection: true,
-					    allowBlank: false,
-					    store: new Ext.data.SimpleStore({
-					        fields:
-					            ['id', 'text']
-					        ,data: taxData
-					    }),
-					    valueField:'id',
-					    displayField:'text',
-					    mode:'local'
-
-					})	
-					
-					
+						name:'taxconfig',
+						hiddenName:'taxconfig',
+						store:  new Ext.data.Store({
+							url: 'ajax/getValues.php?name=tax',
+							autoLoad: true,
+							baseParams: {active:0},
+							reader: new Ext.data.JsonReader({
+								root: 'articles',
+								totalProperty: 'count',
+								id: 'id',
+								fields: ['id','name']
+							})
+						}),
+						valueField:'id',
+						displayField:'name',
+						mode: 'remote',
+						selectOnFocus:true,
+						editable:true,
+						triggerAction:'all',
+						forceSelection : false,
+						listeners: {
+						'blur': {fn:function(el){
+							if(!el.getRawValue())
+							el.setValue(null);
+						}}
+						}
+					})
 					]
 				},
 				{
