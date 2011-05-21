@@ -261,6 +261,7 @@ if (isset($_POST["validate"])){
 		
 			switch ($mode){
     			case "insert":
+						$_POST["changetime"] = ( !isset($_POST["changetime"]) || empty($_POST["changetime"]) ) ? 'now()' : "'{$_POST["changetime"]}'";
 	    				$insertArticleMainSQL = "
 			    		INSERT INTO s_articles (supplierID,name,description, description_long,datum,shippingtime
 			    		,active,shippingfree,notification,releasedate,variantID, taxID, pseudosales,topseller, free, keywords, minpurchase, purchasesteps, maxpurchase, 
@@ -289,7 +290,7 @@ if (isset($_POST["validate"])){
 		    			{$_POST["txtreferenceunit"]},
 		    			\"{$_POST["txtpackunit"]}\",
 		    			{$_POST["txtunit"]},
-		    			now(),
+		    			{$_POST["changetime"]},
 		    			'{$_POST["selectPricegroup"]}',
 		    			'{$_POST["checkPricegroup"]}',
 		    			'{$_POST["selectFilterGroup"]}',
