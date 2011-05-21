@@ -1812,12 +1812,15 @@ jQuery.fn.liveSearch = function (conf) {
 					if ($(el).attr('id') != 'thumb' + $.ordernumber) { $(el).hide(); }
 				});
 			}
+			// Hide delivery info
+			$('.delivery_container').hide();
 			// Hide basket
 			$('#basketButton').css('opacity', '0.4');
 		} else {
 			// Show Pseudo price
 			$('#'+ordernumber).find('.PseudoPrice').show();
-
+			// Show delivery info
+			$('.delivery_container').show();
 			// Change informations
 			$('#article_details').html($('#' + ordernumber).html());
 

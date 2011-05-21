@@ -2940,6 +2940,13 @@ class sArticles
 						// Fix the bug, that shippingtime is only available for the first article
 						$getArticleVariants[$variantKey]["shippingfree"] = $getArticle["shippingfree"];
 					}
+					// Ticket 4868 - st.hamann
+					// Set variant release-date to release-date of main-article if instock is null
+					list($Y,$M,$D) = explode("-",$getArticle["releasedate"]);
+					if (mktime(0,0,0,$M,$D,$Y)>mktime(0,0,0,date("m"),date("d"),date("Y")) && $variantValue["instock"] <= 0){
+						$getArticle["sReleaseDate"] = $D.".".$M.".".$Y;
+					}
+
 					/*
 					SW 2.1 // Pricegroups
 					*/
@@ -3118,7 +3125,7 @@ class sArticles
 
 			// Check release-date
 			// =================================================.
-			$tmpDate = $getArticle["releasedate"];
+			/*$tmpDate = $getArticle["releasedate"];
 			$tmpDate = explode("-",$tmpDate);
 			$newDate = $tmpDate[0].$tmpDate[1].$tmpDate[2];
 			$curDate = date("Ymd");
@@ -3128,13 +3135,16 @@ class sArticles
 				$getArticle["sReleasedate"] = $tmpDate[2].".".$tmpDate[1].".".$tmpDate[0];
 			}else {
 				$getArticle["sUpcoming"] = false;
-			}
+			}*/
 
 			// Check if article is available yet
 			list($Y,$M,$D) = explode("-",$getArticle["releasedate"]);
 
 			if (mktime(0,0,0,$M,$D,$Y)>mktime(0,0,0,date("m"),date("d"),date("Y"))){
 				$getArticle["sReleaseDate"] = $D.".".$M.".".$Y;
+				$getArticle["sUpcoming"] = true;
+			}else {
+				$getArticle["sUpcoming"] = false;
 			}
 
 			// Get cheapest price
