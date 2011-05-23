@@ -126,12 +126,12 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 			'action' => 'end'
 		));
 		
-		foreach ($params as $key => &$param) {
-			if($key == '_stylesheet' || $key == 'EndURL') {
-				continue;
-			}
-			$param = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $param);
-		}
+//		foreach ($params as $key => &$param) {
+//			if($key == '_stylesheet' || $key == 'EndURL') {
+//				continue;
+//			}
+//			$param = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $param);
+//		}
 		
 		if($this->getPaymentShortName() == 'eos_credit') {
 			$requestUrl = 'https://www.eos-payment.de/PaymentGatewayMini_CC.acgi';
@@ -228,7 +228,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		
 		$requestUrl = 'https://www.eos-payment.de/onlineueberweisung.acgi';
 		
-		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
+//		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
 
 		$respone = $this->doEosRequest($requestUrl, $params);
 		
@@ -483,6 +483,22 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function memoAction()
 	{
+		$sql = '
+			SELECT `id`
+			FROM s_plugin_payment_eos
+			WHERE `transactionId`=?
+			AND `werbecode`=?
+			AND `secret`=?
+		';
+		$payment = Shopware()->Db()->fetchOne($sql, array(
+			$this->Request()->transactionID,
+			$this->Request()->werbecode,
+			$this->Request()->secret
+		));
+		if(empty($payment)) {
+			return;
+		}
+		
 		$secret = $this->createPaymentUniqueId();
 		
 		$params = array();
@@ -504,7 +520,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params['NotifyURL'] .= 'transactionId=<<KontaktID>>' . '&';
 		$params['NotifyURL'] .= 'status=<<statuscode>>';
 		
-		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
+//		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
 		
 		if($this->Request()->payment_key == 'eos_credit') {
 			$requestUrl = 'https://www.eos-payment.de/gutschrift_cc_Folge.acgi';
