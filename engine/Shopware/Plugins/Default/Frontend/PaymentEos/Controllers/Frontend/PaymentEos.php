@@ -33,7 +33,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function preDispatch()
 	{
-		if(in_array($this->Request()->getActionName(), array('notify', 'book', 'cancel'))) {
+		if(in_array($this->Request()->getActionName(), array('notify', 'book', 'cancel', 'refresh', 'memo'))) {
 			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		}
 	}
@@ -227,6 +227,8 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		));
 		
 		$requestUrl = 'https://www.eos-payment.de/onlineueberweisung.acgi';
+		
+		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
 
 		$respone = $this->doEosRequest($requestUrl, $params);
 		
@@ -268,6 +270,15 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function giropayAction()
 	{
+		if(!in_array($this->getPaymentShortName(), array('eos_giropay'))) {
+			return $this->forward('index');
+		}
+		
+		$user = $this->getUser();
+		
+		$this->View()->PaymentParams = array(
+			'kontoinhaber' => $user['billingaddress']['firstname'].' '.$user['billingaddress']['lastname']
+		);
 	}
 		
 	/**
@@ -275,16 +286,18 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	 */
 	public function notifyAction()
 	{		
-		$mail = clone Shopware()->Mail();
-		
-		$mail->setSubject('test eos');
-		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
-		$mail->addTo('hl@shopware.de');
+//		$mail = clone Shopware()->Mail();
+//		
+//		$mail->setSubject('test eos');
+//		$mail->setBodyText(var_export($_GET, true).var_export($_SERVER, true));
+//		$mail->addTo('hl@shopware.de');
+//		
+//		$mail->send();
 		
 		$status = $this->Request()->getParam('status');
 		$transactionId = $this->Request()->getParam('transactionId');
 		$secret = $this->Request()->getParam('secret');
-		
+				
 		$this->saveEosStatus($status, $transactionId, $secret);
 	}
 	
@@ -342,7 +355,12 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		if(!empty($this->Request()->book_date)) {
 			$book_date->set($this->Request()->book_date);
 		}
-		$book_date->sub(Zend_Date::now());
+		$book_delay = clone $book_date;
+		$now_date = new Zend_Date();
+		$now_date->setHour(0)->setMinute(0)->setSecond(0);
+		$book_delay->sub($now_date);
+		$book_delay = round($book_delay / 60 / 60 / 24);
+		$book_delay = $book_delay > 15 ? 0 : $book_delay;
 	
 		if(!empty($this->Request()->book_amount)) {
 			$book_amount = str_replace(',', '.', $this->Request()->book_amount);
@@ -358,31 +376,37 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params['werbecode'] = $this->Request()->werbecode;
 		$params['spb_referenz'] = $this->Request()->reference;
 		$params['spb_betrag'] = $this->formatEosNumber($book_amount);
-		$params['spb_warten'] = 5;
-		$params['BuchungDelayTage'] = $book_date->toValue(Zend_Date::DAY);
+		$params['spb_warten'] = 25;
+		$params['BuchungDelayTage'] = $book_delay;
 		
 		$requestUrl = 'https://www.eos-payment.de/kartebuch.acgi';
-		
+				
 		$respone = $this->doEosRequest($requestUrl, $params);
 		
+		$errorMessages = $this->checkEosResponse($respone);
+		$errorMessages = implode("\n", $errorMessages);
+				
 		$sql = '
 			UPDATE s_plugin_payment_eos
 			SET
 				`book_amount`=?,
 				`book_date`=?,
-				`changed`=NOW()
+				`changed`=NOW(),
+				`fail_message`=IFNULL(?, `fail_message`)
 			WHERE transactionID=? AND secret=?';
 		$result = Shopware()->Db()->query($sql, array(
 			$book_amount,
 			$book_date,
+			$errorMessages,
 			$transactionId,
 			$secret
 		));
 		
-		$errorMessages = $this->checkEosResponse($respone);
-		$errorMessages = utf8_encode(implode("\n", $errorMessages));
+		sleep(3);
 		
-		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? $errorMessages : ''));
+		//$errorMessages = print_r($params, true);
+		
+		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? utf8_encode($errorMessages) : ''));
 	}
 	
 	/**
@@ -393,25 +417,131 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$params = array();
 		$params['kontaktid'] = $this->Request()->transactionID;
 		$params['werbecode'] = $this->Request()->werbecode;
-		$params['spb_warten'] = 5;
+		$params['spr_warten'] = 25;
+		$params['spr_referenz'] = $this->Request()->reference;
 		
 		$requestUrl = 'https://www.eos-payment.de/KarteStorno.acgi';
 		
 		$respone = $this->doEosRequest($requestUrl, $params);
 				
 		$errorMessages = $this->checkEosResponse($respone);
-		$errorMessages = utf8_encode(implode("\n", $errorMessages));
+		$errorMessages = implode("\n", $errorMessages);
 		
-		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? $errorMessages : ''));
+		//$errorMessages = print_r($respone, true);
+		
+		sleep(3);
+		
+		echo Zend_Json::encode(array('success'=>empty($errorMessages), 'message'=>!empty($errorMessages) ? utf8_encode($errorMessages) : ''));
 	}
 	
+	/**
+	 * Refresh action method
+	 */
+	public function refreshAction()
+	{
+		$params = array();
+		$params['spr_haendlerid'] = $this->Config()->merchantId;
+		$params['spr_haendlercode'] = $this->Config()->merchantCode;
+		$params['kontaktid'] = $this->Request()->transactionID;
+		$params['werbecode'] = $this->Request()->werbecode;
+		$params['referenz'] = $this->Request()->reference;
+		
+		$requestUrl = 'https://www.eos-payment.de/GetZahlungsdaten.acgi';
+		
+		$respone = $this->doEosRequest($requestUrl, $params);
+				
+		$errorMessages = $this->checkEosResponse($respone);
+		$errorMessages = implode("\n", $errorMessages);
+				
+		$sql = '
+			UPDATE s_plugin_payment_eos
+			SET
+				`clear_status`=IFNULL(?, `clear_status`),
+				`bank_account`=IFNULL(?, `bank_account`),
+				`account_expiry`=IFNULL(?, `account_expiry`),
+				`changed`=NOW(),
+				`fail_message`=IFNULL(?, `fail_message`)
+			WHERE transactionID=? AND secret=?
+		';
+		$result = Shopware()->Db()->query($sql, array(
+			!empty($respone['spr_statuscode']) ? $respone['spr_statuscode'] : null,
+			$this->getEosBankAccount($respone),
+			$this->getEosAccountExpiry($respone),
+			$errorMessages,
+			$this->Request()->transactionID,
+			$this->Request()->secret
+		));
+		
+		echo Zend_Json::encode(array(
+			'success' => empty($errorMessages),
+			'message' => !empty($errorMessages) ? utf8_encode($errorMessages) : ''
+		));
+	}
+
 	/**
 	 * Memo action method
 	 */
 	public function memoAction()
 	{
-		//https://www.eos-payment.de/gutschrift_elv_Folge.acgi
-		//https://www.eos-payment.de/gutschrift_cc_Folge.acgi
+		$secret = $this->createPaymentUniqueId();
+		
+		$params = array();
+		$params['haendlerid'] = $this->Config()->merchantId;
+		$params['haendlercode'] = $this->Config()->merchantCode;
+		$params['refkontaktid'] = $this->Request()->transactionID;
+		$params['refwerbecode'] = $this->Request()->werbecode;
+		$params['referenz'] = $this->Request()->reference.'_'.$params['refkontaktid'];
+		
+		$params['waehrung'] = $this->Request()->currency;
+		$params['bruttobetrag'] = $this->formatEosNumber($this->Request()->memo_amount);
+		$params['warten'] = 25;
+		
+		$params['NotifyURL'] = $this->Front()->Router()->assemble(array(
+			'action' => 'notify',
+			'secret' => $secret
+		));
+		$params['NotifyURL'] .= strpos($params['NotifyURL'], '?') === false ? '?' : '&';
+		$params['NotifyURL'] .= 'transactionId=<<KontaktID>>' . '&';
+		$params['NotifyURL'] .= 'status=<<statuscode>>';
+		
+		$params['NotifyURL'] = str_replace('hl.shopvm.de/trunk/shopware.php', 'sh.shopvm.de/test.php', $params['NotifyURL']);
+		
+		if($this->Request()->payment_key == 'eos_credit') {
+			$requestUrl = 'https://www.eos-payment.de/gutschrift_cc_Folge.acgi';
+		} else {
+			$requestUrl = 'https://www.eos-payment.de/gutschrift_elv_Folge.acgi';
+		}
+		
+		$respone = $this->doEosRequest($requestUrl, $params);
+				
+		$errorMessages = $this->checkEosResponse($respone);
+		$errorMessages = implode("\n", $errorMessages);
+
+		$sql = '
+			INSERT INTO `s_plugin_payment_eos` (
+				`userID`, `secret`, `werbecode`, `transactionID`,
+				`reference`, `amount`, `currency`, `payment_key`,
+				`added`, `changed`, `book_amount`, `book_date`
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, NOW());
+		';
+		Shopware()->Db()->query($sql, array(
+			$this->Request()->userID,
+			$secret,
+			$respone['werbecode'],
+			$respone['kontaktid'],
+			$respone['referenz'],
+			str_replace(',', '.', $params['bruttobetrag']),
+			$params['waehrung'],
+			$this->Request()->payment_key . '_memo',
+			str_replace(',', '.', $params['bruttobetrag'])
+		));
+		
+		sleep(3);
+				
+		echo Zend_Json::encode(array(
+			'success' => empty($errorMessages),
+			'message' => !empty($errorMessages) ? utf8_encode($errorMessages) : ''
+		));
 	}
 	
 	/**
@@ -424,6 +554,50 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 	{
 		$value = str_replace(',', '.', $value);
 		return number_format($value, 2, ',', '');
+	}
+	
+	/**
+	 * Returns eos account expiry
+	 *
+	 * @param array $respone
+	 * @return Zend_Date|null
+	 */
+	public function getEosAccountExpiry($respone)
+	{
+		if(empty($respone['spr_gueltigbismonat'])
+		  || empty($respone['spr_gueltigbisjahr'])) {
+		  	return null;
+		}
+		return new Zend_Date($respone['spr_gueltigbisjahr'] . '-' . $respone['spr_gueltigbismonat'] . '-01');
+	}
+	
+	/**
+	 * Returns eos bank account
+	 *
+	 * @param array $respone
+	 * @return string
+	 */
+	protected function getEosBankAccount($respone)
+	{
+		if(!empty($respone['spr_kontonummer'])) {
+			$l = strlen($respone['spr_kontonummer']);
+			$s = $l > 8 ? 4 : 2;
+			$n = str_repeat('*', $l - $s) . substr($respone['spr_kontonummer'], -$s);
+			$bank_account = array(
+				'Konto:',
+				$n,
+				'BLZ:',
+				$respone['spr_blz']
+			);
+		} elseif(!empty($respone['spr_kartennummer'])) {
+			$bank_account = array(
+				$respone['spr_kartentyp'],
+				$respone['spr_kartennummer']
+			);
+		} else {
+			$bank_account = array();
+		}
+		return implode(' ', $bank_account);
 	}
 		
 	/**
@@ -471,7 +645,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 				$sql = '
 					UPDATE s_plugin_payment_eos
 					SET status=?, `changed`=NOW(),
-						account_number=IFNULL(?, account_number),
+						bank_account=IFNULL(?, bank_account),
 						fail_message=IFNULL(?, fail_message)
 					WHERE transactionID=? AND secret=?
 				';
@@ -512,24 +686,28 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 				$this->saveEosStatus($payment['clear_status'], $transactionId, $secret);
 			}
 		}		
-			
-		$sql = '
-			UPDATE s_plugin_payment_eos
-			SET clear_status=?, `changed`=NOW()
-			WHERE transactionID=? AND secret=?';
-		$result = Shopware()->Db()->query($sql, array(
-			$status,
-			$transactionId,
-			$secret
-		));
+		
+		if(!empty($status) && is_numeric($status)) {
+			$sql = '
+				UPDATE s_plugin_payment_eos
+				SET clear_status=?, `changed`=NOW()
+				WHERE transactionID=? AND secret=?
+			';
+			$result = Shopware()->Db()->query($sql, array(
+				$status,
+				$transactionId,
+				$secret
+			));
+		}
 		
 		if($status == 2) {
 			$sql = '
 				UPDATE s_plugin_payment_eos
 				SET
 					`book_amount`=IFNULL(`book_amount`, `amount`),
-					`book_date`=IFNULL(`book_date`, NOW()),
-				WHERE transactionID=? AND secret=?';
+					`book_date`=IFNULL(`book_date`, NOW())
+				WHERE transactionID=? AND secret=?
+			';
 			$result = Shopware()->Db()->query($sql, array(
 				$transactionId,
 				$secret
@@ -578,8 +756,9 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$sql = '
 			INSERT INTO `s_plugin_payment_eos` (
 				`userID`, `secret`, `werbecode`, `transactionID`,
-				`reference`, `amount`, `currency`, `added`, `changed`
-			) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW());
+				`reference`, `amount`, `currency`, `payment_key`,
+				`added`, `changed`
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW());
 		';
 		Shopware()->Db()->query($sql, array(
 			Shopware()->Session()->sUserId,
@@ -589,6 +768,7 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 			$respone['referenz'],
 			$this->getAmount(),
 			$this->getCurrencyShortName(),
+			$this->getPaymentShortName()
 		));
 		$sql = '
 			UPDATE s_order SET transactionID=?
@@ -630,6 +810,11 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 					$errorMessages[] = $errorMessage;
 				}
 			}
+			if(empty($errorMessages)) {
+				$errorMessages[] = 'Ein unbekannter Fehler ist aufgetreten.';
+			}
+		} elseif(!empty($respone['status']) && $respone['status']=='WAIT') {
+			$errorMessages[] = 'Vorgang konnte nicht in innerhalb von 25 Sekunden abgeschlossen werden.';
 		}
 		return $errorMessages;
 	}

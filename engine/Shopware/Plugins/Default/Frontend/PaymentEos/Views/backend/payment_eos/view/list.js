@@ -79,13 +79,6 @@ Ext.define('PaymentEos.view.List', {
             	 var record = grid.getStore().getAt(rowIndex);
                 parent.loadSkeleton('orders', false, { 'id': record.get('orderID') });
             }
-        }, {
-            iconCls: 'delete',
-            tooltip: 'Delete',
-            handler: function(grid, rowIndex, colIndex) {
-                var rec = grid.getStore().getAt(rowIndex);
-                alert("Terminate " + rec.get('firstname'));
-            }                
         }]
     }],
     
@@ -93,6 +86,7 @@ Ext.define('PaymentEos.view.List', {
     	
     	this.onTextFieldChange = function() {
     		var value = this.searchField.getValue();
+    		this.store.clearFilter(true);
     		this.store.filter('search', value);
     	};
     	
@@ -116,7 +110,7 @@ Ext.define('PaymentEos.view.List', {
 	        dock: 'bottom',
 	        displayInfo: true,
 	        items: [
-	        	'|', this.searchField
+	        	'Suche: ', this.searchField
 	        ]
 	    }];
     	

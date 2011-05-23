@@ -26,7 +26,8 @@ Ext.define('PaymentEos.controller.List', {
 		});
 		
 		this.detailView = this.getDetailView().create({
-			region: 'east'
+			region: 'east',
+			listView: this.listView
 		});
     	
     	this.getView('Viewport').create({
@@ -38,7 +39,5 @@ Ext.define('PaymentEos.controller.List', {
             	this.detailView.updateDetail(records[0]);
             }
         }, this);
-        
-        //this.listView.getSelectionModel().select(0);
     }
 });

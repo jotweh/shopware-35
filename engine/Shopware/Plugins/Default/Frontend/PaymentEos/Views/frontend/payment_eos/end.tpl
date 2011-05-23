@@ -66,7 +66,9 @@
 		self.close();
 	} else if(top != self) {
 		top.location=href;
-	}
+	}{if !empty($Payment.status) && $Payment.status == 'success'} else {
+		window.location=href;
+	}{/if}
 //]]>
 </script>
 {/block}

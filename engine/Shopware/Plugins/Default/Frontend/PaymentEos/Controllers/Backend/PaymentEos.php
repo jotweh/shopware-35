@@ -76,11 +76,23 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 		$start = $this->Request()->getParam('start', 0);
 		
 		if($sort = $this->Request()->getParam('sort')) {
-			$sort = substr($sort, 1, -1);
 			$sort = Zend_Json::decode($sort);
+			$sort = current($sort);
 		}
 		$direction = empty($sort['direction']) || $sort['direction'] == 'DESC' ? 'DESC' : 'ASC';
 		$property = empty($sort['property']) ? 'added' : $sort['property'];
+		
+		if($filter = $this->Request()->getParam('filter')) {
+			$filter = Zend_Json::decode($filter);
+			foreach ($filter as $value) {
+				if(empty($value['property']) || empty($value['value'])) {
+					continue;
+				}
+				if($value['property'] == 'search') {
+					$this->Request()->setParam('search', $value['value']);
+				}
+			}
+		}
 		
 		$select = Shopware()->Db()
 			->select()
@@ -97,27 +109,42 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 			)
 			->joinLeft(
 				array('a' => 's_core_paymentmeans'),
-				'a.id = o.paymentID',
+				'a.name =  p.payment_key COLLATE latin1_german1_ci',
 				array(
 					'payment_description' => 'a.description'
 				)
 			)
 			->joinLeft(
+				array('u' => 's_user_billingaddress'),
+				'u.userID = p.userID',
+				array()
+			)
+			->joinLeft(
 				array('b' => 's_order_billingaddress'),
 				'b.orderID = o.id',
-				new Zend_Db_Expr("IF(b.company='', CONCAT(b.firstname, ' ', b.lastname), b.company) as customer")
+				new Zend_Db_Expr("
+					IF(b.id IS NULL,
+						IF(u.company='', CONCAT(u.firstname, ' ', u.lastname), u.company),
+						IF(b.company='', CONCAT(b.firstname, ' ', b.lastname), b.company)
+					) as customer
+				")
 			)
+			->where('`werbecode` IS NOT NULL')
 			->order(array($property . ' ' . $direction))
 			->limit($limit, $start);
 
 		if($search = $this->Request()->getParam('search')) {
 			$search = trim($search);
 			$search = '%'.$search.'%';
-			$search = $this->db->quote($search); 
-			
-			$select->where('transactionID LIKE ' . $search)
-				->orWhere('reference LIKE ' . $search)
-				->orWhere('customer LIKE ' . $search);
+			$search = Shopware()->Db()->quote($search);
+						
+			$select->where('p.transactionID LIKE ' . $search)
+				->orWhere('p.reference LIKE ' . $search)
+				->orWhere('o.ordernumber LIKE ' . $search)
+				->orWhere('b.lastname LIKE ' . $search)
+				->orWhere('u.lastname LIKE ' . $search)
+				->orWhere('b.company LIKE ' . $search)
+				->orWhere('u.company LIKE ' . $search);
 		}
 		
 		$rows = Shopware()->Db()->fetchAll($select);
@@ -125,8 +152,10 @@ class Shopware_Controllers_Backend_PaymentEos extends Shopware_Controllers_Backe
 		foreach ($rows as $key=>$row) {			
 			if(function_exists('mb_convert_encoding')) {
 				$rows[$key]['customer'] = mb_convert_encoding($row['customer'], 'UTF-8', 'HTML-ENTITIES');
+				$rows[$key]['fail_message'] = mb_convert_encoding($row['fail_message'], 'UTF-8', 'HTML-ENTITIES');
 			} else {
 				$rows[$key]['customer'] = utf8_encode(html_entity_decode($row['customer'], ENT_NOQUOTES));
+				$rows[$key]['fail_message'] = utf8_encode(html_entity_decode($row['fail_message'], ENT_NOQUOTES));
 			}
 			
 			$rows[$key]['amount_format'] = Shopware()->Currency()->toCurrency($row['amount'], array('currency' => $row['currency']));

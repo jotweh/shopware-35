@@ -14,6 +14,15 @@ Ext.define('PaymentEos.view.Detail', {
     
     items: [{
         xtype: 'hiddenfield',
+        name: 'payment_key'
+    },{
+        xtype: 'hiddenfield',
+        name: 'userID'
+    },{
+        xtype: 'hiddenfield',
+        name: 'currency'
+    },{
+        xtype: 'hiddenfield',
         name: 'secret'
     }, {
         xtype: 'hiddenfield',
@@ -31,9 +40,17 @@ Ext.define('PaymentEos.view.Detail', {
 		fieldLabel: 'Referenz',
 		name: 'reference'
 	},{
-		fieldLabel: 'Kontonummer',
-		name: 'account_number'
+		fieldLabel: 'Bankkonto/Karte',
+		name: 'bank_account'
 	},{
+        xtype: 'textarea',
+        fieldLabel: 'Letzte Fehlermeldung',
+        name: 'fail_message'
+    },{
+        xtype: 'datefield',
+        fieldLabel: 'Anlegungsdatum',
+        name: 'added'
+    },{
 		xtype: 'numberfield',
 		decimalPrecision: 2,
         fieldLabel: 'Reservierter Betrag',
@@ -43,8 +60,7 @@ Ext.define('PaymentEos.view.Detail', {
         fieldLabel: 'Buchungsdatum',
         name: 'book_date',
         hiddenName: 'book_date',
-        readOnly: false,
-        minValue: new Date()
+        readOnly: false
     },{
         xtype: 'numberfield',
         decimalPrecision: 2,
@@ -52,36 +68,49 @@ Ext.define('PaymentEos.view.Detail', {
         name: 'book_amount',
         hiddenName: 'book_amount',
         readOnly: false
+    },{
+        xtype: 'numberfield',
+        decimalPrecision: 2,
+        fieldLabel: 'Gutschriftsbetrag',
+        name: 'memo_amount',
+        hiddenName: 'memo_amount',
+        readOnly: false
     }],
+    
+    onSubmitFailure: function(form, action) {
+		switch (action.failureType) {
+			case Ext.form.action.Action.CLIENT_INVALID:
+				Ext.Msg.alert('Fehler', 'Form fields may not be submitted with invalid values');
+				break;
+			case Ext.form.action.Action.CONNECT_FAILURE:
+				Ext.Msg.alert('Fehler', 'Ajax communication failed');
+				break;
+			default:
+			case Ext.form.action.Action.SERVER_INVALID:
+				Ext.Msg.alert('Fehler', action.result.message);
+				break;
+		}
+	},
     
     initComponent: function() {
         
         this.buttons = [{
-        	itemId: 'bookButton',
-			text: 'Buchen',
+        	itemId: 'refreshButton',
+			text: 'Aktualisieren',
 			handler: function (a, b, c){
 				var form = this.getForm();
 				if (!form.isValid()) {
 					return;
 				}
-				Ext.MessageBox.wait('Bitte warten ...', 'Buchen'); 
+				Ext.MessageBox.wait('Bitte warten ...', 'Aktualisieren'); 
 				form.submit({
-					url: '{url module=frontend controller=payment_eos action=book}',
+					url: '{url module=frontend controller=payment_eos action=refresh forceSecure}',
 					success: function(form, action) {
-						Ext.Msg.alert('Success', action.result.message);
+						Ext.Msg.alert('Erfolgreich', action.result.message);
+						this.loadDetail();
 					},
-				    failure: function(form, action) {
-				        switch (action.failureType) {
-				            case Ext.form.action.Action.CLIENT_INVALID:
-				                Ext.Msg.alert('Failure', 'Form fields may not be submitted with invalid values');
-				                break;
-				            case Ext.form.action.Action.CONNECT_FAILURE:
-				                Ext.Msg.alert('Failure', 'Ajax communication failed');
-				                break;
-				            case Ext.form.action.Action.SERVER_INVALID:
-				               Ext.Msg.alert('Failure', action.result.message);
-				       }
-				    }
+					failure: this.onSubmitFailure,
+					scope: this
 				});
 			},
 			scope: this
@@ -93,26 +122,77 @@ Ext.define('PaymentEos.view.Detail', {
 					if(r!='yes') {
 						return;
 					}
-					
 					var form = this.getForm();
 					if (!form.isValid()) {
 						return;
 					}
+					Ext.MessageBox.wait('Bitte warten ...', 'Stornieren'); 
 					form.submit({
-						url: '{url module=frontend controller=payment_eos action=cancel}',
+						url: '{url module=frontend controller=payment_eos action=cancel forceSecure}',
 						success: function(form, action) {
-							Ext.Msg.alert('Success', action.result.msg);
+							Ext.Msg.alert('Erfolgreich', 'Die Zahlung konnte erfolgreich storniert werden.');
+							this.loadDetail();
 						},
-						failure: function(form, action) {
-							Ext.Msg.alert('Failed', action.result.msg);
-						}
+						failure: this.onSubmitFailure,
+						scope: this
 					});
 				}, this);
+			},
+			scope: this
+		}, {
+        	itemId: 'memoButton',
+			text: 'Gutschrift',
+			handler: function (a, b, c){
+				var form = this.getForm();
+				if (!form.isValid()) {
+					return;
+				}
+				Ext.MessageBox.wait('Bitte warten ...', 'Gutschrift'); 
+				form.submit({
+					url: '{url module=frontend controller=payment_eos action=memo forceSecure}',
+					success: function(form, action) {
+						Ext.Msg.alert('Erfolgreich', 'Die Gutschrift konnte erfolgreich angelegt werden.');
+						this.loadDetail();
+					},
+					failure: this.onSubmitFailure,
+					scope: this
+				});
+			},
+			scope: this
+		}, {
+        	itemId: 'bookButton',
+			text: 'Buchen',
+			handler: function (a, b, c){
+				var form = this.getForm();
+				if (!form.isValid()) {
+					return;
+				}
+				Ext.MessageBox.wait('Bitte warten ...', 'Buchen'); 
+				form.submit({
+					url: '{url module=frontend controller=payment_eos action=book forceSecure}',
+					success: function(form, action) {
+						Ext.Msg.alert('Erfolgreich', 'Der Betrag konnte erfolgreich gebucht werden.');
+						this.loadDetail();
+					},
+					failure: this.onSubmitFailure,
+					scope: this
+				});
 			},
 			scope: this
 		}];
         
         this.callParent();
+    },
+    
+    loadDetail: function() {
+    	var id = this.getForm().getRecord().getId();
+    	var store = this.listView.store;
+    	store.load({
+		    scope   : this,
+		    callback: function(records, operation, success) {
+				this.updateDetail(store.getById(id));
+		    }
+		});
     },
 
     updateDetail: function(record) {
@@ -126,9 +206,6 @@ Ext.define('PaymentEos.view.Detail', {
 		} else {
 			buttons.getComponent('cancelButton').hide();
 		}
-		
-		//	form.findField('book_date').hide();
-		//	form.findField('book_amount').hide();
 		
 		if(record.get('clear_status') == 1 || record.get('book_amount')) {
 			form.findField('book_date').show();
@@ -147,10 +224,23 @@ Ext.define('PaymentEos.view.Detail', {
 			var maxValue = new Date(record.get('added').getTime());
 			maxValue.setDate(maxValue.getDate() + 12)
 			form.findField('book_date').setMaxValue(maxValue);
+			form.findField('book_date').setMinValue(new Date());
 		} else {
 			buttons.getComponent('bookButton').hide();
 			form.findField('book_date').setReadOnly(true);
 			form.findField('book_amount').setReadOnly(true);
+			form.findField('book_date').setMinValue(null);
+		}
+		
+		form.findField('memo_amount').setValue(null);
+		
+		if(record.get('clear_status') == 2) {
+			buttons.getComponent('memoButton').show();
+			form.findField('memo_amount').show();
+			form.findField('memo_amount').setMaxValue(record.get('book_amount'));
+		} else {
+			buttons.getComponent('memoButton').hide();
+			form.findField('memo_amount').hide();
 		}
     }
 });

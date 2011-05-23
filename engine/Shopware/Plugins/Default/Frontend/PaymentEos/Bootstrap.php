@@ -97,7 +97,7 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 			  `transactionID` int(11) unsigned NOT NULL,
 			  `secret` varchar(255) COLLATE latin1_german1_ci NOT NULL,
 			  `reference` varchar(255) COLLATE latin1_german1_ci NOT NULL,
-			  `account_number` varchar(255) COLLATE latin1_german1_ci DEFAULT NULL,
+			  `bank_account` varchar(255) COLLATE latin1_german1_ci DEFAULT NULL,
 			  `account_expiry` date DEFAULT NULL,
 			  `fail_message` varchar(255) COLLATE latin1_german1_ci DEFAULT NULL,
 			  `status` varchar(255) COLLATE latin1_german1_ci DEFAULT NULL,
@@ -108,6 +108,7 @@ class Shopware_Plugins_Frontend_PaymentEos_Bootstrap extends Shopware_Components
 			  `changed` datetime NOT NULL,
 			  `amount` decimal(10,2) NOT NULL,
 			  `currency` varchar(3) COLLATE latin1_german1_ci NOT NULL,
+			  `payment_key` varchar(255) COLLATE latin1_german1_ci NOT NULL,
 			  PRIMARY KEY (`id`),
 			  UNIQUE KEY `transactionID` (`transactionID`)
 			) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;

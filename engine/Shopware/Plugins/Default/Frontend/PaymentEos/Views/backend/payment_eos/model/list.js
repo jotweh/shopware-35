@@ -7,7 +7,7 @@ Ext.define('PaymentEos.model.List', {
 		{ name: 'transactionID', type: 'string' },
 		{ name: 'secret', type: 'string' },
 		{ name: 'reference', type: 'string' },
-		{ name: 'account_number', type: 'string' },
+		{ name: 'bank_account', type: 'string' },
 		{ name: 'account_expiry', type: 'string' },
 		{ name: 'fail_message', type: 'string' },
 		{ name: 'status', type: 'int' },
@@ -24,6 +24,7 @@ Ext.define('PaymentEos.model.List', {
 		{ name: 'orderID', type: 'int' },
 		{ name: 'order_date', type: 'date', dateFormat: 'c'},
 		{ name: 'order_number', type: 'string' },
-		{ name: 'payment_description', type: 'string' }
+		{ name: 'payment_description', type: 'string' },
+		{ name: 'payment_key', type: 'string' }
 	]
 });
