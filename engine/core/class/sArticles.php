@@ -2539,13 +2539,10 @@ class sArticles
 	 * @return array 
 	 */
 	public function sGetArticleById ($id = 0){
-
-
-
-		//error_reporting(E_ALL);
-		if ($id) {
+		if (!empty($id)) {
 			$this->sSYSTEM->_GET['sArticle'] = $id;
 		}
+
 		$this->sSYSTEM->_GET["sArticle"] = intval($this->sSYSTEM->_GET["sArticle"]);
 
 		$isBlog = $this->sSYSTEM->sDB_CONNECTION->GetOne("
@@ -2628,12 +2625,12 @@ class sArticles
 		"; 
 		}else {
 			$sql = "SELECT
-			a.id as articleID, 
+			a.id as articleID,
 			aDetails.id as articleDetailsID,
 			ordernumber,
 			datum,
-			additionaltext, 
-			shippingtime, 
+			additionaltext,
+			shippingtime,
 			shippingfree,
 			DATE_FORMAT(changetime,'%d.%M %Y %H:%i') AS datumFormated,
 			changetime,
@@ -2655,30 +2652,30 @@ class sArticles
 			a.mode,
 			a.description AS description,
 			keywords,
-			description_long, 
-			aSupplier.name AS supplierName, 
-			aSupplier.img AS supplierImg, 
-			aSupplier.id AS supplierID, 
+			description_long,
+			aSupplier.name AS supplierName,
+			aSupplier.img AS supplierImg,
+			aSupplier.id AS supplierID,
 			a.name AS articleName,
 			attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,
 			attr11,attr12,attr13,attr14,attr15,attr16,attr17,attr18,attr19,attr20,
 			filtergroupID,
 			a.crossbundlelook
-			
+
 			FROM s_articles AS a,
-			s_articles_supplier AS aSupplier, 
+			s_articles_supplier AS aSupplier,
 			s_articles_details AS aDetails,
 			s_articles_attributes AS aAttributes
-			WHERE 
+			WHERE
 			aAttributes.articledetailsID=aDetails.id
 			AND a.id=".$this->sSYSTEM->_GET['sArticle']."
 			AND aSupplier.id=a.supplierID AND aDetails.articleID=a.id AND aDetails.kind=1 AND a.active=1
 			AND (
-				SELECT articleID 
-				FROM s_articles_avoid_customergroups 
+				SELECT articleID
+				FROM s_articles_avoid_customergroups
 				WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
 			) IS NULL
-		"; 
+		";
 
 		}
 
