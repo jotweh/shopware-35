@@ -1,4 +1,11 @@
 <?php
+/**
+ * Shopware Config Model
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Models_Config extends Shopware_Components_Config_DbTable
 {
 	protected $_name = 's_core_config';
@@ -6,6 +13,11 @@ class Shopware_Models_Config extends Shopware_Components_Config_DbTable
 	protected $_shop;
 	protected $_cacheTags = array('Shopware_Config');
 	
+	/**
+	 * Constructor method
+	 *
+	 * @param array $config
+	 */
   	public function __construct($config)
   	{
   		if(isset($config['shop'])) {
@@ -21,40 +33,61 @@ class Shopware_Models_Config extends Shopware_Components_Config_DbTable
   		$this->set('sErrors', $this->get('sSnippets'));
   	}
   	
+  	/**
+     * Load data method
+     *
+     * @return void
+     */
   	protected function load()
   	{
-  		$data = parent::load();
+  		parent::load();
   		  		
-  		if($this->_shop!==null && !$this->_shop->get('default') && !$this->_shop->get('skipbackend')) {
+  		if($this->_shop!==null
+  		  && !$this->_shop->get('default')
+  		  && !$this->_shop->get('skipbackend')) {
   			if($this->_shop->get('fallback')) {
-  				$data = $this->_arrayMergeRecursive($data, $this->readTranslation('config', $this->_shop->get('fallback')));
+  				$data = $this->_arrayMergeRecursive($this->_data, $this->readTranslation('config', $this->_shop->get('fallback')));
 			}
-  			$data = $this->_arrayMergeRecursive($data, $this->readTranslation('config', $this->_shop->get('isocode')));
+  			$this->_data = $this->_arrayMergeRecursive($this->_data, $this->readTranslation('config', $this->_shop->get('isocode')));
   		}
   		
     	$sql = 'SELECT name as `key`, cm.* FROM s_core_config_mails cm';
-		$data['sTemplates'] = $this->_dbTable->getAdapter()->fetchAssoc($sql);
+		$this->_data['sTemplates'] = $this->_dbTable->getAdapter()->fetchAssoc($sql);
 		
     	$sql = 'SELECT viewport, viewport_file as file, description as name FROM s_core_viewports';
-		$data['sViewports'] = $this->_dbTable->getAdapter()->fetchAssoc($sql);
+		$this->_data['sViewports'] = $this->_dbTable->getAdapter()->fetchAssoc($sql);
 		
 		$sql = 'SELECT name, value FROM s_core_config_text';
-		$data['sSnippets'] = $this->_dbTable->getAdapter()->fetchPairs($sql);
+		$this->_data['sSnippets'] = $this->_dbTable->getAdapter()->fetchPairs($sql);
 
-		if($this->_shop!==null && !$this->_shop->get('default') && !$this->_shop->get('skipbackend')) {
-			if($this->_shop->get('fallback')) {
-				$data['sTemplates'] = $this->_arrayMergeRecursive($data['sTemplates'], $this->readTranslation('config_mails', $this->_shop->get('fallback')));
-  				$data['sViewports'] = $this->_arrayMergeRecursive($data['sViewports'], $this->readTranslation('config_viewports', $this->_shop->get('fallback')));
-  				$data['sSnippets'] = $this->_arrayMergeRecursive($data['sSnippets'], $this->readTranslation('config_snippets', $this->_shop->get('fallback')));
+		if($this->_shop!==null
+		  && !$this->_shop->get('default')
+		   && !$this->_shop->get('skipbackend')) {
+			$translationFields = array(
+				'sTemplates' => 'config_mails',
+				'sViewports' => 'config_viewports',
+				'sSnippets' => 'config_snippets'
+			);
+			foreach ($translationFields as $name=>$translationField) {
+				if($this->_shop->get('fallback')) {
+					$this->_data[$name] = $this->_arrayMergeRecursive(
+						$this->_data[$name],
+						$this->readTranslation($translationField, $this->_shop->get('fallback'))
+					);
+				}
+	  			$this->_data[$name] = $this->_arrayMergeRecursive(
+	  				$this->_data[$name],
+	  				$this->readTranslation($translationField, $this->_shop->get('isocode'))
+	  			);
 			}
-  			$data['sTemplates'] = $this->_arrayMergeRecursive($data['sTemplates'], $this->readTranslation('config_mails', $this->_shop->get('isocode')));
-  			$data['sViewports'] = $this->_arrayMergeRecursive($data['sViewports'], $this->readTranslation('config_viewports', $this->_shop->get('isocode')));
-  			$data['sSnippets'] = $this->_arrayMergeRecursive($data['sSnippets'], $this->readTranslation('config_snippets', $this->_shop->get('isocode')));
   		}
-    	
-    	return $data;
   	}
   	
+  	/**
+     * Read config translation
+     *
+     * @return array
+     */
   	protected function readTranslation($type, $language)
 	{
 		$sql = '
@@ -96,10 +129,5 @@ class Shopware_Models_Config extends Shopware_Components_Config_DbTable
 		}
 		
 		return $data;
-	}
-	
-	public function __call($name, $args)
-	{
-		return $this->get($name);
 	}
 }
