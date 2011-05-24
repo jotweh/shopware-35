@@ -133,3 +133,10 @@ UPDATE `shopware`.`s_core_snippets` SET `value` = '- Bestellen Sie für weitere 
  * @since 3.5.4 - 2011/05/24
  */
 UPDATE `shopware`.`s_core_snippets` SET `value` = '<a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank"> {$this->config(''sShopname'')} ist ein von Trusted Shops geprüfter Onlinehändler mit Gütesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">Käuferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;
+
+/**
+ * @ticket 5324
+ * @author s.pohl
+ * @since 3.5.4 - 2011/05/24
+ */
+INSERT INTO `s_core_snippets` VALUES(NULL, 'frontend/register/personal_fieldset', 1, 1, 'RegisterPersonalRequiredText', '* hierbei handelt es sich um ein Pflichtfeld', '2011-05-24 17:12:28', '2011-05-24 17:13:52');
