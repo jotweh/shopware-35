@@ -5,7 +5,7 @@ Ext.ns('Shopware.Plugin');
 	    title: 'Verfügbare Plugins',
 	    stripeRows:true,
 	    initComponent: function() {
-	    	
+	    	Ext.QuickTips.init();
 	    	var selModel = this.selModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
 	    	
 	    	this.store = new Ext.data.Store({
@@ -29,8 +29,14 @@ Ext.ns('Shopware.Plugin');
 	    		}
 	    	};
 
+			this.on('rowdblclick', function(grid,rowIndex,e){
+				if(!rowIndex) rowIndex = '0';
+				var rec = grid.getStore().getAt(rowIndex);
+				Viewport.showDetail(rec.get('id'));
+			});
+
 	    	this.bbar = new Ext.PagingToolbar({
-	    		pageSize: 20,
+	    		pageSize: 25,
 	    		store: this.store,
 	    		displayInfo: true,
 	    		items:[
@@ -46,7 +52,7 @@ Ext.ns('Shopware.Plugin');
 		    					var search = Ext.getCmp("usersearch");
 		    					this.store.baseParams["path"] = '';
 		    					this.store.baseParams["search"] = search.getValue();
-		    					this.store.load({ params:{ start:0, limit:20 } });
+		    					this.store.load({ params:{ start:0, limit:25 } });
 		    				}, this, { buffer:500 });
 		    			}, scope:this }
 		    			}
@@ -56,6 +62,22 @@ Ext.ns('Shopware.Plugin');
 
    			
 	        this.columns = [
+	            {
+	                xtype: 'gridcolumn',
+	                header: '&nbsp;',
+	                sortable: false,
+	                width: 75,
+	                renderer: function (value, p, record) {
+	                	if(!record.data.installation_date) {
+	                		var r = '<a class="ico add" onclick="Viewport.installPlugin('+record.data.id+', true);"></a>';
+	                	} else {
+							var r = '<a class="ico cog" onclick="Viewport.showDetail('+record.data.id+');"></a>';
+	                		r += '<a class="ico delete" onclick="Viewport.installPlugin('+record.data.id+', false);"></a>';
+	                	}
+
+	                	return r;
+	                }
+	            },
 	         	{
 	                xtype: 'gridcolumn',
 	                dataIndex: 'label',
@@ -63,6 +85,7 @@ Ext.ns('Shopware.Plugin');
 	                sortable: false,
 	                width: 150,
 	                renderer: function (v,p,r){
+						p.attr = 'ext:qtip="Installationsdatum:'+Ext.util.Format.date(r.data.installation_date,'d.m.Y')+'<br />Lizenz: '+r.data.license+'" ext:qtitle="'+r.data.label+'"';
 	                	return "<span style=\"font-weight:bold\">"+v+"</span";
 	                }
 	            },
@@ -73,7 +96,34 @@ Ext.ns('Shopware.Plugin');
 	                sortable: false,
 	                width: 200
 	            },
+ 				{
+	                xtype: 'booleancolumn',
+	                dataIndex: 'active',
+	                header: 'Aktiv',
+	                sortable: false,
+	                width: 75,
+	                trueText: 'ja',
+	                falseText: 'nein'
+	            },
 	            {
+	                xtype: 'gridcolumn',
+	                dataIndex: 'version',
+	                header: 'Ihre Version',
+	                sortable: false,
+	                width: 95,
+					editable: false,
+					align: 'left'
+	            },
+				{
+	                xtype: 'gridcolumn',
+	                dataIndex: 'version',
+	                header: 'Aktuelle Version',
+	                sortable: false,
+	                width: 95,
+					editable: false,
+					align: 'left'
+	            },
+				{
 	                xtype: 'gridcolumn',
 	                dataIndex: 'autor',
 	                header: 'Hersteller',
@@ -86,64 +136,6 @@ Ext.ns('Shopware.Plugin');
 	                	return '<a h'+'ref="'+record.data.link+'" target="_blank">'+record.data.autor+'</a>';
 	                }
 	            },
-	            {
-	                xtype: 'gridcolumn',
-	                dataIndex: 'license',
-	                header: 'Lizenz',
-	                sortable: false,
-	                width: 100
-	            },
-	            {
-	                xtype: 'gridcolumn',
-	                dataIndex: 'version',
-	                header: 'Version',
-	                sortable: false,
-	                width: 75,
-					editable: false,
-					align: 'right'
-	            },
-	            {
-	                xtype: 'booleancolumn',
-	                dataIndex: 'active',
-	                header: 'Aktiv',
-	                sortable: false,
-	                width: 75,
-	                trueText: 'ja',
-	                falseText: 'nein'
-	            },
-	            {
-	                xtype: 'gridcolumn',
-	                dataIndex: 'support',
-	                header: 'Support',
-	                sortable: false,
-	                width: 75,
-	                renderer: function (value, p, record){
-	                	if(record.data.support.indexOf('http')!==0) {
-	                		return record.data.support;
-	                	}
-	                	return '<a h'+'ref="'+record.data.support+'" target="_blank">[link]</a>';
-	                }
-	            },
-	            { header: "Installationsdatum", width: 150, sortable: true, renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'), dataIndex: 'installation_date' },
-	            { header: "Updatedatum", width: 150, sortable: true, renderer: Ext.util.Format.dateRenderer('d.m.Y H:i:s'), dataIndex: 'Installationsdatum' },
-	            {
-	                xtype: 'gridcolumn', 
-	                header: '&nbsp;',
-	                sortable: false,
-	                width: 75,
-	                renderer: function (value, p, record) {
-	                	
-						var r = '<a class="ico pencil" onclick="Viewport.showDetail('+record.data.id+');"></a>';
-						
-	                	if(!record.data.installation_date) {
-	                		r += '<a class="ico add" onclick="Viewport.installPlugin('+record.data.id+', true);"></a>'
-	                	} else {
-	                		r += '<a class="ico delete" onclick="Viewport.installPlugin('+record.data.id+', false);"></a>'
-	                	}
-	                		                	
-	                	return r;
-	                }
-	            }
 	        ];
 	        List.superclass.initComponent.call(this);
 	    }

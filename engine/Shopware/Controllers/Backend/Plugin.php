@@ -1,8 +1,23 @@
 <?php
+/**
+ * Shopware Plugin Manager
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @package Shopware
+ * @author st.hamann
+ * @author h.lohaus
+ * @subpackage Plugins
+ */
 class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 {	
 	protected $db;
 
+	/**
+	 * Init resources
+	 * Set renderer for index / detail / skeleton action
+	 * @return void
+	 */
 	public function preDispatch()
 	{
 		$this->db = Shopware()->Db();
@@ -10,17 +25,29 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		}
 	}
-	
+
+	/**
+	 * Not required yet
+	 * @return void
+	 */
 	public function indexAction()
 	{
 		
 	}
-	
+
+	/**
+	 * Load window properties from skeleton.tpl
+	 * @return void
+	 */
 	public function skeletonAction ()
 	{
 		
 	}
-	
+
+	/**
+	 * Load plugin detail mask
+	 * @return void
+	 */
 	public function detailAction()
 	{
 		$id = (int) $this->Request()->id;
@@ -46,7 +73,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		$this->View()->shops = $this->getShops();
 	}
-	
+
+	/**
+	 * Save plugin details / configuration
+	 * @return void
+	 */
 	public function saveDetailAction()
 	{
 		$pluginId = (int) $this->Request()->id;
@@ -87,13 +118,17 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			}
 		}
 	}
-	
+
+	/**
+	 * Get plugin list to display in grid
+	 * @return void
+	 */
 	public function getListAction()
 	{
 		$this->refreshList();
-		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('namespace', 'name'));
+		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('name'));
 		
-		$limit = $this->Request()->getParam('limit', 20);
+		$limit = $this->Request()->getParam('limit', 25);
 		$start = $this->Request()->getParam('start', 0);
 		
 		$select->limit($limit, $start);
@@ -131,7 +166,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		echo Zend_Json::encode(array('data'=>$rows, 'count'=>$count));
 	}
-	
+
+	/**
+	 * Get plugin list for delete combo (deprecated)
+	 * @return void
+	 */
 	public function getDeleteListAction()
 	{
 		$list = array();
@@ -167,7 +206,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		echo Zend_Json::encode(array('data'=>$list, 'count'=>count($list)));
 	}
-	
+
+	/**
+	 * Get plugin scopes for tree menu
+	 * @return void
+	 */
 	public function getTreeAction()
 	{
 		$node = $this->Request()->node;
@@ -227,7 +270,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode($list);
 	}
-	
+
+	/**
+	 * Enable a certain plugin
+	 * @return void
+	 */
 	public function enableAction()
 	{
 		$id = (int) $this->Request()->id;
@@ -237,7 +284,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		echo Zend_Json::encode(array('success'=>$result));		
 	}
-	
+
+	/**
+	 * Disable a certain plugin
+	 * @return void
+	 */
 	public function disableAction()
 	{
 		$id = (int) $this->Request()->id;
@@ -247,7 +298,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		echo Zend_Json::encode(array('success'=>$result));
 	}
-	
+
+	/**
+	 * Do plugin installation
+	 * @return void
+	 */
 	public function installAction()
 	{		
 		$id = (int) $this->Request()->id;
@@ -269,7 +324,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array('success'=>isset($message)?false:$result, 'message'=>isset($message)?$message:''));
 	}
-	
+
+	/**
+	 * Remove a certain plugin
+	 * @return void
+	 */
 	public function uninstallAction()
 	{
 		$id = (int) $this->Request()->id;
@@ -286,7 +345,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array('success'=>$result));
 	}
-	
+
+	/**
+	 * Get all subshops
+	 * @return
+	 */
 	public function getShops()
 	{
 		$sql = '
@@ -297,7 +360,14 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$shops = $this->db->fetchAll($sql);
 		return $shops;
 	}
-	
+
+	/**
+	 * Check if a certain plugin is already installed
+	 * @param  $source
+	 * @param  $namespace
+	 * @param  $name
+	 * @return bool
+	 */
 	public function isInstalled($source, $namespace, $name)
 	{
 		$select = $this->db->select()
@@ -309,7 +379,12 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$id = $this->db->fetchOne($select);
 		return !empty($id);
 	}
-	
+
+	/**
+	 * Get a certain plugin by id
+	 * @param  $id
+	 * @return bool
+	 */
 	public function getPluginById($id)
 	{
 		$select = $this->db->select()->from('s_core_plugins')->where('id=?', $id);
@@ -327,7 +402,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		}
 		return $plugin;
 	}
-	
+
+	/**
+	 * Reload plugin list
+	 * @return void
+	 */
 	public function refreshList()
 	{
 		foreach (Shopware()->Plugins() as $namespace_name => $namespace) {
@@ -367,7 +446,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			}
 		}
 	}
-	
+
+	/**
+	 * Upload a new plugin
+	 * @return void
+	 */
 	public function uploadAction()
 	{
 		$upload = new Zend_File_Transfer_Adapter_Http();
@@ -394,7 +477,12 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		echo htmlspecialchars(Zend_Json::encode(array('success'=>isset($message)?false:true, 'message'=>isset($message)?$message:'')));
 	}
-	
+
+	/**
+	 * Decompress plugin zip
+	 * @param  $file
+	 * @return bool
+	 */
 	public function decompressFile($file)
 	{
 		$target = Shopware()->AppPath().'Plugins/Community';
@@ -409,7 +497,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$filter->filter($file);
 		return true;
 	}
-	
+
+	/**
+	 * Direct download of a plugin zip
+	 * @return void
+	 */
 	public function downloadAction()
 	{
 		$url = $this->Request()->link;
@@ -433,7 +525,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		 
 		echo Zend_Json::encode(array('success'=>isset($message)?false:true, 'message'=>isset($message)?$message:''));
 	}
-	
+
+	/**
+	 * Delete plugin directory structure
+	 * @return
+	 */
 	public function deleteAction()
 	{
 		$deletePath = $this->Request()->path;

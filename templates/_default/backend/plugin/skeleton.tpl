@@ -1,6 +1,6 @@
 {
 	"init": {
-		"title": "Plugins",
+		"title": "Shopware Plugin Manager 1.2",
 		"width": 860,
 		"height": 550,
 		"minwidth": 800,
