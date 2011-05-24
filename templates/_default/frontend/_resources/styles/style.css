@@ -326,6 +326,9 @@ div#notes .table_row .action a.basket,
 
 .artbox .actions a.more,.listing_actions .offers:hover,div#notes .table_row .action a.basket, .blogbox a.more_info:hover, .content_listing a.more_info:hover, .bt_allsupplier:hover {background-position: right -21px;}
 
+/* Base price */
+.artbox .article_price_unit p, .artbox .article_price_unit_pseudo p { margin-bottom: 0; font-size: 10px; }
+
 /* Offers */
 .listing_actions .offers {margin: 3px 0 0 195px; display:block;width: 190px;}
 .listing_actions .offers:hover {text-decoration: none;}
@@ -346,13 +349,15 @@ div#notes .table_row .action a.basket,
 /*	4 COL LISTING
 	------------------------ */
 #listing .artbox {width: 147px;}
-#listing .artbox .inner {height: 305px;width:127px; overflow:auto;}
+#listing .artbox .inner {height: 310px;width:127px; overflow:auto;}
 #listing .artbox div.ico_esd {right: 1px; top:-3px;}
+#listing .artbox p.desc { margin: 0 0 1em; }
+#listing .article_price_unit .baseprice { display: block }
 
 /*	3 COL LISTING
 	------------------------ */
 #listing-3col .artbox {width: 200px}
-#listing-3col .artbox .inner {height: 300px;width: 180px;}
+#listing-3col .artbox .inner {height: 325px;width: 180px;}
 #listing-3col .artbox .actions {position: absolute;bottom: 27px;}
 #listing-3col .artbox .artbox_thumb {height: 145px;margin-top:0}
 #listing-3col .artbox a.compare_add_article, #listing-3col .artbox a.more, #listing-3col .artbox .buynow {width:179px;}
@@ -361,7 +366,7 @@ div#notes .table_row .action a.basket,
 #listing-3col .artbox div.ico_esd {right: 8px;top:24px;}
 #listing-3col .artbox p.price {bottom:40px;}
 #listing-3col .artbox p.pseudoprice {bottom: 52px;}
-#listing-3col .artbox .unit {bottom: 82px;}
+#listing-3col .artbox p.desc { margin: 0 0 .8em }
 
 /*	2 COL LISTING
 	------------------------ */
@@ -370,15 +375,17 @@ div#notes .table_row .action a.basket,
 #listing-2col .artbox .artbox_thumb {height:140px;margin-top: 0;}
 #listing-2col .artbox .actions {right: 6px; left: auto;width: 135px;}
 #listing-2col .artbox .price {bottom: 5px;margin: 0;}
-#listing-2col .artbox .title {margin: 5px 0;width:285px;}
+#listing-2col .artbox .title {margin: 5px 0;width:150px;}
 #listing-2col .artbox .desc {width: 130px;} 
 #listing-2col .artbox .unit {right: 10px; bottom: 80px;}
 #listing-2col .artbox p.pseudoprice {bottom:8px;}
+#listing-2col .artbox .article_price_unit, #listing-2col .artbox .article_price_unit_pseudo { position: absolute; bottom: 80px; right: 5px; width: 135px; }
+#listing-2col .artbox .article_price_unit .baseprice, #listing-2col .artbox .article_price_unit_pseudo .baseprice { display: block }
 
 /*	1 COL LISTING
 	------------------------ */
 #listing-1col .artbox {width:629px;margin:0;border-bottom: 0 none;}
-#listing-blog .artbox .inner,#listing-1col .artbox .inner {height: 136px;width:609px;}
+#listing-blog .artbox .inner,#listing-1col .artbox .inner {height: 145px;width:609px;}
 #listing-blog .artbox .artbox_thumb, #listing-1col .artbox .artbox_thumb {display: block;width:105px;}
 #listing-blog .artbox a.title, #listing-1col .artbox a.title {position: absolute; top:15px;left:125px;width:330px;}
 #listing-blog .artbox p.desc, #listing-1col .artbox p.desc {position: absolute; top:45px;left:125px;width:330px}
@@ -391,6 +398,7 @@ div#notes .table_row .action a.basket,
 #listing-1col .artbox.last {border-bottom: 1px solid;}
 #listing-blog .artbox div.ico_tipp, #listing-1col .artbox div.ico_tipp {right:5px;}
 #listing-1col .artbox .actions, #listing-1col .artbox p.price, #listing-1col .artbox p.pseudoprice, #listing-1col .artbox .unit {left: 480px;}
+#listing-1col .artbox .article_price_unit, #listing-1col .artbox .article_price_unit_pseudo { position: absolute; left: 125px; }
 
 /*	BLOG CROSS SELLING
 	------------------------ */
@@ -652,6 +660,8 @@ div#notes .table_row .delete {display: block; height: 21px; width: 24px; backgro
 div#notes .table_row .action {position: absolute;top: 45px;right: 10px;}
 div#notes .table_row .action a {background-repeat: repeat-x; display: block; height:16px; border: 1px solid #e7e7e7; width: 162px;padding: 4px 0 0 10px; margin: 0 0 2px;color:#696969;}
 div#notes .table_row .action a.basket {margin-bottom: 20px;}
+div#notes .article_price_unit { position: absolute; top: 130px; }
+div#notes .article_price_unit p { margin: 0; } 
 
 /* Deliveryfree */
 .shippingfree_basket {padding: 10px;text-align: justify;}
@@ -1043,7 +1053,7 @@ div.searchdescription{height:3.75em; overflow:hidden; z-index:-1; line-height:12
 .compare_desc div.name, .compare_article div.name {height: 70px; overflow: hidden;}
 .compare_desc div.votes, .compare_article div.votes {height: 25px;}
 .compare_desc div.desc, .compare_article div.desc {height: 125px;}
-.compare_desc div.price, .compare_article div.price {height: 50px;padding-top: 10px;}
+.compare_desc div.price, .compare_article div.price {height: 105px;padding-top: 10px;}
 
 /*	CUSTOM CONTENT
 	------------------------ */
@@ -1115,6 +1125,9 @@ div.ajax_add_article .actions .button-right {right: 0px; top:0px;position: absol
 .ajax_compare_container .property {padding: 5px 0 5px 15px;}
 .ajax_compare_container .compare_article .property {padding-left: 5px;}
 .modal .ajax_compare_container .inner_container {overflow-y: scroll;height: 479px;}
+.ajax_compare_container .grid_3 div .article_price_unit { padding: 0 }
+.ajax_compare_container .article_price_unit p { margin: 0; font-size: 11px }
+.ajax_compare_container .article_price_unit .baseprice { display: block; }
 
 /* Custom */
 /*.ajax_modal_custom {padding: 20px; height: 400px; overflow-y: scroll;}*/

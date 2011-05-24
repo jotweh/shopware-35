@@ -176,7 +176,7 @@ div.supplier ul li.image {background-color: #fff;}
 	------------------------ */
 #detail h1 {color:#333;}
 #detail .border {border-color: #c7c7c7;}
-#detail, #detail a, #content #detail .article_details strong.supplier {color:#999;}
+#detail, #detail a, #content #detail .article_details strong.supplier, .artbox .article_price_unit p, .artbox .article_price_unit_pseudo p, div#notes .article_price_unit p  {color:#999;}
 .article_overview {color:#9c9c9c}
 .article_overview a {color:#7a7a7a;}
 #detail .article_details_price2 strong {color: #990000}

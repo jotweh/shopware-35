@@ -44,6 +44,23 @@
     		<strong>{if $sArticle.priceStartingFrom}ab {/if}{$sArticle.price|currency}</strong>*
     	</p>
     	{/block}
+    	
+    	{block name='frontend_compare_unitprice'}
+    	{if $sArticle.purchaseunit}
+            <div class="article_price_unit">
+                <p>
+                    <strong>{se name="CompareContent"}{/se}:</strong> {$sArticle.purchaseunit} {$sArticle.sUnit.description}
+                </p>
+                {if $sArticle.purchaseunit != $sArticle.referenceunit}
+                    <p>
+                        {if $sArticle.referenceunit}
+                            <strong class="baseprice">{se name="CompareBaseprice"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+                        {/if}
+                    </p>
+                {/if}
+            </div>
+        {/if}
+        {/block}
 	</div>
 	
 	{* Properties *}

@@ -1,6 +1,6 @@
 <div class="artbox{if $lastitem} last{/if}{if $firstitem} first{/if}">
 	<div class="inner">
-		
+
 		{* Top *}
 		{block name='frontend_listing_box_article_hint'}
 			{if $sArticle.highlight}
@@ -61,13 +61,20 @@
 		
 		{* Unit price *}
 		{block name='frontend_listing_box_article_unit'}
-		{if $sArticle.purchaseunit}
-			{if $sArticle.purchaseunit == $sArticle.referenceunit} {else}
-				<div class="unit">
-					{if $sArticle.referenceunit}{$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}{/if}
-				</div>
-			{/if}
-		{/if}
+        {if $sArticle.purchaseunit}
+            <div class="{if !$sArticle.pseudoprice}article_price_unit{else}article_price_unit_pseudo{/if}">
+                <p>
+                    <strong>{se name="ListingBoxArticleContent"}{/se}:</strong> {$sArticle.purchaseunit} {$sArticle.sUnit.description}
+                </p>
+                {if $sArticle.purchaseunit != $sArticle.referenceunit}
+                    <p>
+                        {if $sArticle.referenceunit}
+                            <strong class="baseprice">{se name="ListingBoxBaseprice"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+                        {/if}
+                    </p>
+                {/if}
+            </div>
+        {/if}
 		{/block}    	
 		
 		{* Article Price *}

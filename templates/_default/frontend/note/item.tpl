@@ -50,7 +50,25 @@
 			
 			{* Article Description *}
 			<p class="desc">
-				{$sBasketItem.description_long|strip_tags|truncate:350}
+				{$sBasketItem.description_long|strip_tags|truncate:300}
+				
+				{* Unit price *}
+				{block name="frontend_note_item_unitprice"}
+				{if $sBasketItem.purchaseunit}
+		            	<div class="article_price_unit">
+		                <p>
+		                    <strong>{se name="NoteUnitPriceContent"}{/se}:</strong> {$sBasketItem.purchaseunit} {$sBasketItem.sUnit.description}
+		                </p>
+		                {if $sBasketItem.purchaseunit != $sBasketItem}
+		                    <p>
+		                        {if $sBasketItem.referenceunit}
+		                            <strong class="baseprice">{se name="NoteUnitPriceBaseprice"}{/se}:</strong> {$sBasketItem.referenceunit} {$sBasketItem.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+		                        {/if}
+		                    </p>
+		                {/if}
+		            </div>
+		        {/if}
+				{/block}
 				
 			</p>
 			{block name="frontend_note_index_items"}{/block}
@@ -59,20 +77,12 @@
 	</div>
 	
 	{* Unit price *}
-	
 	<div>
-	{block name="frontend_note_item_price"}
+		{block name="frontend_note_item_price"}
 		{if $sBasketItem.itemInfo}
 			{$sBasketItem.itemInfo}
 		{else}
 			<strong class="price">{$sBasketItem.price|currency}*</strong>
-			{if $sBasketItem.purchaseunit}
-				{if $sBasketItem.purchaseunit == $sBasketItem.referenceunit} {else}
-					<div class="noteUnit">
-						{if $sBasketItem.referenceunit}{$sBasketItem.referenceunit} {$sBasketItem.sUnit.description} = {$sBasketItem.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}{/if}
-					</div>
-				{/if}
-			{/if}
 		{/if}
 		
 		{* Remove article *}
