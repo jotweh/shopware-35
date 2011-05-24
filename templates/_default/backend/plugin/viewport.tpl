@@ -98,10 +98,10 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		    };
 		    this.installPlugin = function(pluginId, install) {
 		    	if(install) {
-					var message = 'Wollen Sie dieses Plugin wirklich installieren?';
+					var message = 'Soll dieses Plugin installiert werden?';
 					var url = '{url action="install"}';
 				} else {
-					var message = 'Wollen Sie dieses Plugin deinstallieren?';
+					var message = 'Soll dieses Plugin deinstalliert werden?';
 					var url = '{url action="uninstall"}';
 				}
 				var Viewport = this; 
@@ -119,11 +119,32 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 			    			if(result.success && install) {
 		   						var message = 'Das Plugin wurde erfolgreich installiert.';
 		   					} else if (install) {
-		   						var message = 'Das Plugin konnte nicht installiert werden';
+								if (!result.message){
+									result.message = "Install-Methode hat \"false\" zurückgegeben. Bitte kontaktieren Sie den Plugin-Hersteller!";
+								}
+								Ext.Msg.show({
+								   title:'Plugin konnte nicht installiert werden!',
+								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.message+ "<br />Aktivieren Sie ggf. die Optionen throwExceptions und showException in der Application.php um eindeutige Fehlermeldungen zu erhalten! ",
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   icon: Ext.MessageBox.ERROR,
+								   maxWidth: 700,
+								   minWidth: 700
+								});
+								return false;
 		   					} else if(result.success) {
 		   						var message = 'Das Plugin wurde erfolgreich deinstalliert.';
 		   					} else {
-		   						var message = 'Das Plugin konnte nicht deinstalliert werden';
+								Ext.Msg.show({
+								   title:'Plugin konnte nicht deinstalliert werden!',
+								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.message,
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   icon: Ext.MessageBox.ERROR,
+								   maxWidth: 700,
+								   minWidth: 700
+								});
+								return false;
 		   					}
 		   					Ext.MessageBox.alert('Plugin installieren/deinstallieren', message);
 		   					Viewport.refreshList();

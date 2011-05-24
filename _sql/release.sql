@@ -140,3 +140,10 @@ UPDATE `shopware`.`s_core_snippets` SET `value` = '<a title="Mehr Informationen 
  * @since 3.5.4 - 2011/05/24
  */
 INSERT INTO `s_core_snippets` VALUES(NULL, 'frontend/register/personal_fieldset', 1, 1, 'RegisterPersonalRequiredText', '* hierbei handelt es sich um ein Pflichtfeld', '2011-05-24 17:12:28', '2011-05-24 17:13:52');
+
+/**
+ * @ticket 4734
+ * @author st.hamann
+ * @since 3.5.4 - 2011/05/24
+ */
+ALTER TABLE `s_core_plugins` ADD `added` DATETIME NOT NULL AFTER `active`;

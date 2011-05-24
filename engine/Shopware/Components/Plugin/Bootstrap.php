@@ -52,6 +52,17 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		$this->deleteMenuItems();
 		$this->unsubscribeCron();
 
+		$this->removeWidget();
+
+		
+		return true;
+	}
+
+	/**
+	 * Remove a widget during plugin uninstall
+	 * @return void
+	 */
+	public function removeWidget(){
 		if (is_file($this->widgetXML)){
 			$xml = new Shopware_Components_Xml_SimpleXml();
 			$xml->loadFile($this->widgetXML);
@@ -60,8 +71,6 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 			$xml->setFilename($this->widgetXML);
 			$xml->save();
 		}
-		
-		return true;
 	}
 
 	/**
@@ -434,7 +443,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 			'source' => $this->getSource(),
 			'description' => '',
 			'license' => '',
-			'support' => 'http://www.shopware.de/wiki/',
+			'support' => 'http://wiki.shopware.de',
 			'link' => 'http://www.shopware.de/'
     	);
     }

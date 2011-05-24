@@ -126,7 +126,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	public function getListAction()
 	{
 		$this->refreshList();
-		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('name'));
+		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','name'));
 		
 		$limit = $this->Request()->getParam('limit', 25);
 		$start = $this->Request()->getParam('start', 0);
@@ -438,6 +438,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				);
 								
 				if(empty($id)) {
+					$data["added"] = new Zend_Db_Expr('NOW()');
 					Shopware()->Db()->insert('s_core_plugins', $data);
 				} else {
 					$where = array('name=?'=>$plugin_name, 'namespace=?'=>$namespace_name);

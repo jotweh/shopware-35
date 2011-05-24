@@ -16,12 +16,32 @@ Ext.ns('Shopware.Plugin');
 	   				totalProperty: 'count',
 	   				id: 'id',
 	   				fields: [
-	   					'id', 'path', 'namespace', 'name', 'autor', 'version', 'active', 'copyright', 'license', 'label', 'source', 'support', 'link',
+	   					'id', 'path', 'namespace', 'name', 'autor', 'version', 'active','added', 'copyright', 'license', 'label', 'source', 'support', 'link',
 	   					{ name: 'update_date', type: 'date', dateFormat: 'timestamp' },
 	        			{ name: 'installation_date', type: 'date', dateFormat: 'timestamp' }
 	   				]
 	   			})
 	    	});
+
+			function nl2br (str, is_xhtml) {
+				 var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br />';
+   				 return (str + '').replace(/(\n)/g, '$1' + breakTag)
+			}
+			
+			this.store.on('exception',function (misc,type,action,options,response){
+				var text = nl2br(response.responseText,true);
+				var code = response.status;
+				var info = "Bitte beheben Sie den Fehler oder löschen Sie das fehlerhafte Plugin!";
+				Ext.Msg.show({
+				   title:'Fehler! Plugin-Liste konnte wegen eines defekten Plugins nicht geladen werden',
+				   msg: '<strong>Fehler-Protokoll: </strong><br />'+text+info,
+				   buttons: Ext.Msg.OK,
+				   animEl: 'elId',
+				   icon: Ext.MessageBox.ERROR,
+				   maxWidth: 700,
+				   minWidth: 700
+				});
+			});
 	    	
 	    	this.getView().getRowClass = function(record, index) {
 	    		if (!record.data.active) {
@@ -35,6 +55,24 @@ Ext.ns('Shopware.Plugin');
 				Viewport.showDetail(rec.get('id'));
 			});
 
+			this.tbar = new Ext.Toolbar(
+				{
+				items:
+				[
+					new Ext.Button(
+						{
+							text: 'Nach Updates suchen'
+						}
+					),
+					'-',
+					new Ext.Button(
+						{
+							text: 'Temp'
+						}
+					)
+				]
+				}
+			);
 	    	this.bbar = new Ext.PagingToolbar({
 	    		pageSize: 25,
 	    		store: this.store,
@@ -89,6 +127,17 @@ Ext.ns('Shopware.Plugin');
 	                	return "<span style=\"font-weight:bold\">"+v+"</span";
 	                }
 	            },
+				{
+	                xtype: 'gridcolumn',
+	                dataIndex: 'added',
+	                header: 'Hinzugefügt',
+	                sortable: false,
+	                width: 200,
+	                renderer: function (v,p,r){
+						if (v == "0000-00-00 00:00:00") return "";
+	                	return "<span style=\"font-weight:bold\">"+v+"</span";
+	                }
+	            },
 	        	{
 	                xtype: 'gridcolumn',
 	                dataIndex: 'path',
@@ -112,7 +161,13 @@ Ext.ns('Shopware.Plugin');
 	                sortable: false,
 	                width: 95,
 					editable: false,
-					align: 'left'
+					align: 'left',
+	                renderer: function (v,p,r){
+						if (r.data.source == "Default"){
+							return "Shopware 3.5.4";
+						}
+						return v;
+					}
 	            },
 				{
 	                xtype: 'gridcolumn',
@@ -121,7 +176,13 @@ Ext.ns('Shopware.Plugin');
 	                sortable: false,
 	                width: 95,
 					editable: false,
-					align: 'left'
+					align: 'left',
+	                renderer: function (v,p,r){
+						if (r.data.source != "Community"){
+							return "-";
+						}
+						return '?';
+					}
 	            },
 				{
 	                xtype: 'gridcolumn',
