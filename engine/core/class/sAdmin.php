@@ -1756,9 +1756,57 @@ class	sAdmin
 			if (!count($getOrderDetails)){
 				unset($getOrders[$orderKey]);
 			}else {
+			
+				/** GET ARTICLE DETAILS START - @date: 05-24-2011 */
+				$active = 1;
+				/** GET ARTICLE DETAILS END */
+				
 				foreach ($getOrderDetails as $orderDetailsKey => $orderDetailsValue){
 					$getOrderDetails[$orderDetailsKey]["amount"] = $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice(round($orderDetailsValue["price"] * $orderDetailsValue["quantity"],2));
 					$getOrderDetails[$orderDetailsKey]["price"] = $this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($orderDetailsValue["price"]);
+					
+					/** GET ARTICLE DETAILS START - @date: 05-24-2011 */
+					$tmpArticle = $this->sSYSTEM->sMODULES['sArticles']->sGetPromotionById('fix', 0, $getOrderDetails[$orderDetailsKey]['articleID']);
+					
+					if(!empty($tmpArticle) && is_array($tmpArticle)) {
+					
+						// Set article in activate state
+						$getOrderDetails[$orderDetailsKey]['active'] = 1;
+						if(!empty($tmpArticle['purchaseunit'])) {
+							$getOrderDetails[$orderDetailsKey]['purchaseunit'] = $tmpArticle['purchaseunit'];
+						}
+						
+						if(!empty($tmpArticle['referenceunit'])) {
+							$getOrderDetails[$orderDetailsKey]['referenceunit'] = $tmpArticle['referenceunit'];
+						}
+						
+						if(!empty($tmpArticle['referenceprice'])) {
+							$getOrderDetails[$orderDetailsKey]['referenceprice'] = $tmpArticle['referenceprice'];
+						}
+						
+						if(!empty($tmpArticle['sUnit']) && is_array($tmpArticle['sUnit'])) {
+							$getOrderDetails[$orderDetailsKey]['sUnit'] = $tmpArticle['sUnit'];
+						}
+						
+						if(!empty($tmpArticle['price'])) {
+							$getOrderDetails[$orderDetailsKey]['currentPrice'] = $tmpArticle['price'];
+						}
+						
+						if(!empty($tmpArticle['pseudoprice'])) {
+							$getOrderDetails[$orderDetailsKey]['currentPseudoprice'] = $tmpArticle['pseudoprice'];
+						}
+						
+						// Set article in deactivate state if it's an variant or configurator article
+						if($tmpArticle['sVariantArticle'] === true || $tmpArticle['sConfigurator'] === true) {
+							$getOrderDetails[$orderDetailsKey]['active'] = 0;
+							$active = 0;
+						}
+					} else {
+						$getOrderDetails[$orderDetailsKey]['active'] = 0;
+						$active = 0;
+					}
+					/** GET ARTICLE DETAILS END */
+					
 					// Check for serial
 					if ($getOrderDetails[$orderDetailsKey]["esdarticle"]){
 						$numbers = array();
@@ -1779,8 +1827,11 @@ class	sAdmin
 					}
 					// -- End of serial check
 				}
-				$getOrders[$orderKey]["details"] = $getOrderDetails;
+				/** GET ARTICLE DETAILS START - @date: 05-24-2011 */
+				$getOrders[$orderKey]['activeBuyButton'] = $active;
+				/** GET ARTICLE DETAILS END */
 				
+				$getOrders[$orderKey]["details"] = $getOrderDetails;
 			}
 			$getOrders[$orderKey]["dispatch"] = $this->sGetDispatch($orderValue['dispatchID']);
 		}

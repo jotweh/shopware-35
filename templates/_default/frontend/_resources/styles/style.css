@@ -844,6 +844,14 @@ div.agb_info {height: 30px;font-weight:normal;}
 #content .change_billing .actions .button-right, #content .change_shipping .actions .button-right {width: 150px;}
 #content .orderoverview_active h4 {margin-left: 15px;}
 
+#content .orders .orderoverview_active .articleName { font-size: 12px; }
+#content .orders .orderoverview_active .article_price_unit p { margin: 0; }
+#content .orders .orderoverview_active .currentPrice { color: #999 }
+#content .orders .orderoverview_active .article_price_unit  strong , #content .orders .orderoverview_active .currentPrice strong { color: #555 }
+#content .orders .orderoverview_active .currentPrice em { text-decoration: line-through; }
+#content .orders .orderoverview_active .article_price_unit + .currentPrice { position: absolute; left: 250px; top: 10px; }
+#content .orders .orderoverview_active .currentPrice strong { display: block }
+
 /*	TICKETSYSTEM
 	------------------------ */
 #ticket h2, .ticketdetail_lbl, .tickeranswer h2 {margin-bottom:-10px;padding: 5px 25px 15px 15px;font-size: 13px;font-weight: 700;display: block;text-transform: none;width: 738px;border: 1px solid;border-bottom: 0 none;}

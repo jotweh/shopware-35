@@ -1,4 +1,5 @@
 <div class="table_row{if $lastitem} lastrow{/if}">
+
 	{block name='frontend_account_order_item_overview_row'}
 	<div class="grid_3">
 		{$offerPosition.datum|date}
@@ -76,10 +77,36 @@
 					
 					{* Name *}
 					{if $article.modus == 10}
-						<strong>{se name='OrderItemInfoBundle'}{/se}</strong>
+						<strong class="articleName">{se name='OrderItemInfoBundle'}{/se}</strong>
 					{else}
-						{$article.name}
+						<strong class="articleName">{$article.name}</strong>
 					{/if}	
+					{/block}
+					
+					{block name='frontend_account_order_item_unitprice'}
+					{if $article.purchaseunit}
+			            <div class="article_price_unit">
+			                <p>
+			                    <strong>{se name="OrderItemInfoContent"}{/se}:</strong> {$article.purchaseunit} {$article.sUnit.description}
+			                </p>
+			                {if $article.purchaseunit != $article.referenceunit}
+			                    <p>
+			                        {if $article.referenceunit}
+			                            <strong class="baseprice">{se name="OrderItemInfoBaseprice"}{/se}:</strong> {$article.referenceunit} {$article.sUnit.description} = {$article.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+			                        {/if}
+			                    </p>
+			                {/if}
+			            </div>
+			        {/if}
+			        <div class="currentPrice">
+			     	{if $article.currentPrice}
+			   		  	<strong>{se name="OrderItemInfoCurrentPrice"}{/se}:</strong>
+			     		{if $article.currentPseudoprice}
+			     			<em>{s name="reducedPrice" namespace="frontend/listing/box_article"}{/s} {$article.currentPseudoprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}</em>
+			     		{/if}
+			     		{$article.currentPrice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+			     	{/if}
+					</div>
 					{/block}
 					
 					{block name='frontend_account_order_item_downloadlink'}
@@ -250,7 +277,10 @@
 					<input name="sAddAccessories[]" type="hidden" value="{$article.articleordernumber|escape}" />
 					<input name="sAddAccessoriesQuantity[]" type="hidden" value="{$article.quantity|escape}" />
 				{/if}{/foreach}
-				<input type="submit" class="button-right small_right" value="{s name='OrderLinkRepeat'}{/s}" />
+				
+				{if $offerPosition.activeBuyButton}
+					<input type="submit" class="button-right small_right" value="{s name='OrderLinkRepeat'}{/s}" />
+				{/if}
 			</form>
 			{/block}
 			
