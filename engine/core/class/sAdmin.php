@@ -27,7 +27,7 @@ class	sAdmin
 			return false;
 		}
 		
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sLogout_Start"));
+
 		unset($this->sSYSTEM->_SESSION);
 		unset($_SESSION);
 		unset($this->sSYSTEM->sUSERGROUPDATA);
@@ -38,7 +38,7 @@ class	sAdmin
 		$this->sSYSTEM->sUSERGROUP = "EK";
 		session_destroy();
 		session_regenerate_id();
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sLogout_End"));
+
 	}
 		
 	 /**
@@ -333,7 +333,7 @@ class	sAdmin
 		
 		// Get Translation
 		$data = $this->sGetPaymentTranslation($data);
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetPaymentMeanById_BeforeEnd"));
+
 		$data = Enlight()->Events()->filter('Shopware_Modules_Admin_GetPaymentMeanById_DataFilter', $data, array('subject'=>$this,"id"=>$id,"user"=>$user));
 		
 		return $data;
@@ -389,7 +389,7 @@ class	sAdmin
 			
 			ORDER BY position, name
 		";
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetPaymentMeans_AfterSQL"));
+
 		
 		$getPaymentMeans = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql);
 		
@@ -400,7 +400,7 @@ class	sAdmin
 		}
 		
 		foreach ($getPaymentMeans as $payKey => $payValue) {
-				eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetPaymentMeans_LoopStart"));
+
 				// Hide paymentmeans which are not active
 				if (empty($payValue["active"]) && $payValue["id"]!=$user["additional"]["user"]["paymentpreset"]){
 					unset($getPaymentMeans[$payKey]);
@@ -422,14 +422,14 @@ class	sAdmin
 				
 				// Get possible translation
 				$getPaymentMeans[$payKey] = $this->sGetPaymentTranslation($getPaymentMeans[$payKey]);
-				eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetPaymentMeans_LoopEnd"));
+
 		}
 	
 		if (!count($getPaymentMeans)){
 			$this->sSYSTEM->E_CORE_WARNING("sGetPaymentMeans #00","Could not get any payment-means".$sql);
 			return;
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetPaymentMeans_BeforeEnd"));
+
 		$data = Enlight()->Events()->filter('Shopware_Modules_Admin_GetPaymentMeans_DataFilter', $data, array('subject'=>$this));
 		
 		return $getPaymentMeans;
@@ -1235,7 +1235,7 @@ class	sAdmin
 	{
 		$getCountries = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECOUNTRIES'],"SELECT * FROM s_core_countries ORDER BY position, countryname ASC");
 		
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetCountryList_AfterQuery"));
+
 		$object = $this->sGetCountryTranslation();
 		foreach ($getCountries as $key => $v)
 		{
@@ -1261,7 +1261,7 @@ class	sAdmin
 			}else {
 				$getCountries[$key]["flag"] = false;
 			}
-			eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetCountryList_LoopEnd"));
+
 		}
 		
 		$getCountries = Enlight()->Events()->filter('Shopware_Modules_Admin_GetCountries_FilterResult', $getCountries, array('subject'=>$this));
@@ -1318,9 +1318,7 @@ class	sAdmin
 			) 
 			VALUES (?,?,?,1,?,?,NOW(),?,?,?,?,?,?)
 		';
-		
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sSaveRegisterMainData_AfterSQL"));
-		
+
 		list($sql,$data) = Enlight()->Events()->filter('Shopware_Modules_Admin_SaveRegisterMainData_FilterSql', array($sql,$data), array('subject'=>$this));
 		
 		$saveUserData = $this->sSYSTEM->sDB_CONNECTION->Execute($sql, $data);
@@ -1401,7 +1399,7 @@ class	sAdmin
 			VALUES
 			(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			
-			eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sSaveRegisterBilling_AfterSQL"));
+
 			// Trying to insert
 			list($sqlBilling,$data) = Enlight()->Events()->filter('Shopware_Modules_Admin_SaveRegisterBilling_FilterSql', array($sqlBilling,$data), array('subject'=>$this));
 				
@@ -1443,7 +1441,7 @@ class	sAdmin
 			)";
 			$sqlShipping = Enlight()->Events()->filter('Shopware_Modules_Admin_SaveRegisterShipping_FilterSql', $sqlShipping, array('subject'=>$this,'user'=>$userObject,'id'=>$userID));
 		
-			eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sSaveRegisterShipping_AfterSQL"));
+
 			// Trying to insert
 			$saveUserData = $this->sSYSTEM->sDB_CONNECTION->Execute($sqlShipping);
 			Enlight()->Events()->notify('Shopware_Modules_Admin_SaveRegisterShipping_Return', array('subject'=>$this,'insertObject'=>$saveUserData));
@@ -1489,7 +1487,7 @@ class	sAdmin
 		if (!empty($mail->AltBody)){
 			$mail->AltBody = str_replace("{sMAIL}",$email,$mail->AltBody);
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sSaveRegisterSendConfirmation_Start1"));
+
 		$mail->ClearAddresses();
 		$mail->AddAddress($email, "");
 		if (!empty($this->sSYSTEM->sCONFIG["sSEND_CONFIRM_MAIL"])){
@@ -1514,7 +1512,7 @@ class	sAdmin
 				}
 			}
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sSaveRegisterSendConfirmation_Start2"));
+
 		
 		Enlight()->Events()->notify('Shopware_Modules_Admin_SaveRegisterSendConfirmation_BeforeSend', array('subject'=>$this,'mail'=>$mail));
 		
@@ -1935,7 +1933,7 @@ class	sAdmin
 			
 			$userData["additional"]["countryShipping"] = $userData["additional"]["country"];
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetUserData_BeforeEnd"));
+
 		$userData = Enlight()->Events()->filter('Shopware_Modules_Admin_GetUserData_FilterResult', $userData, array('subject'=>$this,'id'=>$this->sSYSTEM->_SESSION["sUserId"]));
 		return  $userData;
 	}
@@ -2034,7 +2032,7 @@ class	sAdmin
 		if ($countrySurcharges[$countryInfo["countryiso"]]) $surcharge+=$countrySurcharges[$countryInfo["countryiso"]];
 		
 		$shippingDebug = false;
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetShippingcosts_Start1"));
+
 		if ($this->sSYSTEM->sCurrency["factor"]){
 			$currencyFactor = $this->sSYSTEM->sCurrency["factor"];
 		}else {
@@ -2068,7 +2066,7 @@ class	sAdmin
 			$this->sSYSTEM->_SESSION["sDispatch"] = $getDispatch["id"]; // Reset dispatch
 		}
 		
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetShippingcosts_Start2"));
+
 		// #################################################################################################
 		
 		// #################################################################################################
@@ -2092,7 +2090,7 @@ class	sAdmin
 		}
 		
 		
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetShippingcosts_Start3"));
+
 		if ($shippingDebug) echo "Read Dispatch ".$getDispatch["id"]." | Shippingfree: $shippingfreeFrom <br />";
 		if ($shippingDebug) print_r($getDispatch);
 		// #################################################################################################
@@ -2135,7 +2133,7 @@ class	sAdmin
 		$checkForShippingFree = $this->sSYSTEM->sDB_CONNECTION->GetRow("
 		SELECT id FROM s_order_basket WHERE shippingfree=1 AND sessionID=?
 		",array($this->sSYSTEM->sSESSION_ID));
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetShippingcosts_Start4"));
+
 		if ($checkForShippingFree["id"] && $getDispatch["shippingfree"]){
 			if ($shippingDebug) echo "##LEAVE AT SHIPPINGFREE POSITION##<br />";
 			if (!empty($this->sSYSTEM->sCONFIG["sIGNORESHIPPINGFREEFORSURCHARGES"]) && $surcharge>0){
@@ -2174,7 +2172,7 @@ class	sAdmin
 				$difference = array("float"=>$difference,"formated"=>$this->sSYSTEM->sMODULES['sArticles']->sFormatPrice($difference));
 			}
 		}
-		eval($this->sSYSTEM->sCallHookPoint("sAdmin.php_sGetShippingcosts_Start5"));
+
 		// #################################################################################################
 		// GET BASKET WEIGHT
 		$getBasketWeight = $this->sSYSTEM->sMODULES['sBasket']->sGetBasketWeight();
