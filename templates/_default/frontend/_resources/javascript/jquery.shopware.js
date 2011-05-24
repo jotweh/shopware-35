@@ -1777,105 +1777,105 @@ jQuery.fn.liveSearch = function (conf) {
     };
     
     //Changes the displayed informations on the
-    //article detail site and changes the active
-    //images which is used by variant articles
-    $.changeDetails = function (ordernumber) {
-		if (typeof($.checkNotification) == 'function') {
-			if (!ordernumber){
-				$.checkNotification($.ordernumber);
-			}else {
-				$.checkNotification(ordernumber);
-			}
+//article detail site and changes the active
+//images which is used by variant articles
+$.changeDetails = function (ordernumber) {
+	if (typeof($.checkNotification) == 'function') {
+		if (!ordernumber){
+			$.checkNotification($.ordernumber);
+		}else {
+			$.checkNotification(ordernumber);
 		}
-		try {
-			if(!ordernumber || $('#instock_'+ordernumber).val() > 0) {
-				$('#article_notification').hide();
-				$('#detailCartButton').show();
-				$('#detailBuyInfoNotAvailable').hide();
-			} else {
-				$('#article_notification').show();
-				if($('#detailBuyInfoNotAvailable').length) {
-					$('#detailCartButton').hide();
-					$('#detailBuyInfoNotAvailable').show();
-				}
-			}
-		} catch(e) {}
-
-		if (!ordernumber) {
-			// Hide Pseudoprice
-			$('.PseudoPrice').hide();
-
-			// Hide all other thumbnails
-			if (isVariant) {
-				var thumbs = $('.thumb_box').children('a:[id]');
-				thumbs.each(function (i, el) {
-					if ($(el).attr('id') != 'thumb' + $.ordernumber) { $(el).hide(); }
-				});
-			}
-			// Hide delivery info
-			$('.delivery_container').hide();
-			// Hide basket
-			$('#basketButton').css('opacity', '0.4');
+	}
+	try {
+		if(!ordernumber || $('#instock_'+ordernumber).val() > 0) {
+			$('#article_notification').hide();
+			$('#detailCartButton').show();
+			$('#detailBuyInfoNotAvailable').hide();
 		} else {
-			// Show Pseudo price
-			$('#'+ordernumber).find('.PseudoPrice').show();
-			// Show delivery info
-			$('.delivery_container').show();
-			// Change informations
-			$('#article_details').html($('#' + ordernumber).html());
-
-			//Set basket button to active
-			$('#basketButton').css('opacity', '1.0');
-
-			// Change main image
-			$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
-
-			if(ordernumber != $.ordernumber) {
-
-				// ZoomViewer active...
-				useZoom = parseInt(useZoom);
-				if(useZoom) {
-					var img_link = $('a#zoom1 img');
-
-					// Refresh src attribute
-					if(img_link.attr('src')) {
-						$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
-					}
-					// Refresh img title
-					if(img_link.attr('title')) {
-						img_link.attr('title', $('#img' + ordernumber).children('a').attr('title'))
-					}
-
-					// If image found and the neccessary attributes are set
-					// fire the click event to change the image over the
-					// CloudZoom plugin
-					if(img_link.attr('src') && img_link.attr('title')) {
-						$('#img' + ordernumber).find('a').trigger('click');
-					}
-				} else {
-					 // Change lightbox link
-					$('a#zoom1').attr('href', $('#img' + ordernumber).children('a').attr('href'));
-				}
-
-				// Change active thumbnail image
-				$('#thumb' + $.ordernumber).hide();
-				$('#thumb' + ordernumber).show();
-
-
-				// Set the new ordernumber in the global scope
-				$.ordernumber = ordernumber;
-				try {
-					$('#variantOrdernumber').val(ordernumber);
-				}catch (err){
-
-				}
-				// Try to active liveshopping
-				try {
-					$('#article_details').liveshopping();
-				} catch(err) {}
+			$('#article_notification').show();
+			if($('#detailBuyInfoNotAvailable').length) {
+				$('#detailCartButton').hide();
+				$('#detailBuyInfoNotAvailable').show();
 			}
 		}
-	};
+	} catch(e) {}
+
+	if (!ordernumber) {
+		// Hide Pseudoprice
+		$('.PseudoPrice').hide();
+
+		// Hide all other thumbnails
+		if (isVariant) {
+			var thumbs = $('.thumb_box').children('a:[id]');
+			thumbs.each(function (i, el) {
+				if ($(el).attr('id') != 'thumb' + $.ordernumber) { $(el).hide(); }
+			});
+		}
+		// Hide delivery info
+		$('.delivery_container').hide();
+		// Hide basket
+		$('#basketButton').css('opacity', '0.4');
+	} else {
+		// Show Pseudo price
+		$('#'+ordernumber).find('.PseudoPrice').show();
+		// Show delivery info
+		$('.delivery_container').show();
+		// Change informations
+		$('#article_details').html($('#' + ordernumber).html());
+
+		//Set basket button to active
+		$('#basketButton').css('opacity', '1.0');
+
+		// Change main image
+		$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
+
+		if(ordernumber != $.ordernumber) {
+
+			// ZoomViewer active...
+			useZoom = parseInt(useZoom);
+			if(useZoom) {
+				var img_link = $('a#zoom1 img');
+
+				// Refresh src attribute
+				if(img_link.attr('src')) {
+					$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
+				}
+				// Refresh img title
+				if(img_link.attr('title')) {
+					img_link.attr('title', $('#img' + ordernumber).children('a').attr('title'))
+				}
+
+				// If image found and the neccessary attributes are set
+				// fire the click event to change the image over the
+				// CloudZoom plugin
+				if(img_link.attr('src') && img_link.attr('title')) {
+					$('#img' + ordernumber).find('a').trigger('click');
+				}
+			} else {
+				 // Change lightbox link
+				$('a#zoom1').attr('href', $('#img' + ordernumber).children('a').attr('href'));
+			}
+
+			// Change active thumbnail image
+			$('#thumb' + $.ordernumber).hide();
+			$('#thumb' + ordernumber).show();
+
+
+			// Set the new ordernumber in the global scope
+			$.ordernumber = ordernumber;
+			try {
+				$('#variantOrdernumber').val(ordernumber);
+			}catch (err){
+
+			}
+		}
+	}
+	// Try to active liveshopping
+	try {
+		$('#article_details').liveshopping();
+	} catch(err) {}
+};
 
     //Check if the article are set up for
     //email notification and checks if
