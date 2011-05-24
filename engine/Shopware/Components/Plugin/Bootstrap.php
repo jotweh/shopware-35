@@ -229,14 +229,30 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 	
 	/**
-	 * Enter description here...
+	 * Create a new menu item instance
 	 *
-	 * @return Enlight_Core_Hook_HookHandler
+	 * @return Shopware_Components_Menu_Item
 	 */
 	public function createMenuItem($options)
 	{
 		$options['pluginID'] = $this->getId();
 		return Shopware_Components_Menu_Item::factory($options);
+	}
+	
+	/**
+	 * Create a new payment instance
+	 *
+	 * @return Enlight_Components_Table_Row
+	 */
+	public function createPayment($name, $description, $action=null)
+	{
+		return Shopware()->Payments()->createRow(array(
+			'name' => $name,
+			'description' => $description,
+			'action' => $action,
+			'active' => 1,
+			'pluginID' => $this->getId()
+		));
 	}
 	
 	/**
