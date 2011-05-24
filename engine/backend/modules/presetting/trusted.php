@@ -16,29 +16,8 @@ echo "
 }
 // *****************
 ?>
-<?php
-$_GET["id"] = 54;
-if ($_GET["sSave"]){
-	
-	// Check Trusted ID
-	if ((strlen($_POST["sTSID"])!=33 || substr($_POST["sTSID"],0,1)!="X") && $_POST["sTSID"]!=""){
-		echo "<p style=\"font-weight:bold;color:#F00;font-size:16px\">".$sLang["presettings"]["trusted_please_enter_trusted-shop-id"]."</p><br />";
-	}else {
-	
-		foreach ($_POST as $key => $value){
-			$update = mysql_query("
-			UPDATE s_core_config SET value='$value' WHERE name='$key'
-			");
-		}
-	
-	}
-}
-
-$sCore->sInitTranslations(1,"config");
-
-?>
+<!DOCTYPE html>
 <html>
-
 <head>
 <title>..</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -49,7 +28,8 @@ $sCore->sInitTranslations(1,"config");
 
 </head>
 
-<style>
+<style type="text/css">
+body { padding: 10px; }
 .clear { /*  - fixfloat */
 	clear: both;
 	padding: 0;
@@ -59,8 +39,39 @@ $sCore->sInitTranslations(1,"config");
 	line-height: 0px;
 	font-size: 0px;
 }
+.error, .notice, .success {padding:.8em;margin:0 .5em 2em; border:2px solid #ddd;}
+.error, .instyle_error, input.instyle_error {background:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
+.notice {background:#FFF6BF;color:#514721;border-color:#FFD324;}
+.success, .instyle_success {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+.error a {color:#8a1f11;}
+.notice a {color:#514721;}
+.success a {color:#264409;}
+h2 { margin: 0 0 .5em; }
+p { margin: 0 0 1.5em }
+.logo { margin: 1em; }
+.logo img { display: block; width: 300px; height: 140px; margin: 0 auto }
+.info { font-size: 11px; }
+.register .button { display: inline-block; width: 129px; height: 27px; border-left: 1px solid #666; padding: 0 10px 0 11px; color: #333; text-decoration: none; position: relative; font-weight: 700; -webkit-user-select: none; -moz-user-select: none; user-select: none; font-size: 10px; }
+.register .button:active { top: 1px; }
 </style>
-<body style="padding: 10 10 10 10; margin: 0 0 0 0; ">
+<body>
+<?php
+$_GET["id"] = 54;
+if ($_GET["sSave"]){
+	
+	// Check Trusted ID
+	if ((strlen($_POST["sTSID"])!=33 || substr($_POST["sTSID"],0,1)!="X") && $_POST["sTSID"]!=""){
+		echo '<div class="error">'.$sLang["presettings"]["trusted_please_enter_trusted-shop-id"].'</div>';
+	}else {
+		foreach ($_POST as $key => $value){
+			$update = mysql_query("
+			UPDATE s_core_config SET value='$value' WHERE name='$key'
+			");
+		}
+	}
+}
+$sCore->sInitTranslations(1,"config");
+?>
 
 
 <form enctype="multipart/form-data" method="POST" id="ourForm" name="ourForm" action="<?php echo $_SERVER["PHP_SELF"]."?sSave=1&id=".$_GET["id"] ?>">
@@ -119,30 +130,39 @@ while ($field=mysql_fetch_array($queryOptions)){
 <fieldset class="white" style="margin-top:-15px;">
 <legend><?php echo $sLang["presettings"]["trusted_Your_store_with_Trusted_Shop_seal"] ?></legend>
 
-<img src="ts.gif" style="float:left;margin-right:15px;">
-<strong>Gütesiegel und Käuferschutz </strong><br />
-Trusted Shops ist das bekannte Internet-Gütesiegel für Online-Shops mit Käuferschutz für Ihre<br />
-Kunden. Bei einer Zertifizierung wird Ihr Shop umfassenden Tests unterzogen. Diese Prüfung mit<br />
-mehr als 100 Einzelkriterien orientiert sich an den Forderungen von Verbraucherschützern sowie dem<br />
-nationalen und europäischen Recht.<br />
-<br /><br />
-<strong>Mehr Umsatz durch mehr Vertrauen! </strong><br />
-Das Trusted Shops Gütesiegel ist optimal, um das Vertrauen Ihrer Online-Kunden zu steigern.<br />
-Vertrauen steigert die Bereitschaft Ihrer Kunden, bei Ihnen einzukaufen.<br />
-<br /><br />
-<strong>Weniger Kaufabbrüche </strong><br />
-Sie bieten Ihren Online-Kunden ein starkes Argument: Den Trusted Shops Käuferschutz. Durch diese<br />
-zusätzliche Sicherheit werden weniger Einkäufe abgebrochen.<br />
-<br /><br />
-<strong>Ertragreiche und nachhaltige Kundenbeziehung</strong><br /><br />
-Das Trusted Shops Gütesiegel mit Käuferschutz ist für viele Online-Shopper ein nachhaltiges<br />
-Qualitätsmerkmal für sicheres Einkaufen im Web. Aus Einmalkäufern werden Stammkunden.<br />
-<br /><br />
-<a href="http://www.trustedshops.de/shopbetreiber/mitgliedschaft.html?" target="_blank">Informieren und anmelden!</a>
+<div class="logo">
+	<img src="ts.gif" alt="Trusted Shops Logo">
+</div>
+
+<div class="info">
+	<h2>Gütesiegel und Käuferschutz</h2>
+	<p>
+		Trusted Shops ist das bekannte Internet-Gütesiegel für Online-Shops mit Käuferschutz für IhreKunden. Bei einer Zertifizierung wird Ihr Shop umfassenden Tests unterzogen. Diese Prüfung mit mehr als 100 Einzelkriterien orientiert sich an den Forderungen von Verbraucherschützern sowie dem nationalen und europäischen Recht.
+	</p>
+	
+	
+	<h2>Mehr Umsatz durch mehr Vertrauen!</h2>
+	<p>
+		Das Trusted Shops Gütesiegel ist optimal, um das Vertrauen Ihrer Online-Kunden zu steigern. Vertrauen steigert die Bereitschaft Ihrer Kunden, bei Ihnen einzukaufen.
+	</p>
+	
+	<h2>Weniger Kaufabbrüche</h2>
+	<p>
+		Sie bieten Ihren Online-Kunden ein starkes Argument: Den Trusted Shops Käuferschutz. Durch diese zusätzliche Sicherheit werden weniger Einkäufe abgebrochen.
+	</p>
+	
+	<h2>Ertragreiche und nachhaltige Kundenbeziehung</h2>
+	<p>
+		Das Trusted Shops Gütesiegel mit Käuferschutz ist für viele Online-Shopper ein nachhaltiges Qualitätsmerkmal für sicheres Einkaufen im Web. Aus Einmalkäufern werden Stammkunden.
+	</p>
+	<div class="register">
+		<a class="button" href="http://www.trustedshops.de/shopbetreiber/index.html?et_cid=14&et_lid=29818" target="_blank">
+			Informieren und anmelden!
+		</a>
+	</div>
+</div>
 
 </fieldset>
-
-
 
 
 <?php
