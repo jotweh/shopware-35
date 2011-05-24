@@ -7,7 +7,7 @@
 			<input type="hidden" name="register[personal][sValidation]" value="{$form_data.sValidation|escape}" />
 		{else}
 			<div>
-				<label for="register_personal_customer_type">{s name='RegisterPersonalLabelType'}{/s}*</label>
+				<label class="required" for="register_personal_customer_type" title="{s name='RegisterPersonalRequiredText'}{/s}">{s name='RegisterPersonalLabelType'}{/s}*:</label>
 				<select id="register_personal_customer_type" name="register[personal][customer_type]">
 					<option value="private"{if $form_data.customer_type eq "private"} selected="selected"{/if}>{s name='RegisterPersonalLabelPrivate'}{/s}</option>
 					<option value="buisness"{if $form_data.customer_type eq "buisness" or $form_data.company or $form_data.sValidation} selected="selected"{/if}>{s name='RegisterPersonalLabelBusiness'}{/s}</option>
@@ -19,7 +19,7 @@
 	{* Salutation *}
 	{block name='frontend_register_personal_fieldset_salutation'}
 		<div class="salutation">
-			<label>{s name='RegisterLabelSalutation'}{/s}</label>
+			<label class="required" title="{s name='RegisterPersonalRequiredText'}{/s}">{s name='RegisterLabelSalutation'}{/s}</label>
 			<span class="{if $error_flags.salutation}instyle_error{/if}">
 			<input class="radio" id="register_personal_salutation_mr" type="radio" name="register[personal][salutation]" value="mr" {if $form_data.salutation eq "mr"}checked="checked"{else}checked="checked"{/if} /> <label for="register_personal_salutation_mr">{s name='RegisterLabelMr'}{/s}</label>
 			<input class="radio" id="register_personal_salutation_ms" type="radio" name="register[personal][salutation]" value="ms" {if $form_data.salutation eq "ms"}checked="checked"{/if} /> <label for="register_personal_salutation_ms">{s name='RegisterLabelMs'}{/s}</label>
@@ -31,7 +31,7 @@
 	{* Firstname *}
 	{block name='frontend_register_personal_fieldset_input_firstname'}		
 		<div>
-			<label for="firstname">{se name='RegisterLabelFirstname'}{/se}</label>
+			<label class="required" for="firstname" title="{s name='RegisterPersonalRequiredText'}{/s}">{se name='RegisterLabelFirstname'}{/se}</label>
 			<input name="register[personal][firstname]" type="text" id="firstname" value="{$form_data.firstname|escape}" class="text required {if $error_flags.firstname}instyle_error{/if}" />
 		</div>
 	{/block}
@@ -39,7 +39,7 @@
 	{* Lastname *}
 	{block name='frontend_register_personal_fieldset_input_lastname'}
 		<div>
-			<label for="lastname">{se name='RegisterLabelLastname'}{/se}</label>
+			<label class="required" for="lastname" title="{s name='RegisterPersonalRequiredText'}{/s}">{se name='RegisterLabelLastname'}{/se}</label>
 			<input name="register[personal][lastname]" type="text"  id="lastname" value="{$form_data.lastname|escape}" class="text required {if $error_flags.lastname}instyle_error{/if}" />
 		</div>
 	{/block}
@@ -59,7 +59,7 @@
 		{* E-Mail *}
 		{block name='frontend_register_personal_fieldset_input_mail'}
 			<div>
-			    <label for="register_personal_email">
+			    <label class="required" title="{s name='RegisterPersonalRequiredText'}{/s}" for="register_personal_email">
 			    	{se name='RegisterLabelMail'}{/se}
 			    </label>
 			    <input name="register[personal][email]" type="text" id="register_personal_email" value="{$form_data.email|escape}" class="text required email {if $error_flags.email}instyle_error{/if}" />
@@ -67,7 +67,7 @@
 		
 			{if $this->config('DOUBLEEMAILVALIDATION')}
 			    <div>
-			        <label for="register_personal_emailConfirmation">
+			        <label class="required" for="register_personal_emailConfirmation" title="{s name='RegisterPersonalRequiredText'}{/s}">
 			        	{se name='RegisterLabelMailConfirmation'}{/se}
 			        </label>
 			        <input name="register[personal][emailConfirmation]" type="text" id="register_personal_emailConfirmation" value="{$form_data.emailConfirmation|escape}" class="text emailConfirmation required {if $error_flags.emailConfirmation}instyle_error{/if}" />
@@ -80,7 +80,7 @@
 		{* Password *}
 		{block name='frontend_register_personal_fieldset_input_password'}
 			<div class="fade_password">
-				<label for="register_personal_password">{se name='RegisterLabelPassword'}{/se}</label>
+				<label class="required" title="{s name='RegisterPersonalRequiredText'}{/s}" for="register_personal_password">{se name='RegisterLabelPassword'}{/se}</label>
 				<input name="register[personal][password]" type="password" id="register_personal_password" class="text required password {if $error_flags.password}instyle_error{/if}" />
 			</div>
 		{/block}
@@ -89,7 +89,7 @@
 		{block name='frontend_register_personal_fieldset_input_password_confirm'}
 			<div class="fade_password">
 			
-				<label for="register_personal_passwordConfirmation">{se name='RegisterLabelPasswordRepeat'}{/se}</label>         
+				<label class="required" title="{s name='RegisterPersonalRequiredText'}{/s}" for="register_personal_passwordConfirmation">{se name='RegisterLabelPasswordRepeat'}{/se}</label>         
 				<input name="register[personal][passwordConfirmation]"  type="password" id="register_personal_passwordConfirmation" class="text required passwordConfirmation {if $error_flags.passwordConfirmation}instyle_error{/if}" />
 			</div>
 		{/block}
@@ -105,7 +105,7 @@
 	{* Phone *}
 	{block name='frontend_register_personal_fieldset_input_phone'}
 		<div>
-			<label for="phone">{se name='RegisterLabelPhone'}{/se}</label>
+			<label for="phone" title="{s name='RegisterPersonalRequiredText'}{/s}" class="required">{se name='RegisterLabelPhone'}{/se}</label>
 			<input name="register[personal][phone]" type="text" id="phone" value="{$form_data.phone|escape}" class="text required {if $error_flags.phone}instyle_error{/if}" />
 		</div>
 	{/block}

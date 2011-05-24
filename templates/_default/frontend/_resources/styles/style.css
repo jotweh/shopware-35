@@ -261,6 +261,7 @@ div.blog_navi {margin-left:10px;}
 #content #notes .cat_text, #content .account .cat_text, #content .register .supplier_register {margin-left: 10px;background: url(../images/backgrounds/bg_cat_text_note.png) left bottom no-repeat;}
 #content .account .cat_text {margin: 0;}
 #content .banner {margin-bottom: 10px;}
+#content .register .required { cursor: pointer; }
 
 
 /*	GENERAL LISTING

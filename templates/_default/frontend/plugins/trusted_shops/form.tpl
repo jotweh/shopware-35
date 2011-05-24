@@ -21,6 +21,7 @@
 			<input name="email" type="hidden" value="{$sUserData.additional.user.email}">
 			<input name="amount" type="hidden" value="{$sRealAmount}">
 			<input name="curr" type="hidden" value="{$this->config('Currency')}">
+			
 			{* Payment type *}
 			{*  <input name="paymentType" type="hidden" value="{ value paymentType}"> *}
 			<input name="kdnr" type="hidden" value="{$sUserData.billingaddress.customernumber}">
