@@ -70,8 +70,15 @@ div.col2 {
 	width:auto;
 	float:none;
 }
+.clear { height: 0px; line-height: 0px; clear: both; float: none; visibility: hidden }
+.clear:after {
+    content: ".";  
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
 </style>
-<head>
 <?php
 function upload($field){
 	$filename = $_FILES[$field]['name'];
@@ -262,6 +269,7 @@ if ($_GET["edit"]){
 	}
 }
 ?>
+</head>
 <body>
 <div class="col2" style="margin-top:0px">
 <script>
@@ -310,10 +318,10 @@ window.onload = function(){
 function sTypChange(typeID) {
 	if(2==typeID) {
 		$('banner_fields').setStyle('display', 'none');
-		$('liveshopping_fields').setStyle('display', 'block');
+		$('liveshopping_fieldset').setStyle('display', 'block');
 	}else{
 		$('banner_fields').setStyle('display', 'block');
-		$('liveshopping_fields').setStyle('display', 'none');
+		$('liveshopping_fieldset').setStyle('display', 'none');
 	}
 }
 function sChangeCombo()
@@ -415,132 +423,177 @@ Ext.onReady(function(){
 	}
 	?>
 	
+<div class="clear"></div>
 
-
-	<div class="clear"></div>
+<!-- SaveBanner form -->
 <form enctype="multipart/form-data" method="POST" name="ourForm" id="ourForm" action="<?php echo $_SERVER["PHP_SELF"]."?id=".$_GET["id"]?>&edit=<?php echo $_GET["edit"]?>">
-<input name="sAction" value="saveBanner" type="hidden">
-<fieldset class="col2_cat2" style="margin:-21px 5px 30px;">
-<legend><a class="ico image"></a> Banner in Kategorie: <?php echo $queryCategory["description"]?></legend>
-<!-- error Msg -->
-<?php
-if (count($error)){
-	echo $sLang["banner"]["banner_please_complete_the_following_fields"];
-	echo "<ul>";
-	foreach ($error as $errorMsg){
-		echo "<li>$errorMsg</li>";
-	}
-	echo "</ul>";
-}
-?>
-<!-- /error Msg -->	
+	<input name="sAction" value="saveBanner" type="hidden">
+	
+	<!-- Main fieldset -->
+	<fieldset class="col2_cat2" style="margin:-21px 5px 30px;">
+		<legend><a class="ico image"></a> Banner in Kategorie: <?php echo $queryCategory["description"]?></legend>
+			<!-- error Msg -->
+			<?php
+			if (count($error)){
+				echo $sLang["banner"]["banner_please_complete_the_following_fields"];
+				echo "<ul>";
+				foreach ($error as $errorMsg){
+					echo "<li>$errorMsg</li>";
+				}
+				echo "</ul>";
+			}
+			?>
+			<!-- /error Msg -->	
 	<?php if((empty($_REQUEST['edit']) && !isset($_POST['sAction'])) && $sCore->sCheckLicense("","",$sCore->sLicenseData["sLIVE"]) ) { ?>
-	<ul>
-	<li><label class="small">Typ:</label>
-		<select name="sType" onchange="sTypChange(this.value);">
-			<option value="1">Banner</option>
-			<option value="2">Liveshopping</option>
-		</select>
-	</li>	
-	<li class="clear"/>
-	</ul>
+		<ul>
+			<li>
+				<label class="small">Typ:</label>
+				<select name="sType" onchange="sTypChange(this.value);">
+					<option value="1">Banner</option>
+					<option value="2">Liveshopping</option>
+				</select>
+			</li>	
+		<li class="clear"></li>
+		</ul>
 	<?php } ?>
 	
+	<!-- Banner fields -->
 	<div id="banner_fields">
 		<ul>
-		<li><label class="small"><?php echo $sLang["banner"]["banner_title"] ?></label>
-			<input name="sBannerName" type="text" id="email" class="w150" value="<?php echo $_POST["sBannerName"] ?>" />
-		</li>
-		<li class="clear"/>
-		<li><label class="small"><?php echo $sLang["banner"]["banner_link"] ?></label>
-			<input name="sBannerLink" type="text" id="link" class="w150" value="<?php echo $_POST["sBannerLink"] ?>" />
-		</li>
-		<li class="clear"/>
-		<li><label class="small"><?php echo $sLang["banner"]["banner_linktarget"] ?></label>
-			<select name="sBannerTarget" class="w150">
-			<option value="_parent" <?php echo $_POST["sBannerTarget"]=="_parent" ? "selected" : ""?>><?php echo $sLang["banner"]["banner_shopware"] ?></option>
-			<option value="_blank" <?php echo $_POST["sBannerTarget"]=="_blank" ? "selected" : ""?>><?php echo $sLang["banner"]["banner_extern"] ?></option>
+			<li>
+				<label class="small"><?php echo $sLang["banner"]["banner_title"] ?></label>
+				<input name="sBannerName" type="text" id="email" class="w150" value="<?php echo $_POST["sBannerName"] ?>" />
+			</li>
 			
-			</select>
-		</li>
-		<li class="clear"/>
-			<li><label class="small"><?php echo $sLang["banner"]["banner_valid_from"] ?></label>
-			<input class="w80" id="sBannerFrom" name="sBannerFrom" value="<?php echo $_POST["sBannerFrom"]?>" onclick="displayDatePicker('sBannerFrom', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerFrom', this, 'dmy', '.');"></a>
-			<input type="text" class="w80" name="sBannerFromTime" value="<?php echo $_POST["sBannerFromTime"] ? $_POST["sBannerFromTime"] : "00:00:00" ?>">
-		</li>
-		<li class="clear"/>
-				<li><label class="small"><?php echo $sLang["banner"]["banner_valid_until"] ?></label>
-			<input class="w80" id="sBannerTo" name="sBannerTo" value="<?php echo $_POST["sBannerTo"]?>" onclick="displayDatePicker('sBannerTo', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerTo', this, 'dmy', '.');"></a>
-			<input type="text" class="w80" name="sBannerToTime" value="<?php echo $_POST["sBannerToTime"] ? $_POST["sBannerToTime"] : "00:00:00" ?>">
-		</li>
-		<li class="clear"/>
-		<li><label class="small">Grafik:</label>
-			<input name="sBannerFile" type="file" id="email" class="w80 h24" style="width:auto;" value="<?php echo $userMain["email"] ?>" />
-		</li>
+			<li class="clear"></li>
+			
+			<li>
+				<label class="small"><?php echo $sLang["banner"]["banner_link"] ?></label>
+				<input name="sBannerLink" type="text" id="link" class="w150" value="<?php echo $_POST["sBannerLink"] ?>" />
+			</li>
+			
+			<li class="clear"></li>
+			
+			<li>
+				<label class="small"><?php echo $sLang["banner"]["banner_linktarget"] ?></label>
+				<select name="sBannerTarget" class="w150">
+					<option value="_parent" <?php echo $_POST["sBannerTarget"]=="_parent" ? "selected" : ""?>><?php echo $sLang["banner"]["banner_shopware"] ?></option>
+					<option value="_blank" <?php echo $_POST["sBannerTarget"]=="_blank" ? "selected" : ""?>><?php echo $sLang["banner"]["banner_extern"] ?></option>
+				</select>
+			</li>
+			
+			<li class="clear"></li>
+			
+			<li>
+				<label class="small"><?php echo $sLang["banner"]["banner_valid_from"] ?></label>
+				<input class="w80" id="sBannerFrom" name="sBannerFrom" value="<?php echo $_POST["sBannerFrom"]?>" onclick="displayDatePicker('sBannerFrom', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerFrom', this, 'dmy', '.');"></a>
+				<input type="text" class="w80" name="sBannerFromTime" value="<?php echo $_POST["sBannerFromTime"] ? $_POST["sBannerFromTime"] : "00:00:00" ?>">
+			</li>
+			
+			<li class="clear"></li>
+			
+			<li>
+				<label class="small"><?php echo $sLang["banner"]["banner_valid_until"] ?></label>
+				<input class="w80" id="sBannerTo" name="sBannerTo" value="<?php echo $_POST["sBannerTo"]?>" onclick="displayDatePicker('sBannerTo', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerTo', this, 'dmy', '.');"></a>
+				<input type="text" class="w80" name="sBannerToTime" value="<?php echo $_POST["sBannerToTime"] ? $_POST["sBannerToTime"] : "00:00:00" ?>">
+			</li>
 		
-		<li class="clear"/>
-				<?php
-				if ($queryBanner["img"] && !preg_match("/\.swf/",$queryBanner["img"])){
-					echo "<li><img src=\"../../../../images/banner/{$queryBanner["img"]}\" height=\"70\" width=\"200\"></li><li class=\"clear\"/>";
-				}
+			<li class="clear"></li>
+		
+			<li>
+				<label class="small">Grafik:</label>
+				<input name="sBannerFile" type="file" id="email" class="w80 h24" style="width:auto;" value="<?php echo $userMain["email"] ?>" />
+			</li>
+		
+			<li class="clear"></li>
+			<?php
+			if ($queryBanner["img"] && !preg_match("/\.swf/",$queryBanner["img"])){
+				echo "<li><img src=\"../../../../images/banner/{$queryBanner["img"]}\" height=\"70\" width=\"200\"></li><li class=\"clear\"/>";
+			}
 			?>
 		</ul>
+		
+		<!-- Buttons -->
 		<div class="buttons" id="buttons">
 			<ul>
 				<li id="buttonTemplate" class="buttonTemplate">
 				<button onClick="$('ourForm').submit();" type="submit" value="send" class="button"><div class="buttonLabel"><?php echo $sLang["banner"]["banner_save_banner"] ?></div></button>
 				</li>	
 			</ul>
-		</div>
-	</div><!--banner_fields ENDE-->
-	</form>
-	<form method="POST" id="liveForm"  action="<?php echo $_SERVER["PHP_SELF"]."?id=".$_GET["id"]?>&edit=<?php echo $_GET["edit"]?>">
-	<input name="sAction" value="saveLive" type="hidden">
-		
-	<div id="liveshopping_fields" style="display:none;">
-		<ul>
-		<div style="display:<?php echo !empty($_GET['edit']) || isset($_POST['sAction']) ? 'none' : 'block';?>">
-		<li><label class="small">Artikelnummer:</label>
-			<div id="sOrdernumberRender" style="float:left;"></div>
-			<div id="sBannerNameRender" style="float:left;display:none;"></div>
-		</li>
-		<li class="clear"/>
-		</div>
-		<li><label class="small">Liveshopping:</label>
-			<div id="sLiveshoppingRender" style="float:left;"></div>
-			<input type="hidden" id="sLiveshoppingID" name="sLiveshoppingID" value="<?php echo $_POST['sLiveshoppingID']; ?>"/>
-		</li>
-		<li class="clear"/>
-			<li><label class="small"><?php echo $sLang["banner"]["banner_valid_from"] ?></label>
-			<input class="w80" id="sBannerFrom2" name="sBannerFrom2" value="<?php echo $_POST["sBannerFrom"]?>" onclick="displayDatePicker('sBannerFrom2', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerFrom2', this, 'dmy', '.');"></a>
-			<input type="text" class="w80" name="sBannerFromTime2" value="<?php echo $_POST["sBannerFromTime"] ? $_POST["sBannerFromTime"] : "00:00:00" ?>">
-		</li>
-		<li class="clear"/>
-				<li><label class="small"><?php echo $sLang["banner"]["banner_valid_until"] ?></label>
-			<input class="w80" id="sBannerTo2" name="sBannerTo2" value="<?php echo $_POST["sBannerTo"]?>" onclick="displayDatePicker('sBannerTo2', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerTo2', this, 'dmy', '.');"></a>
-			<input type="text" class="w80" name="sBannerToTime2" value="<?php echo $_POST["sBannerToTime"] ? $_POST["sBannerToTime"] : "00:00:00" ?>">
-		</li>
-		<li class="clear"/>
-		</ul>
-		
-		<div id="live_submit" style="display:<?php echo !empty($_GET['edit']) || isset($_POST['sAction']) ? 'block' : 'none';?>;">
-		<div class="buttons" id="buttons">
-			<ul>
-				<li id="buttonTemplate" class="buttonTemplate">
-				<button onClick="$('ourForm').submit();" type="submit" value="send" class="button"><div class="buttonLabel">Liveshopping speichern</div></button>
-				</li>	
-			</ul>
-		</div>
-		</div>
-	</div>
-	</form>
-	<!--liveshopping_fields ENDE-->
-</fieldset>
+		</div> <!-- //Buttons -->
+	</div> <!-- //Banner fields -->
+	
+	<div class="clear">&nbsp;</div>
+	
+</form> <!-- //SaveBanner form -->
 
-<fieldset class="col2_cat2" style="">
+<div class="clear"></div>
+
+<!-- Liveshopping form -->
+<form method="POST" id="liveForm"  action="<?php echo $_SERVER["PHP_SELF"]."?id=".$_GET["id"]?>&edit=<?php echo $_GET["edit"]?>">
+	<fieldset id="liveshopping_fieldset" class="col2_cat2" style="margin-top: 0;display: none;">
+		<legend><a class="ico clock_red"></a> Liveshopping in Kategorie: <?php echo $queryCategory["description"]?></legend>
+		<input name="sAction" value="saveLive" type="hidden">
+	
+		<!-- Liveshopping fields -->
+		<div id="liveshopping_fields">
+			<ul>
+				<li style="display:<?php echo !empty($_GET['edit']) || isset($_POST['sAction']) ? 'none' : 'block';?>">
+					<label class="small">Artikelnummer:</label>
+					<div id="sOrdernumberRender" style="float:left;"></div>
+					<div id="sBannerNameRender" style="float:left;display:none;"></div>
+				</li>
+				
+				<li class="clear"></li>
+				
+				<li>
+					<label class="small">Liveshopping:</label>
+					<div id="sLiveshoppingRender" style="float:left;"></div>
+					<input type="hidden" id="sLiveshoppingID" name="sLiveshoppingID" value="<?php echo $_POST['sLiveshoppingID']; ?>"/>
+				</li>
+				
+				<li class="clear"></li>
+				
+				<li>
+					<label class="small"><?php echo $sLang["banner"]["banner_valid_from"] ?></label>
+					<input class="w80" id="sBannerFrom2" name="sBannerFrom2" value="<?php echo $_POST["sBannerFrom"]?>" onclick="displayDatePicker('sBannerFrom2', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerFrom2', this, 'dmy', '.');"></a>
+					<input type="text" class="w80" name="sBannerFromTime2" value="<?php echo $_POST["sBannerFromTime"] ? $_POST["sBannerFromTime"] : "00:00:00" ?>">
+				</li>
+				
+				<li class="clear"></li>
+				
+				<li>
+					<label class="small"><?php echo $sLang["banner"]["banner_valid_until"] ?></label>
+					<input class="w80" id="sBannerTo2" name="sBannerTo2" value="<?php echo $_POST["sBannerTo"]?>" onclick="displayDatePicker('sBannerTo2', this, 'dmy', '.');"><a class="ico calendar"  onclick="displayDatePicker('sBannerTo2', this, 'dmy', '.');"></a>
+					<input type="text" class="w80" name="sBannerToTime2" value="<?php echo $_POST["sBannerToTime"] ? $_POST["sBannerToTime"] : "00:00:00" ?>">
+				</li>
+				
+				<li class="clear"></li>
+			</ul>
+			
+			<!-- Liveshopping Submit buttons -->
+			<div id="live_submit" style="display:<?php echo !empty($_GET['edit']) || isset($_POST['sAction']) ? 'block' : 'none';?>;">
+				<div class="buttons" id="buttons">
+					<ul>
+						<li id="buttonTemplate" class="buttonTemplate">
+							<button onClick="$('ourForm').submit();" type="submit" value="send" class="button"><div class="buttonLabel">Liveshopping speichern</div></button>
+						</li>	
+					</ul>
+				</div>
+			</div> <!-- //Liveshopping Submit buttons -->
+		</div> <!-- //Liveshopping fields -->
+	</fieldset>
+</form> <!-- //Liveshopping form -->
+
+<div class="clear"></div>
+
+<fieldset class="col2_cat2" style="display: block">
 <legend><a class="ico help"></a> <?php echo $sLang["banner"]["banner_note"] ?></legend>
 <p><?php echo $sLang["banner"]["banner_please_make_sure"] ?></p>
 </fieldset>
+
+<div class="clear"></div>
+
 <fieldset class="col2_cat2">
 <legend><?php echo $sLang["banner"]["banner_already_assigned_banner"] ?></legend>
 <table cellpadding="0" cellspacing="0" class="listing">
