@@ -47,7 +47,7 @@ Info = Ext.extend(Ext.FormPanel, {
 				cls : 'form_text',
 				border: false,
 				bodyStyle:'font-family:Arial,Verdana,Helvetica,sans-serif;'
-						 +'font-size:12px;font-size-adjust:none;/*font-weight:bold;*/',
+						 +'font-size:12px;font-size-adjust:none;',
 				html: '{$VersionConfig->changes|utf8_decode|escape:javascript}',
 				preventBodyReset: true
 			}]

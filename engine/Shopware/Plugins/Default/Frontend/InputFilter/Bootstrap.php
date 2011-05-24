@@ -22,8 +22,8 @@ class Shopware_Plugins_Frontend_InputFilter_Bootstrap extends Shopware_Component
 	public function install()
 	{
 		$event = $this->createEvent(
-			'Enlight_Controller_Front_RouteStartup',
-			'onRouteStartup',
+			'Enlight_Controller_Front_RouteShutdown',
+			'onRouteShutdown',
 			-100
 		);
 		$this->subscribeEvent($event);
@@ -57,10 +57,11 @@ class Shopware_Plugins_Frontend_InputFilter_Bootstrap extends Shopware_Component
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
-	public static function onRouteStartup(Enlight_Event_EventArgs $args)
+	public static function onRouteShutdown(Enlight_Event_EventArgs $args)
 	{		
 		$request = $args->getSubject()->Request();
-		if($request->getModuleName() && $request->getModuleName()!='frontend') {
+		if($request->getModuleName()
+		  && $request->getModuleName()!='frontend') {
 			return;
 		}
 		

@@ -45,6 +45,7 @@ Backup = Ext.extend(Ext.FormPanel, {
 	            		if(action.result.tables) {
 	            			Ext.MessageBox.wait(action.result.message, 'Backup');
 	            			formConfig.params = action.result;
+	            			form.findField().setValue(null);
 	            			form.submit(formConfig);
 	            		} else {
 	            			Ext.MessageBox.alert('Backup', action.result.message);

@@ -1,62 +1,27 @@
 <?php
-class	Shopware_Components_Zip implements SeekableIterator, Countable
+class	Shopware_Components_File_Adapter_Zip extends Shopware_Components_File_Adapter
 {
-	protected $position;
 	protected $stream;
 	
-	public function __construct($filename=null, $flags=null)
+	public function __construct($fileName=null, $flags=null)
 	{
 		if (!extension_loaded('zip')) {
             throw new Exception('The zip extension are required');
         }
 		$this->position = 0;
 		$this->stream = new ZipArchive();
-		if($filename!=null) {
-			$res = @$this->stream->open($filename, $flags);
-			if($res!==true) {
-				throw new Exception($this->stream->getStatusString(), $res);
+		if($fileName!=null) {
+			$res = @$this->stream->open($fileName, $flags);
+			if($res !== true) {
+				throw new Exception($this->stream->getStatusString());
 			}
 		}
+		$this->count = $this->stream->numFiles;
 	}
 	
-	public function seek($position)
-	{
-		$this->position = (int) $position;
-	}
-	
-	public function count()
-	{
-		return $this->stream->numFiles;
-	}
-
-	public function rewind()
-	{
-		$this->position = 0;
-	}
-
 	public function current()
 	{
 		return new Shopware_Components_Zip_Item($this, $this->position);
-	}
-
-	public function key()
-	{
-		return $this->position;
-	}
-
-	public function next()
-	{
-		++$this->position;
-	}
-
-	public function valid()
-	{
-		return $this->stream->numFiles>$this->position;
-	}
-	
-	public function statIndex($position)
-	{
-		return $this->stream->statIndex($position);
 	}
 	
 	public function getStream($name)
@@ -64,19 +29,9 @@ class	Shopware_Components_Zip implements SeekableIterator, Countable
 		return $this->stream->getStream($name);
 	}
 	
-	public function getFromName($name, $flags=null)
+	public function getContent($name)
 	{
-		return $this->stream->getFromName($name, $flags);
-	}
-	
-	public function each()
-	{
-		if(!$this->valid()) {
-			return false;
-		}
-		$result = array($this->key(), $this->current());
-		$this->next();
-		return $result;
+		return $this->stream->getFromName($name);
 	}
 }
 
@@ -91,11 +46,6 @@ class	Shopware_Components_Zip_Item
 		$this->position = $position;
 		$this->stream = $stream;
 		$this->stat = $stream->statIndex($position);
-	}
-	
-	public function __get($name)
-	{
-		return isset($this->stat[$name]) ? $this->stat[$name] : null;
 	}
 	
 	public function getStream()

@@ -41,7 +41,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
     	$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
 		
 		Enlight_Components_Session::start(array(
-			'name' => get_cfg_var('session.name'),
+			'name' => get_cfg_var('session.name') ? get_cfg_var('session.name') : 'PHPSESSID',
 			'gc_maxlifetime' => 60*90,
 			'cookie_lifetime' => 0,
 			'cookie_path' => $path,

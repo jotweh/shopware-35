@@ -110,6 +110,7 @@ class Shopware_Plugins_Backend_Update_Bootstrap extends Shopware_Components_Plug
 	{
 		$url = $this->versionChannel;
 		$url .= '?version='.urlencode(Shopware()->Config()->Version);
+		$url .= '&host='.urlencode(Shopware()->Config()->Host);
 		$config = new Zend_Config_Xml($url, 'update');
 		return $config;
 	}
