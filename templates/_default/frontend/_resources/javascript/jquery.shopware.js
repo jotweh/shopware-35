@@ -2377,23 +2377,7 @@ jQuery.fn.liveSearch = function (conf) {
 	    config.top = modal.css('top');
 	    modal.hide();
 	    
-	    /*var close = $('<a>', {
-	        'text': 'Schlieﬂen',
-	        'class': 'close'
-	    }).appendTo(modal);*/
-	    close.bind('click', function (event) {
-	        event.preventDefault();
-	        if (config.useOverlay == true) {
-	            $.modal.overlay.fadeOut()
-	        }
-	        if (config.position == 'absolute') {
-	            modal.fadeOut(config.animationSpeed)
-	        } else if (config.position == 'fixed') {
-	            modal.animate({
-	                'top': -(modal.height() + 100) + 'px'
-	            }, config.animationSpeed)
-	        }
-	    });
+	  
 	    modal.appendTo('body');
 	    
 	    modal.show().css('marginLeft', -(modal.width()/2)).hide();
