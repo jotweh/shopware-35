@@ -119,3 +119,17 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
 (NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoContent', 'Inhalt', '2011-05-24 13:11:55', '2011-05-24 13:51:56'),
 (NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoBaseprice', 'Grundpreis', '2011-05-24 13:11:55', '2011-05-24 13:52:14'),
 (NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoCurrentPrice', 'Aktueller Einzelpreis', '2011-05-24 14:22:31', '2011-05-24 14:22:59');
+
+/**
+ * @ticket 5324
+ * @author s.pohl
+ * @since 3.5.4 - 2011/05/24
+ */
+UPDATE `shopware`.`s_core_snippets` SET `value` = '- Bestellen Sie für weitere {$sShippingcostsDifference|currency} um Ihre Bestellung versandkostenfrei in Deutschland zu erhalten!' WHERE `s_core_snippets`.`name` LIKE 'CartInfoFreeShippingDifference' AND `s_core_snippets`.`localeID` = 1;
+
+/**
+ * @ticket 5324
+ * @author s.pohl
+ * @since 3.5.4 - 2011/05/24
+ */
+UPDATE `shopware`.`s_core_snippets` SET `value` = '<a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank"> {$this->config(''sShopname'')} ist ein von Trusted Shops geprüfter Onlinehändler mit Gütesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">Käuferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;

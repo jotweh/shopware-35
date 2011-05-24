@@ -79,6 +79,7 @@ a.basket {background: url(../images/ico_basket.gif) no-repeat;display: inline-bl
 #trustedShopsLogo a img, #paypalLogo a img, #paypalLogo_noborder a img {display: block;margin: 0 auto;}
 #trustedShopsLogo p, #paypalLogo p, #paypalLogo_noborder p {margin: 10px 0 0 0;}
 .trustedshops_form {border: 1px solid;padding: 10px;width: 939px;} 
+#trustedShopsLogo a { display: inline; }
 
 /*	HEADER
 	------------------------ */
