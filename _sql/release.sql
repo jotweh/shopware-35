@@ -125,21 +125,23 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  * @author s.pohl
  * @since 3.5.4 - 2011/05/24
  */
-UPDATE `shopware`.`s_core_snippets` SET `value` = '- Bestellen Sie für weitere {$sShippingcostsDifference|currency} um Ihre Bestellung versandkostenfrei in Deutschland zu erhalten!' WHERE `s_core_snippets`.`name` LIKE 'CartInfoFreeShippingDifference' AND `s_core_snippets`.`localeID` = 1;
+UPDATE `s_core_snippets`
+SET `value` = '- Bestellen Sie f&uuml;r weitere {$sShippingcostsDifference|currency} um Ihre Bestellung versandkostenfrei in Deutschland zu erhalten!' WHERE `s_core_snippets`.`name` LIKE 'CartInfoFreeShippingDifference' AND `s_core_snippets`.`localeID` = 1;
 
 /**
  * @ticket 5324
  * @author s.pohl
  * @since 3.5.4 - 2011/05/24
  */
-UPDATE `shopware`.`s_core_snippets` SET `value` = '<a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank"> {$this->config(''sShopname'')} ist ein von Trusted Shops geprüfter Onlinehändler mit Gütesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">Käuferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{$this->config(''TSID'')}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;
+UPDATE `s_core_snippets` SET `value` = '<a title="Mehr Informationen zu {config name=Shopname}" href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank"> {config name=Shopname} ist ein von Trusted Shops gepr&uuml;fter Onlineh&auuml;ndler mit G&uuml;tesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">K&auuml;uferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;
 
 /**
  * @ticket 5324
  * @author s.pohl
  * @since 3.5.4 - 2011/05/24
  */
-INSERT INTO `s_core_snippets` VALUES(NULL, 'frontend/register/personal_fieldset', 1, 1, 'RegisterPersonalRequiredText', '* hierbei handelt es sich um ein Pflichtfeld', '2011-05-24 17:12:28', '2011-05-24 17:13:52');
+INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
+(NULL, 'frontend/register/personal_fieldset', 1, 1, 'RegisterPersonalRequiredText', '* hierbei handelt es sich um ein Pflichtfeld', '2011-05-24 17:12:28', '2011-05-24 17:13:52');
 
 /**
  * @ticket 4734
