@@ -135,7 +135,7 @@ SET `value` = '- Bestellen Sie f&uuml;r weitere {$sShippingcostsDifference|curre
  * @author s.pohl
  * @since 3.5.4 - 2011/05/24
  */
-UPDATE `s_core_snippets` SET `value` = '<a title="Mehr Informationen zu {config name=Shopname}" href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank"> {config name=Shopname} ist ein von Trusted Shops gepr&uuml;fter Onlineh&auuml;ndler mit G&uuml;tesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">K&auuml;uferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;
+UPDATE `s_core_snippets` SET `value` = '<a title="Mehr Informationen zu {config name=Shopname}" href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank"> {config name=Shopname} ist ein von Trusted Shops gepr&uuml;fter Onlineh&auml;ndler mit G&uuml;tesiegel und <a href="http://www.trustedshops.de/info/garantiebedingungen/" target="_blank">K&auml;uferschutz.</a> <a title="Mehr Informationen zu " href="http://www.trustedshops.de/profil/_{config name=TSID}.html" target="_blank">Mehr...</a> </a>' WHERE `s_core_snippets`.`name` LIKE 'WidgetsTrustedLogoText' AND `s_core_snippets`.`localeID` = 1;
 
 /**
  * @ticket 5324
