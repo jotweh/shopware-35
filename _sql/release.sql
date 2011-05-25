@@ -89,7 +89,7 @@ UPDATE `s_core_config_mails` SET `name` = TRIM(`name`);
  */
 DELETE FROM `s_core_subscribes` WHERE `listener` LIKE 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::%';
 INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
-(NULL, 'Enlight_Controller_Front_RouteStartup', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onRouteStartup', 35, -100);
+(NULL, 'Enlight_Controller_Front_RouteShutdown', 0, 'Shopware_Plugins_Frontend_InputFilter_Bootstrap::onRouteShutdown', 35, -100);
 INSERT IGNORE INTO `s_core_plugin_configs` (`id`, `name`, `value`, `pluginID`, `localeID`, `shopID`) VALUES
 (NULL, 'rfi_protection', 's:1:"1";', 35, 1, 1),
 (NULL, 'rfi_regex', 's:33:"\\.\\./|\\0|2\\.2250738585072011e-308";', 35, 1, 1);
