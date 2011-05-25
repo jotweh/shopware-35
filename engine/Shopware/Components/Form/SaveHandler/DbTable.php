@@ -20,7 +20,8 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 		'required' => 'required',
 		'filters' => 'filters',
 		'validators' => 'validators',
-		'scope' => 'scope'
+		'scope' => 'scope',
+		'options' => 'options'
 	);
 	
 	protected $_order = array(
@@ -53,18 +54,23 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 		$array_elements = array();
 		foreach ($rows as $row) {
 			$array_element = array('options'=>array());
-			foreach ($this->_colums as $key => $colum) {
+			foreach ($this->_colums as $key => $column) {
 				if(in_array($key, array('filters', 'validators'))) {
-					if(!empty($row->{$colum})) {
-						$array_element[$key] = unserialize($row->{$colum});
+					if(!empty($row->{$column})) {
+						$array_element[$key] = unserialize($row->{$column});
 					}
-				} elseif (isset($row->{$colum})) {
+				}
+				elseif ($key=='options'){
+					// Support free attributes per field
+					$array_element[$key] = unserialize($row->{$column});
+				}
+				elseif (isset($row->{$column})) {
 					if(in_array($key, array('type','name'))) {
-						$array_element[$key] = $row->{$colum};
+						$array_element[$key] = $row->{$column};
 					} elseif($key=='value') {
-						$array_element['options'][$key] = unserialize($row->{$colum});
+						$array_element['options'][$key] = unserialize($row->{$column});
 					} else {
-						$array_element['options'][$key] = $row->{$colum};
+						$array_element['options'][$key] = $row->{$column};
 					}
 				}
 			}
@@ -96,6 +102,7 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 			'id',
 			'name',
 			'belongsTo',
+			'attributes'
 		);
 
 		$array_element = array(
@@ -103,11 +110,15 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 			'options'=>$element->getAttribs()
 		);
 		unset($array_element['options']['helper']);
-		$array_element['options']['required'] = $element->isRequired();
 		
+		$array_element['options']['required'] = $element->isRequired();
+		//$array_element['options']['options'] = serialize($array_element['options']['options']);
+
 		foreach ($options as $option) {
 			$func = 'get'.ucwords($option);
-			$value = $element->$func();
+			if ($func != "getAttributes"){
+				$value = $element->$func();
+			}
 			if($value !== null) {
 				$array_element['options'][$option] = $value;
 			}
@@ -150,6 +161,7 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
         		$this->_formPrimary=>$form->getId()
         	);
         	$data_id = null;
+			
         	foreach ($this->_colums as $key => $colum) {
         		if($key=='id') {
 					if(isset($array_element['options']['id']) && is_numeric($array_element['options']['id'])) {
@@ -169,7 +181,12 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 					}
 				} elseif (isset($array_element['options'][$key])) {
 					$data[$key] = $array_element['options'][$key];
-				} elseif (isset($array_element[$key])) {
+				}
+				elseif ($key=='options'){
+					// Support free attributes per field
+					$data['options'] = serialize(isset($array_element['options']['attributes']) ? $array_element['options']['attributes'] : array());
+				}
+				elseif (isset($array_element[$key])) {
 					$data[$key] = $array_element[$key];
 				}
         	}
