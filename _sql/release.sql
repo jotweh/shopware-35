@@ -158,3 +158,13 @@ ALTER TABLE `s_core_plugins` ADD `added` DATETIME NOT NULL AFTER `active`;
  * @since 3.5.4 - 2011/05/25
  */
 UPDATE `s_core_config` SET `value` = '1' WHERE `name` = 'sDISABLECACHE';
+
+/**
+ * @ticket 4354
+ * @author s.pohl
+ * @since 3.5.4 - 2011/05/25
+ */
+UPDATE `s_core_snippets` SET `value` = 'Versandinfo:' WHERE `s_core_snippets`.`name` LIKE 'DispatchHeadNotice' AND `s_core_snippets`.`localeID` = 1;
+UPDATE `s_core_snippets` SET `value` = 'Dispatch info:' WHERE `s_core_snippets`.`name` LIKE 'DispatchHeadNotice' AND `s_core_snippets`.`localeID` = 2;
+UPDATE `s_core_snippets` SET `value` = 'Login' WHERE `s_core_snippets`.`name` LIKE 'AccountLoginTitle' AND `s_core_snippets`.`localeID` = 1;
+UPDATE `s_core_snippets` SET `value` = 'Login' WHERE `s_core_snippets`.`name` LIKE 'AccountLoginTitle' AND `s_core_snippets`.`localeID` = 2;
