@@ -1,6 +1,6 @@
 <?php
 /**
- * Register search controller
+ * Register controller
  *
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
