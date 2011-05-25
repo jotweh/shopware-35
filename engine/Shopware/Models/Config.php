@@ -130,4 +130,15 @@ class Shopware_Models_Config extends Shopware_Components_Config_DbTable
 		
 		return $data;
 	}
+	
+	/**
+	 * Magic caller method
+	 *
+	 * @param string $name
+	 * @param array $args
+	 */
+	public function __call($name, $args=null)
+	{
+		return $this->get($name);
+	}
 }
