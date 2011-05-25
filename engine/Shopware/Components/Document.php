@@ -682,12 +682,13 @@ class	Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 				if (!empty($this->_document->numbers)){
 					$numberrange = $this->_document->numbers;
 				}else {
+
 					// The typID is indexed with base 0, so we need increase the typID
 					if(!in_array($typID, array('0', '1', '2'))) {
 						$typID = $typID +1;
 					}
+					Shopware()->Log()->log($typID,Zend_Log::INFO);
 					$numberrange = "doc_".$typID;
-
 				}
 				
 				$checkForSeparateNumbers = Shopware()->Db()->fetchRow("
