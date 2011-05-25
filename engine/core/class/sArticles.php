@@ -13,7 +13,7 @@ class sArticles
 
 	/**
      * Pointer to sSystem object
-     *
+     * 
      * @var sSystem
      */
 	var $sSYSTEM;
