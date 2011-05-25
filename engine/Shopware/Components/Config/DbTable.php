@@ -11,6 +11,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	protected $_name;
 	protected $_dbTable;
 	protected $_cache;
+	protected $_cacheIdPrefix = 'Shopware_Config_';
 	protected $_cacheId;
 	protected $_cacheTags = array('Shopware_Config');
 	protected $_section;
@@ -155,7 +156,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     public function getCacheId()
     {
     	if($this->_cacheId === null) {
-    		$this->_cacheId = md5(serialize(array(
+    		$this->_cacheId = $this->_cacheIdPrefix . md5(serialize(array(
     			$this->_dbTable->info('name'),
     			$this->_sectionColum,
     			$this->_section,

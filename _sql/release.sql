@@ -151,3 +151,10 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  * @since 3.5.4 - 2011/05/24
  */
 ALTER TABLE `s_core_plugins` ADD `added` DATETIME NOT NULL AFTER `active`;
+
+/**
+ * @ticket 4766
+ * @author h.lohaus
+ * @since 3.5.4 - 2011/05/25
+ */
+UPDATE `s_core_config` SET `value` = '1' WHERE `name` = 'sDISABLECACHE';

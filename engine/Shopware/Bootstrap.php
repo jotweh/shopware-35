@@ -439,11 +439,17 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     		$backendOptions = array(
 				'hashed_directory_umask' => 0771,
 				'cache_file_umask' => 0644,
-				'hashed_directory_level' => 2,
+				'hashed_directory_level' => 0,
 				'file_name_prefix' => 'shopware',
-				'cache_dir' => Shopware()->DocPath().'cache/database/',
+				'cache_dir' => Shopware()->DocPath('cache_database'),
 				'file_name_prefix' => 'shopware'
 			);
+    	}
+    	
+    	if(isset($backendOptions['hashed_directory_level'])
+    	  && $backendOptions['hashed_directory_level'] === 0
+    	  && !ini_get('safe_mode')) {
+			$backendOptions['hashed_directory_level'] = 3;
     	}
     	
 		$cache = Zend_Cache::factory('Core', $backend, $frontendOptions, $backendOptions);
