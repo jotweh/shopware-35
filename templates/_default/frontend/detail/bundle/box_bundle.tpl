@@ -71,7 +71,7 @@
 							{* Bundle price *}
 							<div class="price">
 								<h3 class="heading">{s name="BundleInfoPriceForAll"}{/s}:</h3>
-								{$this->config('CURRENCYHTML')} <span id='price_bundle_{$bundle.id}'></span>
+								{$this->config('CURRENCYHTML')} <span id='price_bundle_{$bundle.id}'></span> {s name="Star" namespace="frontend/listing/box_article"}{/s}
 							</div>
 							
 							{* Basket button *}
@@ -87,7 +87,7 @@
 							{* Discount price *}
 							<div class="discount">
 								({s name="BundleInfoPriceInstead"}{/s} {$this->config('CURRENCYHTML')}
-								<span id='price_rabAbs_{$bundle.id}'></span> - <span id='price_rabPro_{$bundle.id}'></span>
+								<span id='price_rabAbs_{$bundle.id}'></span>{s name="Star" namespace="frontend/listing/box_article"}{/s} - <span id='price_rabPro_{$bundle.id}'></span>
 								{s name="BundleInfoPercent"}{/s})
 							</div>
 						</div>

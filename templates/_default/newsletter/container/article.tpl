@@ -48,13 +48,28 @@
         <td height="40" style="text-align:left; padding:10px;">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-              <td width="95">
+              <td width="160">
+
+		{if $sArticle.purchaseunit}
+            <div style="font-size:11px;color:#888;margin-bottom:8px;">
+                <p style="font-size:11px;margin:0;">
+                    <strong>{se name="ListingBoxArticleContent" namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.purchaseunit} {$sArticle.sUnit.description}
+                </p>
+                {if $sArticle.purchaseunit != $sArticle.referenceunit}
+                    <p style="font-size:11px;margin:0">
+                        {if $sArticle.referenceunit}
+                            <strong class="baseprice">{se name="ListingBoxBaseprice"  namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+                        {/if}
+                    </p>
+                {/if}
+            </div>
+        {/if}
         {if $sArticle.pseudoprice}
-        <span style="color:#000; font-size:11px; line-height:13px;"><s>{$sArticle.pseudoprice}</s></span><br />
+        <span style="color:#000; font-size:11px; line-height:13px;"><s>{$sArticle.pseudoprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}</s></span><br />
         {/if}
         <strong style="color:#000;font-size:14px;">
         	{if $sArticle.priceStartingFrom}{se name='NewsletterBoxArticleStartsAt'}ab{/se} {/if}
-        	{$sArticle.price|currency}*
+        	{$sArticle.price|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
         </strong>
         <!--##Attribute# -->
               
