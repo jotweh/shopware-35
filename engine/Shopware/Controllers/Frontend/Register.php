@@ -1,4 +1,14 @@
 <?php
+/**
+ * Register search controller
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 {
 	protected $session;
@@ -6,7 +16,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 	protected $system;
 	protected $post;
 	protected $error;
-	
+
+	/**
+	 * Calls when the controller will be initialized
+	 *
+	 * @return void
+	 */
 	public function init()
 	{
 		$this->session = Shopware()->Session();
@@ -14,7 +29,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		$this->system = Shopware()->Modules()->System();
 		$this->post = $this->request->getParam('register');
 	}
-	
+
+	/**
+	 * Will be called from the dispatcher before an action is processed
+	 *
+	 * @return void
+	 */
 	public function preDispatch()
 	{
 		if(!isset($this->View()->register))
@@ -27,7 +47,13 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->session['sRegister'] = new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS);
 		}
 	}
-	
+
+
+	/**
+	 * Will be called when no action is supplied
+	 *
+	 * @return void
+	 */
 	public function indexAction()
 	{
 		if(!empty($this->session['sUserId']))
@@ -47,7 +73,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		$this->shippingAction();
 		$this->paymentAction();
 	}
-	
+
+	/**
+	 * Checks the registration
+	 *
+	 * @return void
+	 */
 	public function saveRegisterAction()
 	{
 		if($this->request->isPost())
@@ -69,7 +100,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		}
 		$this->forward('index');
 	}
-	
+
+	/**
+	 * Saves the registration
+	 * 
+	 * @return void
+	 */
 	public function saveRegister()
 	{
 		$paymentData = isset($this->session['sRegister']['payment']['object']) ? $this->session['sRegister']['payment']['object'] : false;
@@ -90,7 +126,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			}
 		}
 	}
-	
+
+	/**
+	 * Returns the personal information and validates it
+	 *
+	 * @return void
+	 */
 	public function personalAction()
 	{
 		if(!isset($this->View()->register->personal))
@@ -125,7 +166,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->personal->form_data->sValidation = $this->request->getParam('sValidation');
 		}
 	}
-	
+
+	/**
+	 * Saves and validates the personal information
+	 *
+	 * @return void
+	 */
 	public function savePersonalAction()
 	{
 		if(!isset($this->View()->register->personal))
@@ -149,7 +195,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->personal->error_messages = new ArrayObject($checkData['sErrorMessages'], ArrayObject::ARRAY_AS_PROPS);
 		}
 	}
-	
+
+	/**
+	 * Returns the billing information and validates it
+	 *
+	 * @return void
+	 */
 	public function billingAction()
 	{
 		if(!isset($this->View()->register->billing))
@@ -176,7 +227,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->billing->form_data->country = $this->session['sCountry'];
 		}
 	}
-	
+
+	/**
+	 * Saves and validates the billing information
+	 *
+	 * @return void
+	 */
 	public function saveBillingAction()
 	{
 		if(!isset($this->View()->register->billing))
@@ -201,7 +257,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->billing->error_messages = new ArrayObject($checkData['sErrorMessages'], ArrayObject::ARRAY_AS_PROPS);
 		}
 	}
-	
+
+	/**
+	 * Returns the shipping information and validates it
+	 *
+	 * @return void
+	 */
 	public function shippingAction()
 	{
 		if(!isset($this->View()->register->shipping))
@@ -220,7 +281,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->shipping->form_data[$key] = $value;
 		}
 	}
-	
+
+	/**
+	 * Saves and validates the shipping information
+	 *
+	 * @return void
+	 */
 	public function saveShippingAction()
 	{
 		if(!isset($this->View()->register->shipping))
@@ -241,7 +307,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->register->shipping->error_messages = new ArrayObject($checkData['sErrorMessages'], ArrayObject::ARRAY_AS_PROPS);
 		}
 	}
-	
+
+	/**
+	 * Returns the payment information and validates it
+	 *
+	 * @return void
+	 */
 	public function paymentAction()
 	{
 		if(!isset($this->View()->register->payment))
@@ -267,7 +338,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			$this->View()->form_data->register['shipping'][$key] = $value;
 		}
 	}
-	
+
+	/**
+	 * Saves and validates the payment information
+	 *
+	 * @return void
+	 */
 	public function savePaymentAction()
 	{
 		if(!isset($this->View()->register->payment))
@@ -293,6 +369,11 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		}
 	}
 
+	/**
+	 * Validates the personal informations
+	 *
+	 * @return array - personal data with error flags and msg
+	 */
 	public function validatePersonal()
 	{
 		$this->admin->sSYSTEM->_POST = $this->post['personal'];
@@ -344,7 +425,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		
 		return $result;
 	}
-	
+
+	/**
+	 * Validates the billing informations
+	 *
+	 * @return array - billing data with error flags and msg
+	 */
 	public function validateBilling()
 	{
 		$rules = array(
@@ -375,7 +461,7 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			//'dpacheckbox'=>array('required'=>Shopware()->Config()->get('sACTDPRCHECK'))?1:0
 		);
 		
-		if(!empty($this->post['personal']['customer_type']) && $this->post['personal']['customer_type'] == 'buisness')
+		if(!empty($this->post['personal']['customer_type']) && $this->post['personal']['customer_type'] == 'business')
 		{
 			$rules['company'] = array('required'=>1);
 			$rules['ustid'] = array('required'=>0);
@@ -392,7 +478,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		
 		return $checkData;
 	}
-	
+
+	/**
+	 * Validates the shipping informations
+	 *
+	 * @return array - shipping data with error flags and msg
+	 */
 	public function validateShipping()
 	{
 		$rules = array(
@@ -420,7 +511,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		$checkData = $this->admin->sValidateStep2ShippingAddress($rules);
 		return $checkData;
 	}
-	
+
+	/**
+	 * Validates the payment informations
+	 *
+	 * @return array - payment data with error flags and msg
+	 */
 	public function validatePayment()
 	{
 		if(empty($this->post['payment']))
@@ -443,7 +539,12 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		}
 		return $checkData;
 	}
-	
+
+	/**
+	 * Checks if the given email isn't already registered
+	 *
+	 * @return void
+	 */
 	public function ajaxValidateEmailAction()
 	{
 		$this->View()->setTemplate(null);
@@ -482,7 +583,11 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array('success'=>empty($error_messages), 'error_flags'=>$error_flags, 'error_messages'=>$error_messages));
 	}
-	
+
+	/**
+	 * Checks if the two passwords matches
+	 * @return void
+	 */
 	public function ajaxValidatePasswordAction()
 	{
 		$this->View()->setTemplate(null);
@@ -515,7 +620,14 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array('success'=>empty($error_messages), 'error_flags'=>$error_flags, 'error_messages'=>$error_messages));
 	}
-	
+
+	/**
+	 * Validates the billing informations
+	 * and returns an json string with error
+	 * codes and messages
+	 *
+	 * @return void
+	 */
 	public function ajaxValidateBillingAction()
 	{
 		$this->View()->setTemplate(null);
@@ -532,7 +644,7 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 			'country'=>array('required'=>1),
 			'department'=>array('required'=>0),
 		);
-		if(!empty($this->post['personal']['customer_type'])&&$this->post['personal']['customer_type']=='buisness')
+		if(!empty($this->post['personal']['customer_type'])&&$this->post['personal']['customer_type']=='business')
 		{
 			$rules['company']['required'] = 1;
 		}
