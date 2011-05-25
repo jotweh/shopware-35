@@ -255,7 +255,7 @@ jQuery(document).ready(function($) {
 		}
 		
 		$("#register_personal_customer_type").change(function() {
-			if($(this).val() == 'buisness') {
+			if($(this).val() == 'business') {
 				$('.register .company_informations').slideDown();
 			} else {
 				$('.register .company_informations').slideUp();

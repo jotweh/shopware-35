@@ -10,7 +10,7 @@
 				<label for="register_personal_customer_type">{s name='RegisterPersonalLabelType'}{/s}*:</label>
 				<select id="register_personal_customer_type" name="register[personal][customer_type]">
 					<option value="private"{if $form_data.customer_type eq "private"} selected="selected"{/if}>{s name='RegisterPersonalLabelPrivate'}{/s}</option>
-					<option value="business"{if $form_data.customer_type eq "buisness" or $form_data.company or $form_data.sValidation} selected="selected"{/if}>{s name='RegisterPersonalLabelBusiness'}{/s}</option>
+					<option value="business"{if $form_data.customer_type eq "business" or $form_data.company or $form_data.sValidation} selected="selected"{/if}>{s name='RegisterPersonalLabelBusiness'}{/s}</option>
 				</select>
 			</div>
 		{/if}
