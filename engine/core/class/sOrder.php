@@ -708,6 +708,10 @@ class sOrder
 				{
 					$sql = 'UPDATE s_articles SET active=0 WHERE id=?';
 					$this->sSYSTEM->sDB_CONNECTION->Execute($sql,array($basketRow['articleID']));
+					// Ticket #5517
+					$this->sSYSTEM->sDB_CONNECTION->Execute("
+					UPDATE s_articles_details SET active = 0 WHERE ordernumber = ?
+					",array($basketRow['ordernumber']));
 				}
 			}
 
