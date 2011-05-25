@@ -151,7 +151,7 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
  * @since 3.5.4 - 2011/05/24
  */
 ALTER TABLE `s_core_plugins` ADD `added` DATETIME NOT NULL AFTER `active`;
-
+ALTER TABLE `s_core_plugin_elements` ADD `options` TEXT NOT NULL;
 /**
  * @ticket 4766
  * @author h.lohaus
