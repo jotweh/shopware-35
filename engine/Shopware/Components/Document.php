@@ -682,6 +682,8 @@ class	Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 				if (!empty($this->_document->numbers)){
 					$numberrange = $this->_document->numbers;
 				}else {
+					// The typID is indexed with base 0, so we need increase the typID
+					$typID = $typID + 1;
 					$numberrange = "doc_".$typID;
 				}
 				
