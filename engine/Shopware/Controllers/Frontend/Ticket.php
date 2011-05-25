@@ -1,6 +1,17 @@
 <?php
+/**
+ * Shopware Ticket-System
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ */
 class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend_Forms
-{	
+{
+	/**
+	 * Check licence first
+	 * @return void
+	 */
 	public function preDispatch()
 	{
 		if (!Shopware()->System()->sCheckLicense('','',Shopware()->System()->sLicenseData['sTICKET']))
@@ -16,26 +27,42 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 		Shopware()->Modules()->TicketSystem()->sDbType = "adodb";
 		$this->View()->sTicketLicensed = true;
 	}
-	
+
+	/**
+	 * Show Ticket formular
+	 * @return void
+	 */
 	public function indexAction(){
 		parent::indexAction();
 		
 		$this->View()->loadTemplate('frontend/forms/index.tpl');
 	}
-	
+
+	/**
+	 * Show ticket history
+	 * @return void
+	 */
 	public function listingAction(){
 		Shopware()->Modules()->TicketSystem()->sDbType = "adodb";
 		$userID = intval(Shopware()->Session()->sUserId);                 
 		$this->View()->ticketStore = Shopware()->Modules()->TicketSystem()->getTicketSupportStore("receipt", "DESC", 0, 3000, "", "AND ts.userID = $userID", array("filter_status"=>-1));
 	}
-	
+
+	/**
+	 * Open new ticket mask
+	 * @return void
+	 */
 	public function requestAction(){
 		$this->request()->setParam("sFid",Shopware()->Config()->sTICKETACCOUNTFORMID);
 		parent::init();
 		parent::indexAction();
 		$this->View()->loadTemplate('frontend/ticket/request.tpl');
 	}
-	
+
+	/**
+	 * Show ticket details
+	 * @return void
+	 */
 	public function detailAction(){
 		
 		
@@ -85,7 +112,11 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 		}
 
 	}
-	
+
+	/**
+	 * Show ticket direct link
+	 * @return void
+	 */
 	public function directAction(){
 		
 		$id = $this->Request()->sAID;
@@ -131,9 +162,16 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 		
 		$this->View()->loadTemplate('frontend/ticket/detail.tpl');
 	}
-	
+
+	/**
+	 * Save new ticket into database
+	 * @return void
+	 */
 	public function commitForm(){
-		
+		// Ticket # 4931
+		if (!empty($this->Request()->forceMail)){
+			return parent::commitForm();
+		}
 		$id = intval($this->request()->sFid ? $this->request()->sFid : $this->request()->id);
 		$formFields = Shopware()->Db()->fetchAll("SELECT * FROM `s_cms_support_fields` WHERE `supportID` = ? ORDER BY `position`",array($id)); 
 		$formData = Shopware()->Db()->fetchAll("SELECT * FROM `s_cms_support` WHERE `id` = ?",array($id));
