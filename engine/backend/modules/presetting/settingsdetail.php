@@ -82,7 +82,11 @@ if (!@mysql_num_rows($queryOptions))  exit;
 <fieldset class="col2_cat2" style="margin-top:-15px">
 	<legend><a class="ico exclamation"></a><span style=\"color:#F00\">Hinweis:</span></legend>
 	
-	<strong><p style="color:#F00;font-weigt:bold;font-size:11px">
+	<strong>
+	<p style="color:#F00;font-weigt:bold;font-size:11px">
+	<?php if($_GET['id'] == 72) { ?>
+	Achtung! Sie dürfen die Funktion "Automatische Erinnerung zur Artikelbewertung" nur im Rahmen Ihrer Trusted-Shops Zertifizierung verwenden, wenn Sie das Einverständnis Ihrer Kunden haben!<br/><br/>
+	<?php } ?>
 	Prüfen Sie eventuell vorhandene wichtige Informationen und Hinweise in unserem Wiki, bevor Sie Einstellungen verändern!
 	</strong>
 	</p>
