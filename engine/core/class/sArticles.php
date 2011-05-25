@@ -2940,7 +2940,7 @@ class sArticles
 					// Ticket 4868 - st.hamann
 					// Set variant release-date to release-date of main-article if instock is null
 					list($Y,$M,$D) = explode("-",$getArticle["releasedate"]);
-					if (mktime(0,0,0,$M,$D,$Y)>mktime(0,0,0,date("m"),date("d"),date("Y")) && $variantValue["instock"] <= 0){
+					if (mktime(0,0,0,$M,$D,$Y)>mktime(0,0,0,date("m"),date("d"),date("Y"))){
 						$getArticleVariants[$variantKey]["sReleaseDate"] = $D.".".$M.".".$Y;
 					}
 					
