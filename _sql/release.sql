@@ -128,7 +128,7 @@ INSERT INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, 
  * @since 3.5.4 - 2011/05/24
  */
 UPDATE `s_core_snippets`
-SET `value` = '- Bestellen Sie f&uuml;r weitere {$sShippingcostsDifference|currency} um Ihre Bestellung versandkostenfrei in Deutschland zu erhalten!' WHERE `s_core_snippets`.`name` LIKE 'CartInfoFreeShippingDifference' AND `s_core_snippets`.`localeID` = 1;
+SET `value` = '- Bestellen Sie f&uuml;r weitere {$sShippingcostsDifference|currency} um Ihre Bestellung versandkostenfrei in {$sCountry.countryname} zu erhalten!' WHERE `s_core_snippets`.`name` LIKE 'CartInfoFreeShippingDifference' AND `s_core_snippets`.`localeID` = 1;
 
 /**
  * @ticket 5324
