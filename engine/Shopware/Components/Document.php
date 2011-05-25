@@ -687,7 +687,6 @@ class	Shopware_Components_Document extends Enlight_Class implements Enlight_Hook
 					if(!in_array($typID, array('0', '1', '2'))) {
 						$typID = $typID +1;
 					}
-					Shopware()->Log()->log($typID,Zend_Log::INFO);
 					$numberrange = "doc_".$typID;
 				}
 				
