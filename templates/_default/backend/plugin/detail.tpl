@@ -83,43 +83,44 @@
 							defaults: { anchor: '100%' },
 							layout: 'form',
 							items: [
-
-				{foreach $form->getElements() as $element}
-				{$value = $plugin_config[$shop.id][$element->getName()]|default:$element->getValue()}
+								{foreach $form->getElements() as $element}
 								{
-				{if $element->getType()=='Zend_Form_Element_Text'}
-									xtype: 'textfield',
-				{elseif $element->getType()=='Zend_Form_Element_Checkbox'}
-									xtype: 'radiogroup',
-				{elseif $element->getType()=='Zend_Form_Element_Textarea'}
-									xtype: 'textarea',
-				{elseif $element->getType()=='Zend_Form_Element_Radio'}
-									xtype: 'radio',
-				{elseif $element->getType()=='Zend_Form_Element_Password'}
-									xtype: 'password',
-				{else}
-				{/if}
-				{if $element->getType()=='Zend_Form_Element_Checkbox'}
-									columns: [100, 100],
-						            items: [
-						                { boxLabel: 'Ja', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 1, checked: {if $value}true{else}false{/if} },
-						                { boxLabel: 'Nein', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 0, checked: {if !$value}true{else}false{/if} },
-						            ],
-				{else}
-									value: '{$value|escape:"javascript"}',
-				{/if}
+									{$value = $plugin_config[$shop.id][$element->getName()]|default:$element->getValue()}
+									{if $element->getType()=='Zend_Form_Element_Text'}
+										xtype: 'textfield',
+									{elseif $element->getType()=='Zend_Form_Element_Checkbox'}
+										xtype: 'radiogroup',
+									{elseif $element->getType()=='Zend_Form_Element_Textarea'}
+										xtype: 'textarea',
+									{elseif $element->getType()=='Zend_Form_Element_Radio'}
+										xtype: 'radio',
+									{elseif $element->getType()=='Zend_Form_Element_Password'}
+										xtype: 'password',
+									{elseif $element->getType()=='Zend_Form_Element_HtmlEditor'}
+										xtype: 'htmleditor',
+									{else}
+									{/if}
+									{if $element->getType()=='Zend_Form_Element_Checkbox'}
+										columns: [100, 100],
+										items: [
+											{ boxLabel: 'Ja', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 1, checked: {if $value}true{else}false{/if} },
+											{ boxLabel: 'Nein', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 0, checked: {if !$value}true{else}false{/if} },
+										],
+									{else}
+										value: '{$value|escape:"javascript"}',
+									{/if}
 									fieldLabel: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
 									name: 'config[{$shop.id}][{$element->getName()}]',
 									//boxLabel: 'BoxLabel',
 									disabled: {if $element->scope||$shop.default}false{else}true{/if},
 									allowBlank: {if $element->isRequired()}false{else}true{/if}
-									
-								}{if !$element@last},{/if}
-				{/foreach}
+
+									}{if !$element@last},{/if}
+								{/foreach}
 				
 							]
 						}{if !$shop@last},{/if}
-		{/foreach}
+			{/foreach}
 					]
 				}
 {/if}

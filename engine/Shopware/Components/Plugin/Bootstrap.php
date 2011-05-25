@@ -59,6 +59,35 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	}
 
 	/**
+	 * Check if a given version is greater or equal to the currently installed version
+	 * @param  $requiredVersion Format: 3.5.4 or 3.5.4.21111
+	 * @return bool
+	 */
+	public function assertVersionMatch($requiredVersion){
+		$installedVersion = Shopware()->Config()->Version;
+		$installedVersion = explode(".",$installedVersion);
+		$requiredVersion = explode(".",$requiredVersion);
+
+		$majorInstalled = $installedVersion[0];
+		$minorInstalled = $installedVersion[1];
+		$bugfixInstalled = $installedVersion[2];
+		if (!empty($installedVersion[3])){
+			$revisionInstalled = $installedVersion[3];
+		}else {
+			$revisionInstalled = 0;
+		}
+
+		if ($majorInstalled >= $requiredVersion[0] &&
+			$minorInstalled >= $requiredVersion[1] &&
+			$bugfixInstalled >= $requiredVersion[2] &&
+			$revisionInstalled >= $requiredVersion[3]
+		){
+			return true;
+		}else {
+			return false;
+		}
+	}
+	/**
 	 * Remove a widget during plugin uninstall
 	 * @return void
 	 */
