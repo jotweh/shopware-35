@@ -109,7 +109,7 @@ ALTER TABLE `s_emarketing_vouchers` ADD `taxconfig` VARCHAR( 15 ) NOT NULL;
  * @author s.pohl
  * @since 3.5.4 - 2011/05/24
  */
-INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
+INSERT INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
 (NULL, 'frontend/listing/box_article', 1, 1, 'ListingBoxArticleContent', 'Inhalt', '2011-05-24 10:31:14', '2011-05-24 10:31:47'),
 (NULL, 'frontend/listing/box_article', 1, 1, 'ListingBoxBaseprice', 'Grundpreis', '2011-05-24 10:33:36', '2011-05-24 10:33:55'),
 (NULL, 'frontend/note/item', 1, 1, 'NoteUnitPriceContent', 'Inhalt', '2011-05-24 11:25:13', '2011-05-24 11:26:33'),
@@ -118,7 +118,9 @@ INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `
 (NULL, 'frontend/compare/col', 1, 1, 'CompareBaseprice', 'Grundpreis', '2011-05-24 11:51:10', '2011-05-24 11:51:46'),
 (NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoContent', 'Inhalt', '2011-05-24 13:11:55', '2011-05-24 13:51:56'),
 (NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoBaseprice', 'Grundpreis', '2011-05-24 13:11:55', '2011-05-24 13:52:14'),
-(NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoCurrentPrice', 'Aktueller Einzelpreis', '2011-05-24 14:22:31', '2011-05-24 14:22:59');
+(NULL, 'frontend/account/order_item', 1, 1, 'OrderItemInfoCurrentPrice', 'Aktueller Einzelpreis', '2011-05-24 14:22:31', '2011-05-24 14:22:59'),
+(NULL, 'frontend/plugins/recommendation/slide_articles', 1, 1, 'SlideArticleInfoBaseprice', 'Grundpreis', '2011-05-24 13:11:55', '2011-05-24 13:52:14'),
+(NULL, 'frontend/plugins/recommendation/slide_articles', 1, 1, 'SlideArticleInfoContent', 'Inhalt', '2011-05-24 14:22:31', '2011-05-24 14:22:59');
 
 /**
  * @ticket 5324
