@@ -68,6 +68,11 @@
 					{/block}
 				{/if}
 			{/if}
+			
+			{* Required fields hint *}
+			<div class="required_fields">
+				{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}
+			</div>
 	
 			
 			<div class="actions">

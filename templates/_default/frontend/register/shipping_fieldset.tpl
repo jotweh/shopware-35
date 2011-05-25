@@ -4,7 +4,7 @@
 	{* Salutation *}
 	{block name='frontend_register_shipping_fieldset_input_salutation'}
 		<div>
-		    <label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" for="salutation2">{se name='RegisterShippingLabelSalutation'}{/se}</label>
+		    <label for="salutation2">{se name='RegisterShippingLabelSalutation'}{/se}</label>
 		    <select name="register[shipping][salutation]" id="salutation2" class="normal {if $error_flags.salutation}instyle_error{/if}">
 		    <option value="mr" {if $form_data.salutation eq "mr"}selected="selected"{/if}>Herr</option>  
 		    <option value="ms" {if $form_data.salutation eq "ms"}selected="selected"{/if}>Frau</option>   
@@ -23,7 +23,7 @@
 	{* Department *}
 	{block name='frontend_register_shipping_fieldset_input_department'}
 		<div>
-		    <label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" class="required" title="{s name='RegisterPersonalRequiredText'}{/s}" for="department2" class="normal">{se name='RegisterShippingLabelDepartment'}{/se}</label>
+		    <label for="department2" class="normal">{se name='RegisterShippingLabelDepartment'}{/se}</label>
 		    <input name="register[shipping][department]" type="text" id="department2" value="{$form_data.department|escape}" class="text" />
 		</div>
 	{/block}
@@ -31,7 +31,7 @@
 	{* Firstname *}
 	{block name='frontend_register_shipping_fieldset_input_firstname'}
 		<div>
-		    <label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" for="firstname2">{se name='RegisterShippingLabelFirstname'}{/se}</label>
+		    <label for="firstname2">{se name='RegisterShippingLabelFirstname'}{/se}</label>
 		    <input name="register[shipping][firstname]" type="text"  id="firstname2" value="{$form_data.firstname|escape}" class="text required {if $error_flags.firstname}instyle_error{/if}" />
 		</div>
 	{/block}
@@ -39,7 +39,7 @@
 	{* Lastname *}
 	{block name='frontend_register_shipping_fieldset_input_lastname'}
 		<div>
-		    <label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" for="lastname2">{se name='RegisterShippingLabelLastname'}{/se}</label>
+		    <label for="lastname2">{se name='RegisterShippingLabelLastname'}{/se}</label>
 		    <input name="register[shipping][lastname]" type="text"  id="lastname2" value="{$form_data.lastname|escape}" class="text required {if $error_flags.lastname}instyle_error{/if}" />
 		</div>
 	{/block}
@@ -47,7 +47,7 @@
 	{* Street *}
 	{block name='frontend_register_shipping_fieldset_input_street'}
 		<div>
-		    <label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" for="street2">{se name='RegisterShippingLabelStreet'}{/se}</label>
+		    <label for="street2">{se name='RegisterShippingLabelStreet'}{/se}</label>
 		    <input name="register[shipping][street]" type="text"  id="street2" value="{$form_data.street|escape}" class="street text required {if $error_flags.street}instyle_error{/if}" />
 		    <input name="register[shipping][streetnumber]" type="text"  id="streetnumber2" value="{$form_data.streetnumber|escape}"  maxlength="5" class="number text required {if $error_flags.streetnumber}instyle_error{/if}" />
 		</div>
@@ -56,7 +56,7 @@
 	{* Zip + City *}
 	{block name='frontend_register_shipping_fieldset_input_zip_and_city'}
 		<div>
-		    <labe class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}"l for="zipcode2">{se name='RegisterShippingLabelCity'}{/se}</label>
+		    <label for="zipcode2">{se name='RegisterShippingLabelCity'}{/se}</label>
 		    <input name="register[shipping][zipcode]" type="text" id="zipcode2" value="{$form_data.zipcode|escape}" maxlength="5" class="zipcode text required {if $error_flags.zipcode}instyle_error{/if}" />
 		    <input name="register[shipping][city]" type="text"  id="city2" value="{$form_data.city|escape}" size="25" class="city text required {if $error_flags.city}instyle_error{/if}" />
 		</div>
@@ -66,7 +66,7 @@
 	{if $this->config('CountryShipping')}
 		{block name='frontend_register_shipping_fieldset_input_country'}
 			<div>
-				<label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}" for="country2">{se name='RegisterShippingLabelCountry'}{/se} </label>
+				<label for="country2">{se name='RegisterShippingLabelCountry'}{/se} </label>
 				<select name="register[shipping][country]" id="country2" class="text required {if $error_flags.country}instyle_error{/if}">
 					<option value="" selected="selected">{s name='RegisterShippingLabelSelect'}{/s}</option>
 					{foreach from=$country_list item=country}

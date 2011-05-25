@@ -32,7 +32,7 @@
 	{* Street *}
 	{block name='frontend_register_billing_fieldset_input_street'}
 		<div>
-			<label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}"  for="street">{s name='RegisterBillingLabelStreet'}{/s}</label>
+			<label for="street">{s name='RegisterBillingLabelStreet'}{/s}</label>
 			<input name="register[billing][street]" type="text"  id="street" value="{$form_data.street|escape}" class="street required text{if $error_flags.street} instyle_error{/if}" />
 			<input name="register[billing][streetnumber]" type="text"  id="streetnumber" value="{$form_data.streetnumber|escape}"  maxlength="5" class="number streetnumber required text{if $error_flags.streetnumber} instyle_error{/if}" />
 		</div>
@@ -41,7 +41,7 @@
 	{* Zip + City *}
 	{block name='frontend_register_billing_fieldset_input_zip_and_city'}
 		<div>
-			<label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}"  for="zipcode">{se name='RegisterBillingLabelCity'}{/se}</label>
+			<label for="zipcode">{se name='RegisterBillingLabelCity'}{/se}</label>
 			<input name="register[billing][zipcode]" type="text" id="zipcode" value="{$form_data.zipcode|escape}" maxlength="5" class="zipcode required text{if $error_flags.zipcode} instyle_error{/if}" />
 			<input name="register[billing][city]" type="text" id="city" value="{$form_data.city|escape}" size="25" class="city required text{if $error_flags.city} instyle_error{/if}" />
 		</div>
@@ -50,7 +50,7 @@
 	{* Country *}
 	{block name='frontend_register_billing_fieldset_input_country'}	
 		<div>
-		<label class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}"  for="country">{se name='RegisterBillingLabelCountry'}{/se} </label>
+		<label for="country">{se name='RegisterBillingLabelCountry'}{/se} </label>
 			<select name="register[billing][country]" id="country" class="text required {if $error_flags.country}instyle_error{/if}">
 			<option value="" selected="selected">{s name='RegisterBillingLabelSelect'}{/s}</option>
 			{foreach from=$country_list item=country}

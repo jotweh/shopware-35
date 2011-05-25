@@ -16,7 +16,25 @@
 				<strong class="title">{$sArticle.articleName|truncate:47}</strong>
 				{/block}
 			</a>
-		
+			
+			{* Unit price *}
+			{block name='frontend_listing_similar_article_unit'}
+	        {if $sArticle.purchaseunit}
+	            <div class="article_price_unit">
+	                <p>
+	                    <strong>{se name="ListingBoxArticleContent" namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.purchaseunit} {$sArticle.sUnit.description}
+	                </p>
+	                {if $sArticle.purchaseunit != $sArticle.referenceunit}
+	                    <p>
+	                        {if $sArticle.referenceunit}
+	                            <strong class="baseprice">{se name="ListingBoxBaseprice" namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+	                        {/if}
+	                    </p>
+	                {/if}
+	            </div>
+	        {/if}
+			{/block} 
+			
 			{* Price *}
 			{block name='frontend_listing_box_similar_price'}
 			<p class="price">

@@ -62,7 +62,7 @@
 		                {if $sBasketItem.purchaseunit != $sBasketItem}
 		                    <p>
 		                        {if $sBasketItem.referenceunit}
-		                            <strong class="baseprice">{se name="NoteUnitPriceBaseprice"}{/se}:</strong> {$sBasketItem.referenceunit} {$sBasketItem.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+		                            <strong class="baseprice">{se name="NoteUnitPriceBaseprice"}{/se}:</strong> {$sBasketItem.referenceunit} {$sBasketItem.sUnit.description} = {$sBasketItem.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
 		                        {/if}
 		                    </p>
 		                {/if}

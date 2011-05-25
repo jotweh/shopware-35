@@ -13,7 +13,7 @@
 		<a title="{$article.articleName}" class="title" href="{$article.linkDetails}">{$article.articleName|truncate:35}</a>
 		
 		{if $article.purchaseunit}
-            <div class="{if !$sArticle.pseudoprice}article_price_unit{else}article_price_unit_pseudo{/if}">
+            <div class="article_price_unit">
                 <p>
                     <strong>{se name="SlideArticleInfoContent"}{/se}:</strong> {$article.purchaseunit} {$article.sUnit.description}
                 </p>

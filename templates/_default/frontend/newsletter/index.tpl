@@ -31,7 +31,7 @@
 						</select>
 					</p>
 					<p>
-						<label for="newsletter" class="required" title="{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}">{s name=sNewsletterLabelMail}{/s}</label>
+						<label for="newsletter">{s name=sNewsletterLabelMail}{/s}</label>
 						<input name="newsletter" type="text" id="newsletter" value="{if $_POST.newsletter}{$_POST.newsletter}{elseif $_GET.sNewsletter}{$_GET.sNewsletter|escape}{/if}" class="text {if $sStatus.sErrorFlag.newsletter}instyle_error{/if}" />
 					</p>
 					{if $this->config('NewsletterExtendedFields')}
@@ -86,6 +86,12 @@
 					<p class="description">
 						{s name=sNewsletterInfo}{/s}
 					</p>
+					
+					{* Required fields hint *}
+					<div class="required_fields">
+						{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}
+					</div>
+					
 					<input type="submit" value="{s name=sNewsletterButton}{/s}" class="button-right large" />	
 					</fieldset>
 				</form>

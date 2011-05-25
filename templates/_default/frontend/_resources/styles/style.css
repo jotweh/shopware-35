@@ -261,8 +261,8 @@ div.blog_navi {margin-left:10px;}
 #content #notes .cat_text, #content .account .cat_text, #content .register .supplier_register {margin-left: 10px;background: url(../images/backgrounds/bg_cat_text_note.png) left bottom no-repeat;}
 #content .account .cat_text {margin: 0;}
 #content .banner {margin-bottom: 10px;}
-#content .register .required { cursor: pointer; }
-
+.required_fields { border: 1px solid #c7c7c7; padding: 10px; background: #F3F3F3; font-weight: 700 }
+#letterForm .required_fields  { margin: 0 20px 20px; background: #fff; }
 
 /*	GENERAL LISTING
 	------------------------ */
@@ -523,13 +523,13 @@ div#article_details .delivery_container {margin: 5px 0 0 0;}
 #detail #detailinfo #description {padding-right: 25px;width:475px;line-height:16px;}
 
 /* Similar */
-#detail #detailinfo .similar {width: 230px;border-left: 1px solid;min-height: 365px;padding: 0 0 1000em 15px;margin:0 0 -1000em;float:left;}
+#detail #detailinfo .similar {width: 235px;border-left: 1px solid;min-height: 365px;padding: 0 0 1000em 10px;margin:0 0 -1000em;float:left;}
 #detail #detailinfo .similar h3 {text-transform: none;font-size:14px;font-weight: 700;margin: 25px 0 0 10px}
-#detail #detailinfo .similar .artbox {width:230px;border: 0 none;margin-right: 0;}
+#detail #detailinfo .similar .artbox {width:235px;border: 0 none;margin-right: 0;}
 #detail #detailinfo .similar .artbox .inner {width: auto;overflow:auto;float:none;}
 #detail #detailinfo .similar .artbox .artbox_thumb {height: 57px; width: 57px;border: 1px solid #dbdbdb;margin:0px;float:left;}
 #detail #detailinfo .similar .title_price {width:140px;float:left;margin-left:10px;}
-#detail #detailinfo .similar .artbox .title {display:block;margin-bottom:10px;}
+#detail #detailinfo .similar .artbox .title {display:block;}
 #detail #detailinfo .similar .artbox .price {position: static;}
 #detail #detailinfo .similar .artbox .actions {display: none;}
 
@@ -1415,9 +1415,10 @@ input.button-left,input.button-right,input.button-middle {text-align:left;}
 
 /* Add article slider */
 div.ajax_add_article .ajaxSlider .article_box .title {position: static; left: auto; top: auto;}
-.modal div.ajax_add_article .ajaxSlider .article_box {height: 160px;margin: 0 8px;}
-div.ajax_add_article .ajaxSlider .article_box .price {left: auto;top: auto;}
+.modal div.ajax_add_article .ajaxSlider .article_box {height: 190px;margin: 0 8px;}
+div.ajax_add_article .ajaxSlider .article_box .price {left: auto;top: auto; bottom: 2px}
 .modal .ajaxSlider .sliding_container .slide {width: 578px;}
+.modal .ajaxSlider .sliding_container .slide .article_box .price { font-size: 14px; }
 
 /*	FOOTER
 	------------------------ */
