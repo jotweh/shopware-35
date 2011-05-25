@@ -428,7 +428,7 @@
 									{
 										id: '{$widget.uid}',
 										widget: '{$widget.widgetType}',
-										title: '{$widget.configuration.widgetLabel}',
+										title: '{$widget.configuration.widgetLabel|escape}',
 										tools: this.getTools(),
 										items: [
 											Ext.create('Swag.Widget.'+'{$widget.widgetType}'+"_"+'{$widget.uid}'+"_"+new Date().getTime(),{
