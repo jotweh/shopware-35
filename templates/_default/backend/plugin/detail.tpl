@@ -96,7 +96,7 @@
 										xtype: 'radio',
 									{elseif $element->getType()=='Zend_Form_Element_Password'}
 										xtype: 'password',
-									{elseif $element->getType()=='Zend_Form_Element_HtmlEditor'}
+									{elseif $element->getType()=='Zend_Form_Element_Htmleditor'}
 										xtype: 'htmleditor',
 									{else}
 									{/if}

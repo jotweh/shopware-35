@@ -223,7 +223,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 			$widget["views"] = str_replace("\\","/",$widget["views"]);
 		}
 		$this->View()->addTemplateDir(Shopware()->DocPath().$widget["views"]);
-		$this->View()->loadTemplate(Shopware()->DocPath().$widget["views"].$widget["template"]);
+		$this->View()->loadTemplate($widget["template"]);
 	}
 
 	/**

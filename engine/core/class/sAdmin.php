@@ -1465,7 +1465,7 @@ class	sAdmin
 		if  ($this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['ishtml']){
 			$mail->IsHTML(1);
 			$mail->Body     = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['contentHTML'];
-			$mail->AltBody     = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['content'];
+			$AltBody     = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['content'];
 		}else {
 			$mail->IsHTML(0);
 			$mail->Body     = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['content'];
@@ -1474,18 +1474,20 @@ class	sAdmin
 		$mail->From     = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['frommail'];
 		$mail->FromName = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['fromname'];
 		$mail->Subject  = $this->sSYSTEM->sCONFIG['sTemplates']['sREGISTERCONFIRMATION']['subject'];
-					
+
+		
 		foreach ($this->sSYSTEM->_SESSION["sRegister"]["billing"] as $key => $value)
 		{
 			if($key=="salutation") $value = ($value=="ms") ? "Frau" : "Herr";
 			$mail->Body = str_replace("{".$key."}",$value,$mail->Body);
-			if (!empty($mail->AltBody)){
-				$mail->AltBody = str_replace("{".$key."}",$value,$mail->AltBody);
+			if (!empty($AltBody)){
+				$AltBody = str_replace("{".$key."}",$value,$AltBody);
 			}
 		}
 		$mail->Body = str_replace("{sMAIL}",$email,$mail->Body);
-		if (!empty($mail->AltBody)){
-			$mail->AltBody = str_replace("{sMAIL}",$email,$mail->AltBody);
+		if (!empty($AltBody)){
+			$AltBody = str_replace("{sMAIL}",$email,$AltBody);
+			$mail->AltBody = $AltBody;
 		}
 
 		$mail->ClearAddresses();
