@@ -15,9 +15,6 @@
 {/block}
 
 {block name="backend_index_javascript" append}
-<link rel="stylesheet" type="text/css" href="{replace search='\\' replace='/'}{link file='backend/_resources/styles/plugins/Ext.ux.Multiselect.css'}{/replace}" />
-<script type="text/javascript" src="{replace search='\\' replace='/'}{link file='backend/_resources/javascript/plugins/Ext.ux.DDView.js'}{/replace}"></script>
-<script type="text/javascript" src="{replace search='\\' replace='/'}{link file='backend/_resources/javascript/plugins/Ext.ux.Multiselect.js'}{/replace}"></script>
 <script type="text/javascript">
 Ext.ns('Shopware.Update');	
 </script>

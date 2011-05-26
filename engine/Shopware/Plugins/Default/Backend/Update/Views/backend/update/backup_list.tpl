@@ -1,6 +1,6 @@
 <script type="text/javascript">
 BackupList = Ext.extend(Ext.grid.GridPanel, {
-	title: 'Backup-Verwaltung',
+	//title: 'Backup-Verwaltung',
 	closable: false,
 	viewConfig: {
 		forceFit:true

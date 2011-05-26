@@ -1,55 +1,29 @@
 <script type="text/javascript">
 Backup = Ext.extend(Ext.FormPanel, {
-	title: 'Backup erstellen',
+	title: 'Backup-Verwaltung',
 	closable: false,
 	autoScroll: true,
-    defaults: { anchor: '100%', xtype:'textfield' },
-    fileUpload: true,
-	layout:'form',
-    labelWidth: 120,
-    bodyStyle:'padding:20px',
+	layout: 'fit',
 	initComponent: function() {
-		
-		this.fieldsetBase = {
-            xtype:'fieldset',
-		    title: 'Tabellen',
-		    layout: 'fit',
-		    items: [{
-	            xtype: 'multiselect',
-	            name: 'tables',
-	            hiddenField: 'tables',
-				dataFields: ['id', 'name'],
-				data:  [{foreach $TableCounts as $Table=>$Count}
-					['{$Table|escape:javascript}', '{$Table|escape:javascript} ({$Count})']{if !$Count@last},{/if}
-				{/foreach}],
-				valueField: 'id',
-				displayField: 'name',
-				width: 'auto',
-				height: 'auto',
-				//allowBlank: false,
-				value: '{foreach $TableCounts as $Table=>$Count}{$Table}{if !$Count@last},{/if}{/foreach}'
-	        }]
-		};
-		this.items = [this.fieldsetBase];
-		
+		this.List = new Shopware.Update.BackupList();
+		this.items = [this.List];
 		this.buttons = [{
-	        text: 'Erstellen',
+	        text: 'Datenbank-Backup erstellen',
 	        handler: function(){
 	        	var form = this.getForm();
 	            if(!form.isValid()) {
 	            	return;
 	            }
 	            var formConfig = {
-	            	url: '{url action=backup}',
+	            	url: '{url action=backupDatabase}',
 	            	success: function(form, action){
 	            		if(action.result.tables) {
 	            			Ext.MessageBox.wait(action.result.message, 'Backup');
 	            			formConfig.params = action.result;
-	            			form.findField().setValue(null);
 	            			form.submit(formConfig);
 	            		} else {
 	            			Ext.MessageBox.alert('Backup', action.result.message);
-	            			Update.BackupList.refreshList();
+	            			this.List.refreshList();
 	            		}
 	            	},
 	            	failure: function(form, action) {
@@ -72,8 +46,13 @@ Backup = Ext.extend(Ext.FormPanel, {
 	            form.submit(formConfig);
 	        },
 	        scope: this
+	    }, {
+	        text: 'Liste aktualisieren',
+	        handler: function(){
+	        	this.List.refreshList();
+	        },
+	        scope: this
 	    }];
-		
         Backup.superclass.initComponent.call(this);
 	}
 });

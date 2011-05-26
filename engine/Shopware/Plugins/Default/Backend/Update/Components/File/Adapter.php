@@ -2,7 +2,6 @@
 abstract class	Shopware_Components_File_Adapter implements SeekableIterator, Countable
 {
 	protected $position;
-	protected $stream;
 	protected $count;
 	
 	public function seek($position)
@@ -44,4 +43,6 @@ abstract class	Shopware_Components_File_Adapter implements SeekableIterator, Cou
 		$this->next();
 		return $result;
 	}
+	
+	abstract public function current();
 }

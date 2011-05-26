@@ -71,14 +71,11 @@ class	Shopware_Components_File_Adapter_Ftp
 	public function fileExists($remoteFile)
 	{
     	$remoteDir = dirname($remoteFile);
-    	if($remoteDir == '.') {
-    		$remoteDir = '';
-    	}
-    	$remoteFile = basename($remoteFile);  	
-    	$list = $this->execute('nlist', array($remoteDir), false);
+    	$list = $this->nlist($remoteDir);
         if (empty($list)) {
             return false;
         }
+        $remoteFile = basename($remoteFile);  	
         foreach ($list as  $value) {
             if (basename($value) == $remoteFile) {
                 return true;
@@ -86,6 +83,14 @@ class	Shopware_Components_File_Adapter_Ftp
         }
         return false;
     }
+    
+    public function nlist($path)
+	{
+		if($path == '.') {
+    		$path = '';
+    	}
+		return $this->execute('nlist', array($path), false);
+	}
     
     public function isDir($path)
 	{
@@ -110,7 +115,7 @@ class	Shopware_Components_File_Adapter_Ftp
 	
 	public function isFile($remoteFile)
 	{
-		return $this->size($remoteFile)!=-1;
+		return $this->size($remoteFile) !== -1;
 	}
 	
 	public function putContents($remoteFile, $data, $mode=self::MODE_BINARY)

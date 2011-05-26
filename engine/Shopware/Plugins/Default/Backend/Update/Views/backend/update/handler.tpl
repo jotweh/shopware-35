@@ -16,17 +16,32 @@ Handler = Ext.extend(Ext.FormPanel, {
             defaults: { anchor: '100%' },
             defaultType: 'textfield',
             items :[{
+		        xtype: 'hidden',
+		        name: 'hash',
+		        value: '{$VersionConfig->hash}'
+		    }, {
 				fieldLabel: 'Version',
 				name: 'version',
 				value: '{$VersionConfig->version}',
 				readOnly: true,
 				disabled: true
-			},{
+			}, {
+				fieldLabel: 'Version',
+				name: 'version',
+				value: '{$VersionConfig->version}',
+				readOnly: true,
+				disabled: true
+			}, {
+				xtype: 'checkbox',
+				fieldLabel: 'Cache leeren',
+				name: 'cache',
+				checked: true
+			}, {
 				xtype: 'checkbox',
 				fieldLabel: 'Wartungsmodus aktivieren',
 				name: 'service_mode',
 				checked: true
-			},{
+			}, {
 				xtype: 'checkbox',
 				fieldLabel: 'Datenbank-Backup erstellen',
 				name: 'backup',
@@ -35,15 +50,16 @@ Handler = Ext.extend(Ext.FormPanel, {
 		};
 		
 		this.formConfig = {
-        	url: '{url action=update}',
+        	url: '{url}',
+        	params: { 'action': 'update' },
         	success: function(form, action){
-        		if(action.result.progress !== 1) {
+        		if(action.result.action) {
         			Ext.MessageBox.wait(action.result.message, 'Update');
         			this.formConfig.params = action.result;
         			form.submit(this.formConfig);
         		} else {
         			Ext.MessageBox.alert('Update', action.result.message);
-        			Update.BackupList.refreshList();
+        			Update.Backup.List.refreshList();
         		}
         	},
         	failure: function(form, action) {

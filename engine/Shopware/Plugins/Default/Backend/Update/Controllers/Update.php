@@ -9,10 +9,7 @@
  * @subpackage Controllers
  */
 class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
-{
-	protected $downloadChannel = 'http://www.shopware.de/install/files/download.php';
-	protected $versionChannel = 'http://www.shopware.de/install/version.php';
-	
+{	
 	/**
 	 * Init controller method
 	 */
@@ -53,7 +50,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		$rows = Shopware()->Db()->listTables();
 		natsort($rows);
 		foreach ($rows as $table) {
-			$sql = 'SELECT COUNT(*) FROM '.Shopware()->Db()->quoteIdentifier($table);
+			$sql = 'SELECT COUNT(*) FROM ' . Shopware()->Db()->quoteIdentifier($table);
 			$count = Shopware()->Db()->fetchOne($sql);
 			$tables[$table] = $count;
 		}
@@ -67,9 +64,9 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function getVersionConfig()
 	{
-		$url = $this->versionChannel;
+		$url = $this->Config()->versionChannel;
 		$url .= '?version='.urlencode(Shopware()->Config()->Version);
-		$url .= '?host='.urlencode(Shopware()->Config()->Host);
+		$url .= '&host='.urlencode(Shopware()->Config()->Host);
 		$config = new Zend_Config_Xml($url, 'update');
 		return $config;
 	}
@@ -97,8 +94,13 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function Ftp()
 	{
+		static $ftp;
+		if(isset($config)) {
+			return $ftp;
+		}
+		
 		if(empty($this->Request()->ftp_user)) {
-			throw new Enlight_Exception('FTP config is missing');
+			throw new Enlight_Exception('Die FTP-Einstellungen fehlen.');
 		}
     	
 		if(empty($this->Request()->ftp_host) || $this->Request()->ftp_host=='default') {
@@ -127,6 +129,38 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		$ftp->chdir($ftpPath);
 		
 		return $ftp;
+	}
+	
+	/**
+	 * Returns update config
+	 *
+	 * @return Enlight_Config
+	 */
+	public function Config()
+	{
+		static $config;
+		if(!isset($config)) {
+			$config = new Enlight_Config(array(
+				'downloadChannel' => 'https://update.shopware.de/download.php',
+				'versionChannel' => 'https://update.shopware.de/version.php',
+				'downloadFile' => 'update.tmp',
+				'backupDir' => 'files/backups/',
+				'updateDir' => 'files/update/',
+				'databaseFile' => 'files/update/update.sql',
+				'updateFiles' => array(
+					'templates/_default/',
+					'engine/',
+				),
+				'restoreFiles' => array(
+					'engine/Shopware/Plugins/Community/',
+					'engine/Shopware/Plugins/Local/',
+					'engine/local_old/',
+					'engine/core/class/viewports/',
+					'engine/core/class/inherit/',
+				)
+			));
+		}
+		return $config;
 	}
 	
 	/**
@@ -210,7 +244,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 			$list[] = array('id' => 'ftp', 'name' => 'FTP');
 		}
 		if(!ini_get('safe_mode') 
-		  && is_writable(Shopware()->OldPath())
+		  && is_writable(Shopware()->DocPath())
 		  && is_writable(Shopware()->AppPath())) {
 			$list[] = array('id' => 'direct', 'name' => 'Direkt');
 		}
@@ -279,6 +313,15 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
     }
 	
     /**
+	 * Clean cache method
+	 */
+    public function cleanCacheAction()
+    {
+    	Shopware()->Cache()->clean();
+    	echo Zend_Json::encode(array('success' => true));
+    }
+    
+    /**
 	 * Index action method
 	 */
 	public function backupListAction()
@@ -313,7 +356,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		$backupDir = Shopware()->DocPath('files_backups');
 		$file = $this->Request()->getParam('file');
 		$file = basename($file);
-		if(!file_exists($backupDir.$file)) {
+		if(!file_exists($backupDir . $file)) {
 			return;
 		}
 		
@@ -336,7 +379,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	/**
 	 * Index action method
 	 */
-	public function backupAction()
+	public function backupDatabaseAction()
 	{
 		$requestTime = !empty($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
 		$offset = (int) $this->Request()->getParam('offset', 0);
@@ -348,7 +391,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		}
 		
 		if(!$file = $this->Request()->getParam('file')) {
-			$file = 'database_'.date('Y-m-d_H-i-s').'.php';
+			$file = 'database_' . date('Y-m-d_H-i-s') . '.php';
 			$fp = fopen($backupDir . $file, 'wb');
 			$content = '/*<?php exit(); __halt_compiler(); ?>*/'."\n";
 			fwrite($fp, $content);
@@ -375,12 +418,13 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				}
 				if(time()-$requestTime >= 25
 				  || ($position && $position%10 == 0)) {
-					array_push($tables, $table);
+					array_unshift($tables, $table);
 					echo Zend_Json::encode(array(
 						'message' => 'Exportiere Tabelle "' . $table . '".',
 						'success' => true,
 						'tables' => $tables,
 						'file' => $file,
+						'action' => 'backupDatabase',
 						'offset' => $position + 1
 					));
 					return;
@@ -390,7 +434,39 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array(
 			'message' => 'Datenbank-Export abgeschlossen!',
-			'success' => true
+			'success' => true, 'action' => 'updateDatabase',
+			'progress' => 0
+		));
+	}
+	
+	/**
+	 * Index action method
+	 */
+	public function prepareAction()
+	{
+//		try {
+//			$ftp = $this->Ftp();
+//		} catch (Exception $e) {
+//			echo Zend_Json::encode(array('message' => 'Es konnte keine FTP-Verbindung aufgebaut werden.<br />'.htmlentities($e->getMessage()), 'success' => false));
+//			return;
+//		}
+
+		$ftp = new Shopware_Components_File_Adapter_Direct();
+		$ftp->chdir(Shopware()->DocPath());
+		
+		try {
+			$ftp->putContents($this->Config()->downloadFile, '');
+			$ftp->changeMode($this->Config()->downloadFile, 0777);
+			$ftp->makeDir($this->Config()->backupDir);
+			$ftp->changeMode($this->Config()->backupDir, 0777);
+			$ftp->makeDir($this->Config()->updateDir);
+		} catch (Exception $e) {
+			echo Zend_Json::encode(array('message' => 'Updatedateien konnten nicht angelegt werden.<br />' . htmlentities($e->getMessage()), 'success'=>false));
+			return;
+		}
+		echo Zend_Json::encode(array(
+			'message' => 'Vorbereiten des Updates abgeschlossen.',
+			'success' => true, 'action' => 'download', 'progress' => 0
 		));
 	}
 	
@@ -400,11 +476,21 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	public function downloadAction()
 	{
 		$offset = (int) $this->Request()->getParam('offset', 0);
+		$hash = $this->Request()->getParam('hash');
+		$package = $this->getRequestPackage();
+		$format = $this->getRequestFormat();
+		$size = (int) $this->Request()->getParam('size', 0);
 		
-		$url = $downloadChannel . '?package=' . urlencode($package) . '&format=' . urlencode($format);
+		$url = $this->Config()->downloadChannel
+		     . '?package=' . urlencode($package)
+		     . '&format=' . urlencode($format)
+		     . '&hash=' . urlencode($hash)
+		     . '&host=' . urlencode(Shopware()->Config()->host);
 		if(!empty($offset)) {
-			$url .= '&offset='.(int) $offset;
+			$url .= '&offset=' . $offset;
 		}
+		
+		var_dump($url); die();
 		
 		$options = array(
 			'http' => array(
@@ -416,7 +502,7 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		
 		$source = @fopen($url, 'r', false, $context);
 		if(!$source) {
-			echo json_encode(array('message'=>'&Ouml;ffnen der Downloaddatei ist fehlgeschlagen.', 'success'=>false));
+			echo Zend_Json::encode(array('message'=>'Starten des Downloads ist fehlgeschlagen.', 'success'=>false));
 			return;
 		}
 		
@@ -429,37 +515,24 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 		while (!feof($source)) {
 			
 			fwrite($target, fread($source, 8192));
-
 			if(time() - $requestTime >= 10) {
 				$offset += ftell($source);
 				echo Zend_Json::encode(array(
-					'message' => ' heruntergeladen.',
-					'size' => $offset,
-					'success' =>true,
+					'message' => round($offset / $size * 100, 2) . '% der Updatedateien heruntergeladen.',
+					'size' => $size,
+					'success' => true,
 					'step' => $step,
 					'offset' => $offset,
-					'progress' => 0.5
+					'progress' => $offset / $size
 				));
 				return;
 			}
 		}
-	}
-	
-	/**
-	 * Index action method
-	 */
-	public function prepareAction()
-	{
-		try {
-			$ftp->putContents($this->Config()->downloadFile, '');
-			$ftp->changeMode($this->Config()->downloadFile, 0777);
-			$ftp->makeDir($this->Config()->backupDir);
-			$ftp->changeMode($this->Config()->backupDir, 0777);
-			$ftp->makeDir($this->Config()->updateDir);
-		} catch (Exception $e) {
-			echo json_encode(array('message'=>'Updatedateien konnten nicht angelegt werden.<br />'.htmlentities($e->getMessage()), 'success'=>false));
-			return;
-		}
+		
+		echo Zend_Json::encode(array(
+			'message' => 'Herunterladen der Updatedateien abgeschlossen.',
+			'success' => true, 'action' => 'download', 'progress' => 0
+		));
 	}
 	
 	/**
@@ -467,15 +540,36 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function unpackAction()
 	{
+		try {
+			$ftp = $this->Ftp();
+		} catch (Exception $e) {
+			echo Zend_Json::encode(array('message' => 'Es konnte keine FTP-Verbindung aufgebaut werden.<br />'.htmlentities($e->getMessage()), 'success' => false));
+			return;
+		}
+		
 		$offset = (int) $this->Request()->getParam('offset', 0);
 
 		$zip = new Shopware_Components_File_Adapter_Zip($this->Config()->downloadFile);
 		$zip->seek($offset);
+		$count = $zip->count();
 		
 		while (list($position, $entry) = $zip->each()) {
-			$name = $entry->name;
-													
-			if(in_array(basename($name), array('', '.', 'readme.txt'))) {
+			$name = (string) $entry;
+			
+			if($position !== $offset
+			  && (time() - $requestTime >= 25 || $position % 500 == 0)) {
+				
+				echo Zend_Json::encode(array(
+					'message' => $position  . ' von ' . $count . ' Dateien entpackt.',
+					'success' => true,
+					'step' => 2,
+					'offset' => $position,
+					'progress' => $position / $count
+				));
+				return;
+			}
+			
+			if(in_array(basename($name), array('', '.'))) {
 				continue;
 			}
 
@@ -484,30 +578,19 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 					$ftp->makeDir($name);
 					//mkdir($name);
 				}
-			} else {
+			} elseif($entry->isFile()) {
 				$ftp->put($name, $entry->getStream());
 				//file_put_contents($name, $entry->getStream());
 			}
-			
-			if(time()-$requestTime >= 25 || ($position+1)%500==0) {
-				
-				$count = $zip->count();
-				echo json_encode(array(
-					'message' => ($position+1).' von '.$count.' Dateien entpackt.',
-					'success' => true,
-					'step' => 2,
-					'offset' => $position+1,
-					'progress' => ($position+1)/$count
-				));
-				return;
-			}
 		}
+		
+		echo Zend_Json::encode(array('message' => 'Entpacken der Downloaddatei abgeschlossen.', 'success' => true, 'action' => 'backupDatabase', 'offset' => 0));
 	}
 	
 	/**
 	 * Index action method
 	 */
-	public function importAction()
+	public function updateDatabaseAction()
 	{
 		$dump = new Shopware_Components_Db_Import_Sql($this->Config()->databaseFile);
 		foreach ($dump as $line) {
@@ -524,40 +607,59 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				return;
 	        }
 		}
+		
+		echo Zend_Json::encode(array(
+			'message' => 'Datenbank-Export abgeschlossen!',
+			'success' => true, 'action' => 'rename',
+			'progress' => 0
+		));
 	}
 	
 	/**
 	 * Index action method
 	 */
-	public function copyAction()
+	public function renameAction()
 	{
 		try {				
-			foreach($this->Config()->backupFiles as $file) {
-				if(file_exists($file) && !file_exists($this->Config()->backupDir.$file)) {
-					$ftp->rename($file, $this->Config()->backupDir.$file);
-				}
-			}
-			if(!empty($basefile)) {
-				if(file_exists($basefile) && !file_exists($this->Config()->backupDir.$basefile)) {
-					$ftp->rename($basefile, $this->Config()->backupDir.$basefile);
+			foreach($this->Config()->updateFiles as $file) {
+				if(file_exists($file) && !file_exists($this->Config()->backupDir . $file)) {
+					$ftp->rename($file, $this->Config()->backupDir . $file);
 				}
 			}
 		} catch (Exception $e) {
-			echo json_encode(array('message' => 'Backup ist fehlgeschlagen.<br />'.$e->getMessage(), 'success' => false));
+			echo Zend_Json::encode(array('message' => 'Backup der Anpassung ist fehlgeschlagen.<br />'.$e->getMessage(), 'success' => false));
 			return;
 		}
 		
 		try {				
 			foreach($this->Config()->updateFiles as $file) {
-				if(!file_exists($this->Config()->updateDir.$file)) {
+				if(!file_exists($this->Config()->updateDir . $file)) {
 					continue;
 				}
-				$ftp->rename($this->Config()->updateDir.$file, $file);
+				$ftp->rename($this->Config()->updateDir . $file, $file);
 			}
 		} catch (Exception $e) {
-			echo json_encode(array('message' => 'Update ist fehlgeschlagen.<br />'.$e->getMessage(), 'success' => false));
+			echo Zend_Json::encode(array('message' => 'Update der Dateien ist fehlgeschlagen.<br />'.$e->getMessage(), 'success' => false));
 			return;
 		}
+		
+		try {
+			foreach($this->Config()->restoreFiles as $file) {
+				if(!file_exists($this->Config()->backupDir . $file)) {
+					continue;
+				}
+				$ftp->rename($file, $this->Config()->backupDir . $file);
+			}
+		} catch (Exception $e) {
+			echo Zend_Json::encode(array('message' => 'Wiederherstellung der Anpassung ist fehlgeschlagen.<br />'.$e->getMessage(), 'success' => false));
+			return;
+		}
+		
+		echo Zend_Json::encode(array(
+			'message' => 'Update der Dateien abgeschlossen!',
+			'success' => true, 'action' => 'finish',
+			'progress' => 0
+		));
 	}
 	
 	/**
@@ -574,6 +676,12 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 				@unlink($file);
 			}
 		}
+		
+		echo Zend_Json::encode(array(
+			'message' => 'Update wurde erfolgreich abgeschlossen.',
+			'success' => true,
+			'progress' => 1
+		));
 	}
 	
 	/**
@@ -581,54 +689,6 @@ class Shopware_Controllers_Backend_Update extends Enlight_Controller_Action
 	 */
 	public function updateAction()
     {
-    	/*
-    	$requestTime = !empty($_SERVER['REQUEST_TIME']) ? $_SERVER['REQUEST_TIME'] : time();
-    	$db = $this->Db();
-    	
-		try {
-			$ftp = $this->Ftp();
-		} catch (Exception $e) {
-			echo json_encode(array('message' => 'Es konnte keine FTP-Verbindung aufgebaut werden.<br />'.htmlentities($e->getMessage()), 'success' => false));
-			return;
-		}
-		*/
-    	$step = (int) $this->Request()->getParam('step', 0);
-    	switch ($step) {
-			case 0:
-				//return $this->prepareAction();
-				echo Zend_Json::encode(array('message' => 'Herunterladen der Updatedateien.', 'success' => true, 'step' => 1, 'progress' => 0));
-				return;
-			case 1:
-				//return $this->downloadAction();
-				sleep(2);
-				echo Zend_Json::encode(array('message' => 'Entpacken der Downloaddatei.', 'success' => true, 'step' => $step+1, 'offset' => 0));
-				return;
-			case 2:
-				//return $this->unpackAction();
-				sleep(3);
-				echo Zend_Json::encode(array('message' => 'Backup der Datenbank.', 'success' => true, 'step' => 3, 'progress' => 0, 'offset' => 0));
-				return;
-			case 3:
-				//return $this->backupAction();
-				sleep(2);
-				echo Zend_Json::encode(array('message' => 'Update der Datenbank.', 'success' => true, 'step' => 4, 'progress' => 0));
-				return;
-			case 4:
-				//return $this->copyAction();
-				sleep(4);
-				echo Zend_Json::encode(array('message' => 'Update der Dateien.', 'success' => true, 'step' => 5, 'progress' => 0.9));
-				return;
-			case 5:
-				//return $this->unpackAction();		
-				sleep(1);			
-				echo Zend_Json::encode(array('message' => 'L&ouml;schen der Updatedateien.', 'success' => true, 'step' => 6, 'progress' => 0.8));
-				return;
-			case 6:
-				//return $this->finishAction();
-				echo Zend_Json::encode(array('message' => 'Update wurde erfolgreich abgeschlossen.', 'success' => true, 'progress' => 1));
-				return;
-			default:
-				break;
-		}
+    	echo Zend_Json::encode(array('message' => 'Update wird gestartet.', 'success' => true, 'action' => 'prepare'));
     }
 }

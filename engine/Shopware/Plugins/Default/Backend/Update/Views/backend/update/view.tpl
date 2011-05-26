@@ -6,12 +6,11 @@ View = Ext.extend(Ext.Viewport, {
 		this.Info = new Shopware.Update.Info();
 		this.BackupForm = new Shopware.Update.Backup();
 		this.ConfigForm = new Shopware.Update.Config();
-		this.BackupList = new Shopware.Update.BackupList();
 		this.HandlerFrom = new Shopware.Update.Handler();
 
 		this.Tabs = new Ext.TabPanel({
 	        activeTab: 0,
-	        items: [this.Info, this.ConfigForm, this.HandlerFrom, this.BackupForm, this.BackupList]
+	        items: [this.Info, this.ConfigForm, this.HandlerFrom, this.BackupForm]
 	    });
 		
 	    this.items = [this.Tabs];
