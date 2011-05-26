@@ -354,16 +354,30 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	{
 		$id = (int) $this->Request()->id;
 		$plugin = $this->getPluginById($id);
-		$result = $plugin->disable();
-		$result = $plugin->uninstall();
-		if($result) {
-			$data = array(
-				'installation_date' => NULL,
-				'update_date' =>  NULL
-			);
-			$this->db->update('s_core_plugins', $data, array('id=?'=>$id));
+		if (!is_object($plugin)){
+			// Fatal error plugin object not available
+			$sql = 'DELETE FROM `s_core_plugin_elements` WHERE `pluginID`=?';
+			Shopware()->Db()->query($sql, $id);
+			$sql = 'DELETE FROM `s_core_plugin_configs` WHERE `pluginID`=?';
+			Shopware()->Db()->query($sql, $id);
+			$sql = 'DELETE FROM `s_core_menu` WHERE `pluginID`=?';
+			Shopware()->Db()->query($sql, $id);
+			$sql = 'DELETE FROM `s_crontab` WHERE `pluginID`=?';
+			Shopware()->Db()->query($sql, $id);
+			$sql = 'DELETE FROM `s_core_plugins` WHERE `id`=?';
+			Shopware()->Db()->query($sql, $id);
+			$result = true;
+		}else {
+			$result = $plugin->disable();
+			$result = $plugin->uninstall();
+			if($result) {
+				$data = array(
+					'installation_date' => NULL,
+					'update_date' =>  NULL
+				);
+				$this->db->update('s_core_plugins', $data, array('id=?'=>$id));
 		}
-		
+		}
 		echo Zend_Json::encode(array('success'=>$result));
 	}
 

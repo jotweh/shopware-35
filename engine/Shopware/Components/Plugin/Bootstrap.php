@@ -58,12 +58,30 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		return true;
 	}
 
+
+	/**
+	 * Check if a list of given plugins is currently available
+	 * and active
+	 * @param array $plugins
+	 * @return bool
+	 */
+	public function assertRequiredPluginsPresent(array $plugins){
+		foreach ($plugins as $plugin){
+			if (!Shopware()->Db()->fetchOne("
+			SELECT id FROM s_core_plugins WHERE name = ? AND active = 1
+			",array($plugin))){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/**
 	 * Check if a given version is greater or equal to the currently installed version
 	 * @param  $requiredVersion Format: 3.5.4 or 3.5.4.21111
 	 * @return bool
 	 */
-	public function assertVersionMatch($requiredVersion){
+	public function assertVersionGreaterThen($requiredVersion){
 		$installedVersion = Shopware()->Config()->Version;
 		$installedVersion = explode(".",$installedVersion);
 		$requiredVersion = explode(".",$requiredVersion);

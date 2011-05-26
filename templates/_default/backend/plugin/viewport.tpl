@@ -158,7 +158,19 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		   					if(result.success && install) {
 		   						Viewport.showDetail(pluginId);
 		   					}
-			    		}
+			    		},
+						error: function(result){
+							
+							Ext.Msg.show({
+								   title:'Es ist ein kritischer Fehler aufgetreten!',
+								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.responseText,
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   icon: Ext.MessageBox.ERROR,
+								   maxWidth: 700,
+								   minWidth: 700
+								});
+						}
 			    	});
 				});
 		    };
