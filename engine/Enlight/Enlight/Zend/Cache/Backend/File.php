@@ -722,10 +722,10 @@ class Zend_Cache_Backend_File extends Zend_Cache_Backend implements Zend_Cache_B
             if ((is_dir($file)) and ($this->_options['hashed_directory_level']>0)) {
                 // Recursive call
                 $result = $this->_clean($file . DIRECTORY_SEPARATOR, $mode, $tags) && $result;
-                if ($mode=='all') {
+                //if ($mode=='all') {
                     // if mode=='all', we try to drop the structure too
                     @rmdir($file);
-                }
+                //}
             }
         }
         return $result;
