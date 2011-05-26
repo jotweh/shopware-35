@@ -1,5 +1,6 @@
 {block name='frontend_forms_elements'}
 <form id="support" name="support" class="{$sSupport.class}" method="post" action="{url controller='ticket' action='index' id=$id}" enctype="multipart/form-data">
+<input type="hidden" name="forceMail" value="{$forceMail|escape}" >
 {/block}
 		{if $sSupport.sErrors.e || $sSupport.sErrors.v}
 			<div class="error">

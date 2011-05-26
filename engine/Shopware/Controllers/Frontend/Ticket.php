@@ -34,7 +34,7 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 	 */
 	public function indexAction(){
 		parent::indexAction();
-		
+		$this->View()->forceMail = intval($this->Request()->forceMail);
 		$this->View()->loadTemplate('frontend/forms/index.tpl');
 	}
 
@@ -168,6 +168,7 @@ class Shopware_Controllers_Frontend_Ticket extends Shopware_Controllers_Frontend
 	 * @return void
 	 */
 	public function commitForm(){
+		
 		// Ticket # 4931
 		if (!empty($this->Request()->forceMail)){
 			return parent::commitForm();
