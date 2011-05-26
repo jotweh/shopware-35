@@ -52,6 +52,12 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 	    	this.tree = new Ext.tree.TreePanel({
 	    		title: 'Verzeichnisse',
 	    		width: 248,
+				border: true,
+				animate: true,
+				useArrows: true,
+				split:true,
+				collapsible: true,
+				iconCls: 'ico package',
 	    		region: 'west',
 	    		rootVisible:false,
 	    		root: {

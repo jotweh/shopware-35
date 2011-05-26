@@ -6,7 +6,8 @@ Ext.ns('Shopware.Plugin');
 	    initComponent: function() {
 	    	
 	    	this.upload = new Ext.FormPanel({
-			    title: 'Plugin hochladen',
+			    title: 'Plugin per Datei-Upload hinzufügen',
+				iconCls: 'ico package_add',
 			    id: 'plugin_upload_form',
 			    defaults: { anchor: '100%', xtype:'textfield' },
 			    fileUpload: true,
@@ -55,7 +56,8 @@ Ext.ns('Shopware.Plugin');
 			});
 			
 			this.download = new Ext.FormPanel({
-			    title: 'Plugin herunterladen',
+			    title: 'Plugin aus Download-Quelle hinzufügen',
+				iconCls: 'ico package_link',
 			    id: 'plugin_download_form',
 			    defaults: { anchor: '100%', xtype:'textfield' },
 				layout:'form',
@@ -103,8 +105,9 @@ Ext.ns('Shopware.Plugin');
 			});
 			
 			this.remove = new Ext.FormPanel({
-			    title: 'Plugin löschen',
+			    title: 'Plugin physikalisch entfernen',
 			    id: 'plugin_delete_form',
+				iconCls: 'ico package_delete',
 			    defaults: { anchor: '100%', xtype:'textfield' },
 				layout:'form',
 		        labelWidth: 300,
@@ -171,8 +174,15 @@ Ext.ns('Shopware.Plugin');
 		            }
 		        }]
 			});
-	    	
-	    	this.items = [this.upload, this.download, this.remove];
+			
+			this.error = new Ext.FormPanel({
+			    title: 'Fehlende Systemvoraussetzungen',
+			    html: '{if $errorProxy}Fehlende Schreibrechte auf /engine/Shopware/Proxies{/if}{if $errorPluginPath}<br />Fehlende Schreibrechte auf /engine/Shopware/Plugins/Community/ und / oder Unterverzeichnisse!{/if}{if $errorZip}Fehlende Zip-Extension - bitte laden Sie die Plugins manuell via FTP hoch!{/if}',
+				style: 'color:#F00;font-family:Arial;font-size:12px;font-weight:bold',
+				margin: '20 20 20 20'
+			});
+
+	    	this.items = [{if $errorPluginPath || $errorProxy || $errorZip}this.error,{/if}this.upload, this.download, this.remove];
 	    	
 	        Upload.superclass.initComponent.call(this);
 	    }

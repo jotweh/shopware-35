@@ -27,11 +27,29 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Not required yet
+	 * Load viewport for plugin manager and check system requirements
 	 * @return void
 	 */
 	public function indexAction()
 	{
+		$this->View()->errorProxy = false;
+		$this->View()->errorPluginPath = false;
+		$this->View()->errorZip = false;
+
+		if (!is_writeable(Shopware()->DocPath()."/engine/Shopware/Proxies")){
+			$this->View()->errorProxy = true;
+		}
+
+		$pathes = array("engine/Shopware/Plugins/Community/Backend","engine/Shopware/Plugins/Community/Frontend","engine/Shopware/Plugins/Community/Core");
+		foreach ($pathes as $path){
+			if (!is_writeable(Shopware()->DocPath()."/".$path)){
+				$this->View()->errorPluginPath = true;
+			}
+		}
+		if (!extension_loaded('zip')) {
+			$this->View()->errorZip = true;
+		}
+
 		
 	}
 
@@ -127,19 +145,21 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	public function getListAction()
 	{
 		$this->refreshList();
+
 		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
-		
+
 		$limit = $this->Request()->getParam('limit', 25);
 		$start = $this->Request()->getParam('start', 0);
 		
 		$select->limit($limit, $start);
-		
+	
 		if($this->Request()->getParam('path')) {
 			$path = explode('/', $this->Request()->getParam('path'));
-			if(!empty($path[0])) {
+
+			if(!empty($path[1])) {
 				$select->where('namespace=?', $path[1]);
 			}
-			if(!empty($path[1])) {
+			if(!empty($path[0])) {
 				$select->where('source=?', $path[0]);
 			}
 		} elseif($this->Request()->getParam('search')) {
