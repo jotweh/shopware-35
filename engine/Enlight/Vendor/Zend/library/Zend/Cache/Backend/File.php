@@ -224,7 +224,7 @@ class Zend_Cache_Backend_File extends Zend_Cache_Backend implements Zend_Cache_B
         if ($this->_options['hashed_directory_level'] > 0) {
             if (!is_writable($path)) {
                 // maybe, we just have to build the directory structure
-                $this->_recursiveMkdirAndChmod($id);
+                $this->_recursiveMkdirAndChmod($path);
             }
             if (!is_writable($path)) {
                 return false;
@@ -882,46 +882,36 @@ class Zend_Cache_Backend_File extends Zend_Cache_Backend implements Zend_Cache_B
      * Return the complete directory path of a filename (including hashedDirectoryStructure)
      *
      * @param  string $id Cache id
-     * @param  boolean $parts if true, returns array of directory parts instead of single string
      * @return string Complete directory path
      */
-    protected function _path($id, $parts = false)
+    protected function _path($id)
     {
-        $partsArray = array();
         $root = $this->_options['cache_dir'];
         $prefix = $this->_options['file_name_prefix'];
-        if ($this->_options['hashed_directory_level']>0) {
+        if ($this->_options['hashed_directory_level'] > 0) {
             $hash = hash('adler32', $id);
             for ($i=0 ; $i < $this->_options['hashed_directory_level'] ; $i++) {
                 $root = $root . $prefix . '--' . substr($hash, 0, $i + 1) . DIRECTORY_SEPARATOR;
-                $partsArray[] = $root;
             }
         }
-        if ($parts) {
-            return $partsArray;
-        } else {
-            return $root;
-        }
+        return $root;
     }
 
     /**
      * Make the directory strucuture for the given id
      *
-     * @param string $id cache id
+     * @param string $path
      * @return boolean true
      */
-    protected function _recursiveMkdirAndChmod($id)
+    protected function _recursiveMkdirAndChmod($path)
     {
-        if ($this->_options['hashed_directory_level'] <=0) {
-            return true;
+    	$oldUmask = umask(0);
+        $dirPath = dirname($path); 
+        // if subdirs, create dir structure
+        if ($dirPath !== '.' && !file_exists($dirPath)) {
+            mkdir($dirPath, $this->_options['hashed_directory_umask'], true);
         }
-        $partsArray = $this->_path($id, true);
-        foreach ($partsArray as $part) {
-            if (!is_dir($part)) {
-                @mkdir($part, $this->_options['hashed_directory_umask']);
-                @chmod($part, $this->_options['hashed_directory_umask']); // see #ZF-320 (this line is required in some configurations)
-            }
-        }
+        umask($oldUmask);
         return true;
     }
 
