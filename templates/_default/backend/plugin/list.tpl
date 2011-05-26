@@ -32,6 +32,16 @@ Ext.ns('Shopware.Plugin');
 				}
 			}).render(document.body, id);
 		},
+		createGridButtonDelete: function (value, id, record) {
+			var cls = "ico package_delete";
+			new Ext.Button({
+				text: value
+				,iconCls: cls
+				,handler : function(btn, e) {
+					Viewport.removePlugin(record.data.id);
+				}
+			}).render(document.body, id);
+		},
 	    initComponent: function() {
 	    	Ext.QuickTips.init();
 	    	var selModel = this.selModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
@@ -154,27 +164,26 @@ Ext.ns('Shopware.Plugin');
                 		return('<div id="' + id + '"></div>');
 				  }
 			};
+			this.renderDelete = function (value,id,r){
+				
+				  var id = Ext.id();
+				  if(!r.data.installation_date && r.data.source != "Default") {
+						this.createGridButtonDelete.defer(1, this, ['Entfernen', id, r]);
+						return('<div id="' + id + '"></div>');
+				  }else {
+					  return "";
+				  }
+			};
 
 			
 	        this.columns = [
 	            {
 	                xtype: 'gridcolumn',
-	                header: 'Install',
+	                header: 'Installation',
 	                sortable: false,
 	                width: 85,
 					scope:this,
 					renderer: this.renderInstall
-					/*
-	                renderer: function (value, p, record) {
-	                	if(!record.data.installation_date) {
-	                		var r = '<a class="ico add" onclick="Viewport.installPlugin('+record.data.id+', true);"></a>';
-	                	} else {
-							var r = '<a class="ico cog" onclick="Viewport.showDetail('+record.data.id+');"></a>';
-	                		r += '<a class="ico delete" onclick="Viewport.installPlugin('+record.data.id+', false);"></a>';
-	                	}
-
-	                	return r;
-	                }*/
 	            },
 				
 	         	{
@@ -268,6 +277,14 @@ Ext.ns('Shopware.Plugin');
 	                	return '<a h'+'ref="'+record.data.link+'" target="_blank">'+record.data.autor+'</a>';
 	                }
 	            },
+				{
+	                xtype: 'gridcolumn',
+	                header: 'Löschen',
+	                sortable: false,
+	                width: 95,
+					scope:this,
+					renderer: this.renderDelete
+			    }
 	        ];
 	        List.superclass.initComponent.call(this);
 	    }

@@ -103,6 +103,44 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		    this.refreshList = function() {
 		    	this.list.store.load();
 		    };
+
+			this.removePlugin = function(pluginId){
+				Ext.MessageBox.confirm('', 'Soll dieses Plugin wirklich gelöscht werden?', function(r){
+					if(r!='yes') {
+						return;
+					}
+					$.ajax({
+			    		url: '{url action=delete}',
+			    		method: 'post',
+			    		context: this,
+			    		data: { id: pluginId },
+			    		dataType: 'json',
+			    		success: function(result) {
+							Ext.Msg.show({
+								   title:'Hinweis!',
+								   msg: 'Das Plugin wurde aus dem Dateisystem entfernt!',
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   icon: Ext.MessageBox.ERROR,
+								   maxWidth: 700,
+								   minWidth: 700
+								});
+							Viewport.refreshList();
+						},
+						error: function(result){
+							Ext.Msg.show({
+								   title:'Es ist ein kritischer Fehler aufgetreten!',
+								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.responseText,
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   icon: Ext.MessageBox.ERROR,
+								   maxWidth: 700,
+								   minWidth: 700
+								});
+						}
+					});
+				});
+			};
 		    this.installPlugin = function(pluginId, install) {
 		    	if(install) {
 					var message = 'Soll dieses Plugin installiert werden?';

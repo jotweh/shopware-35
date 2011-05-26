@@ -568,11 +568,28 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	 */
 	public function deleteAction()
 	{
-		$deletePath = $this->Request()->path;
-		if(!file_exists($deletePath)) {
-			return;
+		$id = $this->Request()->id;
+		
+		$fetchPlugin = Shopware()->Db()->fetchRow("
+		SELECT * FROM s_core_plugins WHERE id = ?
+		",array($id));
+
+		if (empty($fetchPlugin["id"]) || empty($fetchPlugin["name"])){
+			throw new Enlight_Exception("Could not delete plugin with id $id");
 		}
 
+		$deletePath = Shopware()->DocPath()."engine/Shopware/Plugins/".$fetchPlugin["source"]."/".$fetchPlugin["namespace"]."/".$fetchPlugin["name"];
+
+		if(!file_exists($deletePath)) {
+			throw new Enlight_Exception("Invalid path $deletePath");
+		}
+
+		// Remove plugin from database
+		Shopware()->Db()->query("
+		DELETE FROM s_core_plugins WHERE id = ?
+		",array($id));
+
+		// Remove plugin in filesystem
 		if(is_dir($deletePath)) {
 			$dirIterator = new RecursiveDirectoryIterator($deletePath);
 	        $iterator = new RecursiveIteratorIterator($dirIterator, RecursiveIteratorIterator::CHILD_FIRST);
