@@ -631,8 +631,8 @@ class Shopware_Controllers_Frontend_PaymentEos extends Shopware_Controllers_Fron
 		$client->setParameterPost($params);
 		if (extension_loaded('curl')) {
 			$adapter = new Zend_Http_Client_Adapter_Curl();
-			//$adapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
-			//$adapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYPEER, false);
+			$adapter->setCurlOption(CURLOPT_SSL_VERIFYHOST, false);
 			$client->setAdapter($adapter);
 		}
 		$respone = $client->request('POST');
