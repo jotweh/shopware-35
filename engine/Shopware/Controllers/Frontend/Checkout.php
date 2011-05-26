@@ -632,9 +632,31 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			{
 				$item['tax_rate'] = Shopware()->Db()->fetchOne('SELECT tax FROM s_core_tax WHERE id=?', array($item['taxID']));
 			} elseif($item['modus']==2) {
-				$item['tax_rate'] = Shopware()->Config()->get('sVOUCHERTAX');
+				// Ticket 4842 - dynamic tax-rates
+				$result = Shopware()->Db()->fetchOne("SELECT vouchercode,taxconfig FROM s_emarketing_vouchers WHERE ordercode=?",array($item["ordernumber"]));
+				if (empty($result) || $result == "default"){
+					$tax = Shopware()->Config()->get('sVOUCHERTAX');
+				}elseif ($result == "auto"){
+					$tax = Shopware()->Modules()->Basket()->getMaxTax();
+				}elseif ($result=="none"){
+					$tax = 0;
+				}elseif (intval($result)){
+					// Fix defined tax
+					$tax = Shopware()->Db()->fetchOne("
+					SELECT tax FROM s_core_tax WHERE id = ?
+					",array($result));
+				}
+				$item['tax_rate'] = $tax;
+
 			} else {
-				$item['tax_rate'] = Shopware()->Config()->get('sDISCOUNTTAX');
+				// Ticket 4842 - dynamic tax-rates
+				$taxAutoMode = Shopware()->Config()->get('sTAXAUTOMODE');
+				if (!empty($taxAutoMode)){
+					$tax = Shopware()->Modules()->Basket()->getMaxTax();
+				}else {
+					$tax = Shopware()->Config()->get('sDISCOUNTTAX');
+				}
+				$item['tax_rate'] = $tax;
 			}
 			
 			if(!isset($result[$item['tax_rate']])) $result[$item['tax_rate']] = 0;

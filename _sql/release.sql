@@ -168,3 +168,24 @@ UPDATE `s_core_snippets` SET `value` = 'Versandinfo:' WHERE `s_core_snippets`.`n
 UPDATE `s_core_snippets` SET `value` = 'Dispatch info:' WHERE `s_core_snippets`.`name` LIKE 'DispatchHeadNotice' AND `s_core_snippets`.`localeID` = 2;
 UPDATE `s_core_snippets` SET `value` = 'Login' WHERE `s_core_snippets`.`name` LIKE 'AccountLoginTitle' AND `s_core_snippets`.`localeID` = 1;
 UPDATE `s_core_snippets` SET `value` = 'Login' WHERE `s_core_snippets`.`name` LIKE 'AccountLoginTitle' AND `s_core_snippets`.`localeID` = 2;
+
+/**
+ * @ticket 4842
+ * @author st.hamann
+ * @since 3.5.4 - 2011/05/26
+ */
+INSERT IGNORE INTO `s_core_config` (
+`id` ,
+`group` ,
+`name` ,
+`value` ,
+`description` ,
+`required` ,
+`warning` ,
+`detailtext` ,
+`multilanguage` ,
+`fieldtype`
+)
+VALUES (
+NULL , '35', 'sTAXAUTOMODE', '1', 'Steuer für Rabatte dynamisch feststellen', '0', '0', '', '0', ''
+);

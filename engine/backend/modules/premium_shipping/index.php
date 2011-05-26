@@ -120,8 +120,8 @@ Ext.onReady(function(){
    	}
    	else if(value==2||value==3)
    	{
-   		form.findField("tax_calculation").hide();
-   		form.findField("tax_calculation").getEl().up('.x-form-item').setDisplayed(false);
+   		//form.findField("tax_calculation").hide();
+   		//form.findField("tax_calculation").getEl().up('.x-form-item').setDisplayed(false);
    		form.findField("surcharge_calculation").hide();
    		form.findField("surcharge_calculation").getEl().up('.x-form-item').setDisplayed(false);
    		form.findField("status_link").hide();

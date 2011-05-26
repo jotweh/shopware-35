@@ -17,8 +17,7 @@ class	sAdmin
 	var $sSYSTEM;
 	
 	
-	 /**
-	 * Logout user and destroy session
+	 /**, * Logout user and destroy session
 	 * @access public
 	 * @return -
 	 */
@@ -3334,7 +3333,13 @@ class	sAdmin
 	public function sGetPremiumShippingcosts ($country=null)
 	{
 		$currencyFactor = empty($this->sSYSTEM->sCurrency['factor']) ? 1 : $this->sSYSTEM->sCurrency['factor'];
+
 		$discount_tax = empty($this->sSYSTEM->sCONFIG['sDISCOUNTTAX']) ? 0 : (float) str_replace(',','.',$this->sSYSTEM->sCONFIG['sDISCOUNTTAX']);
+		// Determinate tax automaticly
+		if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+			$discount_tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+		}
+		
 		$surcharge_ordernumber = isset($this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGEABSOLUTENUMBER']) ? $this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGEABSOLUTENUMBER'] : 'PAYMENTSURCHARGEABSOLUTENUMBER';
 		$surcharge_name = isset($this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"]) ? $this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"] : 'Zuschlag für Zahlungsart';
 		$discount_ordernumber = isset($this->sSYSTEM->sCONFIG['sSHIPPINGDISCOUNTNUMBER']) ? $this->sSYSTEM->sCONFIG['sSHIPPINGDISCOUNTNUMBER'] : 'SHIPPINGDISCOUNT';
@@ -3384,14 +3389,15 @@ class	sAdmin
 			
 			$basket_discount_net = $basket_discount_net *-1;
 			$basket_discount = $basket_discount *-1;
-			
+
 			$sql = '
 				INSERT INTO s_order_basket
 					(sessionID, articlename, articleID, ordernumber, quantity, price, netprice, datum, modus, currencyFactor)
 				VALUES
 					(?, ?, 0, ?, 1, ?, ?, NOW(), 3, ?)
 			';
-	
+
+
 			$this->sSYSTEM->sDB_CONNECTION->Execute($sql,array(
 				$this->sSYSTEM->sSESSION_ID,
 				'- '.$percent.' % '.$discount_basket_name,

@@ -55,7 +55,7 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 				totalProperty: 'count',
 				id: 'id',
 				fields: [
-				'id', 'description', 'vouchercode', 'numberofunits', 'customergroup', 'value', 'valid_from', 'valid_to', 'checkedIn', 'percental', 'modus','subshop','taxConfiguration'
+				'id', 'description', 'vouchercode','taxconfig' ,'numberofunits', 'customergroup', 'value', 'valid_from', 'valid_to', 'checkedIn', 'percental', 'modus','subshop','taxConfiguration'
 				]
 			})
 		});
@@ -429,7 +429,7 @@ $sCore->sInitTranslations(1,"config_dispatch","true");
 				id: 'feedID',
 				autoLoad: false,
 				fields: [
-				"feedID", "description" , "vouchercode" , "numberofunits" , "value" , "minimumcharge" , "shippingfree" , "bindtosupplier" , "valid_from" , "valid_to" , "ordercode", "restrictarticles", "modus" , "percental" , "numorder", "customergroup","strict","subshop"
+				"feedID", "description" ,"taxconfig", "vouchercode" , "numberofunits" , "value" , "minimumcharge" , "shippingfree" , "bindtosupplier" , "valid_from" , "valid_to" , "ordercode", "restrictarticles", "modus" , "percental" , "numorder", "customergroup","strict","subshop"
 				]
 			}),
 			

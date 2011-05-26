@@ -133,6 +133,7 @@ class sBasket
 	 * @return void
 	 */
 	public function sInsertDiscount () {
+		
 		// Get possible discounts
 		$getDiscounts = $this->sSYSTEM->sDB_CONNECTION->GetAll("
 		SELECT basketdiscount, basketdiscountstart FROM s_core_customergroups_discounts
@@ -176,8 +177,16 @@ class sBasket
 		$discount = $basketAmount / 100 * $basketDiscount;
 		$discount = $discount * -1;
 		$discount = round($discount,2);
+		
+		if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+			$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+		}else {
+			$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+		}
 
-		$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+		if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+			$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+		}
 		if (!$tax) $tax = 119;
 
 		if (!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"]){
@@ -326,6 +335,9 @@ class sBasket
 			SELECT
 				MAX(t.tax) as max_tax
 			FROM s_order_basket b
+			LEFT JOIN s_articles a
+			ON b.articleID=a.id
+			AND b.modus=0
 			LEFT JOIN s_core_tax t
 			ON t.id=a.taxID
 			WHERE b.sessionID=?
@@ -526,7 +538,7 @@ class sBasket
 
 		// Free tax configuration for vouchers
 		// Trac ticket 4708 st.hamann
-		if ((!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"])){
+		if ((!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"]) || $ticketResult["taxconfig"]=="none"){
 			// if net customergroup - calculate without tax
 			$tax = $ticketResult["value"] * -1;
 		}else {
@@ -537,10 +549,9 @@ class sBasket
 				// Check max. used tax-rate from basket
 				$tax = $this->getMaxTax();
 				$tax = round($ticketResult["value"]/(100+$tax)*100,3)*-1;
-			}elseif (strpos($ticketResult["taxconfig"],"fix_")!==false){
+			}elseif (intval($ticketResult["taxconfig"])){
 				// Fix defined tax
-				$temporaryTax = explode("_",$ticketResult["taxconfig"]);
-				$temporaryTax = $temporaryTax[1];
+				$temporaryTax =$ticketResult["taxconfig"];
 				$getTaxRate = $this->sSYSTEM->sDB_CONNECTION->getOne("
 				SELECT tax FROM s_core_tax WHERE id = ?
 				",array($temporaryTax));
@@ -664,7 +675,11 @@ class sBasket
 
 			if ($amount["totalAmount"]<$this->sSYSTEM->sUSERGROUPDATA["minimumorder"]){
 
-				$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+				if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+					$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+				}else {
+					$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+				}
 				if (!$tax) $tax = 119;
 
 				if ((!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"])){
@@ -750,7 +765,12 @@ class sBasket
 			//print_r($amount); exit;
 			$surcharge = $amount["totalAmount"] / 100 * $percent;
 			//echo $amount["totalAmount"]." - ".$surcharge." <br />";
-			$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+			if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+				$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+			}else {
+				$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+			}
+			
 			if (!$tax) $tax = 119;
 
 			if ((!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"])){
@@ -915,7 +935,7 @@ class sBasket
 
 				if ($value["modus"]==2){
 					$sql = "
-						SELECT vouchercode FROM s_emarketing_vouchers WHERE ordercode='{$getArticles[$key]["ordernumber"]}'
+						SELECT vouchercode,taxconfig FROM s_emarketing_vouchers WHERE ordercode='{$getArticles[$key]["ordernumber"]}'
 						";
 
 					$ticketResult = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
@@ -942,7 +962,7 @@ class sBasket
 				if (($this->sSYSTEM->sCONFIG['sARTICLESOUTPUTNETTO'] && !$this->sSYSTEM->sUSERGROUPDATA["tax"]) || (!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"]))
 				{
 
-					if (!$value["modus"]){
+					if (empty($value["modus"])){
 						$tax = $this->sSYSTEM->sMODULES['sArticles']->sGetArticleTaxById($getArticles[$key]["articleID"]);
 						$priceWithTax = round($netprice,2) / 100 * (100+$tax);
 
@@ -953,16 +973,41 @@ class sBasket
 						}
 
 					}elseif ($value["modus"]==3){
-						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$this->sSYSTEM->sCONFIG['sDISCOUNTTAX'])),2);
+						if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+							$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+						}else {
+							$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+						}
+						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$tax)),2);
 						// Basket discount
 					}elseif ($value["modus"]==2){
 						// Validate voucher
-						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$this->sSYSTEM->sCONFIG['sVOUCHERTAX'])),2);
+						if (empty($ticketResult["taxconfig"]) || $ticketResult["taxconfig"] == "default"){
+							$tax = $this->sSYSTEM->sCONFIG['sVOUCHERTAX'];
+						}elseif ($ticketResult["taxconfig"] == "auto"){
+							$tax = $this->getMaxTax();
+						}elseif ($ticketResult["taxconfig"]=="none"){
+							$tax = 0;
+						}elseif (intval($ticketResult["taxconfig"])){
+							// Fix defined tax
+							$temporaryTax =$ticketResult["taxconfig"];
+							$tax = $this->sSYSTEM->sDB_CONNECTION->getOne("
+							SELECT tax FROM s_core_tax WHERE id = ?
+							",array($temporaryTax));
+						}
+
+						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$tax)),2);
+						
 						if ($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"] && $this->sCheckForDiscount()){
 							$discount += ($getArticles[$key]["amountWithTax"]/100*($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"]));
 						}
 					}elseif ($value["modus"]==4 || $value["modus"]==10){
-						$getArticles[$key]["amountWithTax"] = round(1 * ($price / 100 * (100+$this->sSYSTEM->sCONFIG['sVOUCHERTAX'])),2);
+						if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+							$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
+						}else {
+							$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+						}
+						$getArticles[$key]["amountWithTax"] = round(1 * ($price / 100 * (100+$tax)),2);
 						if ($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"] && $this->sCheckForDiscount()){
 							$discount += ($getArticles[$key]["amountWithTax"]/100*$this->sSYSTEM->sUSERGROUPDATA["basketdiscount"]);
 						}
@@ -1120,6 +1165,7 @@ class sBasket
 				}
 			}
 			$result = Enlight()->Events()->filter('Shopware_Modules_Basket_GetBasket_FilterResult', $result, array('subject'=>$this));
+			
 			return $result;
 		}else {
 			return array();
