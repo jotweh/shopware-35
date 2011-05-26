@@ -34,6 +34,7 @@
 {/if}
 
 <br />
+{if !empty($Payment.status) && $Payment.status != 'success'}
 <div class="actions">
 	<a class="button-left large left" href="{url controller=checkout action=cart}" title="{s name='PaymentLinkBack'}{/s}">
 		Warenkorb ändern
@@ -42,6 +43,8 @@
 		Zahlungsart ändern
 	</a>
 </div>
+{/if}
+
 </div>
 {/block}
 
