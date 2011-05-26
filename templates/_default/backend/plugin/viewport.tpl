@@ -87,6 +87,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		    		data: { id: pluginId },
 		    		dataType: 'jsonp',
 		    		success: function(tab) {
+						Ext.QuickTips.init();
 		    			this.tabpanel.remove(tab.id);
 		    			this.tabpanel.add(tab);
 		    			this.tabpanel.activate(tab.id);

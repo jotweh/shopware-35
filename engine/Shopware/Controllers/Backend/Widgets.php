@@ -482,4 +482,11 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 		SELECT id, username FROM s_core_auth WHERE active = 1
 		");
 	}
+
+	public function getUsersAction(){
+		$this->View()->setTemplate();
+		$sql = "SELECT id, username FROM s_core_auth ORDER BY id";
+		$result = Shopware()->Db()->fetchAll($sql);
+		echo Zend_Json::encode(array("data"=>$result,"count"=>count($result)));
+	}
  }

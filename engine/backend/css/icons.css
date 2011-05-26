@@ -413,3 +413,8 @@ a.schliessen {
 }
 
 .package_add {background-image: url(../img/default/icons/package_add.png)  !important;}
+
+.package_delete {background-image: url(../img/default/icons/package_delete.png)  !important;}
+
+.package_go {background-image: url(../img/default/icons/package_go.png)  !important;}
+.package_link {background-image: url(../img/default/icons/package_link.png)  !important;}

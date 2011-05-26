@@ -62,7 +62,8 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 				}
 				elseif ($key=='options'){
 					// Support free attributes per field
-					$array_element[$key] = unserialize($row->{$column});
+					
+					$array_element['options']['attributes'] = unserialize($row->{$column});
 				}
 				elseif (isset($row->{$column})) {
 					if(in_array($key, array('type','name'))) {
@@ -76,6 +77,7 @@ class Shopware_Components_Form_SaveHandler_DbTable extends Zend_Db_Table_Abstrac
 			}
 			$array_elements[] = $array_element;
 		}
+		
 		$form->setElements($array_elements);
     }
     

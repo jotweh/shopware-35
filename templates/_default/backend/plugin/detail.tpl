@@ -76,8 +76,8 @@
 		            autoScroll: true,
 		            deferredRender: false,
 					items: [
-		{foreach $shops as $shop}
-						{
+					{foreach $shops as $shop}
+					{
 							title: '{$shop.name|escape:"javascript"}',
 							bodyStyle: 'padding:10px',
 							defaults: { anchor: '100%' },
@@ -98,29 +98,82 @@
 										xtype: 'password',
 									{elseif $element->getType()=='Zend_Form_Element_Htmleditor'}
 										xtype: 'htmleditor',
+									{elseif $element->getType()=='Zend_Form_Element_Slider'}
+										xtype: 'slider',
+									{elseif $element->getType()=='Zend_Form_Element_Controllerbutton'}
+										xtype: 'button',
+									{elseif $element->getType()=='Zend_Form_Element_Timefield'}
+										xtype: 'timefield',
+									{elseif $element->getType()=='Zend_Form_Element_Datefield'}
+										xtype: 'datefield',
+									{elseif $element->getType()=='Zend_Form_Element_Triggerfield'}
+										xtype: 'textfield',
+									{elseif $element->getType()=='Zend_Form_Element_Numberfield'}
+										xtype: 'numberfield',
+									{elseif $element->getType()=='Zend_Form_Element_Combo'}
+										xtype: 'combo',
+									{elseif $element->getType()=='Zend_Form_Element_Comboremote'}
+										xtype: 'combo',
 									{else}
 									{/if}
-									{if $element->getType()=='Zend_Form_Element_Checkbox'}
-										columns: [100, 100],
-										items: [
-											{ boxLabel: 'Ja', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 1, checked: {if $value}true{else}false{/if} },
-											{ boxLabel: 'Nein', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 0, checked: {if !$value}true{else}false{/if} },
-										],
-									{else}
-										value: '{$value|escape:"javascript"}',
-									{/if}
-									fieldLabel: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
-									name: 'config[{$shop.id}][{$element->getName()}]',
-									//boxLabel: 'BoxLabel',
-									disabled: {if $element->scope||$shop.default}false{else}true{/if},
-									allowBlank: {if $element->isRequired()}false{else}true{/if}
 
+									{if $element->getType()=='Zend_Form_Element_Controllerbutton'}
+										text: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
+										handler: function(){
+											parent.parent.openAction('{$element->attributes.controller}','{$element->attributes.action}');
+										}
+									{elseif $element->getType()=='Zend_Form_Element_Comboremote'}
+										text: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
+										store:  new Ext.data.Store({
+											url: '{url controller=$element->attributes.controller action=$element->attributes.action}',
+											autoLoad: true,
+											baseParams: { active:0},
+											reader: new Ext.data.JsonReader({
+												root: '{$element->attributes.root}',
+												totalProperty: '{$element->attributes.count}',
+												fields: [{foreach from=$element->attributes.fields item=field}'{$field}'{if !$field@last},{/if}{/foreach}]
+											})
+										}),
+										value: '{$value|escape:"javascript"}',
+										fieldLabel: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
+										name: 'config[{$shop.id}][{$element->getName()}]',
+										disabled: {if $element->scope||$shop.default}false{else}true{/if},
+										allowBlank: {if $element->isRequired()}false{else}true{/if},
+										{if $element->attributes}
+										{foreach from=$element->attributes key=optionKey item=optionValue}
+											{$optionKey}: '{$optionValue}'{if !$optionValue@last},{/if}
+										{/foreach}
+										{/if}
+									{else}
+										{if $element->getType()=='Zend_Form_Element_Checkbox'}
+											columns: [100, 100],
+											items: [
+												{ boxLabel: 'Ja', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 1, checked: {if $value}true{else}false{/if} },
+												{ boxLabel: 'Nein', name: 'config[{$shop.id}][{$element->getName()}]', inputValue: 0, checked: {if !$value}true{else}false{/if} },
+											],
+										{else}
+											value: '{$value|escape:"javascript"}',
+										{/if}
+										{if $element->attributes}
+										{foreach from=$element->attributes key=optionKey item=optionValue}
+											{if (is_int($optionValue)) || strpos($optionValue,'new')!==false || $optionKey == "store"}
+												{$optionKey}: {$optionValue},
+											{else}
+												{$optionKey}: '{$optionValue}',
+											{/if}
+										{/foreach}
+										{/if}
+										fieldLabel: '{if $element->getLabel()}{$element->getLabel()}{else}{$element->getName()|ucfirst}{/if}',
+										name: 'config[{$shop.id}][{$element->getName()}]',
+										disabled: {if $element->scope||$shop.default}false{else}true{/if},
+										allowBlank: {if $element->isRequired()}false{else}true{/if}
+										{/if}
 									}{if !$element@last},{/if}
+
 								{/foreach}
-				
 							]
 						}{if !$shop@last},{/if}
-			{/foreach}
+					{/foreach}
 					]
 				}
 {/if}

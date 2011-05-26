@@ -71,6 +71,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$plugin = $this->getPluginById($id);
 		$this->View()->form = $plugin->Form();
 		
+		
 		$this->View()->shops = $this->getShops();
 	}
 

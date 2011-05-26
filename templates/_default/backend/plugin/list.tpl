@@ -4,6 +4,34 @@ Ext.ns('Shopware.Plugin');
 	var List = Ext.extend(Ext.grid.GridPanel, {
 	    title: 'Verfügbare Plugins',
 	    stripeRows:true,
+	    createGridButton: function (value, id, record) {
+			if (value == "Install"){
+				var cls = "ico package_add";
+			}else  {
+				var cls = "ico package_delete";
+			}
+			new Ext.Button({
+				text: value
+				,iconCls: cls
+				,handler : function(btn, e) {
+					if (!record.data.installation_date){
+						Viewport.installPlugin(record.data.id, true);
+					}else {
+						Viewport.installPlugin(record.data.id, false);
+					}
+				}
+			}).render(document.body, id);
+		},
+		createGridButtonEdit: function (value, id, record) {
+			var cls = "ico package_go";
+			new Ext.Button({
+				text: value
+				,iconCls: cls
+				,handler : function(btn, e) {
+					Viewport.showDetail(record.data.id);
+				}
+			}).render(document.body, id);
+		},
 	    initComponent: function() {
 	    	Ext.QuickTips.init();
 	    	var selModel = this.selModel = new Ext.grid.RowSelectionModel({ singleSelect: true });
@@ -45,8 +73,14 @@ Ext.ns('Shopware.Plugin');
 	    	
 	    	this.getView().getRowClass = function(record, index) {
 	    		if (!record.data.active) {
-	    			return 'inactive';
-	    		}
+					if (!record.data.installation_date){
+	    				return 'inactive';
+					}else {
+						return 'red';
+					}
+	    		}else {
+					return 'green';
+				}
 	    	};
 
 			this.on('rowdblclick', function(grid,rowIndex,e){
@@ -98,13 +132,39 @@ Ext.ns('Shopware.Plugin');
 	    		]
 	    	});
 
-   			
+   			this.renderInstall = function (value,id,r){
+				  var id = Ext.id();
+
+				  if(!r.data.installation_date) {
+
+					  this.createGridButton.defer(1, this, ['Install', id, r]);
+					  return('<div id="' + id + '"></div>');
+				  }else {
+						this.createGridButton.defer(1, this, ['Uninstall', id, r]);
+                		return('<div id="' + id + '"></div>');
+				  }
+			};
+
+			this.renderEdit = function (value,id,r){
+				  var id = Ext.id();
+				  if(!r.data.installation_date) {
+					  return "";
+				  }else {
+						this.createGridButtonEdit.defer(1, this, ['Bearbeiten', id, r]);
+                		return('<div id="' + id + '"></div>');
+				  }
+			};
+
+			
 	        this.columns = [
 	            {
 	                xtype: 'gridcolumn',
-	                header: '&nbsp;',
+	                header: 'Install',
 	                sortable: false,
-	                width: 75,
+	                width: 85,
+					scope:this,
+					renderer: this.renderInstall
+					/*
 	                renderer: function (value, p, record) {
 	                	if(!record.data.installation_date) {
 	                		var r = '<a class="ico add" onclick="Viewport.installPlugin('+record.data.id+', true);"></a>';
@@ -114,8 +174,9 @@ Ext.ns('Shopware.Plugin');
 	                	}
 
 	                	return r;
-	                }
+	                }*/
 	            },
+				
 	         	{
 	                xtype: 'gridcolumn',
 	                dataIndex: 'label',
@@ -132,20 +193,13 @@ Ext.ns('Shopware.Plugin');
 	                dataIndex: 'added',
 	                header: 'Hinzugefügt',
 	                sortable: false,
-	                width: 200,
+	                width: 150,
 	                renderer: function (v,p,r){
 						if (v == "0000-00-00 00:00:00") return "";
 	                	return "<span style=\"font-weight:bold\">"+v+"</span";
 	                }
 	            },
-	        	{
-	                xtype: 'gridcolumn',
-	                dataIndex: 'path',
-	                header: 'Pfad',
-	                sortable: false,
-	                width: 200
-	            },
- 				{
+				{
 	                xtype: 'booleancolumn',
 	                dataIndex: 'active',
 	                header: 'Aktiv',
@@ -154,6 +208,16 @@ Ext.ns('Shopware.Plugin');
 	                trueText: 'ja',
 	                falseText: 'nein'
 	            },
+				{
+	                xtype: 'gridcolumn',
+	                header: 'Optionen',
+	                sortable: false,
+	                width: 95,
+					scope:this,
+					renderer: this.renderEdit
+			    },
+	        	
+
 	            {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'version',
@@ -183,6 +247,13 @@ Ext.ns('Shopware.Plugin');
 						}
 						return '?';
 					}
+	            },
+				{
+	                xtype: 'gridcolumn',
+	                dataIndex: 'path',
+	                header: 'Pfad',
+	                sortable: false,
+	                width: 200
 	            },
 				{
 	                xtype: 'gridcolumn',

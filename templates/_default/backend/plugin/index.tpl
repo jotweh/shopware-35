@@ -6,6 +6,15 @@
 	.inactive {
 		opacity: 0.5;
 	}
+
+	.red {
+		color:#db6800;
+	}
+
+	.green {
+		color: #008000;
+	}
+	
 	a.ico {
 		height:20px;
 		margin:0 0 0 5px;
