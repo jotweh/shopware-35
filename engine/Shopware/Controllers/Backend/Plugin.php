@@ -613,4 +613,85 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		 
 		echo Zend_Json::encode(array('success'=>isset($message)?false:true, 'message'=>isset($message)?$message:''));
 	}
+
+	/**
+	 * Hiftsmethode der Klasse restfulClient
+	 *
+	 * @param unknown_type $result
+	 * @return unknown
+	 */
+	private function getReturn($result){
+		if($result->isSuccess()){
+			$newArr = array();
+			$result = json_decode($result);
+
+			$newArr = $this->getArray($result);
+			return $newArr;
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * Hiftsmethode der Klasse restfulClient
+	 *
+	 * @param unknown_type $result
+	 * @return unknown
+	 */
+	private function getArray($result)
+	{
+		$newArr = array();
+		if($result instanceof stdClass || is_array($result)){
+			foreach ($result as $key=>$value) {
+				$newArr[$key] = $this->getArray($value);
+			}
+			return $newArr;
+		}else{
+			return $result;
+		}
+	}
+
+	/* ----------------- SERVICES ----------------- */
+
+	/**
+	 * Liest von allen Plugins die Bestellnummer, den Namen,
+	 * die aktuelle Version und den Changelog aus
+	 *
+	 * Es werden nur Plugins zurückgegeben, bei denen ein Download
+	 * hinterlegt ist
+	 *
+	 * Mögliche Fehler:
+	 * 100: Falscher Authcode
+	 *
+	 */
+	public function getPluginInfo()
+	{
+		$result = $this->clientObj->getPluginInfo($this->authCode)->post();
+		return $this->getReturn($result);
+	}
+
+	/**
+	 * Ermittelt die Downloadinformationen / -links
+	 *
+	 * 1) Überprüft, ob ein Artikel nach diesem Suchmuster existiert (Bestellnummer = $article_match || Artikelname = $article_match)
+	 * 		> Ansonsten Fehlercode 101 > Kein Artikel gefunden
+	 * 2) Führt einen Login am ShopwareID-Server durch
+	 * 		> Schlägt dieser fehl wird der Fehlercode 102 zurückgegeben
+	 * 3) Liest alle Module der Domain aus. Und überprüft, ob der Artikel lizenziert ist
+	 * 		> Ist der Artikel nicht lizenziert wird der Fehlercode 103 zurückgegeben
+	 * 4) Downloads werden ermittelt
+	 * 		> Sollte kein Download ermittelt werden können wird der Fehlercode 104 zurückgegeben
+	 * 5) Für den Download werden Downloadtokens erstellt, die 30 min gültig sind
+	 *
+	 * @param string $shopwareID
+	 * @param string $password
+	 * @param string $domain
+	 * @param string $article_match
+	 * @return unknown (Bestellnummer oder Artikelname)
+	 */
+	public function getDownloadInfo($shopwareID, $password, $domain, $article_match)
+	{
+		$result = $this->clientObj->getDownloadInfo($this->authCode, $shopwareID, $password, $domain, $article_match)->post();
+		return $this->getReturn($result);
+	}
 }
