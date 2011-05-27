@@ -615,7 +615,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	public function getTaxRates($basket)
 	{
 		$result = array();
-		
+
 		if (!empty($basket['sShippingcostsTax']))
 		{
 			$result[$basket['sShippingcostsTax']] = $basket['sShippingcostsWithTax']-$basket['sShippingcostsNet'];
@@ -624,8 +624,13 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 		{
 			$result[Shopware()->Config()->get('sTAXSHIPPING')] = $basket['sShippingcostsWithTax']-$basket['sShippingcostsNet'];
 		}
-		
-		if(!empty($basket['content']))
+
+		if(empty($basket['content'])){
+			ksort($result, SORT_NUMERIC);
+			return $result;
+		}
+
+
 		foreach ($basket['content'] as $item)
 		{
 			if(!empty($item['taxID']))
@@ -633,21 +638,23 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 				$item['tax_rate'] = Shopware()->Db()->fetchOne('SELECT tax FROM s_core_tax WHERE id=?', array($item['taxID']));
 			} elseif($item['modus']==2) {
 				// Ticket 4842 - dynamic tax-rates
-				$result = Shopware()->Db()->fetchOne("SELECT vouchercode,taxconfig FROM s_emarketing_vouchers WHERE ordercode=?",array($item["ordernumber"]));
-				if (empty($result) || $result == "default"){
+				$resultVoucherTaxMode = Shopware()->Db()->fetchOne("SELECT taxconfig FROM s_emarketing_vouchers WHERE ordercode=?",array($item["ordernumber"]));
+				// Old behaviour
+				if (empty($resultVoucherTaxMode) || $resultVoucherTaxMode == "default"){
 					$tax = Shopware()->Config()->get('sVOUCHERTAX');
-				}elseif ($result == "auto"){
+				}elseif ($resultVoucherTaxMode == "auto"){
+					// Automaticly determinate tax
 					$tax = Shopware()->Modules()->Basket()->getMaxTax();
-				}elseif ($result=="none"){
-					$tax = 0;
-				}elseif (intval($result)){
+				}elseif ($resultVoucherTaxMode=="none"){
+					// No tax
+					$tax = "0";
+				}elseif (intval($resultVoucherTaxMode)){
 					// Fix defined tax
 					$tax = Shopware()->Db()->fetchOne("
 					SELECT tax FROM s_core_tax WHERE id = ?
-					",array($result));
+					",array($resultVoucherTaxMode));
 				}
 				$item['tax_rate'] = $tax;
-
 			} else {
 				// Ticket 4842 - dynamic tax-rates
 				$taxAutoMode = Shopware()->Config()->get('sTAXAUTOMODE');
@@ -658,13 +665,14 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 				}
 				$item['tax_rate'] = $tax;
 			}
-			
+
+			if (empty($item['tax_rate'])) continue; // Ignore 0 % tax
 			if(!isset($result[$item['tax_rate']])) $result[$item['tax_rate']] = 0;
-			
-			$result[$item['tax_rate']] += str_replace(',', '.', $item['tax']);
+			$result[floatval($item['tax_rate'])] += str_replace(',', '.', $item['tax']);
 		}
+
 		ksort($result, SORT_NUMERIC);
-		
+
 		return $result;
 	}
 	
