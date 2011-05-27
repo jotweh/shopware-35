@@ -13,6 +13,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 	public $widgetsXml;
 	public $widgetsApi;
 	public $panelApi;
+	protected $authCode;
 	
 	/**
 	 * Create reference to widget-model
@@ -21,7 +22,7 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 	public function preDispatch(){
 		$this->widgetsXml = Shopware()->DocPath()."/files/config/Widgets.xml";
 		$this->widgetsApi = new Shopware_Models_Widgets_Widgets(null,$this->widgetsXml);
-		
+		$this->authCode = 'f0Dbh1jL9RoddLD8lqhYHKYWyUqova'; // Shopware Update-Service Rest-Code
 		parent::preDispatch();
 	}
 
@@ -483,10 +484,96 @@ class Shopware_Controllers_Backend_Widgets extends Enlight_Controller_Action
 		");
 	}
 
+	/**
+	 * Test-function for plugin documentation to demonstrate remote combos
+	 * @return void
+	 */
 	public function getUsersAction(){
 		$this->View()->setTemplate();
 		$sql = "SELECT id, username FROM s_core_auth ORDER BY id";
 		$result = Shopware()->Db()->fetchAll($sql);
 		echo Zend_Json::encode(array("data"=>$result,"count"=>count($result)));
 	}
+
+	/**
+	 * Hiftsmethode der Klasse restfulClient
+	 *
+	 * @param unknown_type $result
+	 * @return unknown
+	 */
+	private function getReturn($result){
+		if($result->isSuccess()){
+			$newArr = array();
+			$result = json_decode($result);
+
+			$newArr = $this->getArray($result);
+			return $newArr;
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * Hiftsmethode der Klasse restfulClient
+	 *
+	 * @param unknown_type $result
+	 * @return unknown
+	 */
+	private function getArray($result)
+	{
+		$newArr = array();
+		if($result instanceof stdClass || is_array($result)){
+			foreach ($result as $key=>$value) {
+				$newArr[$key] = $this->getArray($value);
+			}
+			return $newArr;
+		}else{
+			return $result;
+		}
+	}
+
+	/* ----------------- SERVICES ----------------- */
+
+	/**
+	 * Liest von allen Plugins die Bestellnummer, den Namen,
+	 * die aktuelle Version und den Changelog aus
+	 *
+	 * Es werden nur Plugins zurückgegeben, bei denen ein Download
+	 * hinterlegt ist
+	 *
+	 * Mögliche Fehler:
+	 * 100: Falscher Authcode
+	 *
+	 */
+	public function getPluginInfo()
+	{
+		$result = $this->clientObj->getPluginInfo($this->authCode)->post();
+		return $this->getReturn($result);
+	}
+
+	/**
+	 * Ermittelt die Downloadinformationen / -links
+	 *
+	 * 1) Überprüft, ob ein Artikel nach diesem Suchmuster existiert (Bestellnummer = $article_match || Artikelname = $article_match)
+	 * 		> Ansonsten Fehlercode 101 > Kein Artikel gefunden
+	 * 2) Führt einen Login am ShopwareID-Server durch
+	 * 		> Schlägt dieser fehl wird der Fehlercode 102 zurückgegeben
+	 * 3) Liest alle Module der Domain aus. Und überprüft, ob der Artikel lizenziert ist
+	 * 		> Ist der Artikel nicht lizenziert wird der Fehlercode 103 zurückgegeben
+	 * 4) Downloads werden ermittelt
+	 * 		> Sollte kein Download ermittelt werden können wird der Fehlercode 104 zurückgegeben
+	 * 5) Für den Download werden Downloadtokens erstellt, die 30 min gültig sind
+	 *
+	 * @param string $shopwareID
+	 * @param string $password
+	 * @param string $domain
+	 * @param string $article_match
+	 * @return unknown (Bestellnummer oder Artikelname)
+	 */
+	public function getDownloadInfo($shopwareID, $password, $domain, $article_match)
+	{
+		$result = $this->clientObj->getDownloadInfo($this->authCode, $shopwareID, $password, $domain, $article_match)->post();
+		return $this->getReturn($result);
+	}
+
  }

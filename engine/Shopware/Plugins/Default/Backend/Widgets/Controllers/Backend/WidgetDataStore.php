@@ -60,6 +60,7 @@ class Shopware_Controllers_Backend_WidgetDataStore extends Enlight_Controller_Ac
 		foreach ($result as &$row){
 			$row["amount"] = round($row["amount"],0);
 		}
+		if (count($result) == 1) $result = array();
 		echo Zend_Json::encode(array("data"=>$result));
 	}
 
@@ -139,6 +140,11 @@ class Shopware_Controllers_Backend_WidgetDataStore extends Enlight_Controller_Ac
 		echo Zend_Json::encode(array("total"=>count($result),"result"=>$result));
 	}
 
+	/**
+	 * Check if permissions to add this widget are available
+	 * @param  $id
+	 * @return bool
+	 */
 	protected function checkWidgetPermissions($id){
 		
 		$widgetsApi = new Shopware_Models_Widgets_Widgets(null,Shopware()->DocPath()."/files/config/Widgets.xml");
