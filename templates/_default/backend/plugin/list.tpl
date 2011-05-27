@@ -98,20 +98,19 @@ Ext.ns('Shopware.Plugin');
 				var rec = grid.getStore().getAt(rowIndex);
 				Viewport.showDetail(rec.get('id'));
 			});
-
+			this.updateWindow = new Shopware.Plugin.UpdateWindow();
 			this.tbar = new Ext.Toolbar(
 				{
 				items:
 				[
 					new Ext.Button(
 						{
-							text: 'Nach Updates suchen'
-						}
-					),
-					'-',
-					new Ext.Button(
-						{
-							text: 'Temp'
+							text: 'Nach Updates suchen',
+							handler: function(){
+								this.updateWindow.show();
+
+							},
+							scope: this
 						}
 					)
 				]
