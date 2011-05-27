@@ -43,6 +43,4 @@ abstract class	Shopware_Components_File_Adapter implements SeekableIterator, Cou
 		$this->next();
 		return $result;
 	}
-	
-	abstract public function current();
 }

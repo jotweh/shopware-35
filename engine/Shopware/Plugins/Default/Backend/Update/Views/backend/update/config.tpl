@@ -16,6 +16,41 @@ Config = Ext.extend(Ext.FormPanel, {
             defaults: { anchor: '100%' },
             defaultType: 'textfield',
             items :[{
+				fieldLabel: 'Methode',
+				name: 'method',
+				hiddenName: 'method',
+				valueField:'id',
+				displayField:'name',
+				triggerAction:'all',
+				xtype: 'combo',
+				allowBlank:false,
+				readOnly: true,
+				//value: 'Auto',
+				mode: 'remote',
+				emptyText:'Bitte wählen...',
+                selectOnFocus:true,
+				allowBlank:false,
+                forceSelection : true,
+				store:  new Ext.data.Store({
+					url: '?action=methodList',
+					autoLoad: true,
+					reader: new Ext.data.JsonReader({
+						root: 'data',
+						totalProperty: 'count',
+						id: 'id',
+						fields: ['id', 'name']
+					})
+				}),
+				listeners: {
+					'change': { fn: function(field){
+						if(field.getValue() == 'direct') {
+							this.fieldsetDb.hide();
+						} else {
+							this.fieldsetDb.show();
+						}
+					}, scope: this }
+				}
+			},{
 				fieldLabel: 'Paket',
 				name: 'package',
 				hiddenName:'package',
@@ -31,31 +66,6 @@ Config = Ext.extend(Ext.FormPanel, {
                 forceSelection : true,
 				store:  new Ext.data.Store({
 					url: '?action=packageList',
-					autoLoad: true,
-					reader: new Ext.data.JsonReader({
-						root: 'data',
-						totalProperty: 'count',
-						id: 'id',
-						fields: ['id', 'name']
-					})
-				})
-			},{
-				fieldLabel: 'Methode',
-				name: 'method',
-				hiddenName:'method',
-				valueField:'id',
-				displayField:'name',
-				triggerAction:'all',
-				xtype: 'combo',
-				allowBlank:false,
-				readOnly: true,
-				value: 'Auto',
-				mode: 'remote',
-				emptyText:'Bitte wählen...',
-                selectOnFocus:true,
-                forceSelection : true,
-				store:  new Ext.data.Store({
-					url: '?action=methodList',
 					autoLoad: true,
 					reader: new Ext.data.JsonReader({
 						root: 'data',
@@ -169,10 +179,11 @@ Config = Ext.extend(Ext.FormPanel, {
 			}
 		};
 	
-		this.fieldsetDb = {
+		this.fieldsetDb = new Ext.form.FieldSet({
 	        xtype:'fieldset',
 	        title: 'FTP-Einstellungen',
-	        autoHeight:true,
+	        autoHeight: true,
+	        //hidden: true,
 	        defaults: { anchor: '100%' },
 	        defaultType: 'textfield',
 	        items :[{
@@ -185,7 +196,8 @@ Config = Ext.extend(Ext.FormPanel, {
 			},{
 				fieldLabel: 'Benutzer',
 				name: 'ftp_user',
-				allowBlank:false
+				value: 'root',
+				allowBlank: false
 			},{
 				fieldLabel: 'Passwort',
 				name: 'ftp_password',
@@ -200,7 +212,7 @@ Config = Ext.extend(Ext.FormPanel, {
 				name: 'ftp_port',
 				value: 'default'
 			},this.fieldPath]
-		};
+		});
 		
 		this.items = [this.fieldsetBase, this.fieldsetDb];
 		this.buttons = [{
@@ -210,11 +222,11 @@ Config = Ext.extend(Ext.FormPanel, {
 	            if(!form.isValid()) {
 	            	return;
 	            }
-	            Ext.MessageBox.wait("","Bitte warten ..."); 
 	            form.submit({
+	            	method: 'POST',
 	            	url: '{url action="testConfig"}',
 	            	success: function(fp, o){
-	            		Update.Tabs.activate(Update.HandlerFrom);
+	            		Update.Tabs.setActiveTab(Update.HandlerFrom);
 	            	},
 	            	failure: function(form, action) {
 	            		switch (action.failureType) {

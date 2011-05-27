@@ -51,11 +51,11 @@ Handler = Ext.extend(Ext.FormPanel, {
 		
 		this.formConfig = {
         	url: '{url}',
-        	params: { 'action': 'update' },
         	success: function(form, action){
         		if(action.result.action) {
         			Ext.MessageBox.wait(action.result.message, 'Update');
-        			this.formConfig.params = action.result;
+        			this.formConfig.params = Update.ConfigForm.getForm().getValues();
+        			Ext.apply(this.formConfig.params, action.result);
         			form.submit(this.formConfig);
         		} else {
         			Ext.MessageBox.alert('Update', action.result.message);
@@ -86,10 +86,15 @@ Handler = Ext.extend(Ext.FormPanel, {
 	            if(!form.isValid()) {
 	            	return;
 	            }
-	            Ext.MessageBox.wait('Bitte warten ...', 'Update');
-	            if(Update.ConfigForm.rendered) {
-	            	this.formConfig.params = Update.ConfigForm.getForm().getValues();
+	            if(!Update.ConfigForm.rendered) {
+	            	Update.Tabs.setActiveTab(Update.ConfigForm);
+	            	return;
+	            } else if(!Update.ConfigForm.getForm().isValid()) {
+	            	Update.Tabs.setActiveTab(Update.ConfigForm);
+	            	return;
 	            }
+	            Ext.MessageBox.wait('Bitte warten ...', 'Update');
+	            this.formConfig.params = { action: 'update' };
 	            form.submit(this.formConfig);
 	        },
 	        scope: this

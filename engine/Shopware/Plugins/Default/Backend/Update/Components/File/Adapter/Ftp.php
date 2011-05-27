@@ -134,12 +134,12 @@ class	Shopware_Components_File_Adapter_Ftp
 			$handle = fopen($handle, 'rb');
 		}
 		if($maxLength==-1 && $offset==0) {
-			return ftp_fput($this->stream, $remoteFile, $handle, $mode);
+			return $this->fput($remoteFile, $handle, $mode);
 		} else {
 			$tmpHandle = fopen('php://temp', 'r+');
-			stream_copy_tostream($handle ,$tmpHandle, $maxLength, $offset);
+			stream_copy_tostream($handle, $tmpHandle, $maxLength, $offset);
 			rewind($tmpHandle);
-			$result = ftp_fput($this->stream, $remoteFile, $tmpHandle, $mode);
+			$result = $this->fput($remoteFile, $tmpHandle, $mode);
 			fclose($tmpHandle);
 			return $result;
 		}
@@ -163,7 +163,7 @@ class	Shopware_Components_File_Adapter_Ftp
 		if(!$this->fileExists($remoteFile)) {
 			$this->execute('mkdir', array($remoteFile));
 		}
-		if($mode!==null) {
+		if($mode !== null) {
 			$this->execute('chmod', array($mode, $remoteFile));
 		}
 		return $this;

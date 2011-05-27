@@ -1,5 +1,5 @@
 <?php
-abstract class	Shopware_Components_Db_Import_Abstract implements SeekableIterator
+abstract class	Shopware_Components_Db_Import_Abstract implements SeekableIterator, Countable
 {
 	protected $count;
 	protected $stream;
