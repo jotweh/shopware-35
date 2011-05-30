@@ -543,9 +543,9 @@ div.ajax_login_form .heading .modal_close, .modal .heading .modal_close, .ajax_c
 div#breadcrumb {background: transparent;border: 0 none;height:20px; line-height: 16px;padding-left:0;}
 
 
-#listing-3col .artbox .inner {background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 3px;}
-#listing .artbox .inner  {background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 8px;}
-#listing-2col .artbox .inner { background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 0px;}
+#listing-3col .artbox .inner {background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 bottom;}
+#listing .artbox .inner  {background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 bottom;}
+#listing-2col .artbox .inner { background:transparent url(../images/backgrounds/bg_gradient.png) repeat-x  0 bottom;}
  
 #shopnavi .icon a { background:transparent url(../images/icons/ico_basket.png) no-repeat 0 0px;}
 
@@ -558,7 +558,7 @@ html {padding-top:0;}
 #topbar input {border: 0 none; font-size:10px; font-weight: normal; }
 #header #logo a {margin:38px 0 0 0;}
 
-#content {margin:0;margin-top:30px;border-left: 1px solid #ddd;border-right: 1px solid #ddd; background-color: #fff;}
+#content {margin:0;margin-top:30px;border-left: 1px solid #dddddd;border-right: 1px solid #dddddd; background-color: #fff;}
 
 #mainNavigation a.active {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll center -44px; border: transparent;height:43px;}
 #mainNavigation a.first {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll 0 -44px; border: transparent;height:43px;}
