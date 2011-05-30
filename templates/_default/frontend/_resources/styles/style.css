@@ -1210,7 +1210,6 @@ ul#categories_s ul ul ul a.active {padding:2px 2px 2px 35px;}
 .supportrequest select {padding:5px; width: 315px;}
 #letterForm .street, #letterForm .zipcode {margin-right: 3px;}
 
-
 /*	TELL-A-FRIEND
 	------------------------ */
 #content .tellafriend {margin-left: 20px;margin-right: 20px;width: 770px;}
@@ -1227,6 +1226,15 @@ ul#categories_s ul ul ul a.active {padding:2px 2px 2px 35px;}
 .tellafriend .captcha {margin: 0 0 0 50px;}
 .tellafriend .buttons {margin: 10px 215px 0 50px;padding: 0}
 .tellafriend .buttons input {float: right;width: 140px;margin:0;padding: 0 !important;display: block;text-align:center;}
+
+/*	ARTICLE UNIT PRICE
+	------------------------ */
+#detail #detailinfo .similar .artbox .article_price_unit,
+.slide .article_box .article_price_unit,
+.ajaxSlider .article_box .article_price_unit,
+.ajaxSlider .article_box .article_price_unit p,
+#listing .artbox .article_price_unit_pseudo,
+#listing .artbox .article_price_unit { line-height: 12px; }
 
 /*	NEW LIVESHOPPING
 	------------------------ */

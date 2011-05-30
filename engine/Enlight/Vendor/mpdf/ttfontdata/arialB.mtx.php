@@ -1434,9 +1434,9 @@ $cw=array (
   65276 => 541,
   65532 => 1000,
 );
-$ttffile='/var/www/engine/Enlight/Vendor/mpdf/ttfonts/arialbd.ttf';
+$ttffile='/Applications/MAMP/htdocs/engine/Enlight/Vendor/mpdf/ttfonts/arialbd.ttf';
 $TTCfontID='0';
 $originalsize=352224;
-$modified=1285426970;
+$modified=1290673409;
 $fontkey='arialB';
 ?>
