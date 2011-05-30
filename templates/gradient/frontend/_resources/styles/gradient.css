@@ -558,7 +558,7 @@ html {padding-top:0;}
 #topbar input {border: 0 none; font-size:10px; font-weight: normal; }
 #header #logo a {margin:38px 0 0 0;}
 
-#content {margin:0;margin-top:30px;border-left: 1px solid #dddddd;border-right: 1px solid #dddddd; background-color: #fff;}
+#content {margin:0;margin-top:30px;border-left: 1px solid #ddd;border-right: 1px solid #ddd; background-color: #fff;}
 
 #mainNavigation a.active {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll center -44px; border: transparent;height:43px;}
 #mainNavigation a.first {background:transparent url(../images/backgrounds/bg_navi.png) repeat-x scroll 0 -44px; border: transparent;height:43px;}
