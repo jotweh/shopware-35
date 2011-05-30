@@ -27,7 +27,7 @@
 	                {if $sArticle.purchaseunit != $sArticle.referenceunit}
 	                    <p>
 	                        {if $sArticle.referenceunit}
-	                            <strong class="baseprice">{se name="ListingBoxBaseprice" namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.description} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
+	                            <strong class="baseprice">{se name="ListingBoxBaseprice" namespace="frontend/listing/box_article"}{/se}:</strong> {$sArticle.referenceunit} {$sArticle.sUnit.unit} = {$sArticle.referenceprice|currency} {s name="Star" namespace="frontend/listing/box_article"}{/s}
 	                        {/if}
 	                    </p>
 	                {/if}
