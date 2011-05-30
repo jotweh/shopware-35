@@ -38,7 +38,11 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 		$this->view->sSearchResults = $search_results;
 	}
 
+
 	/**
+	 * Deprecated used in old template-base
+	 * @return
+	 */
 	public function jsonSearchAction()
 	{
 		$this->View()->setTemplate();
@@ -65,9 +69,13 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 			}
 		}
 		echo json_encode(array('sResults'=>$search_results['sResults']));
-	}**/
+	}
+
 
 	/**
+	 * Generate open-search conform data
+	 * @return
+	 */
 	public function openSearchAction()
 	{
 		$this->View()->setTemplate();
@@ -93,7 +101,7 @@ class Shopware_Controllers_Frontend_AjaxSearch extends Enlight_Controller_Action
 			}
 		}
 		echo json_encode(array($sRequests['sSearch'], $sSearchResultsNames, $sSearchResultsDesc, $sSearchResultsLinks));
-	}**/
+	}
 
 	/**
 	 * Start suggest search and return results
