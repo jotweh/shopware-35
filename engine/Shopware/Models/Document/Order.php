@@ -339,7 +339,7 @@ Farbe: gelb";s:6:"status";s:1:"0";s:7:"shipped";s:1:"0";s:12:"shippedgroup";s:1:
 				if($position["modus"]==4 || $position["modus"] == 3)
 				{
 					// Discounts get tax from configuration
-					if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+					if (!empty(Shopware()->Config()->sTAXAUTOMODE)){
 						$tax = $this->getMaxTaxRate();
 					}else {
 						$tax = Shopware()->Config()->sDISCOUNTTAX;
