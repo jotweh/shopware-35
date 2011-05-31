@@ -65,11 +65,11 @@ input#searchfield {height:24px;}
 div.listing {width: 640px;}
 div.supplier_filter div {width: 149px;height: 26px;}
 #listing .artbox {width: 149px;}
-#listing .artbox .inner {padding:10px 10px 5px 10px;width:142px;height: 321px;}
+#listing .artbox .inner {padding:10px 10px 5px 10px;width:142px;height: 326px;}
 #listing .artbox .actions a {display: block; width:137px;}
 
 #listing-3col .artbox {width: 202px;}
-#listing-3col .artbox .inner {padding: 10px 10px 5px 10px;width: 200px;height: 315px;}
+#listing-3col .artbox .inner {padding: 10px 10px 5px 10px;width: 200px;height: 340px;}
 #listing-3col .artbox .actions a {display: block;}
 #listing-3col .artbox .actions a.buynow {width: 190px;}
 #listing-3col .artbox .actions a.more, #listing-3col .artbox .actions a.compare_add_article {width: 93px !important;}
