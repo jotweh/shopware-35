@@ -336,7 +336,7 @@ Farbe: gelb";s:6:"status";s:1:"0";s:7:"shipped";s:1:"0";s:12:"shippedgroup";s:1:
 				/* 
 				Read tax for each order position
 				*/
-				if($position["modus"]==4)
+				if($position["modus"]==4 || $position["modus"] == 3)
 				{
 					// Discounts get tax from configuration
 					if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
@@ -364,9 +364,28 @@ Farbe: gelb";s:6:"status";s:1:"0";s:7:"shipped";s:1:"0";s:12:"shippedgroup";s:1:
 					$position["netto"] = $position["price"] / (100 + $position["tax"]) * 100;
 				}
 			}
-			elseif ($position["modus"]==2||$position["modus"]==3)
+			elseif ($position["modus"]==2)
 			{
-				$position["tax"] =  Shopware()->Config()->sVOUCHERTAX;
+				$ticketResult = Shopware()->Db()->fetchRow("
+				SELECT * FROM s_emarketing_vouchers WHERE ordercode=?
+				",array($position["articleordernumber"]));
+
+				if ($ticketResult["taxconfig"] == "default" || empty($ticketResult["taxconfig"])){
+					$position["tax"] =  Shopware()->Config()->sVOUCHERTAX;
+					// Pre 3.5.4 behaviour
+				}elseif ($ticketResult["taxconfig"]=="auto"){
+					// Check max. used tax-rate from basket
+					$position["tax"] = $this->getMaxTaxRate();
+				}elseif (intval($ticketResult["taxconfig"])){
+					// Fix defined tax
+					$temporaryTax = $ticketResult["taxconfig"];
+					$getTaxRate = Shopware()->Db()->fetchOne("
+					SELECT tax FROM s_core_tax WHERE id = $temporaryTax
+					");
+					$position["tax"]  = $getTaxRate["tax"];
+				}else {
+					$position["tax"]  = 0;
+				}
 				
 				if($this->_net == true)
 				{
