@@ -331,7 +331,7 @@ Farbe: gelb";s:6:"status";s:1:"0";s:7:"shipped";s:1:"0";s:12:"shippedgroup";s:1:
 			modus 4 = payment surcharge / discount
 			modus 10 = bundle discount
 			*/
-			if ($position["modus"]==0 || $position["modus"]==4 || $position["modus"]==10)
+			if ($position["modus"]==0 || $position["modus"]==4 || $position["modus"] == 3 || $position["modus"]==10)
 			{
 				/* 
 				Read tax for each order position
