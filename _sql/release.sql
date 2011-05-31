@@ -187,5 +187,5 @@ INSERT IGNORE INTO `s_core_config` (
 `fieldtype`
 )
 VALUES (
-NULL , '35', 'sTAXAUTOMODE', '1', 'Steuer für Rabatte dynamisch feststellen', '0', '0', '', '0', ''
+NULL , '35', 'sTAXAUTOMODE', '1', 'Steuer für Rabatte dynamisch feststellen', '0', '0', '', '1', 'int'
 );
