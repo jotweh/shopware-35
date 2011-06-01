@@ -146,8 +146,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	{
 		$this->refreshList();
 
-		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
-
+		if (!empty($this->Request()->sort)){
+			$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('checkdate DESC'));
+		}else {
+			$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
+		}
 		$limit = $this->Request()->getParam('limit', 25);
 		$start = $this->Request()->getParam('start', 0);
 		
@@ -188,6 +191,35 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		echo Zend_Json::encode(array('data'=>$rows, 'count'=>$count));
 	}
 
+	/**
+	 * Get a list of available downloads for a certain plugin / shopware id connection
+	 * @return void
+	 */
+	public function getUpdateDownloadsAction(){
+		$this->View()->setTemplate();
+		$plugin = $this->Request()->plugin;
+		$domain = $this->Request()->host;
+		$shopwareID = $this->Request()->user;
+		$password = $this->Request()->password;
+		if (empty($plugin)
+		|| empty($domain)
+		|| empty($shopwareID)
+		|| empty($password)
+		){
+			throw new Enlight_Exception("Missing Parameter");
+		}
+
+		$result = $this->getDownloadInfo($shopwareID, $password, $domain, $plugin);
+		if (empty($result["success"]) || empty($result["downloads"])){
+			throw new Enlight_Exception($result["errorcode"]." ".$result["errormsg"]);
+		}
+		$downloads = array();
+		foreach ($result["downloads"] as $kind => $download){
+			$downloads[] = array("typ" => $kind,"download"=>$download["downloadlink"],"filename"=>$download["filename"]);
+		}
+
+		echo Zend_Json::encode(array("count"=>count($download), "downloads"=>$downloads));
+	}
 	/**
 	 * Get plugin list for delete combo (deprecated)
 	 * @return void
@@ -240,14 +272,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		if(empty($node)) {
 			$this->refreshList();
-			/*
-			$select = $this->db->select()
-				->distinct()
-				->from('s_core_plugins', array('namespace as id', 'namespace as text'))
-				->order(array('namespace'))
-			;
-			$list = $this->db->fetchAll($select);
-			*/
+			
 			$list = array(
 					array('id'=>'Default', 'text'=>'Core Plugins', 'leaf'=>false, 'expended'=>true),
 					array('id'=>'Community', 'text'=>'CommunityStore', 'leaf'=>false, 'expended'=>true),
@@ -270,23 +295,6 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				$list[$key]['children'] = $children;
 			}
 			
-		} else {
-			/*
-			$select = $this->db->select()
-				->from('s_core_plugins', array('id', 'name as text', 'active'))
-				->where('namespace=?', $node)
-				->order(array('name'))
-			;
-			$list = $this->db->fetchAll($select);
-			foreach ($list as $key=>$row) {
-				$list[$key]['name'] = utf8_encode($row['name']);
-				$list[$key]['active'] = (bool) $row['active'];
-				if(!$list[$key]['active']) {
-					$list[$key]['cls'] = 'inactive';
-				}
-				$list[$key]['leaf'] = true;
-			}
-			*/
 		}
 		
 		echo Zend_Json::encode($list);
@@ -633,6 +641,51 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
+	 * Search for updates for all community plugins
+	 * through webservice
+	 * @return void
+	 */
+	public function searchUpdatesAction(){
+		$this->View()->setTemplate();
+		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
+		$select->where('source=?', 'Community');
+		$rows = $this->db->fetchAll($select);
+		if (empty($rows)){
+			$this->Response()->setHttpResponseCode(500);
+			throw new Enlight_Exception("The update-script only works for community plugins - there are no community plugins installed yet.");
+		}
+
+		$localPlugins = array();
+		foreach ($rows as $row){
+			$localPlugins[$row["name"]] = $row;
+			$searchQuery[] = $row["name"];
+		}
+
+		$searchQuery[] = "SwagKick";
+		$searchQuery[] = "";
+
+		$checkedPlugins = $this->getPluginInfo($searchQuery);
+
+		$foundPlugins = false;
+		
+		foreach ($checkedPlugins["articles"] as $plugin){
+			$foundPlugins = true;
+			if (isset($localPlugins[$plugin["ordernumber"]])){
+				$changelog = $plugin["changelog"];
+				Shopware()->Db()->query("
+				UPDATE s_core_plugins SET checkversion = ?, checkdate = ?, changes = ?
+				WHERE id = ?
+				",array($plugin["version"],$plugin["change_date"],$changelog,$localPlugins[$plugin["ordernumber"]]["id"]));
+				// Update plugin information
+				//throw new Enlight_Exception("Update for {$plugin["ordernumber"]} found ... ");
+			}
+		}
+
+		if ($foundPlugins == false){
+			throw new Enlight_Exception("No Updates found");
+		}
+	}
+	/**
 	 * Hiftsmethode der Klasse restfulClient
 	 *
 	 * @param unknown_type $result
@@ -664,9 +717,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	 * 100: Falscher Authcode
 	 *
 	 */
-	public function getPluginInfo()
+	public function getPluginInfo($filter=null)
 	{
-		$result = $this->clientObj->getPluginInfo($this->authCode)->post();
+		$authcode = 'f0Dbh1jL9RoddLD8lqhYHKYWyUqova';
+		$clientObj = new Zend_Rest_Client('http://store.shopware.de/restfulServer');
+		$result = $clientObj->getPluginInfo($authcode, json_encode($filter))->post();
 		return $this->getReturn($result);
 	}
 
@@ -691,7 +746,10 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	 */
 	public function getDownloadInfo($shopwareID, $password, $domain, $article_match)
 	{
-		$result = $this->clientObj->getDownloadInfo($this->authCode, $shopwareID, $password, $domain, $article_match)->post();
+		
+		$authcode = 'f0Dbh1jL9RoddLD8lqhYHKYWyUqova';
+		$clientObj = new Zend_Rest_Client('http://store.shopware.de/restfulServer');
+		$result = $clientObj->getDownloadInfo($authcode, $shopwareID, $password, $domain, $article_match)->post();
 		return $this->getReturn($result);
 	}
 }

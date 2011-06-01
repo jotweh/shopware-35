@@ -54,7 +54,7 @@ Ext.ns('Shopware.Plugin');
 	   				totalProperty: 'count',
 	   				id: 'id',
 	   				fields: [
-	   					'id', 'path', 'namespace', 'name', 'autor', 'version', 'active','added', 'copyright', 'license', 'label', 'source', 'support', 'link',
+	   					'id', 'path', 'namespace', 'name', 'autor','checkversion','version', 'active','added', 'copyright', 'license', 'label', 'source', 'support', 'link',
 	   					{ name: 'update_date', type: 'date', dateFormat: 'timestamp' },
 	        			{ name: 'installation_date', type: 'date', dateFormat: 'timestamp' }
 	   				]
@@ -243,7 +243,7 @@ Ext.ns('Shopware.Plugin');
 	            },
 				{
 	                xtype: 'gridcolumn',
-	                dataIndex: 'version',
+	                dataIndex: 'checkversion',
 	                header: 'Aktuelle Version',
 	                sortable: false,
 	                width: 95,
@@ -253,6 +253,7 @@ Ext.ns('Shopware.Plugin');
 						if (r.data.source != "Community"){
 							return "-";
 						}
+						if (v != '') return v;
 						return '?';
 					}
 	            },

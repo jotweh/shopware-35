@@ -43,7 +43,7 @@
 			height: 150,
 			autoScroll: true,
 			//frame: true,
-			bodyStyle:'padding:10px',
+			bodyStyle:'padding:10px;font-family:Arial',
 			html: '{$plugin.description|escape:"javascript"}',
 		},
 {/if}
