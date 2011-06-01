@@ -3123,6 +3123,15 @@ class sArticles
 				$getArticle["sUpcoming"] = false;
 			}
 			
+			// Get cheapest price
+			$getArticle["priceStartingFrom"] = $this->sGetCheapestPrice($getArticle["articleID"],$getArticle["pricegroup"],$getArticle["pricegroupID"],$getArticle["pricegroupActive"]);
+
+			if ($getArticle["price"]) $getArticle["price"] = $this->sCalculatingPrice($getArticle["price"],$getArticle["tax"],$getArticle);
+
+			// Load article-configurations
+
+			$getArticle = $this->sGetArticleConfig($getArticle["articleID"],$getArticle);
+			
 			/**
 			 * LIVE-SHOPPING - START - HAUPTARTIKEL
 			 */
@@ -3137,6 +3146,8 @@ class sArticles
 						}
 					}
 				}
+			}
+			if(!empty($tmpArticle['liveshoppingData'])) {
 				foreach ($tmpArticle['liveshoppingData'] as $live) {
 					$tmpArticle['liveshoppingData'] = $live;
 					$tmpArticle['price'] = $tmpArticle['liveshoppingData']['price'];
@@ -3148,19 +3159,6 @@ class sArticles
 			/**
 			 * LIVE-SHOPPING - END
 			 */
-
-			// Get cheapest price
-			if(!empty($getArticle['liveshoppingData']['price'])) {
-				$getArticle["priceStartingFrom"] = $getArticle['liveshoppingData']['price'];
-			} else {
-				$getArticle["priceStartingFrom"] = $this->sGetCheapestPrice($getArticle["articleID"],$getArticle["pricegroup"],$getArticle["pricegroupID"],$getArticle["pricegroupActive"]);
-			}
-
-			if ($getArticle["price"]) $getArticle["price"] = $this->sCalculatingPrice($getArticle["price"],$getArticle["tax"],$getArticle);
-
-			// Load article-configurations
-
-			$getArticle = $this->sGetArticleConfig($getArticle["articleID"],$getArticle);
 
 			if ($getArticle["sConfigurator"]){
 				unset($getArticle["sBlockPrices"]);
