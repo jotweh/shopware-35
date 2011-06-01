@@ -284,7 +284,7 @@ class sPayment extends Shopware
 			$order->sComment = $request->getParam('comment');
 			$order->sBasketData = $this->sBasket;
 			$order->sAmount = $this->sBasket['sAmount'];
-			$order->sAmountWithTax = $this->sBasket['AmountNumeric'];
+			$order->sAmountWithTax = !empty($this->sBasket['AmountWithTaxNumeric']) ? $this->sBasket['AmountWithTaxNumeric'] : $this->sBasket['AmountNumeric'];
 			$order->sAmountNet = $this->sBasket['AmountNetNumeric'];
 			$order->sShippingcosts = $this->sBasket['sShippingcosts'];
 			$order->sShippingcostsNumeric = $this->sBasket['sShippingcostsWithTax'];
