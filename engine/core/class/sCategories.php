@@ -47,7 +47,7 @@ class sCategories
 		if (isset($categoryParent[count($categoryParent)-2])){
 			$categoryParent = $categoryParent[count($categoryParent)-2];
 		}
-						
+
 		if ($id!=$baseId){
 			
 			$parentIds = array_merge(array($id),$this->sGetCategoryIdsByParent($id));
@@ -55,23 +55,22 @@ class sCategories
 			foreach ($parentIds as $pId) {
 				
 				$sql = "
-					SELECT c.*, (SELECT COUNT(*) FROM s_articles_categories WHERE categoryID = c.id GROUP BY categoryID) AS countArticles
+					SELECT c.*,
+						(SELECT COUNT(*) FROM s_articles_categories WHERE categoryID = c.id GROUP BY categoryID) AS countArticles
 					FROM s_categories c
 					WHERE parent = ? 
 					AND c.active = 1
 					AND (
-					SELECT categoryID 
-					FROM s_categories_avoid_customergroups 
-					WHERE categoryID = c.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+						SELECT categoryID 
+						FROM s_categories_avoid_customergroups 
+						WHERE categoryID = c.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
 					) IS NULL
 					HAVING countArticles>0
 					ORDER BY position, description
 				";
 				
 				$getCategories = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,array($pId));
-				
 
-	
 				if(!empty($getCategories)) {
 					foreach ($getCategories as $categoryKey => $categoryObject){
 
@@ -83,27 +82,25 @@ class sCategories
 						}
 						if ($getCategories[$categoryKey]["id"]==$backupId){
 							$getCategories[$categoryKey]["subcategories"] = $backup;
-						}else {
+						} else {
 							$getCategories[$categoryKey]["subcategories"] = array();
 						}
-						
-						
-						if ($categoryObject["countArticles"]==1 && !empty($this->sSYSTEM->sCONFIG["sCATEGORYDETAILLINK"])){
-
-							$getArticle = $this->sSYSTEM->sDB_CONNECTION->GetRow("
-							SELECT s_articles.id, name FROM s_articles, s_articles_categories WHERE s_articles.id = s_articles_categories.articleID
-							AND s_articles_categories.categoryID = ? AND s_articles.active = 1
-							",array($categoryObject["id"]));
-							
-							$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sMODULES['sCore']->sRewriteLink($this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle={$getArticle['id']}",$getArticle["name"]);
-							
-						}elseif($categoryObject["external"]){
-							// Task
+						if ($categoryObject["countArticles"]==1 && !empty($this->sSYSTEM->sCONFIG["sCATEGORYDETAILLINK"])) {
+							$articleId = $this->sSYSTEM->sDB_CONNECTION->GetOne("
+								SELECT s_articles.id FROM s_articles, s_articles_categories
+								WHERE s_articles.id = s_articles_categories.articleID
+								AND s_articles_categories.categoryID = ? AND s_articles.active = 1
+							",	array($categoryObject["id"]));
+							$articleName = $this->sSYSTEM->sMODULES['sCore']->sGetArticleNameByArticleId($articleId);
+							$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sMODULES['sCore']->sRewriteLink(
+								$this->sSYSTEM->sCONFIG['sBASEFILE'] . '?sViewport=detail&sArticle=' . $articleId, $articleName
+							);
+						} elseif(!empty($categoryObject["external"])) {
 							$getCategories[$categoryKey]["link"] = $categoryObject["external"];
-						}else {
+						}
+						if(empty($getCategories[$categoryKey]["link"])) {
 							$getCategories[$categoryKey]["link"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=cat&sCategory={$categoryObject['id']}";	
 						}
-
 					}
 				}
 				$backupId = $pId;

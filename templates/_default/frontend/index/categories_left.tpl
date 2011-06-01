@@ -5,7 +5,7 @@
 	{block name="frontend_index_categories_left_ul"}{/block}
 	{foreach from=$categories item=category}
 	    <li {if $category.flag || $category.subcategories}class="{if $category.flag or $category.subcategories}active{if $category.subcategories} sub{/if}{/if}"{/if}>
-			<a href="{if $category.external}{$category.external}{else}{$category.link|rewrite:$category.description}{/if}" {if $category.flag || $category.subcategories}class="{if $category.flag or $category.subcategories}flag{if $category.subcategories} active{/if}{/if}"{/if}>
+			<a href="{$category.link}" {if $category.flag || $category.subcategories}class="{if $category.flag or $category.subcategories}flag{if $category.subcategories} active{/if}{/if}"{/if}>
 				{$category.description}
 			</a>
 	    	{if $category.subcategories}
