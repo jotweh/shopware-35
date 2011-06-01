@@ -66,20 +66,8 @@
  * Version 1.0
  * - inital release
  */
- 
-/**
- * Plugin Starter
- * for Shopware
- *
- * Shopware AG (c) 2010
- */
-/**
- * Setting up all plugins and 
- * adding new functionality
- * to the shopware Storefront
- */
 jQuery(document).ready(function($) {
-		
+
 		// Removes hiding class for all script related elements
 		$('.hide_script').removeClass('hide_script');
 		
@@ -1783,15 +1771,9 @@ jQuery.fn.liveSearch = function (conf) {
 	//article detail site and changes the active
 	//images which is used by variant articles
 	$.changeDetails = function (ordernumber) {
-
 		if(ordernumber) {
 			ordernumber = ordernumber.replace(/\./g, '\\.');
 		}
-
-		if($.ordernumber) {
-			$.ordernumber = $.ordernumber.replace(/\./g, '\\.');
-		}
-
 		if (typeof($.checkNotification) == 'function') {
 			if (!ordernumber){
 				$.checkNotification($.ordernumber);
@@ -1829,10 +1811,13 @@ jQuery.fn.liveSearch = function (conf) {
 			// Hide basket
 			$('#basketButton').css('opacity', '0.4');
 		} else {
+		
 			// Show Pseudo price
 			$('#'+ordernumber).find('.PseudoPrice').show();
+			
 			// Show delivery info
 			$('.delivery_container').show();
+			
 			// Change informations
 			$('#article_details').html($('#' + ordernumber).html());
 
@@ -1868,7 +1853,7 @@ jQuery.fn.liveSearch = function (conf) {
 					 // Change lightbox link
 					$('a#zoom1').attr('href', $('#img' + ordernumber).children('a').attr('href'));
 				}
-
+				
 				// Change active thumbnail image
 				$('#thumb' + $.ordernumber).hide();
 				$('#thumb' + ordernumber).show();
