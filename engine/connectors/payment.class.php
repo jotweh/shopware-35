@@ -340,7 +340,7 @@ class sPayment extends Shopware
 	public function initPayment()
 	{
 		if (!empty($this->gatewayIps)){
-			if (!in_array($_SERVER['REMOTE_ADDR'])){
+			if (!in_array($_SERVER['REMOTE_ADDR'],$this->gatewayIps)){
 				$this->throughError($_SERVER['REMOTE_ADDR'].' is not allowed to access payment-gateway');
 			}
 		}
