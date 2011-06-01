@@ -1,6 +1,19 @@
 <?php
+/**
+ * Shopware SEO Plugin
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install SEO-Plugin
+	 * @return bool
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -17,7 +30,12 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 		
 		return true;
 	}
-		
+	/**
+	 * Optimize Sourcecode / Apply seo rules
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return
+	 */
 	public static function onPostDispatch(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
@@ -98,7 +116,13 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 			}
 		}
 	}
-	
+
+	/**
+	 * Remove html-comments / whitespaces
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return mixed|string
+	 */
 	public static function onFilterRender(Enlight_Event_EventArgs $args)
 	{	
 		$request = $args->getSubject()->Action()->Request();
@@ -114,7 +138,8 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 				
 		// Remove comments
 		if(!empty($config['sSEOREMOVECOMMENTS'])&&empty($template->_tpl_vars['debug_output'])) {
-			$source = preg_replace('#(<script[^>]*?>.*?</script>)|(<style[^>]*?>.*?</style>)|<!--[^\[].*?-->#msi' ,'$1$2', $source);
+			// Ticket 5412
+			$source = preg_replace('#(<script[^>]*?>.*?</script>)|(<style[^>]*?>.*?</style>)|(<!--\[.*?\]-->)|<!--.*?-->#msi' ,'$1$2$3', $source);
 		}
 		
 		// Trim whitespace
