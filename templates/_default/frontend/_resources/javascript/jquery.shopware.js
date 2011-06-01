@@ -1788,6 +1788,12 @@ jQuery.fn.liveSearch = function (conf) {
 				$('#detailBuyInfoNotAvailable').hide();
 			} else {
 				$('#article_notification').show();
+				var hideBasket = $('#notifyHideBasket').val();
+				hideBasket = ~~hideBasket;
+				console.log(hideBasket);
+				if(hideBasket) {
+					$('#detailCartButton').hide();
+				}
 				if($('#detailBuyInfoNotAvailable').length) {
 					$('#detailCartButton').hide();
 					$('#detailBuyInfoNotAvailable').show();

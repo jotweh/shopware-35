@@ -1,4 +1,5 @@
 <div id="article_notification">
+	<input type="hidden" value="{$NotifyHideBasket}" name="notifyHideBasket" id="notifyHideBasket" />
 	{if $NotifyValid == true || $NotifyInvalid == true}
 		<div class="notice">
 			{if $NotifyValid == true}
