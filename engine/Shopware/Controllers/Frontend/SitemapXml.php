@@ -22,6 +22,8 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 		
 		$this->Response()->setHeader('Content-Type', 'text/xml; charset=utf-8');
 		$this->Response()->sendResponse();
+		
+		set_time_limit(0);
 	}
 	
 	/**
@@ -34,44 +36,19 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 		
 		$parentId = Shopware()->Shop()->get('parentID');
 		
-		$urls = $this->getCategoryUrls($parentId);
-		
-		foreach ($urls as $url) {
-			$line = '<url>';
-			$line .= '<loc>'.$url['loc'].'</loc>';
-			if(!empty($url['lastmod'])) {
-				$line .= '<lastmod>'.$url['lastmod'].'</lastmod>';
-			}
-			$line .= '<changefreq>weekly</changefreq><priority>0.5</priority>';
-			$line .= '</url>';
-			$line .= "\r\n";
-			echo $line;
-		}
-		
-		$urls = $this->getArticleUrls($parentId);
-		
-		foreach ($urls as $url) {
-			$line = '<url>';
-			$line .= '<loc>'.$url['loc'].'</loc>';
-			if(!empty($url['lastmod'])) {
-				$line .= '<lastmod>'.$url['lastmod'].'</lastmod>';
-			}
-			$line .= '<changefreq>weekly</changefreq><priority>0.5</priority>';
-			$line .= '</url>';
-			$line .= "\r\n";
-			echo $line;
-		}
-		
+		$this->readCategoryUrls($parentId);
+				
+		$this->readArticleUrls($parentId);
+				
 		echo "</urlset>\r\n";
 	}
 	
 	/**
-	 * Returns category urls
+	 * Print category urls
 	 *
 	 * @param int $parentId
-	 * @return array
 	 */
-	public function getCategoryUrls($parentId)
+	public function readCategoryUrls($parentId)
 	{
 		$sql= "
 			SELECT
@@ -91,28 +68,47 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 			And c.parent=?
 			GROUP BY ac.categoryID
 		";
-		$urls = Shopware()->Db()->fetchAll($sql, array($parentId));
-		if (empty($urls)) {
-			return array();
+		$result = Shopware()->Db()->query($sql, array($parentId));
+		if (!$result->rowCount()) {
+			return;
 		}
-		foreach ($urls as $urlKey => $url) {
-			$urls[$urlKey]['loc'] = $this->Front()->Router()->assemble(array(
+		while ($url = $result->fetch()) {
+			$url['loc'] = $this->Front()->Router()->assemble(array(
 				'sViewport' => 'cat',
 				'sCategory' => $url['id'],
 				'title' => $url['title']
 			));
-			$urls = array_merge($urls, $this->getCategoryUrls($url['id']));
+			
+			$this->printCategoryUrl($url);
+			
+			$this->readCategoryUrls($url['id']);
 		}
-		return $urls;
 	}
 	
 	/**
-	 * Returns article urls
+	 * Print category url
+	 *
+	 * @param array $url
+	 */
+	public function printCategoryUrl($url)
+	{
+		$line = '<url>';
+		$line .= '<loc>'.$url['loc'].'</loc>';
+		if(!empty($url['lastmod'])) {
+			$line .= '<lastmod>'.$url['lastmod'].'</lastmod>';
+		}
+		$line .= '<changefreq>weekly</changefreq><priority>0.5</priority>';
+		$line .= '</url>';
+		$line .= "\r\n";
+		echo $line;
+	}
+	
+	/**
+	 * Read article urls
 	 *
 	 * @param int $parentId
-	 * @return array
 	 */
-	public function getArticleUrls($parentId)
+	public function readArticleUrls($parentId)
 	{
 		$sql = "
 			SELECT
@@ -126,17 +122,36 @@ class Shopware_Controllers_Frontend_SitemapXml extends Enlight_Controller_Action
 			AND a.id = ac.articleID
 			AND ac.categoryID=?
 		";
-		$urls = Shopware()->Db()->fetchAll($sql, array($parentId));
-		if (empty($urls)) {
-			return array();
+		$result = Shopware()->Db()->query($sql, array($parentId));
+		if (!$result->rowCount()) {
+			return;
 		}
-		foreach ($urls as $urlKey => $url) {
-			$urls[$urlKey]['loc'] = $this->Front()->Router()->assemble(array(
+		while ($url = $result->fetch()) {
+			$url['loc'] = $this->Front()->Router()->assemble(array(
 				'sViewport' => 'detail',
 				'sArticle' => $url['id'],
 				'title' => $url['title']
-			));			
+			));
+			
+			$this->printArticleUrls($url);
 		}
-		return $urls;
+	}
+	
+	/**
+	 * Print article url
+	 *
+	 * @param array $url
+	 */
+	public function printArticleUrls($url)
+	{
+		$line = '<url>';
+		$line .= '<loc>'.$url['loc'].'</loc>';
+		if(!empty($url['lastmod'])) {
+			$line .= '<lastmod>'.$url['lastmod'].'</lastmod>';
+		}
+		$line .= '<changefreq>weekly</changefreq><priority>0.5</priority>';
+		$line .= '</url>';
+		$line .= "\r\n";
+		echo $line;
 	}
 }
