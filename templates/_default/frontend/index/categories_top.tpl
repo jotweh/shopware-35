@@ -8,7 +8,7 @@
 	    {foreach from=$sMainCategories item=sCategory}
 	    {if !$sCategory.hidetop}
 			<li {if $sCategory.flag} class="active"{/if}>
-	        	<a href="{if $sCategory.external}{$sCategory.external}{else}{$sCategory.link|rewrite:$sCategory.description}{/if}" title="{$sCategory.description}" {if $sCategory.flag} class="active"{/if}>
+	        	<a href="{$sCategory.link}" title="{$sCategory.description}" {if $sCategory.flag} class="active"{/if}>
 	        		{$sCategory.description}
 	        	</a>
 	        </li>
