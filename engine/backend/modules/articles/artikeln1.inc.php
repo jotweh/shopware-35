@@ -1340,7 +1340,7 @@ if ($area["group"]!="Preise" && $area["group"]!="Kundengruppen"){
 	<?php
 	}
 }
-elseif ($area["group"]=="Kundengruppen" && $sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){?>
+elseif ($area["group"]=="Kundengruppen"){?>
 	<fieldset style="margin-top: -30px;position:relative;top:0;left:0">
 	<legend>Aktiv für Kundengruppen:</legend>
 	<ul>
