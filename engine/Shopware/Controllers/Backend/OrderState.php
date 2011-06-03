@@ -37,12 +37,6 @@ class Shopware_Controllers_Backend_OrderState extends Enlight_Controller_Action
 				"frommail" => utf8_encode($mail->getFrom()),
 				"fromname" => utf8_encode($mail->getFromName())
 			);
-			$ret = Enlight()->Events()->filter('Shopware_Controllers_Backend_OrderState_Filter', $ret, array(
-			'subject' => $this,
-			'id' => $orderId, 'status' => $statusId,
-			'mailobject' => $mail
-			));
-			$result = $ret;
 			echo Zend_Json::encode($ret);
 		} else {
 			echo 'FAIL';
