@@ -120,7 +120,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		    	';
 				$result = $this->db->query($sql, array(
 		    		$config_name,
-		    		serialize($config_value),
+		    		serialize(utf8_decode($config_value)),
 		    		$pluginId,
 		    		1,
 		    		$shopId,
