@@ -184,8 +184,8 @@ window.onload = function(){
 <?php
 // TEMPLATE FÜR NICHT LIZENZIERTE MODULE //
 if (!$sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){
-echo $sCore->sDumpLicenceInfo("../../../","Modul Kundengruppen","Wenn Sie mehr als eine Käuferschicht bedienen wollen, ist dieses Modul genau das Richtige! Definieren Sie beliebig viele Kundengruppen und statten diese mit eigenen Preisen, Staffeln oder Rabatten aus. Ihre Shopware ist somit für B2B und B2C optimal aufgestellt.","http://www.shopware-ag.de/Haendlerbereich-Kunden.-_detail_67_196.html","sGROUPS");
-$licenceFailed = true;
+//echo $sCore->sDumpLicenceInfo("../../../","Modul Kundengruppen","Wenn Sie mehr als eine Käuferschicht bedienen wollen, ist dieses Modul genau das Richtige! Definieren Sie beliebig viele Kundengruppen und statten diese mit eigenen Preisen, Staffeln oder Rabatten aus. Ihre Shopware ist somit für B2B und B2C optimal aufgestellt.","http://www.shopware-ag.de/Haendlerbereich-Kunden.-_detail_67_196.html","sGROUPS");
+$licenceFailed = false;
 }
 if (!$licenceFailed){ 
 ?>
