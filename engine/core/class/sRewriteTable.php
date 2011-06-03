@@ -7,7 +7,7 @@
  * @copyright (C) Shopware AG 2002-2010
  * @version Shopware 3.5.0
  */
-class sRewriteTable
+class	sRewriteTable
 {
 	public $sSYSTEM;
 	
@@ -59,7 +59,7 @@ class sRewriteTable
 		return trim($path,'-');
 	}
 
-	public function sCreateRewriteTable()
+	public function sCreateRewriteTable($last_update)
 	{		
 		@ini_set('memory_limt','265M');
 		@set_time_limit(0);
@@ -75,8 +75,10 @@ class sRewriteTable
 		$this->sCreateRewriteTableCleanup();
 		$this->sCreateRewriteTableStatic();
 		$this->sCreateRewriteTableCategories();
-		$this->sCreateRewriteTableArticles();
+		$last_update = $this->sCreateRewriteTableArticles($last_update);
 		$this->sCreateRewriteTableContent();
+		
+		return $last_update;
 	}
 	
 	protected function sCreateRewriteTableCleanup()
@@ -121,6 +123,7 @@ class sRewriteTable
 		";
 		$this->sSYSTEM->sDB_CONNECTION->Execute($sql);
 	}
+	
 	protected function sCreateRewriteTableStatic()
 	{
 		if(!empty($this->sSYSTEM->sCONFIG['sSEOSTATICURLS']))
@@ -162,6 +165,7 @@ class sRewriteTable
         	$this->sInsertUrl($org_path, $path);
         }
 	}
+	
 	protected function sCreateRewriteTableCategories()
 	{
 		if(empty($this->sSYSTEM->sCONFIG['sROUTERCATEGORYTEMPLATE'])) return;
@@ -188,29 +192,18 @@ class sRewriteTable
 	        }
 		}
 	}
-	protected function sCreateRewriteTableArticles()
+	
+	protected function sCreateRewriteTableArticles($last_update)
 	{
-		if(empty($this->sSYSTEM->sCONFIG['sROUTERARTICLETEMPLATE'])) continue;
-		
-		$sql = 'SELECT value FROM s_core_config WHERE name=?';
-		$last_update = Shopware()->Db()->fetchOne($sql, array('sROUTERLASTUPDATE'));	
-		if(!empty($last_update)) {
-			$last_update = unserialize($last_update);
-		}
-		if(empty($last_update)||!is_array($last_update)) {
-			$last_update = array();
-		}
-		if(!empty($last_update[$this->sSYSTEM->sSubShop['id']])) {
-			$last_update = $last_update[$this->sSYSTEM->sSubShop['id']];
-		} else {
-			$last_update = '0000-00-00 00:00:00';
+		if(empty($this->sSYSTEM->sCONFIG['sROUTERARTICLETEMPLATE'])) {
+			return $last_update;
 		}
 		
 		$sql = 'UPDATE `s_articles` SET `changetime`= NOW() WHERE `changetime`=?';
 	    Shopware()->Db()->query($sql, array('0000-00-00 00:00:00'));
 		    	
     	$sql = '
-			SELECT a.*, IFNULL(atr.name, a.name) as name, d.ordernumber, d.suppliernumber, s.name as supplier, datum as date, releasedate,
+			SELECT a.*, IFNULL(atr.name, a.name) as name, d.ordernumber, d.suppliernumber, s.name as supplier, datum as date, releasedate, changetime as changed,
 				at.attr1, at.attr2, at.attr3, at.attr4, at.attr5, at.attr6, at.attr7, at.attr8, at.attr9, at.attr10,
 				at.attr11, at.attr12, at.attr13, at.attr14, at.attr15, at.attr16, at.attr17, at.attr18, at.attr19, at.attr20
 			FROM `s_articles` a
@@ -228,26 +221,37 @@ class sRewriteTable
 			LEFT JOIN s_articles_supplier s
 			ON s.id=a.supplierID
 			WHERE a.active=1
-			AND a.changetime>?
+			AND a.changetime > ?
+			ORDER BY a.changetime, a.id
+			LIMIT 1000
 		';
 		$result = $this->sSYSTEM->sDB_CONNECTION->Execute($sql, array(
 			$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"],
 			$this->sSYSTEM->sSubShop['id'],
 			$last_update
 		));
-		if($result!==false)
-    	{
-	        while ($row = $result->FetchRow())
-	        {
+		
+		if($result !== false) {
+	        while ($row = $result->FetchRow()) {
 	        	$this->data->assign('sArticle', $row);
 	        	$path = $this->template->fetch('string:'.$this->sSYSTEM->sCONFIG['sROUTERARTICLETEMPLATE'], $this->data);
 	        	$path = $this->sCleanupPath($path, false);
 	        	
 	        	$org_path = 'sViewport=detail&sArticle='.$row['id'];
 	        	$this->sInsertUrl($org_path, $path);
+	        	$last_update = $row['changed'];
+	        	$last_id = $row['id'];
 	        }
     	}
+    	
+    	if(!empty($last_id)) {
+    		$sql = 'UPDATE s_articles SET changetime=DATE_ADD(changetime, INTERVAL 1 SECOND) WHERE changetime=? AND id > ?';
+    		$this->sSYSTEM->sDB_CONNECTION->Execute($sql, array($last_update, $last_id));
+    	}
+    	
+    	return $last_update;
 	}
+	
 	protected function sCreateRewriteTableContent()
 	{
     	$sql = 'SELECT id, description as name FROM `s_emarketing_promotion_main`';
@@ -329,6 +333,7 @@ class sRewriteTable
 		$parts = implode($params['separator'], $parts);
 		return $parts;
 	}
+	
 	public function sCategoryPath ($categoryID)
 	{
 		$path = array();
@@ -350,6 +355,7 @@ class sRewriteTable
 		$path = array_reverse($path);
 		return $path;
 	}
+	
 	public function sCategoryPathByArticleID ($articleID, $categoryID=null)
 	{
 		if(empty($categoryID))
