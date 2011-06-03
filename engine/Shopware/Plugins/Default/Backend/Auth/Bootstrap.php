@@ -22,6 +22,11 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 	 	);
 		$this->subscribeEvent($event);
 		$event = $this->createEvent(
+	 		'Enlight_Bootstrap_InitResource_Acl',
+	 		'onInitResourceAcl'
+	 	);
+		$this->subscribeEvent($event);
+		$event = $this->createEvent(
 	 		'Enlight_Controller_Action_PreDispatch',
 	 		'onPreDispatchBackend'
 	 	);
@@ -73,6 +78,49 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
         return $auth;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
+	public static function onInitResourceAcl(Enlight_Event_EventArgs $args)
+	{
+        $auth = Shopware()->Auth();
+        if (!$auth->hasIdentity()) {
+			return;
+		}
+		if(isset($auth->getIdentity()->acl)) {
+			return $auth->getIdentity()->acl;
+		}
+		
+		$user = $auth->getIdentity();
+		
+		$acl = new Zend_Acl();
+		$acl->addRole('user')
+		    ->addRole('admin', 'user')
+		    ->addRole($auth->getIdentity()->username, $user->admin ? 'admin' : 'user')
+		    ->allow('admin');
+		$sql = '
+			SELECT `onclick` as `resource`, id IN (' . Shopware()->Db()->quote($user->rights) . ') as `allowed`
+			FROM `s_core_menu`
+		';
+		$resources = Shopware()->Db()->fetchPairs($sql);
+		foreach ($resources as $resource => $allowed) {
+			if(preg_match('#\'(.+?)\'#', $resource, $match)) {
+				if(!$acl->has($match[1])) {
+					$acl->addResource($match[1]);
+				}
+				$privilege = strpos($resource, 'deleteCache') === 0 ? 'cache' : null;
+				if(!empty($allowed)) {
+					$acl->allow($user->username, $match[1], $privilege);
+				}
+			}
+		}
+		$user->acl = $acl;
+		
+		return $acl;
+	}
+	
 	protected $noAuth = false;
 	
 	/**
@@ -107,6 +155,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			
 			$_SESSION['sUsername'] = $user->username;
 			$_SESSION['sPassword'] = $user->password;
+			$user->role = $user->username;
 		}
 
 		return $auth->hasIdentity();
@@ -125,12 +174,28 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			return;
 		}
 		
-		if(Shopware()->Plugins()->Backend()->Auth()->shouldAuth() && !Shopware()->Auth()->hasIdentity()) {
-			if($request->isXmlHttpRequest()) {
-				throw new Enlight_Controller_Exception('Unauthorized', 401); 
-			} else {
-				$args->getSubject()->redirect('backend/auth');
+		if(!Shopware()->Plugins()->Backend()->Auth()->shouldAuth()) {
+			return;
+		}
+		
+		if(Shopware()->Auth()->hasIdentity()) {
+			$resource = strtolower($request->getControllerName());
+			$acl = Shopware()->Acl();
+			if(!$acl->has($resource)) {
+				return;
 			}
+			$identity = Shopware()->Auth()->getIdentity();
+			if($acl->isAllowed($identity->role, $resource, 'view')) {
+				return;
+			}
+		}
+			
+		if($request->isXmlHttpRequest()) {
+			throw new Enlight_Controller_Exception('Unauthorized', 401); 
+		} elseif(Shopware()->Auth()->hasIdentity()) {
+			$args->getSubject()->redirect('backend');
+		} else {
+			$args->getSubject()->redirect('backend/auth');
 		}
 	}
 	

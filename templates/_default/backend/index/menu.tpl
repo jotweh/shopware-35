@@ -1,6 +1,7 @@
 {block name="backend_index_index_menu_function"}
 	{function name=backend_menu level=0}
 		{foreach from=$categories item=category}
+		{if $category->isVisible()}
 		    <li {if !$level}class="main"{/if}>
 				<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
 					{$category->label|snippet:null:'backend/index/menu'} 
@@ -11,6 +12,7 @@
 			     	</ul>
 			    {/if}
 		    </li>
+		{/if}
 		{/foreach}
 	{/function}
 {/block}
