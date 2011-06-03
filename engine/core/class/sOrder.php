@@ -1298,12 +1298,7 @@ class sOrder
 			'fromname' => trim($templateEngine->fetch('string:'.$template->fromname, $templateData))
 		);
 		
-		$return = Enlight()->Events()->filter('Shopware_Controllers_Backend_OrderState_Filter', $return, array(
-			'subject' => $this,
-			'id' => $orderId, 'status' => $statusId,
-			'mailname' => $template->name, 'template' => $template,
-			'engine' => $templateEngine
-		));
+		
 		
 		$mail = clone Shopware()->Mail();
 		

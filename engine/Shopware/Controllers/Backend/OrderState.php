@@ -4,7 +4,7 @@
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
- * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
  */
@@ -30,13 +30,20 @@ class Shopware_Controllers_Backend_OrderState extends Enlight_Controller_Action
 		$mail = Shopware()->Modules()->Order()->createStatusMail($orderId, $statusId, $template);
 		
 		if(!empty($mail)) {
-			echo Zend_Json::encode(array(
-				'content' => utf8_encode($mail->getPlainBodyText()), 
-				'subject' => utf8_encode($mail->getSubject()),
-				'email' => utf8_encode(implode(', ', $mail->getTo())), 
-				'frommail' => utf8_encode($mail->getFrom()),
-				'fromname' => utf8_encode($mail->getFromName())
+			$ret = array(
+				"content" => utf8_encode($mail->getPlainBodyText()),
+				"subject" => utf8_encode($mail->getSubject()),
+				"email" => utf8_encode(implode(', ', $mail->getTo())),
+				"frommail" => utf8_encode($mail->getFrom()),
+				"fromname" => utf8_encode($mail->getFromName())
+			);
+			$ret = Enlight()->Events()->filter('Shopware_Controllers_Backend_OrderState_Filter', $ret, array(
+			'subject' => $this,
+			'id' => $orderId, 'status' => $statusId,
+			'mailobject' => $mail
 			));
+			$result = $ret;
+			echo Zend_Json::encode($ret);
 		} else {
 			echo 'FAIL';
 		}
