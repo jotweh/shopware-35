@@ -1209,7 +1209,7 @@ class sOrder
 	public function sendStatusMail(Enlight_Components_Mail $mail)
 	{
 		Enlight()->Events()->notify('Shopware_Controllers_Backend_OrderState_Send_BeforeSend', array(
-			'subject'=>$this, 'mail'=>$mail
+			'subject'=>Shopware()->Front(), 'mail'=>$mail,
 		));
 		
 		if(!empty(Shopware()->Config()->OrderStateMailAck)){
@@ -1282,7 +1282,7 @@ class sOrder
 		}
 		
 		$result = Enlight()->Events()->notify('Shopware_Controllers_Backend_OrderState_Notify', array(
-			'subject' => $this,
+			'subject' => Shopware()->Front(),
 			'id' => $orderId, 'status' => $statusId,
 			'mailname'=>$template->name, 'template'=>$template
 		));
@@ -1298,7 +1298,12 @@ class sOrder
 			'fromname' => trim($templateEngine->fetch('string:'.$template->fromname, $templateData))
 		);
 		
-		
+		$return = Enlight()->Events()->filter('Shopware_Controllers_Backend_OrderState_Filter', $return, array(
+			'subject' => Shopware()->Front(),
+			'id' => $orderId, 'status' => $statusId,
+			'mailname' => $template->name, 'template' => $template,
+			'engine' => $templateEngine
+		));
 		
 		$mail = clone Shopware()->Mail();
 		
