@@ -42,7 +42,8 @@ class Shopware_Plugins_Backend_Menu_Bootstrap extends Shopware_Components_Plugin
 		$acl = Shopware()->Acl();
 			
 		$iterator = new RecursiveIteratorIterator($menu, RecursiveIteratorIterator::SELF_FIRST);
-        foreach ($iterator as $page) {
+		// Defect - see Ticket # 4226
+		/*foreach ($iterator as $page) {
         	if($page->getResource() === null && preg_match('#\'(.+?)\'#', $page->onclick, $match)) {
         		$page->setResource($match[1]);
         		if($page->getPrivilege() === null) {
@@ -52,7 +53,7 @@ class Shopware_Plugins_Backend_Menu_Bootstrap extends Shopware_Components_Plugin
         	if($page->getResource() !== null || $page->getPrivilege() !== null) {
         		$page->setVisible($acl->isAllowed($identity->role, $page->getResource(), $page->getPrivilege()));
         	}
-        }
+        }*/
 				
         return $menu;
 	}

@@ -1,10 +1,12 @@
 <?php
 /**
- * Debug plugin
+ * Shopware Debug Plugin
+ * 
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Plugins
  */
@@ -67,7 +69,6 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		
 		$error_handler = Shopware()->Plugins()->Core()->ErrorHandler();
 		$error_handler->setEnabledLog(true);
-		Shopware()->Db()->getProfiler()->setEnabled(true);
 		
 		$debug = Shopware()->Plugins()->Core()->Debug();
 		
@@ -102,7 +103,6 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 	 */
 	public function onDispatchLoopShutdown(Enlight_Event_EventArgs $args)
 	{
-		$this->logDb();
 		$this->logError();
 		$this->logException();
 	}
@@ -137,48 +137,7 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		}
 	}
 	
-	/**
-	 * Log database method
-	 */
-	public function logDb()
-	{
-		$profiler = Shopware()->Db()->getProfiler();
-		$rows = array(array('time','count','sql','params'));
-		$counts = array(10000);
-		$total_time = 0;
-		$querys = $profiler->getQueryProfiles();
-		if(!$querys) {
-			return;
-		}
-		foreach ($querys as $query)
-		{
-			$id = md5($query->getQuery());
-			$total_time += $query->getElapsedSecs();
-			if(!isset($rows[$id])){
-				$rows[$id] = array(
-					number_format($query->getElapsedSecs(), 5, '.', ''),
-					1,
-					$query->getQuery(),
-					$query->getQueryParams()
-				);
-				$counts[$id] = $query->getElapsedSecs();
-			} else {
-				$rows[$id][1]++;
-				$counts[$id] += $query->getElapsedSecs();
-				$rows[$id][0] = number_format($counts[$id], 5, '.', '');
-			}
-		}
-		array_multisort($counts, SORT_NUMERIC, SORT_DESC, $rows);
-		$rows = array_values($rows);
-		$total_time = round($total_time, 5);
-		$total_count = $profiler->getTotalNumQueries();
-		$label = "Database Querys ($total_count @ $total_time sec)";
-		$table = array($label,
-			$rows
-		);
-		Shopware()->Log()->table($table);
-	}
-
+	
 	/**
 	 * Log template method
 	 */

@@ -4,7 +4,7 @@
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
- * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
  */

@@ -1,11 +1,25 @@
 <?php
+/**
+ * Benchmark Plugin
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @author Stefan Hamann
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plugin_Bootstrap implements Enlight_Event_EventSubscriber
 {
 	protected $results = array();
 	protected $start_time = null;
 	protected $start_memory = null;
 	public $customBenchmark;
-	
+
+	/**
+	 * Activate template debugging
+	 * @return 
+	 */
 	public function init()
 	{
 		if(!Shopware()->Bootstrap()->hasResource('Log')){
@@ -16,9 +30,46 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 		Shopware()->Template()->setDebugTemplate('string:');
 		Shopware()->Events()->addSubscriber($this);
 	}
-	
+
+	/**
+	 * Handler for backend sql-monitor controller
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return string
+	 */
+	public static function onGetControllerPath(Enlight_Event_EventArgs $args)
+    {
+		return dirname(__FILE__).'/SqlMonitor.php';
+    }
+
+	/**
+	 * Install benchmark plugin
+	 * @return bool
+	 */
 	public function install()
-	{		
+	{
+		$form = $this->Form();
+		$form->setElement('checkbox', 'sqlMonitor', array('label'=>'SQL-Monitor aktivieren', 'value'=>1));
+		$form->save();
+
+		$event = $this->createEvent(
+	 		'Enlight_Controller_Dispatcher_ControllerPath_Backend_SqlMonitor',
+	 		'onGetControllerPath'
+	 	);
+	 	$this->subscribeEvent($event);
+		
+	 	$parent = $this->Menu()->findOneBy('label', 'Einstellungen');
+		$item = $this->createMenuItem(array(
+			'label' => 'Sql-Monitor',
+			'onclick' => 'openAction(\'SqlMonitor\');',
+			'class' => 'ico2 monitor',
+			'active' => 1,
+			'parent' => $parent,
+			'style' => 'background-position: 5px 5px;'
+		));
+		$this->Menu()->addItem($item);
+		$this->Menu()->save();
+		
 		$event = $this->createEvent(
 			'Enlight_Controller_Front_StartDispatch',
 			'onStartDispatch'
@@ -29,10 +80,21 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 			'onInitResourceBenchmark'
 		);
 		$this->subscribeEvent($event);
+
+		$event = $this->createEvent(
+	 		'Enlight_Controller_Front_DispatchLoopShutdown',
+	 		'onDispatchLoopShutdown'
+	 	);
+		$this->subscribeEvent($event);
 		return true;
 	}
 	
-	
+	/**
+	 * Define Benchmark resource for custom benchmarks
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return Shopware_Components_Benchmark_Container
+	 */
 	public static function onInitResourceBenchmark(Enlight_Event_EventArgs $args)
 	{
 		$instance = Shopware()->Plugins()->Core()->Benchmark();
@@ -40,12 +102,71 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 		$instance->customBenchmark = $benchmark;
 		return $benchmark;
 	}
-	
+
+	/**
+	 * On Dispatch start activate db profiling
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return void
+	 */
 	public static function onStartDispatch(Enlight_Event_EventArgs $args)
     {
     	Shopware()->Plugins()->Core()->Benchmark();
+		Shopware()->Db()->getProfiler()->setEnabled(true);
     }
-	
+
+	/**
+	 * On Dispatch Shutdown collect sql performance results and dump to log component
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return
+	 */
+	public static function onDispatchLoopShutdown(Enlight_Event_EventArgs $args){
+		if(!Shopware()->Bootstrap()->hasResource('Log')){
+			return;
+		}
+		$profiler = Shopware()->Db()->getProfiler();
+		$rows = array(array('time','count','sql','params'));
+		$counts = array(10000);
+		$total_time = 0;
+		$querys = $profiler->getQueryProfiles();
+		if(!$querys) {
+			return;
+		}
+		foreach ($querys as $query)
+		{
+			$id = md5($query->getQuery());
+			$total_time += $query->getElapsedSecs();
+			if(!isset($rows[$id])){
+				$rows[$id] = array(
+					number_format($query->getElapsedSecs(), 5, '.', ''),
+					1,
+					$query->getQuery(),
+					$query->getQueryParams()
+				);
+				$counts[$id] = $query->getElapsedSecs();
+			} else {
+				$rows[$id][1]++;
+				$counts[$id] += $query->getElapsedSecs();
+				$rows[$id][0] = number_format($counts[$id], 5, '.', '');
+			}
+		}
+		array_multisort($counts, SORT_NUMERIC, SORT_DESC, $rows);
+		$rows = array_values($rows);
+		$total_time = round($total_time, 5);
+		$total_count = $profiler->getTotalNumQueries();
+		$label = "Database Querys ($total_count @ $total_time sec)";
+		$table = array($label,
+			$rows
+		);
+		Shopware()->Log()->table($table);
+	}
+
+	/**
+	 * Benchmark Controllers
+	 * @param Enlight_Event_EventArgs $args
+	 * @return void
+	 */
 	public function onBenchmarkEvent(Enlight_Event_EventArgs $args)
     {
     	
@@ -69,7 +190,11 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
     		$this->logCustom();
     	}
     }
-    
+
+	/**
+	 * Custom-Log function 
+	 * @return
+	 */
     public function logCustom(){
     	$results = array();
     	if (empty($this->customBenchmark)) return;
@@ -95,6 +220,11 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 	    	Shopware()->Log()->table(array("Benchmark Custom",$results));
 		}
     }
+
+	/**
+	 * Log template compile and render times
+	 * @return void
+	 */
     public function logTemplate()
     {
     	$rows = array(array('name', 'compile_time', 'render_time', 'cache_time'));
@@ -121,7 +251,11 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 		);
 		Shopware()->Log()->table($table);
     }
-    
+
+	/**
+	 * Get total execution time in controller
+	 * @return void
+	 */
     public function logController()
     {
     	$total_time = $this->formatTime(microtime(true)-$this->start_time);
@@ -131,7 +265,11 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 		);
 		Shopware()->Log()->table($table);
     }
-	
+
+	/**
+	 * Monitor execution time and memory on specified event points in application
+	 * @return array
+	 */
 	public function getSubscribedEvents()
     {
     	$events = array(
@@ -158,14 +296,26 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
     	}
     	return $event_handlers;
     }
-    
+
+	/**
+	 * Format memory in a proper way
+	 * @static
+	 * @param  $size
+	 * @return string
+	 */
     public static function formatMemory($size)
     {
     	if(empty($size)) return '0.00 b';
     	$unit=array('b','kb','mb','gb','tb','pb');
     	return @number_format($size/pow(1024,($i=floor(log($size,1024)))),2,'.','').' '.$unit[$i];
     }
-    
+
+	/**
+	 * Format time for human readable
+	 * @static
+	 * @param  $time
+	 * @return string
+	 */
     public static function formatTime($time)
     {
     	return number_format($time, 5, '.', '');

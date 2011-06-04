@@ -1,6 +1,19 @@
 <?php
+/**
+ * Firebug Log Plugin
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_Log_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install log plugin
+	 * @return bool
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -23,7 +36,13 @@ class Shopware_Plugins_Core_Log_Bootstrap extends Shopware_Components_Plugin_Boo
 		
 		return true;
 	}
-	
+
+	/**
+	 * Resource handler for log plugin
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return Zend_Log
+	 */
 	public static function onInitResourceLog(Enlight_Event_EventArgs $args)
 	{
 		$channel = Shopware_Plugins_Core_Log_HttpHeaders::getInstance();
@@ -67,7 +86,13 @@ class Shopware_Plugins_Core_Log_Bootstrap extends Shopware_Components_Plugin_Boo
 				
 		return $log;
 	}
-	
+
+	/**
+	 * On Route add user-agent and remote-address to log component
+	 * @static
+	 * @param Enlight_Event_EventArgs $args
+	 * @return void
+	 */
 	public static function onRouteStartup(Enlight_Event_EventArgs $args)
 	{
 		$request = $args->getSubject()->Request();
