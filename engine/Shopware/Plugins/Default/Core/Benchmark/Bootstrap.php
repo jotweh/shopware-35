@@ -157,7 +157,9 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 				$controller = $args->getSubject()->Request()->getControllerName();
 				$action =  $args->getSubject()->Request()->getActionName();
 				$route = $controller."/".$action;
-				
+
+				$remote = isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : "0.0.0.0";
+
 				Shopware()->Db()->query("
 				INSERT INTO s_plugin_benchmark_log (datum,hash,query,parameters,time,ipaddress,route,session)
 				VALUES (
@@ -170,7 +172,7 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 				?,
 				?
 				)
-				",array(md5(trim($query->getQuery())),trim($query->getQuery()),serialize($query->getQueryParams()),number_format($query->getElapsedSecs(), 4, '.', ''),$_SERVER["REMOTE_ADDR"],$route,$session));
+				",array(md5(trim($query->getQuery())),trim($query->getQuery()),serialize($query->getQueryParams()),number_format($query->getElapsedSecs(), 4, '.', ''),$remote,$route,$session));
 			}
 
 		}
