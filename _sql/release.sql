@@ -188,3 +188,24 @@ INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description
  */
 INSERT IGNORE INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 (NULL, 'Enlight_Bootstrap_InitResource_Acl', 0, 'Shopware_Plugins_Backend_Auth_Bootstrap::onInitResourceAcl', 36, 0);
+
+/**
+ * @ticket 5089
+ * @author st.hamann
+ * @since 3.5.4 - 2011/06/04
+ */
+CREATE TABLE IF NOT EXISTS `s_plugin_benchmark_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `datum` datetime NOT NULL,
+  `hash` varchar(255) NOT NULL,
+  `query` text NOT NULL,
+  `parameters` text NOT NULL,
+  `time` float NOT NULL,
+  `ipaddress` varchar(24) NOT NULL,
+  `route` varchar(255) NOT NULL,
+  `session` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `hash` (`hash`),
+  KEY `datum` (`datum`),
+  KEY `session` (`session`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=418 ;

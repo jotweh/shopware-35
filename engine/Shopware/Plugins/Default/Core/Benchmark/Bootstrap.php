@@ -133,6 +133,8 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 		if(!$querys) {
 			return;
 		}
+
+		$session = md5(uniqid(rand()));
 		foreach ($querys as $query)
 		{
 			$id = md5($query->getQuery());
@@ -150,6 +152,27 @@ class Shopware_Plugins_Core_Benchmark_Bootstrap extends Shopware_Components_Plug
 				$counts[$id] += $query->getElapsedSecs();
 				$rows[$id][0] = number_format($counts[$id], 5, '.', '');
 			}
+			
+			if (Shopware()->Plugins()->Core()->Benchmark()->Config()->sqlMonitor && $args->getSubject()->Request()->getModuleName()!="backend"){
+				$controller = $args->getSubject()->Request()->getControllerName();
+				$action =  $args->getSubject()->Request()->getActionName();
+				$route = $controller."/".$action;
+				
+				Shopware()->Db()->query("
+				INSERT INTO s_plugin_benchmark_log (datum,hash,query,parameters,time,ipaddress,route,session)
+				VALUES (
+				now(),
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?
+				)
+				",array(md5(trim($query->getQuery())),trim($query->getQuery()),serialize($query->getQueryParams()),number_format($query->getElapsedSecs(), 4, '.', ''),$_SERVER["REMOTE_ADDR"],$route,$session));
+			}
+
 		}
 		array_multisort($counts, SORT_NUMERIC, SORT_DESC, $rows);
 		$rows = array_values($rows);
