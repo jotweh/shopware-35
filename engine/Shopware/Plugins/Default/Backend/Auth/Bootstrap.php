@@ -47,7 +47,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		
 		Enlight_Components_Session::start(array(
 			'name' => get_cfg_var('session.name') ? get_cfg_var('session.name') : 'PHPSESSID',
-			'gc_maxlifetime' => 60*90,
+			'gc_maxlifetime' => 60 * 90,
 			'cookie_lifetime' => 0,
 			'cookie_path' => $path,
 			'cookie_domain' => $host
@@ -98,7 +98,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 		$acl = new Zend_Acl();
 		$acl->addRole('user')
 		    ->addRole('admin', 'user')
-		    ->addRole($auth->getIdentity()->username, $user->admin ? 'admin' : 'user')
+		    ->addRole($auth->getIdentity()->role, $user->admin ? 'admin' : 'user')
 		    ->allow('admin');
 		$sql = '
 			SELECT `onclick` as `resource`, id IN (' . Shopware()->Db()->quote($user->rights) . ') as `allowed`
@@ -112,7 +112,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 				}
 				$privilege = strpos($resource, 'deleteCache') === 0 ? 'cache' : null;
 				if(!empty($allowed)) {
-					$acl->allow($user->username, $match[1], $privilege);
+					$acl->allow($user->role, $match[1], $privilege);
 				}
 			}
 		}
@@ -155,7 +155,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			
 			$_SESSION['sUsername'] = $user->username;
 			$_SESSION['sPassword'] = $user->password;
-			$user->role = $user->username;
+			$user->role = 'role';
 		}
 
 		return $auth->hasIdentity();
