@@ -343,7 +343,7 @@ if (!$systemcategory||!empty($numberArticles)){
 		</ul>
 	<?php
 	}
-	if ($sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){
+	if ($sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"]) || 1 == 1){
 	?>
 		<p style="clear:both"></p>
 		<!-- //  Template Auswahl -->

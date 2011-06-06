@@ -373,17 +373,11 @@ if ($_GET["edit"] || $_GET["new"]){
    		 <?php	
    		 
 // TEMPLATE FÜR NICHT LIZENZIERTE MODULE //
-			if (!$sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){
-			// Query Related-Articles
-			$sql = "
-			SELECT id, description, groupkey FROM s_core_customergroups WHERE `groupkey`='EK' ORDER BY id ASC
-			";
-			
-			}else {
+
 			$sql = "
 			SELECT id, description, groupkey FROM s_core_customergroups ORDER BY id ASC
 			";	
-			}
+			
 			
 			$getArticles = mysql_query($sql);
 			while ($article = mysql_fetch_array($getArticles)){

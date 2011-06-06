@@ -628,33 +628,7 @@ Ext.onReady(function(){
 	        }
         }]
    	}
-   	<?php if (!$sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){ ?>
-	
-   	<?php
-   		$html = $sCore->sDumpLicenceInfo("../../../","Modul Kundengruppen","Wenn Sie mehr als eine Käuferschicht bedienen wollen, ist dieses Modul genau das Richtige! Definieren Sie beliebig viele Kundengruppen und statten diese mit eigenen Preisen, Staffeln oder Rabatten aus. Ihre Shopware ist somit für B2B und B2C optimal aufgestellt.","http://www.shopware-ag.de/Haendlerbereich-Kunden.-_detail_67_196.html","sGROUPS");
-   		$html = str_replace("\n","",$html);
-   		$html = str_replace("'","\'",$html);
-   	?>
-		var win = new Ext.Window({
-			width:700, 
-			height:240,
-			title:"Nicht lizenziert",
-			autoScroll:true,
-			closable: false,
-			modal:true,
-			html:'<iframe style="height:100%;width:100%;border:none;" id="myIframe"></iframe>'
-		});
-		win.show();
-		
-		var ifrm = document.getElementById('myIframe');
-		ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
-		ifrm.document.open();
-		ifrm.document.write('<link href="../../../backend/css/modules.css" rel="stylesheet" type="text/css" />');
-		ifrm.document.write('<?php echo $html;?>');
-		ifrm.document.close();
-
-		
-	<?php }	?>
+   
    	var tabs = new Ext.TabPanel({
    		id: 'tabs',
     	region:'center',
