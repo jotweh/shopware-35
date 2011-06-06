@@ -1,9 +1,11 @@
 <?php
 /**
  * Shopware Auth Plugin
- * 
+ *
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
+ * @author h.lohaus
+ * @author st.hamann
  * @package Shopware
  * @subpackage Plugins
  */
@@ -60,6 +62,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
             ->setCredentialColumn('password')
             ->setCredentialTreatment("MD5(CONCAT('A9ASD:_AD!_=%a8nx0asssblPlasS$',MD5(?)))")
             ->addCondition('active=1')
+		 	->addCondition('lockeduntil <= now()')
             ->setExpiryColumn('lastlogin')
             ->setSessionIdColumn('sessionID')
             ->setSessionId(Enlight_Components_Session::getId());
@@ -156,6 +159,41 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			$_SESSION['sUsername'] = $user->username;
 			$_SESSION['sPassword'] = $user->password;
 			$user->role = 'role';
+			
+			// Ticket #5427 - Prevent brute force logins
+			// At successful login, reset failed login counter
+			Shopware()->Db()->query("
+			UPDATE s_core_auth SET lockeduntil = NULL,
+			failedlogins = 0 WHERE username = ?
+			",array($user->username));
+		}else {
+			// Ticket #5427 - Prevent brute force logins
+			if (!empty($username)){
+				try {
+					// Get number of failed logins
+					$getFailedLogins = Shopware()->Db()->fetchOne("
+					SELECT failedlogins FROM s_core_auth WHERE username = ?
+					",array($username));
+
+					$addSQL = "";
+					// If failed logins greater then 5 - deactivate account for
+					// 30 seconds * count of failed logins
+					if ($getFailedLogins > 5){
+						$lockupTime = $getFailedLogins * 30;
+						$addSQL = "
+						, lockeduntil = (now() + $lockupTime)
+						";
+					}
+					// Update failed login counter
+					Shopware()->Db()->query("
+					UPDATE s_core_auth SET failedlogins = failedlogins + 1
+					$addSQL
+					WHERE username = ?
+					",array($username));
+				} catch (PDOException $e){
+					
+				}
+			}
 		}
 
 		return $auth->hasIdentity();

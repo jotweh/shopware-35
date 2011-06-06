@@ -103,13 +103,22 @@ Shopware.Auth.Components.LoginPanel = Ext.extend(Ext.form.FormPanel, {
 	    	document.location.href = "{url controller='index'}";
 		}     	
     },
-    actionFailed: function(el){
-		Ext.Msg.show({
-		   title: '{s name="ErrorTitle"}Anmeldung fehlgeschlagen!{/s}',
-		   msg: '{s name="ErrorMessage"}Ihre Zugangsdaten konnten keinem Benutzer zugeordnet werden.{/s}',
-		   buttons: Ext.Msg.OK,
-		   icon: Ext.MessageBox.ERROR
-		});
+    actionFailed: function(el,action){
+		if (action.result.lockeduntil != ""){
+			Ext.Msg.show({
+			   title: '{s name="ErrorTitleLockedUntil"}Zu viele fehlgeschlagene Versuche!{/s}',
+			   msg: '{s name="ErrorMessageLockedUntil"}Ihr Administrationskonto ist bis '+action.result.lockeduntil+' gesperrt!{/s}',
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.ERROR
+			});
+		}else {
+			Ext.Msg.show({
+			   title: '{s name="ErrorTitle"}Anmeldung fehlgeschlagen!{/s}',
+			   msg: '{s name="ErrorMessage"}Ihre Zugangsdaten konnten keinem Benutzer zugeordnet werden.{/s}',
+			   buttons: Ext.Msg.OK,
+			   icon: Ext.MessageBox.ERROR
+			});
+		}
     },
     initEvents: function(){
 		this.on('afterrender', this.setPanelPosition, this);

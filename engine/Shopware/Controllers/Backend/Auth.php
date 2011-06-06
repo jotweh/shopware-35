@@ -1,18 +1,40 @@
 <?php
+/**
+ * Shopware Backend Login Mask
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author h.lohaus
+ * @author st.hamann
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Backend_Auth extends Enlight_Controller_Action
-{	
+{
+	/**
+	 * This part is accessible without login
+	 * @return void
+	 */
 	public function init()
 	{
 		Shopware()->Plugins()->Backend()->Auth()->setNoAuth();
 	}
-	
+
+	/**
+	 * Disable template engine for all actions
+	 * @return void
+	 */
 	public function preDispatch()
 	{
 		if(!in_array($this->Request()->getActionName(), array('index'))) {
 			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();	
 		}
 	}
-	
+
+	/**
+	 * Display login panel / Check supported browsers
+	 * @return void
+	 */
 	public function indexAction()
 	{
 		$host = trim(Shopware()->Config()->Host);
@@ -29,7 +51,12 @@ class Shopware_Controllers_Backend_Auth extends Enlight_Controller_Action
 			$this->View()->BrowserError = false;
 		}
 	}
-	
+
+	/**
+	 * Do authentification and return result in json-format
+	 * Check if account is blocked 
+	 * @return void
+	 */
 	public function loginAction()
 	{
 		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();	
@@ -41,10 +68,26 @@ class Shopware_Controllers_Backend_Auth extends Enlight_Controller_Action
 		if (!empty($username) && !empty($password)) {
 			$checkLogin = Shopware()->Plugins()->Backend()->Auth()->login($username, $password, $locale);
 		}
+
+		// Ticket #5427 - Prevent brute force logins
+		if (empty($checkLogin) && !empty($username)){
+			$getLockedUntilTime = Shopware()->Db()->fetchOne("
+			SELECT DATE_FORMAT(lockeduntil,'%d.%m.%Y %H:%i:%s') AS lockedUntil FROM s_core_auth
+			WHERE username = ? AND lockeduntil > now()
+			",array($username));
+		}else {
+			$getLockedUntilTime = "";
+		}
 		
-		echo Zend_Json::encode(array('success'=>!empty($checkLogin)));
+		echo Zend_Json::encode(array('success'=>!empty($checkLogin),"lockeduntil"=>$getLockedUntilTime));
 	}
-	
+
+	/**
+	 * Check if a url exists - used to do proper redirects on wrong backend links
+	 * @param  $url
+	 * @param float $timeout
+	 * @return int
+	 */
 	public function existsUrl($url, $timeout=0.5)
 	{
 		$url = parse_url($url);

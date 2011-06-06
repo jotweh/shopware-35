@@ -209,3 +209,11 @@ CREATE TABLE IF NOT EXISTS `s_plugin_benchmark_log` (
   KEY `datum` (`datum`),
   KEY `session` (`session`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=418 ;
+
+/**
+ * @ticket 5427
+ * @author st.hamann
+ * @since 3.5.4 - 2011/06/06
+ */
+ ALTER TABLE `s_core_auth` ADD `failedlogins` INT NOT NULL ,
+ADD `lockeduntil` DATETIME NOT NULL;
