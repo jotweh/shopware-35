@@ -26,7 +26,12 @@
 						type: 'border',
 						padding: '0 0 11 0'
 					},
-					items: [this.grid,this.form]
+					items: [Ext.create('Ext.panel.Panel',{
+						html: 'Achtung! Verwenden Sie das SQL-Profiling nie im Produktivbetrieb!',
+						region: 'north',
+						bodyStyle: 'font-weight:bold;font-size:14;background-color:#666;color:#FFF;padding-left: 10px;padding-top: 5px',
+						height: 30
+					}),this.grid,this.form]
 				});
 				this.callParent(arguments);
 			}

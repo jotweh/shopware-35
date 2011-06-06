@@ -2,7 +2,7 @@
 Ext.define('Ext.app.Monitor.Form',
 {
 	extend: 'Ext.form.Panel',
-    height: 400,
+    height: 300,
 	region: 'south',
 	id: 'form',
     initComponent: function(){
@@ -15,7 +15,7 @@ Ext.define('Ext.app.Monitor.Form',
                 layout: 'hbox',
                 defaults: {
                     flex: 1,
-                    hideLabel: true
+                    hideLabel: false
                 },
                 items: [
                    {
@@ -28,7 +28,7 @@ Ext.define('Ext.app.Monitor.Form',
 					height: 200,
 					width: 500,
                     margins: '0',
-                    allowBlank: false
+                    allowBlank: true
                 },
 				{
                     xtype: 'textareafield',
@@ -40,7 +40,7 @@ Ext.define('Ext.app.Monitor.Form',
 					height: 200,
 					width: 500,
                     margins: '0',
-                    allowBlank: false
+                    allowBlank: true
                 }
                 ]
             }
