@@ -632,7 +632,7 @@ function disableWidgetPanel(){
 	{
 		height: height,
 		position: 'absolute',
-		opacity: 0.7,
+		opacity: 0.01,
 		display: 'block',
 		width: width,
 		top: position[1],
