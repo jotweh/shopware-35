@@ -4,10 +4,12 @@
  * @link http://www.shopware.de
  * @package core
  * @subpackage class
- * @copyright (C) Shopware AG 2002-2010
+ * @copyright (C) Shopware AG 2011
+ * @author st.hamann
+ * @author h.lohaus
  * @version Shopware 3.5.0
  */
-class	sAdmin
+class sAdmin
 {
 	/**
      * Pointer to sSystem object
@@ -16,8 +18,7 @@ class	sAdmin
      */
 	var $sSYSTEM;
 	
-	
-	 /**, * Logout user and destroy session
+	 /** Logout user and destroy session
 	 * @access public
 	 * @return -
 	 */
@@ -25,19 +26,19 @@ class	sAdmin
 		if (Enlight()->Events()->notifyUntil('Shopware_Modules_Admin_Logout_Start', array('subject'=>$this))){
 			return false;
 		}
-		
 
 		unset($this->sSYSTEM->_SESSION);
 		unset($_SESSION);
 		unset($this->sSYSTEM->sUSERGROUPDATA);
+
 		$this->sSYSTEM->sUSERGROUPDATA = $this->sSYSTEM->sDB_CONNECTION->GetRow("
 		SELECT * FROM s_core_customergroups WHERE `groupkey` = 'EK'
 		");
+
 		$this->sSYSTEM->_SESSION["sUserGroup"] = "EK";
 		$this->sSYSTEM->sUSERGROUP = "EK";
 		session_destroy();
 		session_regenerate_id();
-
 	}
 		
 	 /**
@@ -51,7 +52,7 @@ class	sAdmin
 	}
 	
 	/**
-	 * Checks vat id
+	 * Checks vat id with webservice
 	 * @access public
 	 * @return array assoziative array with success / error codes
 	 */
@@ -165,6 +166,12 @@ class	sAdmin
 		$messages = Enlight()->Events()->filter('Shopware_Modules_Admin_CheckTaxID_MessagesFilter', $messages, array('subject'=>$this,"post"=>$this->sSYSTEM->_POST));
 		return $messages;
 	}
+
+	/**
+	 * Process answer from german vat webservice 
+	 * @param  $response
+	 * @return array
+	 */
 	public function sCheckVatResponse ($response)
 	{
 		if(!empty($this->sSYSTEM->sCONFIG['sVATCHECKNOSERVICE']))
@@ -988,8 +995,8 @@ class	sAdmin
 	}
 	
 	 /**
-	 * Login function
-	 * @param boolean $ignoreAccountMode Allows customers who have chosen the quick registration, one-time login after registration
+	 * Frontend user login
+	 * @param boolean $ignoreAccountMode Allows customers who have chosen the fast registration, one-time login after registration
 	 * @access public
 	 * @return array Array with errors that may have occurred
 	 */
@@ -1005,7 +1012,6 @@ class	sAdmin
 		
 		if (count($sErrorFlag)){
 			 $sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLogin'];
-			 
 			 unset($this->sSYSTEM->_SESSION["sUserMail"]);
 			 unset($this->sSYSTEM->_SESSION["sUserPassword"]);
 			 unset($this->sSYSTEM->_SESSION["sUserId"]);
@@ -1015,21 +1021,18 @@ class	sAdmin
 			// If password is already md5-decrypted, use these one
 			$password = $this->sSYSTEM->_POST["passwordMD5"] ? $this->sSYSTEM->_POST["passwordMD5"] : md5($this->sSYSTEM->_POST["password"]);
 			$email = strtolower($this->sSYSTEM->_POST["email"]);
-						
-		
+
 			if ($ignoreAccountMode){
-				$sql = "SELECT id, customergroup FROM s_user WHERE password=? AND email=? AND active=1";
+				$sql = "SELECT id, customergroup FROM s_user WHERE password=? AND email=? AND active=1 AND lockeduntil < now()";
 			}else {
-				$sql = "SELECT id, customergroup FROM s_user WHERE password=? AND email=? AND active=1 AND accountmode!=1";
+				$sql = "SELECT id, customergroup FROM s_user WHERE password=? AND email=? AND active=1 AND accountmode!=1 AND lockeduntil < now()";
 			}
-			
-			
 			
 			$getUser = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql,array($password,$email));
 			
 			if(count($getUser))
 			{			
-				$updateTime = $this->sSYSTEM->sDB_CONNECTION->Execute("UPDATE s_user SET lastlogin=NOW(), sessionID='".$this->sSYSTEM->sSESSION_ID."'  WHERE id=".$getUser["id"]);
+				$updateTime = $this->sSYSTEM->sDB_CONNECTION->Execute("UPDATE s_user SET lastlogin=NOW(),failedlogins = 0, lockeduntil = NULL, sessionID=? WHERE id=?",array($this->sSYSTEM->sSESSION_ID,$getUser["id"]));
 				Enlight()->Events()->notify('Shopware_Modules_Admin_Login_Successful', array('subject'=>$this,'email'=>$email,'password'=>$password,'user'=>$getUser));
 				$this->sSYSTEM->_SESSION["sUserMail"] = $email;
 				$this->sSYSTEM->_SESSION["sUserPassword"] = $password;
@@ -1044,8 +1047,41 @@ class	sAdmin
 				 if ($getUser){
 				 	$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLoginActive'];
 				 }else {
-			 	 	$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLogin'];
+					$getLockedUntilTime = Shopware()->Db()->fetchOne("
+					SELECT DATE_FORMAT(lockeduntil,'%d.%m.%Y %H:%i:%s') AS lockedUntil FROM s_user
+					WHERE email = ? AND lockeduntil > now()
+					",array($email));
+					if (!empty($getLockedUntilTime)){
+						$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLoginLocked'];
+					}else {
+			 	 		$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLogin'];
+					}
 				 }
+
+				 // Ticket #5427 - Prevent brute force logins
+				 if (!empty($email)){
+					 // Get number of failed logins
+					$getFailedLogins = $this->sSYSTEM->sDB_CONNECTION->getOne("
+					SELECT failedlogins FROM s_user WHERE email = ?
+					",array($email));
+
+					$addSQL = "";
+					// If failed logins greater then 5 - deactivate account for
+					// 30 seconds * count of failed logins
+					if ($getFailedLogins > 5){
+						$lockupTime = $getFailedLogins * 30;
+						$addSQL = "
+						, lockeduntil = (now() + $lockupTime)
+						";
+					}
+					// Update failed login counter
+					Shopware()->Db()->query("
+					UPDATE s_user SET failedlogins = failedlogins + 1
+					$addSQL
+					WHERE email = ?
+					",array($email));
+				 } // Ticket #5427 - Prevent brute force logins
+
 				 Enlight()->Events()->notify('Shopware_Modules_Admin_Login_Failure', array('subject'=>$this,'email'=>$email,'password'=>$password,'error'=>$sErrorMessages));
 				
 				 unset($this->sSYSTEM->_SESSION["sUserMail"]);
@@ -2347,7 +2383,13 @@ class	sAdmin
 		}
 	}
 	
-	
+	/**
+	 * Risk-Management Order value greater then
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskORDERVALUEMORE ($user, $order, $value){
 		#print_r($user);
 		#print_r($order);
@@ -2366,7 +2408,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management Order value less then
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskORDERVALUELESS ($user, $order, $value){
 		$basketValue = $order["AmountNumeric"];
 		
@@ -2383,7 +2432,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management customer group match x
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskCUSTOMERGROUPIS ($user, $order, $value){
 		if ($user["additional"]["user"]["customergroup"]==$value){
 			return true;
@@ -2391,7 +2447,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management customer group match not
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskCUSTOMERGROUPISNOT ($user, $order, $value){
 		if ($user["additional"]["user"]["customergroup"]!=$value){
 			return true;
@@ -2399,7 +2462,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management zip code is 
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskZIPCODE ($user, $order, $value){
 		if ($value=="-1") $value = "";
 		if ($user["shippingaddress"]["zipcode"]==$value || $user["billingaddress"]["zipcode"]==$value){
@@ -2408,7 +2478,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management  country zone is
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskZONEIS ($user, $order, $value){
 		if ($user["additional"]["countryShipping"]["countryarea"]==$value){
 			return true;
@@ -2416,7 +2493,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management country zone is not
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskZONEISNOT ($user, $order, $value){
 	
 		if ($user["additional"]["countryShipping"]["countryarea"]!=$value){
@@ -2425,7 +2509,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management country is
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskLANDIS ($user, $order, $value){
 		if (preg_match("/$value/",$user["additional"]["countryShipping"]["countryiso"])){
 			return true;
@@ -2436,7 +2527,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management country is not
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskLANDISNOT ($user, $order, $value){
 		if (!preg_match("/$value/",$user["additional"]["countryShipping"]["countryiso"])){
 			return true;
@@ -2448,7 +2546,15 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+
+	/**
+	 * Risk-Management customer is new
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskNEWCUSTOMER ($user, $order, $value){
 		if ($user["additional"]["user"]["firstlogin"]==date("Y-m-d") || !$user["additional"]["user"]["firstlogin"]){
 			return true;
@@ -2456,7 +2562,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management order has more then x positions
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskORDERPOSITIONSMORE ($user, $order, $value){
 		if (count($order["content"])>=$value){
 			return true;
@@ -2464,7 +2577,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management Article attribute x from basket - positions is y
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskATTRIS ($user,$order,$value){
 		if (!empty($order["content"])){
 						
@@ -2486,9 +2606,6 @@ class	sAdmin
 			";
 			
 			$checkArticle = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql,array($this->sSYSTEM->sSESSION_ID));
-			
-			
-			
 			if ($checkArticle){
 				return true;
 			}else {
@@ -2498,10 +2615,16 @@ class	sAdmin
 			}else {
 				return false;
 			}
-			
+		}
 	}
-	}
-	
+
+	/**
+	 * Risk-Management article attribute x from basket is not y
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskATTRISNOT ($user,$order,$value){
 		if (!empty($order["content"])){
 						
@@ -2536,7 +2659,14 @@ class	sAdmin
 			
 	}
 	}
-	
+
+	/**
+	 * Risk-Management customer had payment problems in past
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskINKASSO ($user, $order, $value){
 		if ($this->sSYSTEM->_SESSION["sUserId"]){
 			$checkOrder = $this->sSYSTEM->sDB_CONNECTION->GetRow("
@@ -2550,7 +2680,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management Last order less x days
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskLASTORDERLESS ($user, $order, $value){
 		// A order from previous x days must exists
 		if ($this->sSYSTEM->_SESSION["sUserId"]){
@@ -2568,7 +2705,14 @@ class	sAdmin
 			return true;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management articles from a certain category
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskARTICLESFROM ($user, $order, $value){
 		$checkArticle = $this->sSYSTEM->sDB_CONNECTION->GetOne("
 			SELECT s_articles_categories.id as id
@@ -2583,7 +2727,14 @@ class	sAdmin
 		else
 			return false;
 	}
-	
+
+	/**
+	 * Risk-Management Order value greater then
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskLASTORDERSLESS($user,$order,$value){
 		if ($this->sSYSTEM->_SESSION["sUserId"]){
 			$checkOrder = $this->sSYSTEM->sDB_CONNECTION->GetAll("
@@ -2597,7 +2748,14 @@ class	sAdmin
 		
 		return false;
 	}
-	// Sperren wenn Straße X enthält
+
+	/**
+	 * Risk management Block if street contains pattern
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskPREGSTREET ($user, $order, $value){
 		$value = strtolower($value);
 		if (preg_match("/$value/",strtolower($user["shippingaddress"]["street"]))){
@@ -2606,7 +2764,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	// Sperren wenn Lieferadresse != Rechnungsadresse	
+
+	/**
+	 * Risk-Management block if billing address not eqal to shipping address
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskDIFFER ($user, $order, $value){
 			//echo "test"; 
 		if (strtolower($user["shippingaddress"]["street"]) != strtolower($user["billingaddress"]["street"])){
@@ -2616,7 +2781,13 @@ class	sAdmin
 		}
 	}
 	
-	// Sperren wenn Kundennummer ist X
+	/**
+	 * Risk-Management block if customernumber matches pattern
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskCUSTOMERNR ($user, $order, $value){
 			//echo "test"; 
 		if ($user["billingaddress"]["customernumber"]==$value && !empty($value)){
@@ -2626,7 +2797,13 @@ class	sAdmin
 		}
 	}
 	
-	// Sperren wenn Nachname enthält X
+	/**
+	 * Risk-Management block if lastname matches pattern
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskLASTNAME ($user, $order, $value){
 		$value = strtolower($value);
 		if (preg_match("/$value/",strtolower($user["shippingaddress"]["lastname"])) || preg_match("/$value/",strtolower($user["billingaddress"]["lastname"]))){
@@ -2636,7 +2813,13 @@ class	sAdmin
 		}
 	}
 	
-	// Sperren wenn Subshop = X
+	/**
+	 * Risk-Management  Block if subshop id is x
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskSUBSHOP ($user, $order, $value){
 		
 		if ($this->sSYSTEM->sSubShop["id"]==$value){
@@ -2645,7 +2828,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management  Block if subshop id is not x
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskSUBSHOPNOT ($user, $order, $value){
 		
 		if ($this->sSYSTEM->sSubShop["id"]!=$value){
@@ -2654,7 +2844,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management Block if currency id is not x
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskCURRENCIESISOIS ($user, $order, $value){
 		if(strtolower($this->sSYSTEM->sCurrency['currency']) == strtolower($value))
 		{
@@ -2663,7 +2860,14 @@ class	sAdmin
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Risk-Management Block if currency id is x
+	 * @param  $user
+	 * @param  $order
+	 * @param  $value
+	 * @return bool
+	 */
 	public function sRiskCURRENCIESISOISNOT ($user, $order, $value){
 		if(strtolower($this->sSYSTEM->sCurrency['currency']) != strtolower($value))
 		{

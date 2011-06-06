@@ -215,5 +215,24 @@ CREATE TABLE IF NOT EXISTS `s_plugin_benchmark_log` (
  * @author st.hamann
  * @since 3.5.4 - 2011/06/06
  */
- ALTER TABLE `s_core_auth` ADD `failedlogins` INT NOT NULL ,
+ALTER TABLE `s_core_auth` ADD `failedlogins` INT NOT NULL ,
 ADD `lockeduntil` DATETIME NOT NULL;
+
+ALTER TABLE `s_user` ADD `failedlogins` INT NOT NULL ,
+ADD `lockeduntil` DATETIME NOT NULL;
+
+INSERT INTO `s_core_config_text` (
+`id` ,
+`group` ,
+`name` ,
+`value` ,
+`description` ,
+`created` ,
+`modified` ,
+`locale` ,
+`namespace`
+)
+VALUES (
+NULL , '23', 'sErrorLoginLocked', 'Zu viele fehlgeschlagene Versuche. Ihr Account wurde vorübergehend deaktivert - bitte probieren Sie es in einigen Minuten erneut!', '', NULL , NULL , 'de_DE', 'Frontend'
+);
+

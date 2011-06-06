@@ -12,7 +12,7 @@
 class Shopware_Controllers_Backend_Auth extends Enlight_Controller_Action
 {
 	/**
-	 * This part is accessible without login
+	 * This controller is accessible without login
 	 * @return void
 	 */
 	public function init()
