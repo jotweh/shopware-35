@@ -158,20 +158,10 @@ window.onload = function(){
 // TEMPLATE FÜR NICHT LIZENZIERTE MODULE //
 if (!$sCore->sCheckLicense("","",$sCore->sLicenseData["sGROUPS"])){
 echo $sCore->sDumpLicenceInfo("../../../","Modul Kundengruppen","Wenn Sie mehr als eine Käuferschicht bedienen wollen, ist dieses Modul genau das Richtige! Definieren Sie beliebig viele Kundengruppen und statten diese mit eigenen Preisen, Staffeln oder Rabatten aus. Ihre Shopware ist somit für B2B und B2C optimal aufgestellt.","http://www.shopware-ag.de/Haendlerbereich-Kunden.-_detail_67_196.html","sGROUPS");
-$licenceFailed = true;
+$licenceFailed = false;
 }
 if (!$licenceFailed){ 
 ?>
-	<div class="buttons" id="buttons" style="margin-left:5px;">
-		<ul>		
-			
-		<li id="buttonTemplate" class="buttonTemplate"><a href="<?php echo $_SERVER["PHP_SELF"]."?new=1" ?>" class="bt_icon group" style="text-decoration:none;"><?php echo $sLang["presettings"]["customergroups_new_customergroup"] ?></a></li>	
-		
-		</ul>
-		</div>
-		<br/><div class="fixfloat"></div><br/><br/><br/><br/>
-		
-
 <?php
 }
 ?>
