@@ -49,28 +49,8 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$this->View()->accountUrl = 'https://account.shopware.de/register.php'
 			. '?domain=' .urlencode(Shopware()->Config()->Host)
 			. '&pairing=' .urlencode(Shopware()->Config()->AccountId);
-
-		$this->checkValidSql();
 	}
 
-	/**
-	 * Simple check if sql - update routines running well
-	 * @return void
-	 */
-	public function checkValidSql(){
-		$result = Shopware()->Db()->fetchAll("
-		DESCRIBE s_user
-		");
-		$foundField = false;
-		foreach ($result as $row){
-			if ($row["Field"] == "lockeduntil"){
-				$foundField = true;
-			}
-		}
-		if ($foundField == false){
-			die("Fehler! Das Datenbank-Update auf 3.5.4 wurde nicht vollständig ausgeführt. Bitte führen Sie die SQL-Update-Anweisungen für dieses Update aus!");
-		}
-	}
 	
 	/**
 	 * logout action method
