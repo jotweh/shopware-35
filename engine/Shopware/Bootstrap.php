@@ -108,7 +108,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init session method
      *
-     * @return unknown
+     * @return Enlight_Components_Session_Namespace
      */
     protected function initSession()
     {
@@ -121,7 +121,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	
     	if(Enlight_Components_Session::isStarted())	{
     		Enlight_Components_Session::writeClose();
-    	}    	
+    	}
     	    	
     	$session_id = $this->getResource('SessionID');
     	if(!empty($session_id)) {
@@ -130,12 +130,12 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	    	
     	if($this->hasResource('Front')&&Shopware()->Front()->Request()) {
     		$request = Shopware()->Front()->Request();
-    		$path = rtrim($request->getBasePath(),'/').'/';
-    		$host = $request->getHttpHost()=='localhost' ? null : '.'.$request->getHttpHost();
+    		$path = rtrim($request->getBasePath(), '/') . '/';
+    		$host = $request->getHttpHost()=='localhost' ? null : '.' . $request->getHttpHost();
     	} else {
     		$config = $this->getResource('Config');
     		$path = rtrim(str_replace($config->get('Host'), '', $config->get('BasePath')),'/').'/';
-    		$host = $config->get('Host')=='localhost' ? null : '.'.$config->get('Host');
+    		$host = $config->get('Host')=='localhost' ? null : '.' . $config->get('Host');
     	}
 
     	$config_session['cookie_path'] = $path;
