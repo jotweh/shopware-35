@@ -1,7 +1,7 @@
 <?php
 /**
  * Shopware Backend Controller
- * 
+ *
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
