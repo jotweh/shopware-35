@@ -4,6 +4,7 @@
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
  * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
@@ -30,9 +31,9 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		}
 		
 		if(Shopware()->License()->checkLicense('sCORE')){
-			$this->View()->Logo = "logo";
-		}else{
-			$this->View()->Logo = "logoCE";
+			$this->View()->Logo = 'logo';
+		} else {
+			$this->View()->Logo = 'logoCE';
 		}
 		
 		$this->View()->BaseUrl = $this->Request()->getBaseUrl();
@@ -41,9 +42,10 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$this->View()->rssData = $this->getRssFeed();
 		$this->View()->Scheme = $this->Request()->getScheme();
 		$this->View()->BackendUsers = implode(',', $this->getUsers());
-		$this->View()->SidebarActive = $_SESSION['sSidebar'];
 		$this->View()->Amount = $this->getAmount();
-		$this->View()->UserName = $_SESSION['sName'];
+		$identity = Shopware()->Auth()->getIdentity();
+		$this->View()->SidebarActive = $identity->sidebar;
+		$this->View()->UserName = $identity->name;
 		$this->View()->accountUrl = 'https://account.shopware.de/register.php'
 			. '?domain=' .urlencode(Shopware()->Config()->Host)
 			. '&pairing=' .urlencode(Shopware()->Config()->AccountId);
@@ -69,7 +71,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		$getUsers = Shopware()->Db()->fetchAll('SELECT id, username FROM s_core_auth ORDER BY username ASC');
 		$users = array();
 		foreach ($getUsers as $user){
-			$users[] = json_encode(array($user['id'], utf8_encode($user['username'])));
+			$users[] = Zend_Json::encode(array($user['id'], utf8_encode($user['username'])));
 		}
 		return $users;
 	}
@@ -111,7 +113,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		}
 		
 		$url = 'https://account.shopware.de/core/credit.php';
-		$referer = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+		$referer = 'http://'.$_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 
 		$client = new Zend_Http_Client($url, array(
 			'useragent' => 'Shopware/' . Shopware()->Config()->Version,
