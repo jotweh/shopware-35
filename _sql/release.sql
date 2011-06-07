@@ -221,18 +221,23 @@ ADD `lockeduntil` DATETIME NOT NULL;
 ALTER TABLE `s_user` ADD `failedlogins` INT NOT NULL ,
 ADD `lockeduntil` DATETIME NOT NULL;
 
-INSERT INTO `s_core_config_text` (
-`id` ,
-`group` ,
-`name` ,
-`value` ,
-`description` ,
-`created` ,
-`modified` ,
-`locale` ,
-`namespace`
-)
-VALUES (
-NULL , '23', 'sErrorLoginLocked', 'Zu viele fehlgeschlagene Versuche. Ihr Account wurde vorübergehend deaktivert - bitte probieren Sie es in einigen Minuten erneut!', '', NULL , NULL , 'de_DE', 'Frontend'
-);
+SET @parent = (SELECT `groupID` FROM `s_core_config_text_groups` WHERE `description` = 'sonstige');
 
+INSERT IGNORE INTO `s_core_config_text` (`id`, `group`, `name`, `value`, `description`, `created`, `modified`, `locale`, `namespace`) VALUES
+(NULL, @parent, 'sErrorLoginLocked', 'Zu viele fehlgeschlagene Versuche. Ihr Account wurde vorübergehend deaktivert - bitte probieren Sie es in einigen Minuten erneut!', '', NULL, NULL, 'de_DE', 'Frontend');
+
+/**
+ * @ticket 5124
+ * @author h.lohaus
+ * @since 3.5.4 - 2011/06/07
+ */
+ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL,
+ADD `pluginID` INT( 11 ) UNSIGNED NULL;
+
+INSERT INTO `s_core_plugins` (`id`, `namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `added`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`, `changes`, `link`) VALUES
+(NULL, 'Frontend', 'Payment', 'Payment', 'Default', '', '', 1, '0000-00-00 00:00:00', '2011-05-11 14:06:17', '2011-05-11 14:06:17', 'shopware AG', 'Copyright © 2011, shopware AG', '', '1.0.0', 'http://wiki.shopware.de', '', 'http://www.shopware.de/');
+
+SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `name` = 'Payment');
+
+INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
+(NULL, 'Enlight_Bootstrap_InitResource_Payments', 0, 'Shopware_Plugins_Frontend_Payment_Bootstrap::onInitResourcePayments', @parent, 0);

@@ -58,7 +58,6 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 		return true;
 	}
 
-
 	/**
 	 * Check if a list of given plugins is currently available
 	 * and active
@@ -105,11 +104,13 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 			return false;
 		}
 	}
+	
 	/**
 	 * Remove a widget during plugin uninstall
 	 * @return void
 	 */
-	public function removeWidget(){
+	public function removeWidget()
+	{
 		if (is_file($this->widgetXML)){
 			$xml = new Shopware_Components_Xml_SimpleXml();
 			$xml->loadFile($this->widgetXML);
@@ -317,8 +318,26 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	 * @param Shopware_Components_Cron_CronHandler $handler
 	 * @return Shopware_Components_Plugin_Bootstrap
 	 */
-	public function subscribeCron($handler)
+	public function subscribeCron($name, $action, $interval=86400, $active=1, $next=null, $start=null, $end=null)
 	{
+		if (empty($next)) {
+			$next = date('Y-m-d H:i:s', time());
+		}
+		if (empty($start)) {
+			$start = date('Y-m-d H:i:s', time()-86400);
+		}
+		if (empty($end)) {
+			$end = date('Y-m-d H:i:s', time()-86400);
+		}
+		$sql = '
+			INSERT INTO s_crontab (`name`, `action`, `next`, `start`, `interval`, `active`, `end`, `pluginID`)
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		';
+		Shopware()->Db()->query($sql, array(
+			$name, $action, $next, $start, $interval, $active, $end, $this->getId()
+		));
+		
+		/*
 		if(!$handler instanceof Shopware_Components_Cron_CronHandler) {
 			$reflection = new ReflectionClass('Shopware_Components_Cron_CronHandler');
 			$handler = $reflection->newInstanceArgs(func_get_args());
@@ -327,7 +346,7 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 			$handler->setPlugin($this->getId());
 		}
 		Shopware()->Cron()->addCronJob($handler);
-		
+		*/
 		return $this;
 	}
 	
