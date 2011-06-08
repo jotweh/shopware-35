@@ -83,4 +83,13 @@ class Shopware_Controllers_Backend_SqlMonitor extends Enlight_Controller_Action
 		
 		echo Zend_Json::encode(array("total"=>$limit,"result"=>$getQueries));
 	}
+
+	/**
+	 * Delete plugin log
+	 * @return void
+	 */
+	public function deleteLogAction(){
+		$this->View()->setTemplate();
+		Shopware()->Db()->query("TRUNCATE s_plugin_benchmark_log");
+	}
 }

@@ -41,7 +41,13 @@ Ext.define('Ext.app.Monitor.Grid',
 					text: 'Log leeren',
 					handler: function()
 					{
-						alert('Test');
+						Ext.Ajax.request({
+							url: '{url action=deleteLog}',
+							success: function(response){
+								this.up().up().store.load();
+							},
+							scope:this
+						});
 					}
 				})
 				]
