@@ -23,7 +23,6 @@ return array(
 		'ignoreNamespace' => false
 	),
 	'cache' => array(
-		/*
 		'frontendOptions' => array(
     		'automatic_serialization' => true,
     		'automatic_cleaning_factor' => 0,
@@ -37,7 +36,6 @@ return array(
 			'cache_dir' => $this->DocPath('cache_database'),
 			'file_name_prefix' => 'shopware'
     	),
-    	*/
     	/*
     	'backend' => 'Two Levels',
     	'backendOptions' => array(

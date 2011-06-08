@@ -414,7 +414,7 @@
 							flex: 1,
 							items: [
 								{
-									html: 'Fügen Sie Widgets zu Ihrer Startseite hinzu!'
+									html: 'Fügen Sie Widgets zu Ihrer Startseite hinzu. Installieren Sie hierzu das Plugin "Shopware Standard Widgets" im Plugin-Manager!'
 								}
 							]
 						}
