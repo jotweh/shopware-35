@@ -56,6 +56,7 @@ ALTER TABLE `s_core_currencies` ADD `symbol_position` INT( 11 ) UNSIGNED NOT NUL
  * @since 3.5.4 - 2011/04/12
  */
 UPDATE `s_core_menu` SET `style` = 'background-position: 5px 5px;' WHERE `name` = 'Textbausteine';
+UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
 
 /*
  * @ticket 4836
@@ -240,5 +241,3 @@ SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `name` = 'Payment');
 
 INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 (NULL, 'Enlight_Bootstrap_InitResource_Payments', 0, 'Shopware_Plugins_Frontend_Payment_Bootstrap::onInitResourcePayments', @parent, 0);
-
-UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
