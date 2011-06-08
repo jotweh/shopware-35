@@ -249,3 +249,15 @@ SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `name` = 'Payment');
 
 INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 (NULL, 'Enlight_Bootstrap_InitResource_Payments', 0, 'Shopware_Plugins_Frontend_Payment_Bootstrap::onInitResourcePayments', @parent, 0);
+
+/**
+ * @ticket 5124
+ * @author h.lohaus
+ * @since 3.5.4 - 2011/06/08
+ */
+DELETE FROM `s_core_config` WHERE `name` LIKE 'sCLICKPAY%';
+DELETE FROM `s_core_config_groups` WHERE `name` LIKE 'ClickPay';
+DELETE FROM `s_core_config_text` WHERE `name` LIKE 'sClickPay%';
+DELETE FROM `s_core_menu` WHERE `name` LIKE '%ClickPay%';
+DELETE FROM `s_core_paymentmeans` WHERE `name` LIKE 'clickpay_%';
+DROP TABLE IF EXISTS `eos_risk_results`;
