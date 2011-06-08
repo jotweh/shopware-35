@@ -82,14 +82,6 @@ UPDATE `s_core_config` SET `value` = '3.5.4' WHERE `name` = 'sVERSION';
 INSERT IGNORE INTO `s_core_snippets` (`id`, `namespace`, `shopID`, `localeID`, `name`, `value`, `created`, `updated`) VALUES
 (NULL, 'frontend/account/password', 1, 1, 'PasswordSendAction', 'Passwort anfordern', '2011-05-17 11:47:42', '2011-05-17 11:47:42');
 
-/*
- * @ticket 5124
- * @author h.lohaus
- * @since 3.5.4 - 2011/04/29
- */
-ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL ,
-ADD `pluginID` INT( 11 ) UNSIGNED NULL;
-
 
 /*
  * @ticket 5125
