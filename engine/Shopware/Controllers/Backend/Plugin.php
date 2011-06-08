@@ -661,7 +661,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			$searchQuery[] = $row["name"];
 		}
 
-		$searchQuery[] = "SwagKick";
+
 		$searchQuery[] = "";
 
 		$checkedPlugins = $this->getPluginInfo($searchQuery);
@@ -670,12 +670,12 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		foreach ($checkedPlugins["articles"] as $plugin){
 			$foundPlugins = true;
-			if (isset($localPlugins[$plugin["ordernumber"]])){
+			if (isset($localPlugins[$plugin["pluginname"]])){
 				$changelog = $plugin["changelog"];
 				Shopware()->Db()->query("
 				UPDATE s_core_plugins SET checkversion = ?, checkdate = ?, changes = ?
 				WHERE id = ?
-				",array($plugin["version"],$plugin["change_date"],$changelog,$localPlugins[$plugin["ordernumber"]]["id"]));
+				",array($plugin["version"],$plugin["change_date"],$changelog,$localPlugins[$plugin["pluginname"]]["id"]));
 				// Update plugin information
 				//throw new Enlight_Exception("Update for {$plugin["ordernumber"]} found ... ");
 			}
