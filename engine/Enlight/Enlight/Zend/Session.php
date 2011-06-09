@@ -488,9 +488,11 @@ class Zend_Session extends Zend_Session_Abstract
 
             $startedCleanly = session_start();
             
-            if(!session_id() || !isset($_SESSION['__ZA'])) {
+            if(self::sessionExists() && !isset($_SESSION['__ZA'])) {
 	        	session_regenerate_id();
-	        	$_SESSION['__ZA'] = true;
+				session_destroy();
+				$startedCleanly = session_start();
+	        	$_SESSION = array('__ZA' => true);
 	        }
 
             if (self::$_throwStartupExceptions) {

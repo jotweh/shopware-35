@@ -51,7 +51,6 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 			. '&pairing=' .urlencode(Shopware()->Config()->AccountId);
 	}
 
-	
 	/**
 	 * logout action method
 	 */
