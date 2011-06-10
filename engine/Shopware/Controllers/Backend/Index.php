@@ -113,7 +113,6 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 		}
 		
 		$url = 'https://account.shopware.de/core/credit.php';
-		$referer = 'http://'.$_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 
 		$client = new Zend_Http_Client($url, array(
 			'useragent' => 'Shopware/' . Shopware()->Config()->Version,
