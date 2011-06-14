@@ -43,12 +43,12 @@
 	{/block}
 {/block}
 {block name='backend_index_header_title'}
-	Shopware {config name='Version'} - 31.05.2011 (Rev. 5324)- Backend (c) 2011 shopware AG{/block}
+	Shopware {config name='Version'} - 31.05.2011 (Rev. {config name='Revision' default=5324}) - Backend (c) 2011 shopware AG
+{/block}
 
 {block name="backend_index_body_attributes"}onresize="myExt.resizeWindowEvent();"{/block}
 
 {block name="backend_index_body_inline"}
-
 
 	<div id="header">
 		

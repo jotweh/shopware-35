@@ -225,10 +225,17 @@ INSERT IGNORE INTO `s_core_config_text` (`id`, `group`, `name`, `value`, `descri
 ALTER TABLE `s_core_paymentmeans` ADD `action` VARCHAR( 255 ) NULL,
 ADD `pluginID` INT( 11 ) UNSIGNED NULL;
 
-INSERT INTO `s_core_plugins` (`id`, `namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `added`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`, `changes`, `link`) VALUES
+INSERT IGNORE INTO `s_core_plugins` (`id`, `namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `added`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`, `changes`, `link`) VALUES
 (NULL, 'Frontend', 'Payment', 'Payment', 'Default', '', '', 1, '0000-00-00 00:00:00', '2011-05-11 14:06:17', '2011-05-11 14:06:17', 'shopware AG', 'Copyright © 2011, shopware AG', '', '1.0.0', 'http://wiki.shopware.de', '', 'http://www.shopware.de/');
 
 SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `name` = 'Payment');
 
-INSERT INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
+INSERT IGNORE INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 (NULL, 'Enlight_Bootstrap_InitResource_Payments', 0, 'Shopware_Plugins_Frontend_Payment_Bootstrap::onInitResourcePayments', @parent, 0);
+
+/**
+ * @author h.lohaus
+ * @since 3.5.4 - 2011/06/14
+ */
+INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
+(NULL, 0, 'sREVISION', '5919', '', 0, 0, '', 0, '');

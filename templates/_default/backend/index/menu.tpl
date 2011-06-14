@@ -3,7 +3,7 @@
 		{foreach from=$categories item=category}
 		{if $category->isVisible()}
 		    <li {if !$level}class="main"{/if}>
-				<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'}"}"{/if}>
+				<a class="{$category->class}" style="{$category->style};cursor:pointer" {if $category->onclick}onclick="{$category->onclick|replace:'{release}':"{config name='Version'} - Rev. {config name='Revision'}"}"{/if}>
 					{$category->label|snippet:null:'backend/index/menu'} 
 				</a>
 		    	{if $category->hasChildren()}

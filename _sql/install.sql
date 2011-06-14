@@ -262,23 +262,12 @@ DELETE FROM `s_core_menu` WHERE `name` LIKE '%ClickPay%';
 DELETE FROM `s_core_paymentmeans` WHERE `name` LIKE 'clickpay_%';
 DROP TABLE IF EXISTS `eos_risk_results`;
 
+
+/**
+ * @author st.hamann
+ * @since 3.5.4 - 2011/06/08
+ */
 UPDATE `s_core_config` SET value = '' WHERE name = 'sACCOUNTID';
 UPDATE `s_core_config` SET value = '0' WHERE name = 'sROUTERURLCACHE';
-
-INSERT IGNORE INTO `s_core_menu` (
-`id` ,
-`parent` ,
-`hyperlink` ,
-`name` ,
-`onclick` ,
-`style` ,
-`class` ,
-`position` ,
-`active` ,
-`pluginID`
-)
-VALUES (
-NULL , '40', '', 'Shopware ID registrieren', 'window.open(''http://account.shopware.de'',''Shopware'',''width=800,height=550,scrollbars=yes'')', 'background-position: 5px 5px', 'ico2 book_open', '-1', '1', NULL
-);
-
-UPDATE `s_core_multilanguage` SET `domainaliase` = '' LIMIT 1 ;
+INSERT IGNORE INTO `s_core_menu` (`id`, `parent`, `hyperlink`, `name`, `onclick`, `style`, `class`, `position`, `active`, `pluginID`) VALUES
+(NULL, 40, '', 'Shopware ID registrieren', 'window.open(''http://account.shopware.de'',''Shopware'',''width=800,height=550,scrollbars=yes'')', 'background-position: 5px 5px', 'ico2 book_open', -1, 1, NULL);
