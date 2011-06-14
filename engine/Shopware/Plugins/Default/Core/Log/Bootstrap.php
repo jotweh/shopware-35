@@ -57,7 +57,6 @@ class Shopware_Plugins_Core_Log_Bootstrap extends Shopware_Components_Plugin_Boo
 	
 		$config = Shopware()->Plugins()->Core()->Log()->Config();
 		
-
 		if(!empty($config->logDb)) {
 			$writer = Zend_Log_Writer_Db::factory(array(
 				'db' => Shopware()->Db(),

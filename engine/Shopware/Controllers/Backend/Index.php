@@ -12,6 +12,22 @@
 class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 {	
 	/**
+	 * Init controller method
+	 */
+	public function init()
+	{
+		Shopware()->Config()->revision = 5922;
+		$sql = '
+			INSERT IGNORE INTO `s_core_config` (`group`, `name`, `value`)
+			VALUES (0, ?, ?)
+			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
+		';
+		Shopware()->Db()->query($sql, array(
+			'sREVISION', Shopware()->Config()->revision
+		));
+	}
+	
+	/**
 	 * Index action method
 	 */
 	public function indexAction()

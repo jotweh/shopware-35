@@ -232,10 +232,3 @@ SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `name` = 'Payment');
 
 INSERT IGNORE INTO `s_core_subscribes` (`id`, `subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 (NULL, 'Enlight_Bootstrap_InitResource_Payments', 0, 'Shopware_Plugins_Frontend_Payment_Bootstrap::onInitResourcePayments', @parent, 0);
-
-/**
- * @author h.lohaus
- * @since 3.5.4 - 2011/06/14
- */
-INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
-(NULL, 0, 'sREVISION', '5919', '', 0, 0, '', 0, '');
