@@ -495,8 +495,9 @@ class Zend_Session extends Zend_Session_Abstract
 					self::setSaveHandler(self::$_saveHandler);
 				}
 				$startedCleanly = session_start();
-	        	$_SESSION = array('__ZA' => true);
+	        	$_SESSION = array();
 	        }
+	        $_SESSION['__ZA'] = true;
 
             if (self::$_throwStartupExceptions) {
                 restore_error_handler();
