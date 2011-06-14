@@ -175,10 +175,10 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     	return $namespace;
     }
     
-    /**
+	/**
      * Init mail transport
      *
-     * @return unknown
+     * @return Zend_Mail_Transport_Abstract
      */
     protected function initMailTransport()
     {
@@ -191,36 +191,42 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
 		if(empty($options['type'])) {
     		$options['type'] = 'sendmail';
     	}
-    	if(!isset($options['username']) && !empty($config->MailerUsername)) {
-    		if(!empty($config->MailerAuth)) {
-    			$options['auth'] = $config->MailerAuth;
-    		} elseif(empty($options['auth'])) {
-				$options['auth'] = 'login';
+    	
+    	if($options['type'] == 'smtp') {
+	    	if(!isset($options['username']) && !empty($config->MailerUsername)) {
+	    		if(!empty($config->MailerAuth)) {
+	    			$options['auth'] = $config->MailerAuth;
+	    		} elseif(empty($options['auth'])) {
+					$options['auth'] = 'login';
+				}
+				$options['username'] = $config->MailerUsername;
+				$options['password'] = $config->MailerPassword;
 			}
-			$options['username'] = $config->MailerUsername;
-			$options['password'] = $config->MailerPassword;
-		}
-		if(!isset($options['ssl']) && !empty($config->MailerSMTPSecure)) {
-			$options['ssl'] = $config->MailerSMTPSecure;
-		}
-		if(!isset($options['port']) && !empty($config->MailerPort)) {
-			$options['port'] = $config->MailerPort;
-		}
-		if(!isset($options['name']) && !empty($config->MailerHostname)) {
-			$options['name'] = $config->MailerHostname;
-		}
-		if(!isset($options['host']) && !empty($config->MailerHost)) {
-			$options['host'] = $config->MailerHost;
+			if(!isset($options['ssl']) && !empty($config->MailerSMTPSecure)) {
+				$options['ssl'] = $config->MailerSMTPSecure;
+			}
+			if(!isset($options['port']) && !empty($config->MailerPort)) {
+				$options['port'] = $config->MailerPort;
+			}
+			if(!isset($options['name']) && !empty($config->MailerHostname)) {
+				$options['name'] = $config->MailerHostname;
+			}
+			if(!isset($options['host']) && !empty($config->MailerHost)) {
+				$options['host'] = $config->MailerHost;
+			}
 		}
 		
 		if(!Shopware()->Loader()->loadClass($options['type'])) {
 			$transportName = ucfirst(strtolower($options['type']));
 			$transportName = 'Zend_Mail_Transport_'.$transportName;
+			unset($options['type']);
 		}
 		if($transportName=='Zend_Mail_Transport_Smtp') {
 			$transport = Enlight_Class::Instance($transportName, array($options['host'], $options));
-		} else {
+		} elseif(!empty($options)) {
 			$transport = Enlight_Class::Instance($transportName, array($options));
+		} else {
+			$transport = Enlight_Class::Instance($transportName);
 		}
 		Enlight_Components_Mail::setDefaultTransport($transport);
 		
