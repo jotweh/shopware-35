@@ -17,8 +17,8 @@
 {/if}
 
 {* Add main image *}
-{if $sArticle.image.src.2}
-	<meta property="og:image" content="{$sArticle.image.src.2}" />
+{if $sArticle.image.src.3}
+	<meta property="og:image" content="{$sArticle.image.src.3}" />
 {else}
 	<meta property="og:image" content="{link file='frontend/_resources/images/no_picture.jpg'}" />
 {/if}
