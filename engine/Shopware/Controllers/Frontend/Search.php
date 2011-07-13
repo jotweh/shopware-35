@@ -251,9 +251,7 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 	protected function searchFuzzyCheck($search)
 	{
 		$minSearch = empty(Shopware()->Config()->sMINSEARCHLENGHT) ? 2 : (int) Shopware()->Config()->sMINSEARCHLENGHT;
-		if(!empty($config['sSearch'])
-		  &&strlen($config['sSearch']) >= $minSearch)
-		{
+		if(!empty($search) && strlen($search) >= $minSearch) {
 			$sql = '
 				(
 					SELECT DISTINCT articleID
