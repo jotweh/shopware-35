@@ -1257,7 +1257,7 @@ class sArticles
 
 
 			if (empty($blogCategory)){
-				if(!empty($article['liveshoppingData']['net_price'])) {
+				if(empty($article['liveshoppingData']['net_price'])) {
 					$cheapestPrice = $this->sGetCheapestPrice($articles[$articleKey]["articleID"],$articles[$articleKey]["pricegroup"],$articles[$articleKey]["pricegroupID"],$articles[$articleKey]["pricegroupActive"],false,true);
 				} else {
 					$cheapestPrice = $article['liveshoppingData']['net_price'];
