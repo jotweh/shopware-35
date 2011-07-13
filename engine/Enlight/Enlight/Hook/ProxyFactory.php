@@ -45,7 +45,7 @@ class Enlight_Hook_ProxyFactory extends Enlight_Class
 	    	$methodes = call_user_func($proxy.'::getHookMethods');
 	    	$diff = array_diff($hooks, $methodes);
 	    	if(!empty($diff)) {
-	    		@unlink($file);
+	    		@unlink($proxyFile);
 	    	}
         }
         
