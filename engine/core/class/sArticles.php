@@ -928,7 +928,7 @@ class sArticles
 				a.id as articleID,aDetails.id AS articleDetailsID, weight,aDetails.ordernumber,a.datum,releasedate
 				additionaltext, shippingfree,shippingtime,instock, a.description AS description, description_long,
 				aSupplier.name AS supplierName, aSupplier.img AS supplierImg, a.name AS articleName, topseller as highlight,
-				($select_price*100/(100-IFNULL(cd.discount,0))) as price,laststock,
+				($select_price/100*(100-IFNULL(cd.discount,0))) as price,laststock,
 				sales, IF(p.pseudoprice,p.pseudoprice,p2.pseudoprice) as pseudoprice, aTax.tax,
 				minpurchase,
 				purchasesteps,
