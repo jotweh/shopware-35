@@ -11,7 +11,7 @@ $file = dirname($file).'/'.basename($file);
 $file = preg_replace('#\.+/#', '', $file);
 $file = dirname(dirname(dirname(dirname(__FILE__)))).'/'.$file;
 
-if(preg_match('/[^a-z0-9 \\/\\\\_.:-]/i', $file)) {
+if(preg_match('/[^a-z0-9\\/\\\\_.:-\s]/i', $file)) {
 	return;
 }
 if(!file_exists($file)) {
