@@ -163,7 +163,7 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			// Ticket #5427 - Prevent brute force logins
 			// At successful login, reset failed login counter
 			Shopware()->Db()->query("
-				UPDATE s_core_auth SET lockeduntil = NULL,
+				UPDATE s_core_auth SET lockeduntil = '',
 				failedlogins = 0 WHERE username = ?
 			", array($user->username));
 		} elseif (!empty($username)) {

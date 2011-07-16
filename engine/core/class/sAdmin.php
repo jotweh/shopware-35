@@ -1032,7 +1032,7 @@ class sAdmin
 			
 			if(count($getUser))
 			{			
-				$updateTime = $this->sSYSTEM->sDB_CONNECTION->Execute("UPDATE s_user SET lastlogin=NOW(),failedlogins = 0, lockeduntil = NULL, sessionID=? WHERE id=?",array($this->sSYSTEM->sSESSION_ID,$getUser["id"]));
+				$updateTime = $this->sSYSTEM->sDB_CONNECTION->Execute("UPDATE s_user SET lastlogin=NOW(),failedlogins = 0, lockeduntil = '', sessionID=? WHERE id=?",array($this->sSYSTEM->sSESSION_ID,$getUser["id"]));
 				Enlight()->Events()->notify('Shopware_Modules_Admin_Login_Successful', array('subject'=>$this,'email'=>$email,'password'=>$password,'user'=>$getUser));
 				$this->sSYSTEM->_SESSION["sUserMail"] = $email;
 				$this->sSYSTEM->_SESSION["sUserPassword"] = $password;
