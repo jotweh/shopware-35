@@ -1,5 +1,5 @@
 <?php
-/**
+/** 
 Shopware 3.5.4 - Database-Config
 **/
 $DB_HOST = '';
