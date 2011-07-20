@@ -8,8 +8,6 @@ unset($DB_PASSWORD);
 unset($DB_HOST);
 unset($DB_DATABASE);
 
-/*error_reporting(E_ALL);
-ini_set("display_errors",1);*/
 // If not AuthFile spezified, check for GUI-Access
 define('sVersion',1);
 if (@defined('sConfigPath')){
