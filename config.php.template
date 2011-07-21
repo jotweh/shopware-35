@@ -1,7 +1,7 @@
 <?php
 /**
-Shopware 3.5.4 - Database-Config
-**/
+ * Shopware 3.5.4 - Database-Config
+ */
 $DB_HOST = '';
 $DB_USER = '';
 $DB_PASSWORD = '';
