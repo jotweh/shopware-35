@@ -3177,7 +3177,7 @@ class sShopwareImport
 	function sDeleteArticleDownloads ($article_download)
 	{
 		$articleID = $this->sGetArticleID($article_download);
-		if(!isset($article_image["unlink"])||!empty($article_image["unlink"]))
+		if(!isset($article_download["unlink"])||!empty($article_download["unlink"]))
 		{
 			$download_path = $this->sPath.$this->sSystem->sCONFIG['sARTICLEFILES']."/".
 			$sql = "SELECT filename FROM s_articles_downloads WHERE articleID=$articleID";
