@@ -1,10 +1,26 @@
 <?php
+/**
+ * Shopware Formular Controller / Generator
+ * Used for support forms and custom forms
+ *
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 {	
 	public $FormElements;
 	public $Post;
 	public $Errors;
-	
+
+	/**
+	 * Constructor - Check if form with given id existing
+	 * @throws Enlight_Exception
+	 * @return void
+	 */
 	public function init(){
 	
 		$id = intval($this->Request()->sFid ? $this->Request()->sFid : $this->Request()->id);
@@ -20,7 +36,12 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 			}
 		}
 	}
-		
+
+	/**
+	 * Validate input - check form field rules defined by merchant
+	 * Checks captcha and doing simple blacklist-/spam-check
+	 * @return void
+	 */
 	private function checkFields(){
 
 			$this->Errors = Shopware()->Modules()->CmsSupport()->validate_input(Shopware()->System()->_POST,Shopware()->Modules()->CmsSupport()->sELEMENTS);
@@ -85,6 +106,11 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 			
 	}
 
+	/**
+	 * Render form - onSubmit checkFields -
+	 * Make use of engine/core/class/sCmsSupport
+	 * @return void
+	 */
 	public function indexAction()
 	{
 		if (!empty($this->Request()->Submit)){
@@ -99,7 +125,7 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 						case "basket":
 							$text =  Shopware()->System()->sCONFIG["sSnippets"]["sINQUIRYTEXTBASKET"];
 							$getBasket = Shopware()->Modules()->Basket()->sGetBasket();
-							$text = '';
+							//$text = ''; Fix 100363 / 5416 Thanks to H. Ronecker
 							foreach ($getBasket["content"] as $basketRow){
 								if (empty($basketRow["modus"])){
 									$text.= "\n{$basketRow["quantity"]} x {$basketRow["articlename"]} ({$basketRow["ordernumber"]}) - {$basketRow["price"]} ".Shopware()->System()->sCurrency["currency"];
@@ -131,7 +157,12 @@ class Shopware_Controllers_Frontend_Forms extends Enlight_Controller_Action
 		}
 	
 	}
-	
+
+	/**
+	 * Commit Formular via email (default) or database (ticket-system)
+	 * @throws Enlight_Exception
+	 * @return void
+	 */
 	public function commitForm(){
 		
 		$mail = Shopware()->System()->sMailer;			
