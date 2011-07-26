@@ -95,6 +95,9 @@ class Shopware_Models_Widgets_Panel extends Enlight_Class implements Enlight_Hoo
 			throw new Enlight_Exception("\$this->panel can not be null");
 		}
 		$XML = new Shopware_Components_Xml_SimpleXml();
+
+		if (!is_file($this->panelXML)) return array();
+
 		$XML->loadFile($this->panelXML);
 		$xpath = '//Panel[@name="'.$this->panel.'"]';
 		$WidgetMainNode = $XML->SimpleXML->firstOf($xpath);
