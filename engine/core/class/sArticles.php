@@ -536,92 +536,50 @@ class sArticles
 			$sql_search_fields = "OR 1 = 1";
 			$sql_search[0] = "";
 		}
+
+		// Performance boost while fixing #5499 st.hamann
 		$sql = "
-			SELECT DISTINCT
-				a.id as id
-			FROM 
-				s_articles a
-			INNER JOIN 
-				s_articles_details d
+			SELECT SQL_CALC_FOUND_ROWS DISTINCT
+					a.id as id
+			FROM
+					s_articles a
 			INNER JOIN
-				s_articles_supplier s
-			INNER JOIN 
-				s_articles_categories ac
-			LEFT JOIN 
-				s_articles_groups_value agv
+					s_articles_details d
+			INNER JOIN
+					s_articles_supplier s
+			INNER JOIN
+					s_articles_categories ac
+			LEFT JOIN
+					s_articles_groups_value agv
 			ON agv.ordernumber LIKE ?
 			AND agv.articleID=a.id
 			$sql_add_join
-			WHERE 
-				(
-					agv.valueID
-					$sql_search_fields
-					$sql_add_where
-						
-				)
+			WHERE
+					(
+							agv.valueID
+							$sql_search_fields
+							$sql_add_where
+
+					)
 			AND ac.articleID=a.id
 			AND ac.categoryID=$sCategory
 			AND s.id=a.supplierID
 			AND a.active=1 AND a.mode = 0
 			AND a.id = d.articleID
-			AND (
-					SELECT articleID
-					FROM s_articles_avoid_customergroups
-					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-			) IS NULL
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
 
-
 		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
 
+        $sql = "SELECT FOUND_ROWS()";
+        $sCountArticles = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
 
-		$sql = "
-			SELECT 
-				COUNT(DISTINCT a.id)
-			FROM 
-				s_articles a
-			INNER JOIN 
-				s_articles_details d
-			INNER JOIN
-				s_articles_supplier s
-			INNER JOIN 
-				s_articles_categories ac
-			LEFT JOIN 
-				s_articles_groups_value agv
-			ON agv.ordernumber LIKE ?
-			AND agv.articleID=a.id
-			$sql_add_join
-			WHERE 
-				(
-					agv.valueID
-					$sql_search_fields
-					$sql_add_where
-						
-				)
-			AND ac.articleID=a.id
-			AND ac.categoryID=$sCategory
-			AND s.id=a.supplierID
-			AND a.active=1 AND a.mode = 0
-			AND a.id = d.articleID
-			AND (
-					SELECT articleID
-					FROM s_articles_avoid_customergroups
-					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-			) IS NULL
-		";
-
-		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
-
-		if ($sCountArticles >= $limitNew && !empty($mode)){
+		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=="newest"){ // Fix #5499
 			$sCountArticles = $limitNew;
-
 		}
 
 		$numberPages = ceil($sCountArticles / $sLimitEnd);
-
-
 
 		// Max-Value for pages (in configuration, default: 12)
 		if (!empty($this->sSYSTEM->sCONFIG['sMAXPAGES']) && $this->sSYSTEM->sCONFIG['sMAXPAGES']<$numberPages){
