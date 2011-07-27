@@ -194,13 +194,15 @@ jQuery(document).ready(function($) {
 		}
 		$('.account .change_password').bind('click', function(event) {
 			event.preventDefault();
-			$('.account .password').slideToggle('fast');
+			$('.account .password').slideToggle('fast').toggleClass('active');
+			$('.account .email').slideUp('fast');
 		});
 		
 		//Change email account
 		$('.account .change_mail').bind('click', function(event) {
 			event.preventDefault();
-			$('.account .email').slideToggle('fast');
+			$('.account .email').slideToggle('fast').toggleClass('active');
+			$('.account .password').slideUp('fast');
 		});
 		
 		//Logout Account
@@ -278,6 +280,150 @@ jQuery(document).ready(function($) {
 		});
 
 });
+
+/**
+ * AJAX Validation
+ * for Shopware
+ *
+ * Shopware AG (c) 2011
+ */
+(function($) {
+	$(document).ready(function() {
+		$('.account .password :input').accountValidation();
+		$('.account .email :text').accountValidation();
+	});
+	$.fn.accountValidation = function(settings) {
+
+		/** extend default settings with user settings */
+		if(settings) $.extend($.accountValidation.config, settings);
+
+		this.each(function() {
+			var $me = $(this);
+
+			$me.bind('blur', function() {
+
+				/** Check length */
+				if(!$me.val().length) {
+					$.accountValidation.setError($me);
+				}
+
+				if($me.attr('id') == 'newpwdrepeat') {
+					$.accountValidation.checkPasswd($me);
+				}
+
+				if($me.attr('id') == 'neweailrepeat') {
+					$.accountValidation.checkEmail($me);
+				}
+			});
+		})
+
+		return this;
+	}
+
+	$.accountValidation = {
+
+		/** Default settings */
+		config: {
+			errorCls: 'instyle_error',
+			successCls: 'instyle_success'
+		},
+
+		/** Set error cls */
+		setError: function($el) {
+			$el.removeClass($.accountValidation.config.successCls).addClass($.accountValidation.config.errorCls);
+			return $el;
+		},
+
+		/** Set success cls */
+		setSuccess: function($el) {
+			$el.removeClass($.accountValidation.config.errorCls).addClass($.accountValidation.config.successCls);
+			return $el;
+		},
+
+		/** Validates the passwd */
+		checkPasswd: function($repeat) {
+			var $form = $repeat.parents('form');
+
+			var str = '';
+			$form.find(':password').each(function(i, el) {
+				var $el = $(el), name = $el.attr('name');
+
+				if(str.length) { str += '&'; }
+				str += 'register[personal][' + name + ']='+$el.val()
+			});
+
+			str = encodeURI(str);
+
+			$.accountValidation.ajaxValidation('ajax_validate_password', str, $form);
+		},
+
+		/** Validates the emails */
+		checkEmail: function($repeat) {
+			var $form = $repeat.parents('form');
+
+			var str = '';
+			$form.find(':text').each(function(i, el) {
+				var $el = $(el), name = $el.attr('name');
+
+				if(str.length) { str += '&'; }
+				str += 'register[personal][' + name + ']='+$el.val()
+			});
+
+			str = encodeURI(str);
+
+			$.accountValidation.ajaxValidation('ajax_validate_email', str, $form);
+		},
+
+		/** Validates the elements over an ajax request */
+		ajaxValidation: function(action, data, $form) {
+
+
+			$.ajax({
+				'data': 'action=' + action + '&' + data,
+				'type': 'post',
+				'dataType': 'json',
+				'url': $.controller.ajax_validate,
+				'success': function(result) {
+					if(!result.success) {
+						if(!$.isEmptyObject(result.error_flags)) {
+
+							// Set error cls
+							$.each(result.error_flags, function(key, el) {
+								$.accountValidation.setError($('input[name=' + key + ']'));
+							});
+
+							// Get first element in form
+							var first = $form.find(':input:first');
+
+							// Output error message
+							$('<div>', {
+								'class': 'error',
+								'id': 'ajax-validate-error',
+								'html': result.error_messages[0],
+								'css': {
+									'display': 'none',
+									'position': 'absolute',
+									'top': first.offset().top,
+									'left': first.offset().left + first.outerWidth() + 30,
+									'width': 200,
+									'zIndex': 100
+								}
+							}).prependTo($(document.body)).fadeIn('fast');
+
+							$form.find(':submit').attr('disabled', 'disabled').css('opacity', .5);
+						}
+					}  else {
+						$form.find(':password, :text').each(function(i, el) {
+							$(document.body).find('.error:first').remove();
+							$form.find(':submit').removeAttr('disabled').css('opacity', 1);
+							$.accountValidation.setSuccess($(el));
+						})
+					}
+				}
+			})
+		}
+	}
+})(jQuery);
 
 /**
  * AJAX Slider
@@ -1132,7 +1278,7 @@ jQuery(document).ready(function($) {
 	};
 	
 	ajaxValidate = function(el, action) {
-		var data = 'action='+action+'&'+$('.register form').serialize(); 
+		var data = 'action='+action+'&'+$('.register form').serialize();
 		$.ajax({
             'data': data,
             'type': 'post',
