@@ -2266,6 +2266,17 @@ jQuery.fn.liveSearch = function (conf) {
         
         $('input[class=relatedOrdernumber]').each(function (i, item) {
             var tmpOrdernumber = $(item).val();
+			
+			/**
+			 * Fix issue with sizzle selector engine and ordernumbers
+			 * which includes dots
+			 * @ticket #5711 (intern)
+			 * @ticket #100483 (extern)
+			 * @author s.pohl
+			 * @date 2011-07-27
+			 */
+			tmpOrdernumber = tmpOrdernumber.replace(/(:|\.)/g,'\\$1');
+
             var tmpContainerName = '#related_'+tmpOrdernumber+'_image';
             var tmpPlusiconName = '#related_'+tmpOrdernumber+'_plus';
             var tmpPriceName = '#' + tmpOrdernumber + '_price';
