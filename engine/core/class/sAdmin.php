@@ -2891,7 +2891,14 @@ class sAdmin
 		if(empty($unsubscribe))
 		{
 			$errorflag = array();
-			$fields = array('newsletter', 'firstname', 'lastname', 'salutation', 'title', 'street', 'streetnumber', 'zipcode', 'city');
+
+			/**
+			 * Only the mail address needs to be a mandatory item
+			 * @ticket #5781
+			 * @author S.Pohl <stp@shopware.de>
+			 * @date 2011-07-27
+			 */
+			$fields = array('newsletter');
 			foreach ($fields as $field)
 			{
 				if(isset($this->sSYSTEM->_POST[$field])&&empty($this->sSYSTEM->_POST[$field]))
