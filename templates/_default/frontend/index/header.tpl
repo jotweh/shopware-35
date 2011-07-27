@@ -49,8 +49,11 @@
 	<link type="text/css" rel="stylesheet" media="print" href="{link file='frontend/_resources/styles/print.css'}" />
 {/block}
 
-{block name="frontend_index_header_javascript"}
+{block name="frontend_index_header_javascript_jquery_lib"}
 	<script type="text/javascript" src="{link file='frontend/_resources/javascript/jquery-1.4.2.js'}"></script>
+{/block}
+
+{block name="frontend_index_header_javascript"}
 	<script type="text/javascript">
 	//<![CDATA[
 	{block name="frontend_index_header_javascript_inline"}
