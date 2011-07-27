@@ -960,7 +960,7 @@ jQuery(document).ready(function($) {
 				
 				// Set this navigation point as active
 				config._activeNavigation.removeClass('active');
-				config._activeNavigation = $('#slideNavigation'+ (slideNumber +1)).addClass('active');
+				config._activeNavigation = config._this.find('#slideNavigation'+ (slideNumber +1)).addClass('active');
 			}
 		},
 					
