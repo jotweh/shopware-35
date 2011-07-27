@@ -57,8 +57,8 @@
 						
 						{* Price *}
 						<div class="price">
-							<span>{$this->config('CURRENCYHTML')}</span>
 							<span id='price_relatedbundle'></span>
+							<span>{$this->config('CURRENCYHTML')}</span>
 							{s name="Star" namespace="frontend/listing/box_article"}{/s}
 						</div>
 						
