@@ -100,7 +100,7 @@
 	{* Edit mail address *}
 	<div class="grid_16 first email">
 	 	<div class="doublespace">&nbsp;</div>
-		{block name="frontend_account_index_change_password"}
+		{block name="frontend_account_index_change_email"}
 		<form method="post" action="{url action=saveAccount}">
 			<h2 class="headingbox_dark largesize">{se name='AccountLinkChangeMail'}{/se}</h2>
     		<div class="inner_container">
