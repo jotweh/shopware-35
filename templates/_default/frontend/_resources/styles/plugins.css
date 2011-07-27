@@ -62,7 +62,7 @@
 }
 
 .lbLoading {
-	background: #fff url(../images/loading.gif) no-repeat center;
+	background: #fff url(../images/icons/ico_ajax-loader.gif) no-repeat center;
 }
 
 #lbImage {
