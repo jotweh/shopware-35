@@ -135,7 +135,7 @@ class sCmsSupport
 				break;
 			case "select":
 				$values = explode(";", $element['value']);
-				$ret .= "<select class=\"{$element['class']} $req\" id=\"{$element['name']}\" name=\"{$element['name']}\">\r\n\t<option selected=\"selected\" value=\"\">".$this->sSYSTEM->sCONFIG["sSnippets"]["sRegisterpleaseselect"]."</option>";
+				$ret .= "<select class=\"{$element['class']} $req\" id=\"{$element['name']}\" name=\"{$element['name']}\">\r\n\t<option selected=\"selected\" value=\"\">" . Shopware()->Snippets()->getSnippet()->get('NewsletterLabelSelect') . "</option>";
 				foreach ($values as $value)
 				{
 					if ($value==$post)
