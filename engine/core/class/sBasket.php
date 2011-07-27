@@ -1477,7 +1477,9 @@ class sBasket
 					foreach ($queryNewPrice['liveshoppingData'] as $key => $liveshopping) {
 						//Überprüfung, ob eine Artikelbeschränkung vorliegt
 						if(!empty($liveshopping['sLiveStints'])) {
-							if(!in_array($queryNewPrice['ordernumber'], $liveshopping['sLiveStints'])){
+							if(!in_array($queryNewPrice['ordernumber'], $liveshopping['sLiveStints']) &&
+							!in_array( strtolower($queryNewPrice['ordernumber']), $liveshopping['sLiveStints'])
+							){
 								unset($queryNewPrice['liveshoppingData'][$key]);
 							}
 						}
@@ -1625,7 +1627,10 @@ class sBasket
 				foreach ($liveConf['liveshoppingData'] as $key => $liveshopping) {
 					//Überprüfung, ob eine Artikelbeschränkung vorliegt
 					if(!empty($liveshopping['sLiveStints'])) {
-						if(!in_array($tmpArticle['ordernumber'], $liveshopping['sLiveStints'])){
+						// Fix #5526 - Thanks to holger
+						if(!in_array($tmpArticle['ordernumber'], $liveshopping['sLiveStints'])
+						&& !in_array( strtolower($tmpArticle['ordernumber']), $liveshopping['sLiveStints'])
+						){
 							unset($liveConf['liveshoppingData'][$key]);
 						}
 					}

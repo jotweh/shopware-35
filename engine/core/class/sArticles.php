@@ -2979,7 +2979,10 @@ class sArticles
 						foreach ($tmpArticleVar['liveshoppingData'] as $key => $liveshopping) {
 							//Überprüfung, ob eine Artikelbeschränkung vorliegt
 							if(!empty($liveshopping['sLiveStints'])) {
-								if(!in_array($getArticleVariants[$variantKey]['ordernumber'], $liveshopping['sLiveStints'])){
+								// Fix #5526 / Thanks Holger
+								if(!in_array($getArticleVariants[$variantKey]['ordernumber'], $liveshopping['sLiveStints']) &&
+									!in_array( strtolower($getArticleVariants[$variantKey]['ordernumber']), $liveshopping['sLiveStints'])
+									){
 									unset($tmpArticleVar['liveshoppingData'][$key]);
 								}else{
 									$getArticleVariants[$variantKey]['pseudoprice'] = $pseudoprice;
@@ -3139,9 +3142,11 @@ class sArticles
 			$tmpArticle = $this->sGetLiveShopping('fix', 0, $tmpArticle, false, '', '', 0);
 			if(!empty($tmpArticle['liveshoppingData'])) {
 				foreach ($tmpArticle['liveshoppingData'] as $key => $liveshopping) {
-					//Überprüfung, ob eine Artikelbeschränkung vorliegt
+					//Überprüfung, ob eine Artikelbeschränkung vorliegt // Fix #5526 / Thanks Holger
 					if(!empty($liveshopping['sLiveStints'])) {
-						if(!in_array($tmpArticle['ordernumber'], $liveshopping['sLiveStints'])){
+						if(!in_array($tmpArticle['ordernumber'], $liveshopping['sLiveStints']) &&
+						!in_array( strtolower($tmpArticle['ordernumber']), $liveshopping['sLiveStints'])
+						){
 							unset($tmpArticle['liveshoppingData'][$key]);
 						}
 					}
