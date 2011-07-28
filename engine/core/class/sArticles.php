@@ -486,8 +486,13 @@ class sArticles
 		}
 
 		$ret = array();
-
+		$searchRestrictArticles = "";
 		if (empty($mode)){
+			$searchRestrictArticles = "AND (
+				SELECT articleID
+				FROM s_articles_avoid_customergroups
+				WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+			) IS NULL ";
 			$sSearch = explode(" ",$sSearch);
 			if (!is_array($sSearch)){
 				$sSearch = array(0=>$sSearch);
@@ -529,6 +534,7 @@ class sArticles
 			unset($sql_search_fields);
 			$sql_search_fields = "OR a.supplierID = $search";
 			$sql_search[0] = "";
+			
 		}elseif($mode=="newest"){
 			unset($sql_add_join);
 			unset($sql_add_where);
@@ -566,16 +572,15 @@ class sArticles
 			AND s.id=a.supplierID
 			AND a.active=1 AND a.mode = 0
 			AND a.id = d.articleID
+			$searchRestrictArticles
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
 
 		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
-
+		
         $sql = "SELECT FOUND_ROWS()";
         $sCountArticles = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
-
-		if (count($ret["sArticles"]) == 0) $sCountArticles = 0; // Fix Problem with Select Found Rows returning 1 even if no articles were found
 
 		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=="newest"){ // Fix #5499
 			$sCountArticles = $limitNew;
