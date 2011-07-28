@@ -242,6 +242,7 @@ hr {background:#ddd;color:#ddd;clear:both;float:none;width:100%;height:.1em;marg
 .textright {text-align:right}
 .textleft {text-align:left}
 .displaynone {display:none;}
+.displayblock { display:block }
 .hide_script {display: none !important;}
 
 /*	HORIZONTAL LINES

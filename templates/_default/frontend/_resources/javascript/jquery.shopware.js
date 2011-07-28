@@ -186,12 +186,18 @@ jQuery(document).ready(function($) {
 				return false;
 			});
 		}
+
+		$('.account .password').hide();
+		$('.account .email').hide();
 		
 		//Change password account
-		if(!$('.account .error').length) {
-			$('.account .password').hide();
-			$('.account .email').hide();
+		if($('.account .password').hasClass('displayblock')) {
+			$('.account .password').show();
 		}
+		if($('.account .email').hasClass('displayblock')) {
+			$('.account .password').show();
+		}
+
 		$('.account .change_password').bind('click', function(event) {
 			event.preventDefault();
 			$('.account .password').slideToggle('fast').toggleClass('active');
@@ -300,23 +306,34 @@ jQuery(document).ready(function($) {
 		this.each(function() {
 			var $me = $(this);
 
-			$me.bind('blur', function() {
+			$me.parents('form').find(':submit').attr('disabled', 'disabled').css('opacity', .5);
 
-				/** Check length */
-				if(!$me.val().length) {
-					$.accountValidation.setError($me);
+			var timeout = null;
+			$me.bind('keyup', function() {
+
+				if(timeout !== null) {
+					clearTimeout(timeout);
+					timeout = null;
 				}
 
-				if($me.attr('id') == 'newpwdrepeat') {
+				/** Check length */
+				timeout = window.setTimeout(function() {
+				var error = false;
+				if(!$me.val().length) {
+					$.accountValidation.setError($me);
+					error = true;
+				}
+
+				if($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat' && !error) {
 					$.accountValidation.checkPasswd($me);
 				}
 
-				if($me.attr('id') == 'neweailrepeat') {
+				if($me.attr('id') == 'neweailrepeat' && !error) {
 					$.accountValidation.checkEmail($me);
 				}
+				}, 500);
 			});
 		})
-
 		return this;
 	}
 
@@ -331,12 +348,18 @@ jQuery(document).ready(function($) {
 		/** Set error cls */
 		setError: function($el) {
 			$el.removeClass($.accountValidation.config.successCls).addClass($.accountValidation.config.errorCls);
+
 			return $el;
 		},
 
 		/** Set success cls */
 		setSuccess: function($el) {
 			$el.removeClass($.accountValidation.config.errorCls).addClass($.accountValidation.config.successCls);
+
+			if(!$el.val()) {
+				$.accountValidation.setError($el)
+			}
+
 			return $el;
 		},
 
@@ -387,6 +410,8 @@ jQuery(document).ready(function($) {
 					if(!result.success) {
 						if(!$.isEmptyObject(result.error_flags)) {
 
+							$(document.body).find('#ajax-validate-error').remove();
+
 							// Set error cls
 							$.each(result.error_flags, function(key, el) {
 								$.accountValidation.setError($('input[name=' + key + ']'));
@@ -396,7 +421,7 @@ jQuery(document).ready(function($) {
 							var first = $form.find(':input:first');
 
 							// Output error message
-							$('<div>', {
+							var err = $('<div>', {
 								'class': 'error',
 								'id': 'ajax-validate-error',
 								'html': result.error_messages[0],
@@ -410,11 +435,15 @@ jQuery(document).ready(function($) {
 								}
 							}).prependTo($(document.body)).fadeIn('fast');
 
+							window.setTimeout(function() {
+								err.remove();
+							}, 4000);
+
 							$form.find(':submit').attr('disabled', 'disabled').css('opacity', .5);
 						}
 					}  else {
 						$form.find(':password, :text').each(function(i, el) {
-							$(document.body).find('.error:first').remove();
+							$(document.body).find('#ajax-validate-error').remove();
 							$form.find(':submit').removeAttr('disabled').css('opacity', 1);
 							$.accountValidation.setSuccess($(el));
 						})

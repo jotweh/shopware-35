@@ -73,7 +73,7 @@
 	{/block}
 	
 	{* Set new password *}
-	 <div class="grid_16 first password">
+	 <div class="grid_16 first password{if $sErrorFlag.password || $sErrorFlag.passwordConfirmation} displayblock{/if}">
 	 	<div class="doublespace">&nbsp;</div>
 		{block name="frontend_account_index_change_password"}
 		<form method="post" action="{url action=saveAccount}">
@@ -98,7 +98,7 @@
 	</div>
 	
 	{* Edit mail address *}
-	<div class="grid_16 first email">
+	<div class="grid_16 first email{if $sErrorFlag.email || $sErrorFlag.emailConfirmation} displayblock{/if}">
 	 	<div class="doublespace">&nbsp;</div>
 		{block name="frontend_account_index_change_email"}
 		<form method="post" action="{url action=saveAccount}">
@@ -114,7 +114,7 @@
 	    		{* Repeat new Password *}
 	    		<p>
 	    			<label for="newmailrepeat">{se name="AccountLabelMail"}{/se}*:</label>
-	    			<input name="emailConfirmation" id="neweailrepeat" type="text" class="text {if $sErrorFlag.passwordConfirmation}instyle_error{/if}" />
+	    			<input name="emailConfirmation" id="neweailrepeat" type="text" class="text {if $sErrorFlag.emailConfirmation}instyle_error{/if}" />
 	    		</p>
 	    		
 	    		<input type="submit" value="{s name='AccountLinkChangeMail'}{/s}" class="button-right small_right" />
