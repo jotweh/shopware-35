@@ -134,7 +134,8 @@ class sShopwareImport
 			$article['changed'] = $this->sDB->DBTimeStamp($article['changed']);
 		else 
 			unset($article['changed']);
-	
+		if(isset($article['crossbundlelook']))
+			$article['crossbundlelook'] = empty($article['crossbundlelook']) ? 0 : 1; 
 		### ELEMENTS OF s_articles_details ###		
 		if(isset($article["suppliernumber"]))
 			$article['suppliernumber'] = $this->sDB->qstr($this->sValDescription($article['suppliernumber']));
@@ -324,6 +325,7 @@ class sShopwareImport
 			"active",
 			"shippingfree",
 			"notification",
+			"crossbundlelook",
 			"releasedate",
 			"taxID",
 			"pseudosales",
@@ -2044,7 +2046,63 @@ class sShopwareImport
 		$this->sDB->Execute($sql,array($article));
 		return true;
 	}
-	
+	/**
+	* Einfügen von Zugriffs Beschränkunden auf einen Artikeln
+	*
+	* @param int $article ID des Artikels (s_articles.id)
+	* @param array $nopermissiongroupIDs IDs der Kundengruppen keine Zugriff auf $article haben sollen [x,y,z]
+	* @access public
+	* @return
+	*
+	* @author Holger
+	*/
+	function sArticlePermissions ($article, $nopermissiongroupIDs)
+	{
+		$articleID = $this->sGetArticleID($article);
+		if(empty($articleID))
+			return false;
+
+		$this->sDeleteArticlePermissions(array("articleID"=>$articleID));
+
+		if(empty($nopermissiongroupIDs)||!is_array($nopermissiongroupIDs))
+			return true;
+
+		foreach ($nopermissiongroupIDs as $nopermissiongroupID)
+		{
+			if(empty($nopermissiongroupID)) continue;
+			$nopermissiongroupID = $this->sDB->qstr($nopermissiongroupID);
+			$sql = "
+			INSERT INTO s_articles_avoid_customergroups (articleID, customergroupID)
+			VALUES ($articleID, $nopermissiongroupID)
+			";
+			$this->sDB->Execute($sql);
+		}
+		return true;
+	}
+
+	/**
+	* Löschen aller bestehenden Zugriffs Beschränkungen eines Artikels
+	*
+	* @param int $article ID des Artikels (s_articles.id)
+	* @access public
+	* @return
+	*
+	* @author Holger
+	*/
+	function sDeleteArticlePermissions ($article)
+	{
+		if(!$article = $this->sGetArticleID($article))
+		return false;
+
+		$sql = '
+		DELETE FROM
+		s_articles_avoid_customergroups
+		WHERE articleID=?
+		';
+		$this->sDB->Execute($sql,array($article));
+		
+		return true;
+	}
 	/**
 	 * Einfügen von Cross-Selling Zuordnungen zwischen Artikeln
 	 * 
@@ -2074,6 +2132,9 @@ class sShopwareImport
 		}
    		return true;
 	}
+
+
+	
 	
 	/**
 	 * Löschen aller bestehenden Cross-Selling Zuordnungen eines Artikels
@@ -2434,6 +2495,7 @@ class sShopwareImport
 			$this->sDeleteArticleConfigurator($article);
 			$this->sDeleteArticleDownloads($article);
 			$this->sDeleteArticleLinks($article);
+			$this->sDeleteArticlePermissions($article);
 			
 			$sql = "DELETE FROM s_articles WHERE id = {$article['articleID']}";
 			$this->sDB->Execute($sql);
@@ -2461,7 +2523,8 @@ class sShopwareImport
 				"s_articles_groups_accessories_option",
 				"s_articles_groups_accessories",
 				"s_emarketing_lastarticles",
-				"s_articles_translations"
+				"s_articles_translations",
+				"s_articles_avoid_customergroups"
 			);
 			foreach ($delete_tables as $delete_table) {
 				$sql = "DELETE FROM $delete_table WHERE articleID={$article['articleID']}";
@@ -2607,7 +2670,8 @@ class sShopwareImport
 			"s_filter_values",
 			"s_articles_groups_settings",
 			"s_filter_values",
-			"s_core_rewrite_urls"
+			"s_core_rewrite_urls",
+			"s_articles_avoid_customergroups"
 		);
 		foreach($tabellen as $tabelle) {
 			$this->sDB->Execute("TRUNCATE `$tabelle`;");
