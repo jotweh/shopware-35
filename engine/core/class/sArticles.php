@@ -575,6 +575,8 @@ class sArticles
         $sql = "SELECT FOUND_ROWS()";
         $sCountArticles = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
 
+		if (count($ret["sArticles"]) == 0) $sCountArticles = 0; // Fix Problem with Select Found Rows returning 1 even if no articles were found
+
 		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=="newest"){ // Fix #5499
 			$sCountArticles = $limitNew;
 		}
