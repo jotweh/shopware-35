@@ -383,6 +383,11 @@ class sShopwareExport
         }
         return $categories;
 	}
+
+	/**
+	 * Exportiert alle hinterlegten Hersteller
+	 * @return
+	 */
 	function sSuppliers ()
 	{
 		$sql = "
@@ -614,7 +619,9 @@ class sShopwareExport
 				`t`.`id` = `d`.`taxID`
 			WHERE
 				({$order['where']})
-		";
+			ORDER BY `orderdetailsID` ASC
+		"; // Fix #5830 backported from github
+		
 		$rows = $this->sDB->GetAll($sql);
 		if(empty($rows)||!is_array($rows))
 			return false;
@@ -699,8 +706,10 @@ class sShopwareExport
 				`s`.`text5` AS `shipping_text5`,
 				`s`.`text6` AS `shipping_text6`,
 				`u`.*,
-       			ub.birthday
-			FROM 
+       			ub.birthday,
+       			`g`.`id` AS `preisgruppe`,
+       			`g`.`tax` AS `billing_net`
+			FROM
 				`s_order_billingaddress` as `b`
 			LEFT JOIN `s_order_shippingaddress` as `s`
 			ON `s`.`orderID` = `b`.`orderID`
@@ -712,9 +721,11 @@ class sShopwareExport
 			ON `bc`.`id` = `b`.`countryID`
 			LEFT JOIN `s_core_countries` as `sc`
 			ON `sc`.`id` = `s`.`countryID`
+			LEFT JOIN `s_core_customergroups` as `g`
+      		ON `u`.`customergroup` = `g`.`groupkey`
 			WHERE
 				$where
-		";
+		";  // Fix #5830 backported from github
 		
 		$rows = $this->sDB->GetAll($sql);
 		if(empty($rows)||!is_array($rows)||!count($rows))
@@ -891,7 +902,12 @@ class sShopwareExport
 		}
 		return round($money_str,2);
 	}
-	
+
+	/**
+	 * Exportiert Kunden - falls keine ID definiert ist ($user) - alle!
+	 * @param int $user
+	 * @return
+	 */
 	function sCustomers ($user=0)
 	{
 		if(!empty($user)&&is_int($user))
