@@ -98,7 +98,8 @@ class	sMarketing
 				s_articles_details d2
 			WHERE p.articleID=d2.ordernumber
 			AND d2.articleID=a.id
-			AND (p.subshopID = ? OR p.subshopID = 0) 
+			AND (p.subshopID = ? OR p.subshopID = 0)
+			ORDER BY p.startprice ASC
 		";
 		
 		$premiums = $this->sSYSTEM->sDB_CONNECTION->GetAll($sql,array($this->sSYSTEM->sSubShop["id"]));
