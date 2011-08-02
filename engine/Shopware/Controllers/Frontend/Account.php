@@ -1,13 +1,31 @@
 <?php
+/**
+ * Account controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 {
+    /**
+     * @var sAdmin
+     */
 	protected $admin;
 	
+	/**
+	 * Init controller method
+	 */
 	public function init()
 	{
 		$this->admin = Shopware()->Modules()->Admin();
 	}
 	
+	/**
+	 * Pre dispatch method
+	 */
 	public function preDispatch()
 	{
 		if(!in_array($this->Request()->getActionName(), array('login', 'logout', 'password', 'ajax_login', 'ajax_logout'))
@@ -18,6 +36,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->View()->sUserData = $this->admin->sGetUserData();
 	}
 	
+	/**
+	 * Index action method
+	 * 
+	 * Read orders and notes
+	 */
 	public function indexAction()
 	{
 		$this->View()->sOrders = $this->admin->sGetOpenOrderData();
@@ -27,6 +50,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Billing action method
+	 * 
+	 * Read billing address data
+	 */
 	public function billingAction()
 	{
 		$this->View()->sBillingPreviously = $this->admin->sGetPreviousAddresses('billing');
@@ -51,6 +79,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Shipping action method
+	 * 
+	 * Read shipping address data
+	 */
 	public function shippingAction()
 	{
 		$this->View()->sShippingPreviously = $this->admin->sGetPreviousAddresses('shipping');
@@ -66,6 +99,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Payment action method
+	 * 
+	 * Read and change payment mean and payment data
+	 */
 	public function paymentAction()
 	{
 		$this->View()->sPaymentMeans = $this->admin->sGetPaymentMeans();
@@ -91,16 +129,32 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	
+	/**
+	 * Orders action method
+	 * 
+	 * Read last orders
+	 */
 	public function ordersAction()
 	{
 		$this->View()->sOpenOrders = $this->admin->sGetOpenOrderData();
 	}
 	
+	/**
+	 * Downloads action method
+	 * 
+	 * Read last downloads
+	 */
 	public function downloadsAction()
 	{
 		$this->View()->sDownloads = $this->admin->sGetDownloads();
 	}
 	
+	/**
+	 * Logout action method
+	 * 
+	 * Logout account and delete session
+	 */
 	public function logoutAction()
 	{
 		Shopware()->Session()->unsetAll();
@@ -109,6 +163,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		Shopware()->Modules()->Admin()->sGetShippingcosts();
 	}
 	
+	/**
+	 * Login action method
+	 * 
+	 * Login account and show login erros
+	 */
 	public function loginAction()
 	{
 		$this->View()->sTarget = $this->Request()->getParam('sTarget');
@@ -135,6 +194,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Save billing action
+	 *
+	 * Save billing address data
+	 */
 	public function saveBillingAction()
 	{
 		if($this->Request()->isPost())
@@ -212,6 +276,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->redirect(array('controller'=>$target, 'action'=>'index', 'success'=>'billing'));
 	}
 	
+	/**
+	 * Save shipping action
+	 *
+	 * Save shipping address data
+	 */
 	public function saveShippingAction()
 	{
 		if($this->Request()->isPost())
@@ -282,6 +351,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->redirect(array('controller'=>$target, 'action'=>'index', 'success'=>'shipping'));
 	}
 	
+	/**
+	 * Save shipping action
+	 *
+	 * Save shipping address data
+	 */
 	public function savePaymentAction()
 	{
 		if($this->Request()->isPost())
@@ -323,6 +397,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->redirect(array('controller'=>$target, 'action'=>'index', 'success'=>'payment'));
 	}
 	
+	/**
+	 * Save newsletter action
+	 *
+	 * Save newsletter address data
+	 */
 	public function saveNewsletterAction()
 	{
 		if($this->Request()->isPost())
@@ -334,6 +413,12 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->forward('index');
 	}
 	
+	/**
+	 * Save account action
+	 *
+	 * Save account address data and create error messages
+	 *
+	 */
 	public function saveAccountAction()
 	{
 		if($this->Request()->isPost())
@@ -355,6 +440,11 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->forward('index');
 	}
 	
+	/**
+	 * Download action
+	 *
+	 * Read and test download file 
+	 */
 	public function downloadAction()
 	{		
 		$esdID = $this->request->getParam('esdID');
@@ -403,53 +493,62 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$this->redirect($file);
 	}
 	
+	/**
+	 * Read saved billing address
+	 */
 	public function selectBillingAction()
 	{
 		$this->View()->sTarget = $this->Request()->getParam('sTarget', $this->Request()->getControllerName());
 		$this->View()->sBillingAddresses = $this->admin->sGetPreviousAddresses('billing');
 	}
 	
+	/**
+	 * Read saved shipping address
+	 */
 	public function selectShippingAction()
 	{
 		$this->View()->sTarget = $this->Request()->getParam('sTarget', $this->Request()->getControllerName());
 		$this->View()->sShippingAddresses = $this->admin->sGetPreviousAddresses('shipping');
 	}
 	
+	/**
+	 * Send new account password
+	 */
 	public function passwordAction()
 	{
 		$this->View()->sTarget = $this->Request()->getParam('sTarget');
 
-		if($this->Request()->isPost())
-		{
+		if($this->Request()->isPost()) {
 			$checkUser = $this->sendPassword($this->Request()->getParam('email'));
 			
-			if (!empty($checkUser['sErrorMessages']))
-			{
+			if (!empty($checkUser['sErrorMessages'])) {
 				$this->View()->sFormData = $this->Request()->getPost();
 				$this->View()->sErrorFlag = $checkUser['sErrorFlag'];
 				$this->View()->sErrorMessages = $checkUser['sErrorMessages'];
-			}
-			else 
-			{
+			} else {
 				$this->View()->sSuccess = true;
 			}
 		}
 	}
 	
+	/**
+	 * Send new password by email address
+	 *
+	 * @param string $email
+	 * @return array
+	 */
 	public function sendPassword($email)
 	{
-		if (empty($email))
-		{
+		if (empty($email)) {
 			return array('sErrorMessages'=>array(Shopware()->Config()->Snippets()->get('sErrorForgotMail')));
 		}
 		
 		$userID = Shopware()->System()->sMODULES['sAdmin']->sGetUserByMail($email);
-		if (empty($userID))
-		{
+		if (empty($userID)) {
 			return array('sErrorMessages'=>array(Shopware()->Config()->Snippets()->get('sErrorForgotMailUnknown')));
 		}
 		
-		$password = substr(md5(uniqid(rand())),0,6);
+		$password = substr(md5(uniqid(rand())), 0, 6);
 		$md5_password = md5($password);
 		
 		$sql = 'UPDATE s_user SET password=? WHERE id=?';
@@ -459,8 +558,8 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		
 		$template['content'] = str_replace('{sMail}', $email, $template['content']);
 		$template['content'] = str_replace('{sPassword}', $password, $template['content']);
+		$template['content'] = str_replace('{sShopURL}', 'http://'.Shopware()->Config()->BasePath, $template['content']);
 		$template['subject'] = str_replace('{sShop}', Shopware()->Config()->ShopName, $template['subject']);	
-		$template['content'] = str_replace('{sShopURL}','http://'.Shopware()->Config()->BasePath, $template['content']);
 		
 		$template['contentHTML'] = str_replace('{sMail}', $email, $template['contentHTML']);
 		$template['contentHTML'] = str_replace('{sPassword}', $password, $template['contentHTML']);
@@ -492,47 +591,50 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		}
 	}
 	
+	/**
+	 * Login account by ajax request
+	 */
 	public function ajaxLoginAction()
 	{
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
 		
-		if($this->admin->sCheckUser())
-		{
+		if($this->admin->sCheckUser()) {
 			return $this->View()->setTemplate();
+		}		
+				
+		if(!$this->Request()->getParam('accountmode')) {
+			return;
 		}
-				
-		if($this->Request()->getParam('accountmode'))
-		{
-			if (empty(Shopware()->Session()->sRegister))
-			{
-				Shopware()->Session()->sRegister = new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS);
-			}
-				
-			if($this->Request()->getParam('accountmode')==0||$this->Request()->getParam('accountmode')==1)
-			{
-				Shopware()->Session()->sRegister['auth']['email'] = $this->Request()->getParam('email');
-				Shopware()->Session()->sRegister['auth']['accountmode'] = (int) $this->Request()->getParam('accountmode');
-				
-				return $this->View()->setTemplate();
-			}
-			else
-			{
-				$this->admin->sSYSTEM->_POST = $this->Request()->getPost()+$this->Request()->getQuery();
-				$checkData = $this->admin->sLogin();
-				if (empty($checkData['sErrorMessages']))
-				{
-					return $this->View()->setTemplate();
-				}
-				else
-				{
-					$this->View()->sFormData = $this->Request()->getParam();
-					$this->View()->sErrorFlag = $checkData['sErrorFlag'];
-					$this->View()->sErrorMessages = $checkData['sErrorMessages'];
-				}
+		
+		if (empty(Shopware()->Session()->sRegister)) {
+			Shopware()->Session()->sRegister = new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS);
+		}
+		
+		$this->admin->sSYSTEM->_POST = array();
+		$this->admin->sSYSTEM->_POST['email'] = utf8_decode($this->Request()->getParam('email'));
+		$this->admin->sSYSTEM->_POST['password'] = utf8_decode($this->Request()->getParam('password'));
+
+		if($this->Request()->getParam('accountmode')==0 || $this->Request()->getParam('accountmode')==1) {
+			Shopware()->Session()->sRegister['auth']['email'] = $this->admin->sSYSTEM->_POST['email'];
+			Shopware()->Session()->sRegister['auth']['accountmode'] = (int) $this->Request()->getParam('accountmode');
+			
+			$this->View()->setTemplate();
+		} else {
+			$checkData = $this->admin->sLogin();
+			
+			if (empty($checkData['sErrorMessages'])) {
+				$this->View()->setTemplate();
+			} else {
+				$this->View()->sFormData = $this->Request()->getParam();
+				$this->View()->sErrorFlag = $checkData['sErrorFlag'];
+				$this->View()->sErrorMessages = $checkData['sErrorMessages'];
 			}
 		}
 	}
 	
+	/**
+	 * Logout account by ajax request
+	 */
 	public function ajaxLogoutAction()
 	{
 		Enlight()->Plugins()->Controller()->Json()->setPadding();
