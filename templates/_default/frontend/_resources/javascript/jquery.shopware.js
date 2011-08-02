@@ -1965,7 +1965,7 @@ jQuery.fn.liveSearch = function (conf) {
 				$('#article_notification').show();
 				var hideBasket = $('#notifyHideBasket').val();
 				hideBasket = ~~hideBasket;
-				console.log(hideBasket);
+				
 				if(hideBasket) {
 					$('#detailCartButton').hide();
 				}
