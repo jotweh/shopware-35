@@ -2860,11 +2860,10 @@ jQuery.fn.liveSearch = function (conf) {
         
         $('a.buynow').live('click', function (event) {
             event.preventDefault();
+
+			$.loadingIndicator.open();
             $.ajax({
                 'dataType': 'jsonp',
-                'beforeSend': function() {
-                	$.loadingIndicator.open();
-                },
                 'url': $(this).attr('href'),
                 'success': function (result) {
                 	$.loadingIndicator.close();
@@ -2880,13 +2879,12 @@ jQuery.fn.liveSearch = function (conf) {
         });
         $('.basketform').bind('submit', function (event) {
             event.preventDefault();
+			
+			$.loadingIndicator.open();
             $.ajax({
                 'data': $(this).serialize(),
                 'dataType': 'jsonp',
                 'url': $(this).attr('action'),
-                'beforeSend': function() {
-                	$.loadingIndicator.open();
-                },
                 'success': function(result) {
                 	
                 	$.loadingIndicator.close();
