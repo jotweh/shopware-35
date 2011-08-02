@@ -3,14 +3,14 @@
  * Shopware article management
  * 
  * @link http://www.shopware.de
- * @package core
- * @subpackage class
- * @copyright (C) Shopware AG 2002-2010
- * @version Shopware 3.5.0
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage CoreClass
  */
 class sArticles
 {
-
 	/**
      * Pointer to sSystem object
      * 
@@ -175,9 +175,8 @@ class sArticles
 	 * @access public
 	 * @return array
 	 */
-	public function sGetArticleProperties ($article,$filtergroupID){
-
-
+	public function sGetArticleProperties ($article,$filtergroupID)
+	{
 		$article = intval($article);
 		$filtergroupID = intval($filtergroupID);
 
@@ -186,18 +185,26 @@ class sArticles
 
 		// Read all assigned properties
 		$sql = "
-		SELECT fo.name, fo.id, value, st.objectdata AS nameTranslation
-		FROM
-		s_filter_relations AS fr,
-		s_filter_options AS fo
-		LEFT JOIN s_filter_values AS fv ON fv.groupID = $filtergroupID AND fv.optionID = fo.id AND fv.articleID = $article
-		LEFT JOIN s_core_translations AS st ON st.objecttype='propertyoption' AND st.objectkey=fv.optionID AND st.objectlanguage='$language'
-		WHERE 
-			fr.groupID = $filtergroupID
-		AND 
-			fr.optionID = fo.id
-		ORDER BY 
-			fr.position ASC
+			SELECT
+				fo.name, fo.id, value, st.objectdata AS nameTranslation
+			FROM
+				s_filter_relations AS fr,
+				s_filter_options AS fo
+				
+			LEFT JOIN s_filter_values AS fv
+			ON fv.groupID = $filtergroupID
+			AND fv.optionID = fo.id
+			AND fv.articleID = $article
+		
+			LEFT JOIN s_core_translations AS st
+			ON st.objecttype='propertyoption'
+			AND st.objectkey=fv.optionID
+			AND st.objectlanguage='$language'
+			
+			WHERE fr.groupID = $filtergroupID
+			AND fr.optionID = fo.id
+			
+			ORDER BY fr.position ASC
 		";
 
 		//die($sql);
@@ -1422,35 +1429,53 @@ class sArticles
 		}
 
 		$language = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["isocode"];
-
-		$additionalSorting =
+		
 		$sql = "
-			SELECT fv.optionID AS id, COUNT(*) AS countOptionValues, fo.name AS optionName, f.name AS groupName, fv.value AS optionValue,fv.id AS uniqueID,
-			st.objectdata AS optionNameTranslation, st2.objectdata AS groupNameTranslation,st3.objectdata AS articleTranslation
-			FROM s_articles_categories ac
-			INNER JOIN s_filter_values fv
-			INNER JOIN s_filter_options fo
-			INNER JOIN s_filter f
-			INNER JOIN s_articles a
+			SELECT
+				fv.optionID AS id, COUNT(*) AS countOptionValues,
+				fo.name AS optionName, f.name AS groupName, fv.value AS optionValue,
+				fv.id AS uniqueID,
+				st.objectdata AS optionNameTranslation,
+				st2.objectdata AS groupNameTranslation,
+				st3.objectdata AS articleTranslation
+			FROM
+				s_articles_categories ac,
+				s_filter_values fv
+			
+			LEFT JOIN s_core_translations AS st
+			ON st.objecttype='propertyoption'
+			AND st.objectkey=fv.optionID
+			AND st.objectlanguage='$language'
+			
+			LEFT JOIN s_core_translations AS st2
+			ON st2.objecttype='propertygroup'
+			AND st2.objectkey=fv.groupID
+			AND st2.objectlanguage='$language'
+			
+			LEFT JOIN s_core_translations AS st3
+			ON st3.objecttype='properties'
+			AND st3.objectkey=fv.articleID
+			AND st3.objectlanguage='$language'
+				
+			JOIN s_filter_options fo,
+				s_filter f,
+				s_articles a
+			
 			$addFilterSQL
-			LEFT JOIN s_core_translations AS st ON st.objecttype='propertyoption' AND st.objectkey=fo.id AND st.objectlanguage='$language'
-			LEFT JOIN s_core_translations AS st2 ON st2.objecttype='propertygroup' AND st2.objectkey=fv.groupID AND st2.objectlanguage='$language'
-			LEFT JOIN s_core_translations AS st3 ON st3.objecttype='properties' AND st3.objectkey=a.id AND st3.objectlanguage='$language'
+			
 			WHERE  ac.categoryID=$categoryID
 			AND a.id = ac.articleID
 			AND a.id = fv.articleID
 			AND a.filtergroupID = f.id
 			AND a.active =1
-			AND (
-					SELECT articleID 
-					FROM s_articles_avoid_customergroups 
-					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-			) IS NULL
+
 			AND a.changetime <= NOW()
 			AND fv.optionID = fo.id
 			AND fo.filterable = 1
 			AND fv.groupID = f.id
+			
 			$addFilterWhere
+		
 			GROUP BY fv.optionID, fv.value
 			ORDER BY fo.name ASC, IF(f.sortmode=1, TRIM(REPLACE(fv.value,',','.'))+0, 0), IF(f.sortmode=2, COUNT(*) , 0) DESC, fv.value
 		";
@@ -2110,11 +2135,11 @@ class sArticles
 			LEFT JOIN s_core_multilanguage cm
 			ON  cm.id=at.languageID
 			LEFT JOIN s_core_translations ct
-			ON ct.objectkey=CONVERT(at.articleID USING latin1)
+			ON ct.objectkey=at.articleID
 			AND ct.objectlanguage=cm.isocode
 			AND ct.objecttype='article'
 			LEFT JOIN s_core_translations ct2
-			ON ct2.objectkey=CONVERT(at.articleID USING latin1)
+			ON ct2.objectkey=at.articleID
 			AND ct2.objectlanguage=cm.fallback
 			AND ct2.objecttype='article'
 			WHERE ct.id IS NULL AND ct2.id IS NULL
