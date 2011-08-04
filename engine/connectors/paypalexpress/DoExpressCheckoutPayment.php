@@ -140,8 +140,10 @@ require_once 'CallerService.php';
 	/*Shopware UserID*/
 	$shopwareUID= $userData["billingaddress"]["customernumber"];; 	
 	
-	$param = "&BUTTONSOURCE=Shopware_Cart_EC_DE&DESC=sOrderID-".$transId."&INVNUM=".$invnum."&NOTIFYURL=".$notifyURL.$params;
-	
+	//$param = "&BUTTONSOURCE=Shopware_Cart_EC_DE&DESC=sOrderID-".$transId."&INVNUM=".$invnum."&NOTIFYURL=".$notifyURL.$params;
+	// #5825 - Optimize transaction subject message to allow easier mapping in erp programs @Thanks to holger
+	$param = "&BUTTONSOURCE=Shopware_Cart_EC_DE&DESC=sOrderID+".$transId."&INVNUM=".$invnum."&NOTIFYURL=".$notifyURL.$params;
+
 	$nvpstr='&TOKEN='.$token.'&PAYERID='.$payerID.'&PAYMENTACTION='.$paymentType.'&CURRENCYCODE='.$currCodeType.$param;
 	
 	 /* Make the call to PayPal to finalize payment
