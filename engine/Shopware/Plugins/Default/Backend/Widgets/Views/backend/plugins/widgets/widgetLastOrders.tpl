@@ -49,16 +49,16 @@ Ext.define('Swag.Widget.{$item}',
             columnLines: true,
             columns: [{
                 text   : 'Datum',
-                width: 150,
+                width: 95,
                 dataIndex: 'ordertimeFormated'
             },{
                 text   : 'Nr',
-                width: 90,
+                width: 40,
                 sortable : true,
                 dataIndex: 'ordernumber'
             },{
                 text   : 'Betrag',
-                width: 90,
+                width: 50,
                 sortable : true,
                 dataIndex: 'invoice_amount'
             },

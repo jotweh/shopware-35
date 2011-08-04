@@ -131,8 +131,9 @@ class Shopware_Controllers_Backend_WidgetDataStore extends Enlight_Controller_Ac
 			throw new Enlight_Exception("Permission denied");
 		}
 		$this->View()->setTemplate();
+		// Fix #5828 - Change date-format of last edit to proper one  
 		$result = Shopware()->Db()->fetchAll("
-		SELECT id, name,changetime FROM s_articles WHERE changetime!='0000-00-00' ORDER BY changetime DESC LIMIT 20
+		SELECT id, name, changetime, DATE_FORMAT(changetime,'%d.%m.%Y %H:%i') AS changetimeFormated FROM s_articles WHERE changetime!='0000-00-00' ORDER BY changetime DESC LIMIT 20
 		");
 		foreach ($result as &$row){
 			$row["name"] = utf8_encode($row["name"]);

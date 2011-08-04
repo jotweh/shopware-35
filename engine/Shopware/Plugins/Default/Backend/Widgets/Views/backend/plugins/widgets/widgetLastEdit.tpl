@@ -17,7 +17,7 @@ Ext.define('Swag.Widget.{$item}',
 			fields: [
 				// set up the fields mapping into the xml doc
 				// The first needs mapping, the others are very basic
-				'id','changetime', 'name'
+				'id','changetimeFormated', 'name'
 			]
 	    });
 
@@ -47,8 +47,8 @@ Ext.define('Swag.Widget.{$item}',
             columnLines: true,
             columns: [{
                 text   : 'Datum',
-                width: 150,
-                dataIndex: 'changetime'
+                width: 100,
+                dataIndex: 'changetimeFormated'
             },{
                 text   : 'Artikel',
                 flex   : 1,
@@ -57,7 +57,7 @@ Ext.define('Swag.Widget.{$item}',
 			{
 				xtype:'actioncolumn',
 				text   : 'Optionen',
-				width:50,
+				width:25,
 				items: [{
 					icon: '{link file="backend/plugins/widgets/_resources/pencil.png"}',  // Use a URL in the icon config
 					tooltip: 'Edit',

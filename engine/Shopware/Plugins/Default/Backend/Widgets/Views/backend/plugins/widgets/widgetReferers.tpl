@@ -48,7 +48,7 @@ Ext.define('Swag.Widget.{$item}',
             columnLines: true,
             columns: [{
                 text   : 'Anzahl',
-                width: 50,
+                width: 40,
                 dataIndex: 'count'
             },{
                 text   : 'Referrer',
@@ -58,7 +58,7 @@ Ext.define('Swag.Widget.{$item}',
             },
 			{
 				xtype:'actioncolumn',
-				width:50,
+				width:25,
 				items: [{
 					icon: '{link file="backend/plugins/widgets/_resources/world_link.png"}',  // Use a URL in the icon config
 					tooltip: 'Edit',
