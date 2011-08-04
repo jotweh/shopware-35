@@ -70,7 +70,9 @@ $bookingId = substr(md5(uniqid(rand())),0,10);
 */
 $userData = $payment->sUser;
 
-$zweck1 = $userData["billingaddress"]["customernumber"]."-".$userData["billingaddress"]["firstname"]." ".$userData["billingaddress"]["lastname"];
+// #5827 - Optimize transaction subject message to allow easier mapping in erp programs @Thanks to holger
+$zweck1 = "sue ".$userData["billingaddress"]["customernumber"]." ".$userData["billingaddress"]["firstname"]." ".$userData["billingaddress"]["lastname"];
+
 $zweck1 = preg_replace("/[^a-zA-Z0-9 -]/","",$zweck1);
 $zweck2 = $bookingId;
 $language =  $payment->sSYSTEM->sLanguage;
