@@ -37,14 +37,16 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 	 */
 	public function preDispatch()
 	{
-		if(!isset($this->View()->register))
-		{
+		if(!isset($this->View()->register)) {
 			$this->View()->register = new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS);
 		}
 		
-		if(!isset($this->session['sRegister']))
-		{
+		if(!isset($this->session['sRegister'])) {
 			$this->session['sRegister'] = new ArrayObject(array(), ArrayObject::ARRAY_AS_PROPS);
+		}
+
+		if(in_array($this->Request()->getActionName(), array('ajax_validate_password', 'ajax_validate_billing', 'ajax_validate_email'))) {
+			Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 		}
 	}
 
@@ -542,13 +544,9 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 
 	/**
 	 * Checks if the given email isn't already registered
-	 *
-	 * @return void
 	 */
 	public function ajaxValidateEmailAction()
 	{
-		$this->View()->setTemplate(null);
-		
 		$error_flags = array();
 		$error_messages = array();
 		
@@ -586,19 +584,20 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 
 	/**
 	 * Checks if the two passwords matches
-	 * @return void
 	 */
 	public function ajaxValidatePasswordAction()
 	{
-		$this->View()->setTemplate(null);
-		
 		$error_messages = array();
 		$error_flags = array();
 		
 		if(empty($this->post['personal']['password'])) {
 			
-		} elseif (strlen($this->post['personal']['password']) < Shopware()->Config()->get('MinPassword')){
-			$error_messages[] = Shopware()->Snippets()->getSnippet()->get('RegisterPasswordLength', 'Bitte wählen Sie ein Passwort welches aus mindestens {config name="MinPassword"} Zeichen besteht.', true);
+		} elseif (strlen(utf8_decode($this->post['personal']['password'])) < Shopware()->Config()->get('MinPassword')){
+			$error_messages[] = Shopware()->Snippets()->getSnippet()->get(
+				'RegisterPasswordLength',
+				'Bitte wählen Sie ein Passwort, welches aus mindestens {config name="MinPassword"} Zeichen besteht.',
+				true
+			);
 			$error_flags['password'] = true;
 			if(!empty($this->post['personal']['passwordConfirmation'])) {
 				$error_flags['passwordConfirmation'] = true;
@@ -630,8 +629,6 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 	 */
 	public function ajaxValidateBillingAction()
 	{
-		$this->View()->setTemplate(null);
-		
 		$rules = array(
 			'salutation'=>array('required'=>1),
 			'company'=>array('required'=>0),
@@ -650,21 +647,17 @@ class Shopware_Controllers_Frontend_Register extends Enlight_Controller_Action
 		}
 		$this->admin->sSYSTEM->_POST = array_merge($this->post['personal'], $this->post['billing']);
 		$checkData = $this->admin->sValidateStep2($rules);
-		
-		
+
 		$error_messages = array();
 		$error_flags = array();
 		
-		if(!empty($checkData['sErrorMessages']))
-		{
-			foreach ($checkData['sErrorMessages'] as $error_message)
-			{
+		if(!empty($checkData['sErrorMessages'])) {
+			foreach ($checkData['sErrorMessages'] as $error_message) {
 				$error_messages[] = utf8_encode($error_message);
 			}
 		}
 		
-		foreach ($rules as $field => $rule)
-		{
+		foreach ($rules as $field => $rule) {
 			$error_flags[$field] = !empty($checkData['sErrorFlag'][$field]);
 		}
 		
