@@ -239,7 +239,7 @@ class sAdmin
 			$field_names = explode(',',$this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorFields']);
 			foreach ($fields as $key=>$field)
 			{
-				if(isset($response[$field])&&$response[$field]=='B')
+				if(isset($response[$field])&&($response[$field]=='B'||$response[$field]=='D'))
 				{
 					$name = isset($field_names[$key]) ? $field_names[$key] : $field;
 					$result[] = sprintf($this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorField'], $name);
