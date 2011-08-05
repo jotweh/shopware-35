@@ -1,6 +1,18 @@
 <?php
+/**
+ * Product detail controller
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 {	
+	/**
+	 * Pre dispatch method
+	 */
 	public function preDispatch()
 	{
 		return;
@@ -19,11 +31,21 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		));
 	}
 	
+	/**
+	 * Error action method
+	 * 
+	 * Read similar products
+	 */
 	public function errorAction()
 	{
 		$this->View()->sRelatedArticles = Shopware()->Modules()->Marketing()->sGetSimilarArticles($this->Request()->sArticle, 4);
 	}
 	
+	/**
+	 * Index action method
+	 * 
+	 * Read product details
+	 */
 	public function indexAction()
 	{
 		$id = (int) $this->Request()->sArticle;
@@ -35,8 +57,7 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		$this->view->assign('sErrorFlag', isset($this->view->sErrorFlag) ? $this->view->sErrorFlag : array(), true);
 		$this->view->assign('sFormData', isset($this->view->sFormData) ? $this->view->sFormData : array(), true);
 						
-		if(!$this->view->isCached())
-		{
+		if(!$this->view->isCached()) {
 			$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 			if (empty($article) || empty($article["articleName"])) {
 				return $this->forward('error');
@@ -81,12 +102,17 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		}
 		
 		if(!empty($article['template'])) {
-			$this->View()->loadTemplate('frontend/detail/'.$article['template']);
+			$this->View()->loadTemplate('frontend/detail/' . $article['template']);
 		} elseif(!empty($article['mode'])) {
 			$this->View()->loadTemplate('frontend/blog/detail.tpl');
 		}
 	}
 	
+	/**
+	 * Rating action method
+	 * 
+	 * Save an check product rating
+	 */
 	public function ratingAction()
 	{
 		$id = (int) $this->Request()->sArticle;
@@ -101,10 +127,10 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		
 		$voteConfirmed = false;
 		
-		if (!empty($this->request()->sConfirmation)){
+		if ($hash = $this->Request()->sConfirmation){
 			$getVote = Shopware()->Db()->fetchRow('
-			SELECT * FROM s_core_optin WHERE hash = ?
-			',array($this->request()->sConfirmation));
+				SELECT * FROM s_core_optin WHERE hash = ?
+			', array($hash));
 			if (!empty($getVote['data'])){
 				Shopware()->System()->_POST = unserialize($getVote['data']);
 				$voteConfirmed = true;
@@ -136,19 +162,24 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		}
 		$validator = new Zend_Validate_EmailAddress();
 
-		if (!empty(Shopware()->Config()->sOPTINVOTE) && (empty(Shopware()->System()->_POST['sVoteMail']) || !$validator->isValid(Shopware()->System()->_POST['sVoteMail']))){
+		if (!empty(Shopware()->Config()->sOPTINVOTE)
+		  && (empty(Shopware()->System()->_POST['sVoteMail'])
+		  || !$validator->isValid(Shopware()->System()->_POST['sVoteMail']))) {
 			$sErrorFlag['sVoteMail'] = true;
 		}
 				
 		if (empty($sErrorFlag)) {
-			if (!empty(Shopware()->Config()->sOPTINVOTE) && !$voteConfirmed && empty(Shopware()->Session()->sUserId)){
+			if (!empty(Shopware()->Config()->sOPTINVOTE)
+			  && !$voteConfirmed&& empty(Shopware()->Session()->sUserId)) {
 			    $hash = md5(uniqid(rand()));
 			    
 			    $sql = '
-				    INSERT INTO s_core_optin (datum,hash,data)
+				    INSERT INTO s_core_optin (datum, hash, data)
 				    VALUES (NOW(), ?, ?)
 			    ';
-			    Shopware()->Db()->query($sql, array($hash, serialize(Shopware()->System()->_POST)));
+			    Shopware()->Db()->query($sql, array(
+			    	$hash, serialize(Shopware()->System()->_POST)
+			    ));
 			    
 				$mail = clone Shopware()->Mail();
 				$template = Shopware()->Config()->Templates->sOPTINVOTE;
@@ -174,7 +205,7 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 			    $mail->Body = str_replace('{$sConfirmLink}', $link, $mail->Body);
 			    $mail->Body = str_replace('{$sArticle.articleName}', $article, $mail->Body);
 				$mail->ClearAddresses();
-				$mail->AddAddress($this->request()->getParam('sVoteMail'), '');
+				$mail->AddAddress($this->Request()->getParam('sVoteMail'), '');
 				
 				$mail->Send();
 			} else {

@@ -267,7 +267,8 @@ class sArticles
 	 * @access public
 	 * @return null
 	 */
-	public function sSaveComment ($article){
+	public function sSaveComment ($article)
+	{
 		// Permit Injects
 
 		$this->sSYSTEM->_POST["sVoteName"] = strip_tags($this->sSYSTEM->_POST["sVoteName"]);
@@ -275,7 +276,9 @@ class sArticles
 		$this->sSYSTEM->_POST["sVoteComment"] = strip_tags($this->sSYSTEM->_POST["sVoteComment"]);
 		$this->sSYSTEM->_POST["sVoteStars"] = doubleval($this->sSYSTEM->_POST["sVoteStars"]);
 
-		if ($this->sSYSTEM->_POST["sVoteStars"] < 1 || $this->sSYSTEM->_POST["sVoteStars"] > 10) $this->sSYSTEM->_POST["sVoteStars"] = 0;
+		if ($this->sSYSTEM->_POST["sVoteStars"] < 1 || $this->sSYSTEM->_POST["sVoteStars"] > 10) {
+			$this->sSYSTEM->_POST["sVoteStars"] = 0;
+		}
 
 		$this->sSYSTEM->_POST["sVoteStars"] /= 2;
 
@@ -283,46 +286,49 @@ class sArticles
 
 		if ($this->sSYSTEM->sCONFIG['sVOTEUNLOCK']){
 			$active = 0;
-		}else {
+		} else {
 			$active = 1;
 		}
 
-		$sBADWORDS = array(
-		"sex",
-		"porn",
-		"viagra",
-		"url\=",
-		"src\=",
-		"link\=",
-		);
-		foreach ($sBADWORDS as $sBADWORD){
-			if (preg_match("/$sBADWORD/",strtolower($this->sSYSTEM->_POST["sVoteComment"]))){
-				return false;
-			}
+		$sBADWORDS = "#sex|porn|viagra|url\=|src\=|link\=#i";
+		if (preg_match($sBADWORDS, $this->sSYSTEM->_POST["sVoteComment"])) {
+			return false;
 		}
-
-		$data = array(
-		$article,
-		$this->sSYSTEM->_POST["sVoteName"],
-		$this->sSYSTEM->_POST["sVoteSummary"],
-		$this->sSYSTEM->_POST["sVoteComment"],
-		$this->sSYSTEM->_POST["sVoteStars"],
-		$datum,
-		$active
-		);
-		$sql = "
-		INSERT INTO s_articles_vote (articleID, name, headline, comment, points, datum, active)
-		VALUES (?,?,?,?,?,?,?)
-		";
-
-
-		$insertComment = $this->sSYSTEM->sDB_CONNECTION->Execute($sql,$data);
-
-		if ($insertComment){
-			unset($this->sSYSTEM->_POST);
-		}else {
-			$this->sSYSTEM->E_CORE_WARNING("sSaveComment #00","Could not save comment");
+		
+		if(!empty($this->sSYSTEM->_SESSION['sArticleCommentInserts'][$article])) {
+			$sql = '
+				DELETE FROM s_articles_vote WHERE id=?
+			';
+			$this->sSYSTEM->sDB_CONNECTION->Execute($sql, array(
+				$this->sSYSTEM->_SESSION['sArticleCommentInserts'][$article]
+			));
 		}
+		
+		$sql = '
+			INSERT INTO s_articles_vote (articleID, name, headline, comment, points, datum, active)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
+		';
+		$insertComment = $this->sSYSTEM->sDB_CONNECTION->Execute($sql, array(
+			$article,
+			$this->sSYSTEM->_POST["sVoteName"],
+			$this->sSYSTEM->_POST["sVoteSummary"],
+			$this->sSYSTEM->_POST["sVoteComment"],
+			$this->sSYSTEM->_POST["sVoteStars"],
+			$datum,
+			$active
+		));
+		if(empty($insertComment)) {
+			$this->sSYSTEM->E_CORE_WARNING("sSaveComment #00", "Could not save comment");
+			return false;
+		}
+		
+		$insertId = $this->sSYSTEM->sDB_CONNECTION->Insert_ID();
+		if(!isset($this->sSYSTEM->_SESSION['sArticleCommentInserts'])) {
+			$this->sSYSTEM->_SESSION['sArticleCommentInserts'] = new ArrayObject();
+		}
+		$this->sSYSTEM->_SESSION['sArticleCommentInserts'][$article] = $insertId;
+
+		unset($this->sSYSTEM->_POST);
 	}
 
 	/**
