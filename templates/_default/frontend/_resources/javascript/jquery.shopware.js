@@ -308,32 +308,48 @@ jQuery(document).ready(function($) {
 
 			$me.parents('form').find(':submit').attr('disabled', 'disabled').css('opacity', .5);
 
-			var timeout = null;
-			$me.bind('keyup', function() {
+			//var timeout = null;
 
+			$me.bind('keyup', function() {
+				if($me.attr('id') == 'newpwdrepeat' && $me.val().length == $('#newpwd').val().length) {
+					$me.triggerHandler('blur');
+				}
+				if($me.attr('id') == 'neweailrepeat' && $me.val().length == $('#newmail').val().length) {
+					$me.triggerHandler('blur');
+				}
+			});
+
+			$me.bind('blur', function() {
+
+				/*
 				if(timeout !== null) {
 					clearTimeout(timeout);
 					timeout = null;
 				}
+				*/
 
 				/** Check length */
+				/*
 				timeout = window.setTimeout(function() {
-				var error = false;
-				if(!$me.val().length) {
-					$.accountValidation.setError($me);
-					error = true;
-				}
+				*/
+					var error = false;
+					if(!$me.val().length) {
+						//$.accountValidation.setError($me);
+						error = true;
+					}
 
-				if($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat' && !error) {
-					$.accountValidation.checkPasswd($me);
-				}
+					if(($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat') && !error) {
+						$.accountValidation.checkPasswd($me);
+					}
 
-				if($me.attr('id') == 'neweailrepeat' && !error) {
-					$.accountValidation.checkEmail($me);
-				}
-				}, 500);
+					if(($me.attr('id') == 'neweailrepeat' || $me.attr('id') == 'newmail') && !error) {
+						$.accountValidation.checkEmail($me);
+					}
+				/*
+					}, 500);
+				*/
 			});
-		})
+		});
 		return this;
 	}
 
@@ -357,7 +373,7 @@ jQuery(document).ready(function($) {
 			$el.removeClass($.accountValidation.config.errorCls).addClass($.accountValidation.config.successCls);
 
 			if(!$el.val()) {
-				$.accountValidation.setError($el)
+				//$.accountValidation.setError($el)
 			}
 
 			return $el;
@@ -407,15 +423,22 @@ jQuery(document).ready(function($) {
 				'dataType': 'json',
 				'url': $.controller.ajax_validate,
 				'success': function(result) {
+
+					$.each(result.error_flags, function(key, val) {
+						if(val) {
+							$.accountValidation.setError($('input[name=' + key + ']'));
+						} else {
+							$.accountValidation.setSuccess($('input[name=' + key + ']'));
+						}
+					});
+
 					if(!result.success) {
 						if(!$.isEmptyObject(result.error_flags)) {
 
 							$(document.body).find('#ajax-validate-error').remove();
 
 							// Set error cls
-							$.each(result.error_flags, function(key, el) {
-								$.accountValidation.setError($('input[name=' + key + ']'));
-							});
+
 
 							// Get first element in form
 							var first = $form.find(':input:first');
@@ -445,7 +468,7 @@ jQuery(document).ready(function($) {
 						$form.find(':password, :text').each(function(i, el) {
 							$(document.body).find('#ajax-validate-error').remove();
 							$form.find(':submit').removeAttr('disabled').css('opacity', 1);
-							$.accountValidation.setSuccess($(el));
+							//$.accountValidation.setSuccess($(el));
 						})
 					}
 				}
