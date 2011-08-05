@@ -108,7 +108,7 @@
 		
 		
 		<div class="clear">&nbsp;</div>
-		
+		  
 		{* Detailinfo *}
 		{block name="frontend_detail_index_detail"}
 			<div id="detailinfo">

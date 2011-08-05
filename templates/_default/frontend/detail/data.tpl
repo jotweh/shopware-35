@@ -153,7 +153,7 @@
 				{/block}
 		{/if}
 	{/if}
-	
+	 
 	{block name="frontend_detail_data_liveshopping"}
 		{* Liveshopping *}
 		{if $sArticle.liveshoppingData.valid_to_ts}
