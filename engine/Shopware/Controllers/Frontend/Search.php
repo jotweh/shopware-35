@@ -5,6 +5,7 @@
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
  */
@@ -30,6 +31,10 @@ class Shopware_Controllers_Frontend_Search extends Enlight_Controller_Action
 	public function searchAction()
 	{
 		$search = urldecode($this->Request()->sSearch);
+		
+		if($location = $this->searchFuzzyCheck($search)) {
+			return $this->redirect($location);
+		}
 		
 		if ($this->Request()->sSearchMode=='supplier') {
 			$variables = Shopware()->Modules()->Articles()->sGetArticlesByName('a.name ASC', '', 'supplier', $search);
