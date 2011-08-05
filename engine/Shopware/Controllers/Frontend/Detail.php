@@ -5,6 +5,7 @@
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
  */
@@ -44,7 +45,7 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 	/**
 	 * Index action method
 	 * 
-	 * Read product details
+	 * Read the product details and loads on demand a custom template
 	 */
 	public function indexAction()
 	{
@@ -111,7 +112,7 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 	/**
 	 * Rating action method
 	 * 
-	 * Save an check product rating
+	 * Save and review the product rating
 	 */
 	public function ratingAction()
 	{
