@@ -163,30 +163,24 @@ class Shopware_Plugins_Backend_Auth_Bootstrap extends Shopware_Components_Plugin
 			// Ticket #5427 - Prevent brute force logins
 			// At successful login, reset failed login counter
 			Shopware()->Db()->query("
-				UPDATE s_core_auth SET lockeduntil = '',
+				UPDATE s_core_auth SET lockeduntil = '0000-00-00 00:00:00',
 				failedlogins = 0 WHERE username = ?
 			", array($user->username));
 		} elseif (!empty($username)) {
 			// Ticket #5427 - Prevent brute force logins
 			try {
-				// Get number of failed logins
-				$sql = 'SELECT failedlogins FROM s_core_auth WHERE username = ?';
-				$getFailedLogins = Shopware()->Db()->fetchOne($sql, array($username));
-				$addSQL = "";
-				// If failed logins greater then 5 - deactivate account for
-				// 30 seconds * count of failed logins
-				if ($getFailedLogins > 5){
-					$lockupTime = $getFailedLogins * 30;
-					$addSQL = "
-					, lockeduntil = (NOW() + $lockupTime)
-					";
-				}
-				// Update failed login counter
-				$sql = "UPDATE s_core_auth SET failedlogins = failedlogins + 1 $addSQL WHERE username = ?";
-				Shopware()->Db()->query($sql, array(
-					$username
-				));
-			} catch (PDOException $e){
+				$sql = "
+					UPDATE s_core_auth SET
+						failedlogins = failedlogins + 1,
+						lockeduntil = IF(
+							failedlogins > 4,
+							DATE_ADD(NOW(), INTERVAL (failedlogins + 1) * 30 SECOND),
+							'0000-00-00 00:00:00'
+						)
+					WHERE username = ?
+				";
+				Shopware()->Db()->query($sql, array($username));
+			} catch (Exception $e){
 				
 			}
 		}

@@ -1046,10 +1046,10 @@ class sAdmin
 				 $getUser = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql,array($password, $email));
 				 if ($getUser){
 				 	$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLoginActive'];
-				 }else {
+				 } else {
 					$getLockedUntilTime = Shopware()->Db()->fetchOne("
-					SELECT DATE_FORMAT(lockeduntil,'%d.%m.%Y %H:%i:%s') AS lockedUntil FROM s_user
-					WHERE email = ? AND lockeduntil > now()
+						SELECT 1 FROM s_user
+						WHERE email = ? AND lockeduntil > NOW()
 					",array($email));
 					if (!empty($getLockedUntilTime)){
 						$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorLoginLocked'];
@@ -1060,26 +1060,18 @@ class sAdmin
 
 				 // Ticket #5427 - Prevent brute force logins
 				 if (!empty($email)){
-					 // Get number of failed logins
-					$getFailedLogins = $this->sSYSTEM->sDB_CONNECTION->getOne("
-					SELECT failedlogins FROM s_user WHERE email = ?
-					",array($email));
-
-					$addSQL = "";
-					// If failed logins greater then 5 - deactivate account for
-					// 30 seconds * count of failed logins
-					if ($getFailedLogins > 5){
-						$lockupTime = $getFailedLogins * 30;
-						$addSQL = "
-						, lockeduntil = (now() + $lockupTime)
-						";
-					}
 					// Update failed login counter
-					Shopware()->Db()->query("
-					UPDATE s_user SET failedlogins = failedlogins + 1
-					$addSQL
-					WHERE email = ?
-					",array($email));
+					$sql = "
+						UPDATE s_user SET
+							failedlogins = failedlogins + 1,
+							lockeduntil = IF(
+								failedlogins > 4,
+								DATE_ADD(NOW(), INTERVAL (failedlogins + 1) * 30 SECOND),
+								'0000-00-00 00:00:00'
+							)
+						WHERE email = ?
+					";
+					Shopware()->Db()->query($sql, array($email));
 				 } // Ticket #5427 - Prevent brute force logins
 
 				 Enlight()->Events()->notify('Shopware_Modules_Admin_Login_Failure', array('subject'=>$this,'email'=>$email,'password'=>$password,'error'=>$sErrorMessages));

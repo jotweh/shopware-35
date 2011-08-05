@@ -551,7 +551,7 @@ class Shopware_Controllers_Frontend_Account extends Enlight_Controller_Action
 		$password = substr(md5(uniqid(rand())), 0, 6);
 		$md5_password = md5($password);
 		
-		$sql = 'UPDATE s_user SET password=? WHERE id=?';
+		$sql = "UPDATE s_user SET password=?, failedlogins=4, lockeduntil='lockeduntil' WHERE id=?";
 		Shopware()->Db()->query($sql, array($md5_password, $userID));
 		
 		$template = Shopware()->Config()->get('sTemplates')->sPASSWORD;
