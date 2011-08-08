@@ -14,8 +14,6 @@ echo "
 	";
 	die();
 }
-// *****************
-include("../../../vendor/phpmailer/class.phpmailer.php");
 
 if ($_GET["id"]){
 	$sql = "SELECT email, validation FROM s_user WHERE id=".$_GET["id"];
@@ -40,7 +38,7 @@ if ($_GET["id"]){
 			
 			// MAIL
 				
-			$mail = new PHPMailer;	
+			$mail = clone Shopware()->Mail();
 			$mail->From     = $emailData['frommail'];
 			$mail->FromName = $emailData['fromname'];
 			$mail->Subject  = $emailData['subject'];
@@ -77,7 +75,7 @@ if ($_GET["rejectid"]){
 			
 			// MAIL
 				
-			$mail = new PHPMailer;	
+			$mail = clone Shopware()->Mail();
 			$mail->From     = $emailData['frommail'];
 			$mail->FromName = $emailData['fromname'];
 			$mail->Subject  = $emailData['subject'];
