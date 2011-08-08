@@ -45,7 +45,8 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 	/**
 	 * Index action method
 	 * 
-	 * Read the product details and loads on demand a custom template
+	 * Read the product details and base rating form data
+	 * Loads on demand a custom template
 	 */
 	public function indexAction()
 	{
@@ -57,7 +58,15 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 		$this->view->assign('sAction', isset($this->view->sAction) ? $this->view->sAction : 'index', true);
 		$this->view->assign('sErrorFlag', isset($this->view->sErrorFlag) ? $this->view->sErrorFlag : array(), true);
 		$this->view->assign('sFormData', isset($this->view->sFormData) ? $this->view->sFormData : array(), true);
-						
+		
+		if (!empty(Shopware()->Session()->sUserId) &&  empty($this->Request()->sVoteName)){
+			$userData = Shopware()->Modules()->Admin()->sGetUserData();
+			$this->view->sFormData = array(
+				'sVoteMail' => $userData['additional']['user']['email'],
+				'sVoteName' => $userData['billingaddress']['firstname'].' '.$userData['billingaddress']['lastname']
+			);
+		}
+				
 		if(!$this->view->isCached()) {
 			$article = Shopware()->Modules()->Articles()->sGetArticleById($id);
 			if (empty($article) || empty($article["articleName"])) {
@@ -76,11 +85,6 @@ class Shopware_Controllers_Frontend_Detail extends Enlight_Controller_Action
 					'sInquiry'=>'detail',
 					'sOrdernumber'=>$article['ordernumber']
 				));
-			}
-			
-			if (!empty(Shopware()->Session()->sUserId) &&  empty($this->Request()->sVoteName)){
-				$userData = Shopware()->Modules()->Admin()->sGetUserData();
-				Shopware()->System()->_POST['sVoteName'] = $userData['billingaddress']['firstname'].' '.$userData['billingaddress']['lastname'];
 			}
 			
 			if (!empty($category)){	
