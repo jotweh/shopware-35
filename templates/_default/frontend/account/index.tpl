@@ -44,8 +44,8 @@
 				{$sUserData.additional.user.email}
 			</p>
 			
-			<a href="#" class="button-middle small change_password">{se name="AccountLinkChangePassword"}{/se}</a>
-			<a href="#" class="button-middle small change_mail">{se name='AccountLinkChangeMail'}{/se}</a>
+			<a href="#" class="button-middle small change_password hide_script">{se name="AccountLinkChangePassword"}{/se}</a>
+			<a href="#" class="button-middle small change_mail hide_script">{se name='AccountLinkChangeMail'}{/se}</a>
 		</div>
 	</div>
 	{/block}

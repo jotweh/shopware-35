@@ -901,14 +901,12 @@ class sAdmin
 	 * @access public
 	 * @return array Array with errors that may have occurred
 	 */
-	public function sValidateStep1 ($edit = false){
+	public function sValidateStep1 ($edit = false)
+	{
 		$p = $this->sSYSTEM->_POST;
-		
-		if(!$edit)
-		{
+				
+		if(isset($p["emailConfirmation"]) || isset($p["email"])) {
 			$p["email"] = strtolower($p["email"]);
-			$p["emailConfirmation"] = strtolower($p["emailConfirmation"]);
-			
 			// Check email
 			if (empty($p["email"]) || !preg_match("/^.+@.+\\..+$/", $p["email"])){
 				$sErrorFlag["email"] = true;
@@ -916,15 +914,14 @@ class sAdmin
 			}
 			
 			// Check email confirmation if needed
-			if($this->sSYSTEM->sCONFIG["sDOUBLEEMAILVALIDATION"] && !isset($p["emailConfirmation"])) {
-				if($p["email"] != $p["emailConfirmation"] && $edit==false){
+			if(isset($p["emailConfirmation"])) {
+				$p["emailConfirmation"] = strtolower($p["emailConfirmation"]);
+				if($p["email"] != $p["emailConfirmation"]){
 					$sErrorFlag["emailConfirmation"] = true;
 					$sErrorMessages[] = $this->sSYSTEM->sCONFIG['sErrors']['sErrorEmailNotEqual'];
 				}
 			}
-		}
-		elseif($edit&&empty($p["email"] ))
-		{
+		} elseif($edit && empty($p["email"])) {
 			$this->sSYSTEM->_POST["email"] = $p["email"] = $this->sSYSTEM->_SESSION["sUserMail"];
 		}
 		
@@ -961,9 +958,7 @@ class sAdmin
 		
 		// Check if email is already registered
 		
-		if ($edit && ($p["email"]==$this->sSYSTEM->_SESSION["sUserMail"])){
-			
-		}else {
+		if (isset($p["email"]) && ($p["email"]!=$this->sSYSTEM->_SESSION["sUserMail"])){
 			$checkIfMailExists = $this->sSYSTEM->sDB_CONNECTION->GetRow("SELECT id FROM s_user WHERE email=? AND accountmode!=1",array($p["email"]));
 			if (!empty($checkIfMailExists) && !$p["skipLogin"]){
 				$sErrorFlag["email"] = true;
