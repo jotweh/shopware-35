@@ -110,7 +110,6 @@ class
 	function addElement($type, $name, $description,$render_as_set,$data,$required,$preClass,$help, $multilanguage,$disabled = false){
 		
 		$this->mergefields = false;
-	
 		
 		switch ($type){
 			case "price":
@@ -265,7 +264,17 @@ class
 					$chk = "";	
 				}
 				$element = "<input type=\"checkbox\" name=\"$name\" value=\"1\" $chk>";
-				$this->mergefields = true;
+
+				/*
+			 	 * @ticket 5860
+			 	 * @author s.pohl
+			 	 * @date 2011-08-09
+				 *
+				 * Fix a layout issue in the article core data fieldset which causes that the user
+				 * couldn't identify the related form element to the label ("use data from price group")
+				 * due to the large white space between the form element and the label.
+			 	*/
+				$this->mergefields = false;
 				break;
 			
 			case "select":
