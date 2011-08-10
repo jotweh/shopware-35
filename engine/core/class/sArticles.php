@@ -3178,7 +3178,7 @@ class sArticles
 			// Reformat prices
 			// =================================================.
 			if ($getArticle["pseudoprice"]){
-				$getArticle["pseudoprice"] = $this->sCalculatingPrice($getArticle["pseudoprice"],$getArticle["tax"],$getArticle);
+				$getArticle["pseudoprice"] = $this->sCalculatingPrice(str_replace(",",".",$getArticle["pseudoprice"]),$getArticle["tax"],$getArticle);
 				$discPseudo =  str_replace(",",".",$getArticle["pseudoprice"]);
 				$discPrice = str_replace(",",".",$getArticle["price"]);
 				if ($discPseudo>$discPrice){
