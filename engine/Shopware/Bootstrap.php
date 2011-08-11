@@ -350,15 +350,19 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init plugins method
      *
-     * @return unknown
+     * @return Enlight_Plugin_PluginManager
      */
     protected function initPlugins()
     {
     	foreach (array('Core', 'Frontend', 'Backend') as $namespace) {
     		$namespace = new Shopware_Components_Plugin_Namespace($namespace);
     		foreach (array('Local', 'Community', 'Default') as $dir) {
-	    		$namespace->addPrefixPath('Shopware_Plugins_'.$namespace->getName(), Shopware()->AppPath('Plugins_'.$dir.'_'.$namespace->getName()));
+	    		$namespace->addPrefixPath(
+	    			'Shopware_Plugins_' . $namespace->getName(),
+	    			Shopware()->AppPath('Plugins_' . $dir . '_' . $namespace->getName())
+	    		);
 	    	}
+	    	$namespace->setCache($this->getResource('Cache'));
 	    	Shopware()->Plugins()->registerNamespace($namespace);
     	}
     	foreach (array('Local', 'Community', 'Default') as $dir) {
@@ -378,7 +382,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init locale method
      *
-     * @return unknown
+     * @return Zend_Locale
      */
     protected function initLocale()
     {
@@ -392,7 +396,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init currency method
      *
-     * @return unknown
+     * @return Zend_Currency
      */
     protected function initCurrency()
     {
@@ -406,7 +410,7 @@ class Shopware_Bootstrap extends Enlight_Bootstrap
     /**
      * Init date method
      *
-     * @return unknown
+     * @return Zend_Date
      */
     protected function initDate()
     {
