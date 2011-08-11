@@ -776,10 +776,9 @@ class sArticles
 				$orderBy  = $this->sSYSTEM->sCONFIG['sORDERBYDEFAULT'].', a.id';
 		}
 
-		if(strpos($orderBy,'price')!==false)
-		{
+		if(strpos($orderBy,'price')!==false) {
 			$select_price = "
-				IFNULL((
+				(IFNULL((
 					SELECT IFNULL(gp.price,gp2.price) as min_price
 					FROM s_articles_groups_value v
 					
@@ -821,12 +820,24 @@ class sArticles
 					
 					ORDER BY min_price
 					LIMIT 1
-				))
+				)) * 100/(100-IFNULL(cd.discount,0)))
 			";
-		}
-		else
-		{
+			$join_price = "		
+				LEFT JOIN s_core_customergroups cg
+				ON cg.groupkey = '{$this->sSYSTEM->sUSERGROUP}'
+			
+				LEFT JOIN s_core_pricegroups_discounts cd
+				ON a.pricegroupActive=1
+				AND cd.groupID=a.pricegroupID
+				AND cd.customergroupID=cg.id
+				AND cd.discountstart=(
+					SELECT MAX(discountstart)
+					FROM s_core_pricegroups_discounts
+					WHERE groupID=a.pricegroupID AND cd.customergroupID=cg.id)
+			";
+		} else {
 			$select_price = 'IFNULL(p.price,p2.price)';
+			$join_price = '';
 		}
 
 		if (isset($this->sSYSTEM->_GET['sSupplier']) && $this->sSYSTEM->_GET['sSupplier']==-1||!empty($this->sSYSTEM->_GET['sFilterProperties'])){
@@ -906,7 +917,7 @@ class sArticles
 				a.id as articleID,aDetails.id AS articleDetailsID, weight,aDetails.ordernumber,a.datum,releasedate
 				additionaltext, shippingfree,shippingtime,instock, a.description AS description, description_long,
 				aSupplier.name AS supplierName, aSupplier.img AS supplierImg, a.name AS articleName, topseller as highlight,
-				($select_price/100*(100-IFNULL(cd.discount,0))) as price,laststock,
+				$select_price as price,laststock,
 				sales, IF(p.pseudoprice,p.pseudoprice,p2.pseudoprice) as pseudoprice, aTax.tax,
 				minpurchase,
 				purchasesteps,
@@ -919,7 +930,7 @@ class sArticles
 				IFNULL(p.pricegroup,IFNULL(p2.pricegroup,'EK')) as pricegroup,
 				attr1,attr2,attr3,attr4,attr5,attr6,attr7,attr8,attr9,attr10,
 				attr11,attr12,attr13,attr14,attr15,attr16,attr17,attr18,attr19,attr20,
-				cd.discount,
+				-- cd.discount,
 				(
 					SELECT TRIM(GROUP_CONCAT(additionaltext SEPARATOR ', ')) as additionaltext
 					FROM s_articles_details
@@ -942,13 +953,28 @@ class sArticles
 					AND `valid_from` <= NOW()
 					AND `valid_to` > NOW() LIMIT 1
 				) as liveshopping
-			FROM s_articles AS a
-			INNER JOIN s_articles_categories AS aCategories
-			INNER JOIN s_articles_supplier AS aSupplier
-			INNER JOIN s_core_tax AS aTax
-			INNER JOIN s_articles_attributes AS aAttributes
-				$addFilterSQL
-			INNER JOIN s_articles_details AS aDetails
+			FROM s_articles_categories AS aCategories
+
+			JOIN s_articles_details AS aDetails
+			ON aDetails.articleID=aCategories.articleID
+			AND aDetails.kind=1
+			
+			JOIN s_articles_attributes AS aAttributes
+			ON aAttributes.articleID = aCategories.articleID
+			AND aAttributes.articledetailsID=aDetails.id
+			
+			JOIN s_articles AS a
+			ON a.id=aCategories.articleID
+			AND a.mode = 0
+			AND a.active=1
+			
+			JOIN s_core_tax AS aTax
+			ON aTax.id=a.taxID
+			
+			LEFT JOIN s_articles_supplier AS aSupplier
+			ON aSupplier.id=a.supplierID
+			
+			$addFilterSQL			
 
 			LEFT JOIN s_articles_prices p
 			ON p.articleDetailsID=aDetails.id
@@ -960,31 +986,22 @@ class sArticles
 			AND p2.pricegroup='EK'
 			AND p2.to='beliebig'
 			
-			LEFT JOIN s_core_customergroups cg
-			ON cg.groupkey = '{$this->sSYSTEM->sUSERGROUP}'
+			$join_price
 			
-			LEFT JOIN s_core_pricegroups_discounts cd
-			ON a.pricegroupActive=1
-			AND cd.groupID=a.pricegroupID
-			AND cd.customergroupID=cg.id
-			AND cd.discountstart=(SELECT MAX(discountstart) FROM s_core_pricegroups_discounts WHERE groupID=a.pricegroupID AND cd.customergroupID=cg.id)
+			WHERE aCategories.categoryID={$this->sSYSTEM->_GET['sCategory']}
 			
-			WHERE 
-				aCategories.categoryID=".$this->sSYSTEM->_GET['sCategory']." AND aCategories.articleID=a.id 
-				AND a.taxID=aTax.id
-				AND a.mode = 0
-				$addFilterWhere
-				$supplierSQL
-				AND aAttributes.articleID = a.id
-				AND aAttributes.articledetailsID=aDetails.id
-				AND (
-					SELECT articleID 
-					FROM s_articles_avoid_customergroups 
-					WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-				) IS NULL
-				AND aSupplier.id=a.supplierID AND aDetails.articleID=a.id AND aDetails.kind=1 AND a.active=1
-				$addAlias
+			$addFilterWhere
+			$supplierSQL
+			
+			AND (
+				SELECT articleID 
+				FROM s_articles_avoid_customergroups 
+				WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
+			) IS NULL
+			
+			$addAlias
 			$addFilterHaving
+			
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
@@ -1235,7 +1252,7 @@ class sArticles
 
 
 			if (empty($blogCategory)){
-				if(empty($articles[$articleKey]['liveshoppingData']['net_price'])) {
+				if(!empty($article['liveshoppingData']['net_price'])) {
 					$cheapestPrice = $this->sGetCheapestPrice($articles[$articleKey]["articleID"],$articles[$articleKey]["pricegroup"],$articles[$articleKey]["pricegroupID"],$articles[$articleKey]["pricegroupActive"],false,true);
 				} else {
 					$cheapestPrice = $article['liveshoppingData']['net_price'];
@@ -1848,10 +1865,9 @@ class sArticles
 			$orderBy = 'a.changetime DESC, a.id';
 		}
 
-		if(strpos($orderBy,'price')!==false)
-		{
+		if(strpos($orderBy,'price')!==false) {
 			$select_price = "
-				IFNULL((
+				(IFNULL((
 					SELECT IFNULL(gp.price,gp2.price) as min_price
 					FROM s_articles_groups_value v
 					
@@ -1893,47 +1909,54 @@ class sArticles
 					
 					ORDER BY min_price
 					LIMIT 1
-				))
+				)) * 100/100-IFNULL(cd.discount,0))
 			";
-		}
-		else
-		{
+			$join_price = "		
+				LEFT JOIN s_core_customergroups cg
+				ON cg.groupkey = '{$this->sSYSTEM->sUSERGROUP}'
+			
+				LEFT JOIN s_core_pricegroups_discounts cd
+				ON a.pricegroupActive=1
+				AND cd.groupID=a.pricegroupID
+				AND cd.customergroupID=cg.id
+				AND cd.discountstart=(
+					SELECT MAX(discountstart)
+					FROM s_core_pricegroups_discounts
+					WHERE groupID=a.pricegroupID AND cd.customergroupID=cg.id)
+			";
+		} else {
 			$select_price = '0';
+			$join_price = '';
 		}
 		
 		$sql = "
 			SELECT a.id, name AS articleName,
-				($select_price*100/100-IFNULL(cd.discount,0)) as price
-			FROM 
-				s_articles_categories ac
-			INNER JOIN s_articles a
+				$select_price as price
 			
-			INNER JOIN s_articles_details AS aDetails
+			FROM s_articles_categories aCategories
+				
+			JOIN s_articles a
+			ON a.active=1
+			AND a.id=aCategories.articleID
+			
+			JOIN s_articles_details AS aDetails
 			ON aDetails.articleID=a.id AND aDetails.kind=1
-			INNER JOIN s_articles_attributes AS aAttributes
-			ON aAttributes.articledetailsID = aDetails.id
-			LEFT JOIN s_core_customergroups cg
-			ON cg.groupkey = '{$this->sSYSTEM->sUSERGROUP}'
 			
-			LEFT JOIN s_core_pricegroups_discounts cd
-			ON a.pricegroupActive=1
-			AND cd.groupID=a.pricegroupID
-			AND cd.customergroupID=cg.id
-			AND cd.discountstart=(SELECT MAX(discountstart) FROM s_core_pricegroups_discounts WHERE groupID=a.pricegroupID AND cd.customergroupID=cg.id)
-	
-			WHERE ac.articleID=a.id
-			AND ac.categoryID={$this->sSYSTEM->_GET['sCategory']}
-			AND a.active=1
+			JOIN s_articles_attributes AS aAttributes
+			ON aAttributes.articledetailsID = aDetails.id
+			
+			$join_price
+				
+			WHERE aCategories.categoryID={$this->sSYSTEM->_GET['sCategory']}
 			AND (
 				SELECT articleID 
 				FROM s_articles_avoid_customergroups 
 				WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
 			) IS NULL
-			GROUP BY a.id
-			ORDER BY  $orderBy
+			
+			ORDER BY $orderBy
 		";
-
-
+		
 		$getAllArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll($this->sSYSTEM->sCONFIG['sCACHECATEGORY'],$sql,false,"category_".$this->sSYSTEM->_GET["sCategory"]);
 
 		// Get articles position and previous, next article
@@ -3381,13 +3404,7 @@ class sArticles
 			return false;
 		}
 
-		$cacheSQL = "";
 		$category = intval($category);
-		if ($mode!="fix"){
-			if (!empty($this->sCachePromotions)){
-				$cacheSQL = "AND a.id NOT IN (" . implode(",", $this->sCachePromotions) . ")";
-			}
-		}
 		if (empty($category) && $mode!="fix"){
 			$category = $this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]['parentID'];
 		}
@@ -3398,91 +3415,79 @@ class sArticles
 			$categorySQL = "";
 			$categoryFrom = "";
 		}
-
-		switch ($mode){
-			case "random":	// Random
-			if (!is_array($this->sCachePromotions)) $this->sCachePromotions = array();
-
-			$sql = "SELECT a.id as articleID FROM s_articles a $categoryFrom WHERE a.active=1 AND a.mode = 0 $categorySQL ORDER BY rand()";
-			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlRandom', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-
-			$articleIDs = $this->sSYSTEM->sDB_CONNECTION->GetCol($sql);
-			foreach ($articleIDs as $articleID) {
-				if(!in_array($articleID, $this->sCachePromotions)) {
-					if (!empty($articleID)){
-						$value = $articleID;
-					}
+		if (empty($this->sCachePromotions)) {
+			$this->sCachePromotions = array();
+		}
+		switch ($mode) {
+			case 'top':
+			case 'new':
+			case 'random':
+				if($mode == 'top') {
+					$promotionTime = !empty($this->sSYSTEM->sCONFIG['sPROMOTIONTIME']) ? (int) $this->sSYSTEM->sCONFIG['sPROMOTIONTIME'] : 30;
+					$sql = "
+						SELECT od.articleID
+						FROM s_order as o, s_order_details od, s_articles a $categoryFrom
+						WHERE o.ordertime > DATE_SUB(NOW(),INTERVAL $promotionTime DAY)
+						AND o.id=od.orderID
+						AND od.modus=0 AND od.articleID=a.id
+						AND a.active=1 $categorySQL
+						AND (
+							SELECT articleID 
+							FROM s_articles_avoid_customergroups 
+							WHERE articleID = a.id
+							AND customergroupID = {$this->sSYSTEM->sUSERGROUPDATA['id']}
+						) IS NULL
+						GROUP BY od.articleID
+						ORDER BY COUNT(od.articleID) DESC
+						LIMIT 100
+					";
+				} else {
+					$sql = "
+					SELECT a.id as articleID
+						FROM s_articles a $categoryFrom
+						WHERE a.active=1 AND a.mode=0 $categorySQL
+						AND (
+							SELECT articleID 
+							FROM s_articles_avoid_customergroups 
+							WHERE articleID = a.id
+							AND customergroupID = {$this->sSYSTEM->sUSERGROUPDATA['id']}
+						) IS NULL
+						ORDER BY a.datum DESC
+						LIMIT 100
+					";
 				}
-			}
-			if(empty($value)) return false;
-			$valueSQL = "a.id=$value";
-			break;
+				$sql = Enlight()->Events()->filter(
+					'Shopware_Modules_Articles_GetPromotionById_FilterSqlRandom',
+					$sql,
+					array('subject'=>$this, 'mode'=>$mode, 'category'=>$category, 'value'=>$value)
+				);
+				$articleIDs = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql);
+				$articleIDs = array_diff($articleIDs, $this->sCachePromotions);
+				if($mode == 'random') {
+					$value = array_rand($articleIDs);
+					$value = $articleIDs[$value];
+				} else {
+					$value = current($articleIDs);
+				}
+				if(empty($articleIDs)) {
+					return false;
+				}
+				$valueSQL = 'a.id=' . $value;
+				break;
 			case "fix":
-				if(empty($value)) return false;
-
-				if(is_int($value)||is_double($value)) {
+				if(empty($value)) {
+					return false;
+				}
+				if(is_int($value) || is_double($value)) {
 					$valueSQL = "d.articleID=$value";
 					$articleID = $value;
-				} elseif(strlen(intval($value))!=strlen($value)) {
+				} elseif(strlen(intval($value)) != strlen($value)) {
 					$value = $this->sSYSTEM->sDB_CONNECTION->qstr($value);
 					$valueSQL = "d.ordernumber=$value";
 				} else {
 					$value = $this->sSYSTEM->sDB_CONNECTION->qstr($value);
 					$valueSQL = "(d.articleID=$value OR d.ordernumber=$value)";
 				}
-				break;
-			case "new":
-				$sql = "
-					SELECT a.datum as date, COUNT(a.id) as count
-					FROM s_articles a $categoryFrom
-					WHERE a.mode=0 AND a.active=1 $categorySQL $cacheSQL
-					AND (
-						SELECT articleID 
-						FROM s_articles_avoid_customergroups 
-						WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-					) IS NULL
-					GROUP BY a.datum ORDER BY a.datum DESC LIMIT 1
-				";
-				$results = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
-				$randLimit = rand(0,$results["count"]-1);
-				$results["date"] = $this->sSYSTEM->sDB_CONNECTION->qstr($results["date"]);
-				$sql = "
-					SELECT a.id as articleID
-					FROM s_articles a $categoryFrom
-					WHERE a.mode=0 AND a.active=1
-					AND datum>={$results["date"]}
-					AND (
-						SELECT articleID 
-						FROM s_articles_avoid_customergroups 
-						WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-					) IS NULL
-					$categorySQL $cacheSQL LIMIT $randLimit,1
-				";
-				$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlNew', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-				$value = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
-				if(empty($value)) {
-					return false;
-				}
-				$valueSQL = "a.id=$value";
-				break;
-			case "top":
-				if(!empty($this->sSYSTEM->sCONFIG['sPROMOTIONTIME']))
-				$promotionTime = (int) $this->sSYSTEM->sCONFIG['sPROMOTIONTIME'];
-				else
-				$promotionTime = 30;
-				if(!empty($this->sCachePromotions))
-				$cacheSQL = "AND od.articleID!=".implode(" AND od.articleID!=",$this->sCachePromotions);
-				$sql = "
-					SELECT od.articleID FROM s_order as o, s_order_details od, s_articles a $categoryFrom
-					WHERE o.ordertime>DATE_SUB(NOW(),INTERVAL $promotionTime DAY) AND o.id=od.orderID AND od.modus=0 AND od.articleID=a.id AND a.active=1 $categorySQL $cacheSQL
-					GROUP BY od.articleID ORDER BY COUNT(od.articleID) DESC";
-
-				$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlTop', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-
-				$value = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
-				if (empty($value)) return array();
-				$valueSQL = "a.id=$value";
-
 				break;
 			case "gfx" || "image":
 
@@ -3500,8 +3505,7 @@ class sArticles
 			break;
 		}
 
-		if($mode=="premium")
-		{
+		if($mode=="premium") {
 			$value = $this->sSYSTEM->sDB_CONNECTION->qstr($value);
 			$sql = "
 				SELECT a.active AS active, a.id as articleID, ordernumber,datum,sales, topseller, a.description AS description,description_long, aSupplier.name AS supplierName, aSupplier.img AS supplierImg, a.name AS articleName
@@ -3521,11 +3525,8 @@ class sArticles
 			";
 			$articleID = $value;
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSqlPremium', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-
-
-		}
-		else
-		{
+		
+		} else {
 			$this->sSYSTEM->sCONFIG['sMARKASNEW'] = (int) $this->sSYSTEM->sCONFIG['sMARKASNEW'];
 			$this->sSYSTEM->sCONFIG['sMARKASTOPSELLER'] = (int) $this->sSYSTEM->sCONFIG['sMARKASTOPSELLER'];
 
@@ -3555,10 +3556,11 @@ class sArticles
 						WHERE `articleID`=a.id AND `active` =1
 						AND `valid_from` <= NOW()
 						AND `valid_to` > NOW() LIMIT 1
-					) as liveshopping
+					) as liveshopping,
+					(SELECT 1 FROM s_articles_details WHERE articleID=a.id AND kind!=1) as sVariantArticle
 				FROM s_articles a
 				
-				INNER JOIN s_articles_details d
+				JOIN s_articles_details d
 				ON d.articleID=a.id
 				AND d.kind=1
 				
@@ -3595,27 +3597,18 @@ class sArticles
 				LIMIT 1
 			";
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSql', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
-
-
 		}
-		if ($mode=="random")
-		{
+		
+		if ($mode == 'random') {
 			$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
-		}
-		else
-		{
+		} else {
 			if (!empty($articleID)){
-				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql,false,"article_".$articleID);
+				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql, false, 'article_' . $articleID);
 			} else {
-				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'],$sql);
+				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql);
 			}
 		}
-		if($getPromotionResult==false)
-		{
-			return false;
-		}
-		elseif(empty($getPromotionResult))
-		{
+		if(empty($getPromotionResult)){
 			return false;
 		}
 
@@ -3628,18 +3621,13 @@ class sArticles
 			}
 		}
 
-		$getPromotionResult = $this->sGetTranslation($getPromotionResult,$getPromotionResult["articleID"],"article",$this->sSYSTEM->sLanguage);
-
-
-		$checkVariantsSQL = 'SELECT COUNT(*) FROM `s_articles_details` WHERE `articleID` = ?';
-		$checkVariants = $this->sSYSTEM->sDB_CONNECTION->CacheGetOne($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $checkVariantsSQL, $getPromotionResult['articleID']);
-		$getPromotionResult['sVariantArticle'] = $checkVariants > 1 ? true : false;
+		$getPromotionResult = $this->sGetTranslation($getPromotionResult, $getPromotionResult["articleID"], 'article', $this->sSYSTEM->sLanguage);
 
 		// Load article properties (Missing support for multilanguage)
-		if ($getPromotionResult["filtergroupID"])
-		{
+		if ($getPromotionResult["filtergroupID"]) {
 			$getPromotionResult["sProperties"] = $this->sGetArticleProperties($getPromotionResult["articleID"],$getPromotionResult["filtergroupID"]);
 		}
+		
 		// Add to cache, so this article will be displayed with clones ;)
 		$this->sCachePromotions[] = $getPromotionResult["articleID"];
 
@@ -3668,19 +3656,17 @@ class sArticles
 		// Formating prices
 		$getPromotionResult["price"] = $this->sCalculatingPrice($getPromotionResult["price"],$getPromotionResult["tax"],$getPromotionResult);
 
-		if ($getPromotionResult["purchaseunit"]  > 0 && !empty($getPromotionResult["referenceunit"]))
-		{
-			// $basePrice = $this->sCalculatingPriceNum(str_replace(",",".",$articles[$articleKey]["price"]),0,$articles[$articleKey],$articles[$articleKey],array("liveshoppingID"=>1),true);
+		if ($getPromotionResult["purchaseunit"]  > 0 && !empty($getPromotionResult["referenceunit"])) {
 			$basePrice = $this->sCalculatingPriceNum($getPromotionResult["price"],0,$getPromotionResult,$getPromotionResult,array("liveshoppingID"=>1),true);
 			$basePrice = $basePrice / $getPromotionResult["purchaseunit"] * $getPromotionResult["referenceunit"];
 			$basePrice = $this->sFormatPrice($basePrice);
 			$getPromotionResult["referenceprice"] = $basePrice;
 		}
-		if (!empty($getPromotionResult["unitID"]))
-		{
+		
+		if (!empty($getPromotionResult["unitID"])) {
 			$getPromotionResult["sUnit"] = $this->sGetUnit($getPromotionResult["unitID"]);
 		}
-		if ($getPromotionResult["pseudoprice"]){
+		if ($getPromotionResult["pseudoprice"]) {
 			$getPromotionResult["pseudoprice"] = $this->sCalculatingPrice($getPromotionResult["pseudoprice"],$getPromotionResult["tax"],$getPromotionResult);
 			$discPseudo =  str_replace(",",".",$getPromotionResult["pseudoprice"]);
 			$discPrice = str_replace(",",".",$getPromotionResult["price"]);
@@ -3688,14 +3674,11 @@ class sArticles
 			$getPromotionResult["pseudopricePercent"] = array("int"=>round($discount,0),"float"=>$discount);
 		}
 
-		if (!empty($getPromotionResult["articleID"]))
-		{
+		if (!empty($getPromotionResult["purchaseunit"])) {
 			$basePrice = str_replace(",", ".", $getPromotionResult['price']);
 			$basePrice = floatval($basePrice);
-			if (!empty($getPromotionResult['purchaseunit'])){
-				$refPrice = $basePrice / $getPromotionResult['purchaseunit'] * $getPromotionResult['referenceunit'];
-				$getPromotionResult['referenceprice'] = number_format($refPrice, 2, ",", ".");
-			}
+			$refPrice = $basePrice / $getPromotionResult['purchaseunit'] * $getPromotionResult['referenceunit'];
+			$getPromotionResult['referenceprice'] = number_format($refPrice, 2, ",", ".");
 		}
 
 		// Strip tags from descriptions
@@ -3704,21 +3687,18 @@ class sArticles
 
 		$getPromotionResult['sVoteAverange'] = explode('|', $getPromotionResult['sVoteAverange']);
 		$getPromotionResult['sVoteAverange'] = array(
-		'averange' => round($getPromotionResult['sVoteAverange'][0], 2),
-		'count' => round($getPromotionResult['sVoteAverange'][1]),
+			'averange' => round($getPromotionResult['sVoteAverange'][0], 2),
+			'count' => round($getPromotionResult['sVoteAverange'][1]),
 		);
 		$getPromotionResult["image"] = $this->sGetArticlePictures($getPromotionResult["articleID"],true,0,"",false,$mode=="random" ? true : false);
 
 		$getPromotionResult["linkBasket"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$getPromotionResult["ordernumber"];
 		$getPromotionResult["linkDetails"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle=".$getPromotionResult["articleID"];
-		if(!empty($category)&&$category!=$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"])
-		$getPromotionResult["linkDetails"] .= "&sCategory=$category";
-
-
-
+		if(!empty($category)&&$category!=$this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["parentID"]) {
+			$getPromotionResult["linkDetails"] .= "&sCategory=$category";
+		}
+		
 		$getPromotionResult["mode"] = $mode;
-
-
 
 		$getPromotionResult = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterResult', $getPromotionResult, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 
@@ -4461,7 +4441,6 @@ class sArticles
 		return $this->sSYSTEM->sMODULES["sLiveshopping"]->sGetLiveShopping($mode,$categoryID,$article, $loadDetails, $whereAdd , $orderBy, $limit);
 	}
 
-	//BUNDLE-FUNCTIONS
 	/**
 	 * Gibt alle (aktiven) Bundleartikel eines Artikels zurück
 	 *
@@ -4487,7 +4466,6 @@ class sArticles
 		return $this->sSYSTEM->sMODULES["sBundle"]->sGetArticleBundleByID($bundleID, $loadArticleData);
 	}
 
-
 	/**
 	 * Get array of images from a certain configurator combination
 	 * @param array $sArticle Associative array with all article data
@@ -4499,4 +4477,3 @@ class sArticles
 		return $this->sSYSTEM->sMODULES["sBundle"]->sGetBundleBasketDiscount($ordernumber, $bundleID);
 	}
 }
-?>
