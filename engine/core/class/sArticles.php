@@ -3599,15 +3599,14 @@ class sArticles
 			$sql = Enlight()->Events()->filter('Shopware_Modules_Articles_GetPromotionById_FilterSql', $sql, array('subject'=>$this,'mode'=>$mode,'category'=>$category,'value'=>$value));
 		}
 		
-		if ($mode == 'random') {
+		if (false && $mode == 'random') {
 			$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->GetRow($sql);
+		} elseif (is_int($value)){
+			$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql, false, 'article_' . $value);
 		} else {
-			if (!empty($articleID)){
-				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql, false, 'article_' . $articleID);
-			} else {
-				$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql);
-			}
+			$getPromotionResult = $this->sSYSTEM->sDB_CONNECTION->CacheGetRow($this->sSYSTEM->sCONFIG['sCACHEARTICLE'], $sql);
 		}
+		
 		if(empty($getPromotionResult)){
 			return false;
 		}
