@@ -3557,7 +3557,7 @@ class sArticles
 						AND `valid_from` <= NOW()
 						AND `valid_to` > NOW() LIMIT 1
 					) as liveshopping,
-					(SELECT 1 FROM s_articles_details WHERE articleID=a.id AND kind!=1) as sVariantArticle
+					(SELECT 1 FROM s_articles_details WHERE articleID=a.id AND kind!=1 LIMIT 1) as sVariantArticle
 				FROM s_articles a
 				
 				JOIN s_articles_details d
