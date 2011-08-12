@@ -449,7 +449,7 @@ class sArticles
 	 * @access public
 	 * @return array
 	 */
-	public function sGetArticlesByName ($orderBy="a.topseller DESC",$category=0,$mode="",$search="")
+	public function sGetArticlesByName ($orderBy="a.topseller DESC", $category=0, $mode="", $search="")
 	{
 		if (empty($search) && !empty($this->sSYSTEM->_GET['sSearch'])){
 			$search = $this->sSYSTEM->_GET['sSearch'];
@@ -493,24 +493,16 @@ class sArticles
 		$sLimitStart = ($sPage-1) * $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
 		$sLimitEnd = $this->sSYSTEM->_GET['sPerPage'] ? $this->sSYSTEM->_GET['sPerPage'] : $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
 
-		if (empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT'])) $this->sSYSTEM->sCONFIG['sARTICLELIMIT'] = 125;
+		if (empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT'])) {
+			$this->sSYSTEM->sCONFIG['sARTICLELIMIT'] = 125;
+		}
 		if (!empty($mode)){
 			$limitNew = $this->sSYSTEM->sCONFIG['sARTICLELIMIT'];
 		}
 
 		$ret = array();
-		$searchRestrictArticles = "";
 		if (empty($mode)){
-			$searchRestrictArticles = "AND (
-				SELECT articleID
-				FROM s_articles_avoid_customergroups
-				WHERE articleID = a.id AND customergroupID = ".$this->sSYSTEM->sUSERGROUPDATA["id"]."
-			) IS NULL ";
-			$sSearch = explode(" ",$sSearch);
-			if (!is_array($sSearch)){
-				$sSearch = array(0=>$sSearch);
-			}
-
+			$sSearch = explode(' ',$sSearch);
 			foreach ($sSearch as $sqlSearch){
 				$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
 			}
@@ -531,7 +523,7 @@ class sArticles
 				";
 			}
 
-			$sqlFields = array("s.name","a.name","a.keywords","d.ordernumber");
+			$sqlFields = array("s.name", "a.name", "a.keywords", "d.ordernumber");
 			$sql_search_fields .= " OR (";
 			foreach ($sql_search as $term){
 				$sql_search_fields .= " (";
@@ -541,22 +533,26 @@ class sArticles
 				$sql_search_fields .= " 1 != 1) AND ";
 			}
 			$sql_search_fields .= "1 = 1 ) ";
-		}elseif($mode=="supplier") {
-			unset($sql_add_join);
-			unset($sql_add_where);
-			unset($sql_search_fields);
-			$sql_search_fields = "OR a.supplierID = $search";
-			$sql_search[0] = "";
 			
-		}elseif($mode=="newest"){
-			unset($sql_add_join);
-			unset($sql_add_where);
-			unset($sql_search_fields);
+			if(!empty($sql_search[0])) {
+				$search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");;
+				$sql_add_join .= "
+					LEFT JOIN s_articles_groups_value agv
+					ON agv.ordernumber LIKE $search
+					AND agv.articleID=a.id
+				";
+				$sql_add_where .= "
+					OR agv.valueID
+				";
+			}
+			
+		} elseif($mode=="supplier") {
+			$sql_search_fields = "OR a.supplierID = $search";
+			
+		} elseif($mode=="newest") {
 			$sql_search_fields = "OR 1 = 1";
-			$sql_search[0] = "";
 		}
 
-		// Performance boost while fixing #5499 st.hamann
 		$sql = "
 			SELECT SQL_CALC_FOUND_ROWS DISTINCT
 					a.id as id
@@ -568,34 +564,34 @@ class sArticles
 					s_articles_supplier s
 			INNER JOIN
 					s_articles_categories ac
-			LEFT JOIN
-					s_articles_groups_value agv
-			ON agv.ordernumber LIKE ?
-			AND agv.articleID=a.id
 			$sql_add_join
-			WHERE
-					(
-							agv.valueID
-							$sql_search_fields
-							$sql_add_where
-
-					)
+			WHERE (
+				0
+				$sql_search_fields
+				$sql_add_where
+			)
 			AND ac.articleID=a.id
 			AND ac.categoryID=$sCategory
 			AND s.id=a.supplierID
 			AND a.active=1 AND a.mode = 0
 			AND a.id = d.articleID
-			$searchRestrictArticles
+			AND (
+				SELECT articleID
+				FROM s_articles_avoid_customergroups
+				WHERE articleID = a.id AND customergroupID={$this->sSYSTEM->sUSERGROUPDATA['id']}
+			) IS NULL 
 			ORDER BY $orderBy
 			LIMIT $sLimitStart,$sLimitEnd
 		";
+			
+		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetAll(
+			$this->sSYSTEM->sCONFIG['sCACHESEARCH'],
+			$sql, false,
+			'search_' . $mode
+		);
+		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetFoundRows();
 
-		$ret["sArticles"] = $this->sSYSTEM->sDB_CONNECTION->CacheGetCol($this->sSYSTEM->sCONFIG['sCACHESEARCH'],$sql,array($sql_search[0]));
-		
-        $sql = "SELECT FOUND_ROWS()";
-        $sCountArticles = $this->sSYSTEM->sDB_CONNECTION->GetOne($sql);
-
-		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=="newest"){ // Fix #5499
+		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=='newest'){
 			$sCountArticles = $limitNew;
 		}
 
@@ -665,7 +661,6 @@ class sArticles
 		$ret['sPerPage'] = $arrayArticlesToShow;
 		$ret['sNumberArticles'] = $sCountArticles;
 		$ret['sNumberPages'] = $numberPages;
-
 
 		return $ret;
 	}
