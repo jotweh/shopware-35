@@ -3834,22 +3834,19 @@ class sArticles
 			return;
 		}
 		
-		$checkForArticle = $this->sSYSTEM->sDB_CONNECTION->GetOne('
-			SELECT id FROM s_emarketing_lastarticles WHERE sessionID=? AND articleID=?
-		', array($this->sSYSTEM->sSESSION_ID, $id));
-		if (!empty($checkForArticle)) {
-			return;
-		}
-		
 		$insertArticle = $this->sSYSTEM->sDB_CONNECTION->Execute('
-			INSERT INTO s_emarketing_lastarticles (img, name, articleID, sessionID, time, userID)
-			VALUES (?, ?, ?, ?, NOW(), ?)
+			INSERT INTO s_emarketing_lastarticles
+				(img, name, articleID, sessionID, time, userID, shopID)
+			VALUES
+				(?, ?, ?, ?, NOW(), ?, ?)
+			ON DUPLICATE KEY UPDATE time=NOW(), userID=VALUES(userID)
 		', array(
 			(string) $image,
 			(string) $name,
 			$id,
 			$this->sSYSTEM->sSESSION_ID,
-			(int) $this->sSYSTEM->_SESSION['sUserId']
+			(int) $this->sSYSTEM->_SESSION['sUserId'],
+			(int) $this->sSYSTEM->sLanguage
 		));
 	}
 
@@ -3956,54 +3953,42 @@ class sArticles
 	/**
 	 * Get recently viewed products
 	 * 
-	 * @param int $sCurrentArticle current article
+	 * @param int $currentArticle current article
 	 * @return array 
 	 */
-	public function sGetLastArticles($sCurrentArticle = null)
+	public function sGetLastArticles($currentArticle = null)
 	{
-		$numberOfArticles = $this->sSYSTEM->sCONFIG['sLASTARTICLESTOSHOW'];
-
-		// If the user visits currencly an article, this article should not be listed
-		if ($sCurrentArticle) {
-			$queryArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll("
-				SELECT img, name, articleID
-				FROM s_emarketing_lastarticles
-				WHERE articleID!=?
-				AND sessionID=?
-				GROUP BY articleID
-				ORDER BY time DESC
-				LIMIT ?
-			", array(
-				$sCurrentArticle,
-				$this->sSYSTEM->sSESSION_ID,
-				(int) $numberOfArticles
+		if (!empty($this->sSYSTEM->_SESSION['sUserId'])){
+			$updateArticles =  $this->sSYSTEM->sDB_CONNECTION->Execute('
+				UPDATE s_emarketing_lastarticles
+				SET userID=?
+				WHERE sessionID=?
+			', array(
+				$this->sSYSTEM->_SESSION['sUserId'],
+				$this->sSYSTEM->sSESSION_ID
 			));
-		} else {
-			// Update articles
-			if (!empty($this->sSYSTEM->_SESSION["sUserId"])){
-				$updateArticles =  $this->sSYSTEM->sDB_CONNECTION->Execute('
-					UPDATE s_emarketing_lastarticles
-					SET userID=?
-					WHERE sessionID=?
-				', array(
-					$this->sSYSTEM->_SESSION['sUserId'],
-					$this->sSYSTEM->sSESSION_ID
-				));
-			}
-			$queryArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll("
-				SELECT img, name, articleID
-				FROM s_emarketing_lastarticles
-				WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."'
-				GROUP BY articleID
-				ORDER BY time DESC
-				LIMIT $numberOfArticles
-			");
 		}
+		
+		$numberOfArticles = (int) $this->sSYSTEM->sCONFIG['sLASTARTICLESTOSHOW'];
+		
+		$queryArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll('
+			SELECT img, name, articleID
+			FROM s_emarketing_lastarticles
+			WHERE sessionID=?
+			AND articleID!=?
+			AND shopID=?
+			ORDER BY time DESC
+			LIMIT ' . $numberOfArticles . '
+		', array(
+			$this->sSYSTEM->sSESSION_ID,
+			(int) $currentArticle,
+			$this->sSYSTEM->sLanguage
+		));
 
 		foreach ($queryArticles as $articleKey => $articleValue){
-			$queryArticles[$articleKey]["linkDetails"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle=".$articleValue["articleID"];
-			if (preg_match("/443/",$_SERVER['SERVER_PORT'])){
-				$queryArticles[$articleKey]["img"] = str_replace("http://","https://",$queryArticles[$articleKey]["img"]);
+			$queryArticles[$articleKey]['linkDetails'] = $this->sSYSTEM->sCONFIG['sBASEFILE'] . '?sViewport=detail&sArticle=' . $articleValue['articleID'];
+			if (preg_match('/443/', $_SERVER['SERVER_PORT'])){
+				$queryArticles[$articleKey]['img'] = str_replace('http://', 'https://', $queryArticles[$articleKey]['img']);
 			}
 		}
 

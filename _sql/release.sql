@@ -24,3 +24,20 @@ ALTER TABLE `s_core_translations` CHANGE `objectkey` `objectkey` INT( 11 ) UNSIG
  */
 UPDATE `s_core_config` SET `value` = '3.5.5' WHERE `name` = 'sVERSION';
 UPDATE `s_core_config` SET `value` = '6464' WHERE `name` = 'sREVISION';
+
+/*
+ * @ticket 5867 (internal)
+ * @author h.lohaus 
+ * @since 3.5.5 - 2011/08/12
+ */
+ALTER TABLE `s_emarketing_lastarticles` ADD `shopID` INT( 11 ) UNSIGNED NOT NULL;
+ALTER TABLE `s_emarketing_lastarticles`
+	CHANGE `articleID` `articleID` INT( 11 ) UNSIGNED NOT NULL,
+	CHANGE `userID` `userID` INT( 11 ) UNSIGNED NOT NULL;
+ALTER TABLE `s_emarketing_lastarticles` DROP INDEX sessionID;
+ALTER TABLE `s_emarketing_lastarticles` DROP INDEX articleID;
+ALTER TABLE `s_emarketing_lastarticles` ADD UNIQUE (
+	`articleID`,
+	`sessionID`,
+	`shopID`
+);

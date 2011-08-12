@@ -45,23 +45,7 @@ class Shopware_Plugins_Frontend_LastArticles_Bootstrap extends Shopware_Componen
 			'value'=>15
 		));
 		$form->save();
-		
-		/*
-		$sql = '
-			ALTER TABLE `s_emarketing_lastarticles` ADD `shopID` INT( 11 ) UNSIGNED NOT NULL;
-			ALTER TABLE `s_emarketing_lastarticles`
-				CHANGE `articleID` `articleID` INT( 11 ) UNSIGNED NOT NULL,
-				CHANGE `userID` `userID` INT( 11 ) UNSIGNED NOT NULL;
-			ALTER TABLE s_emarketing_lastarticles DROP INDEX sessionID;
-			ALTER TABLE s_emarketing_lastarticles DROP INDEX articleID;
-			ALTER TABLE `s_emarketing_lastarticles` ADD UNIQUE (
-				`articleID`,
-				`sessionID`,
-				`shopID`
-			);
-		';
-		*/
-		
+				
 		return true;
 	}
 	
@@ -100,10 +84,10 @@ class Shopware_Plugins_Frontend_LastArticles_Bootstrap extends Shopware_Componen
 			
 			$id = 'Shopware_LastArticles_Cleanup';
 			$cache = Shopware()->Cache();
-			if (($data = $cache->load($id)) === false) {
+			if ($cache->load($id) === false) {
 				$sql = '
 					DELETE FROM s_emarketing_lastarticles
-					WHERE time < DATE_SUB(CONCAT( CURDATE(), ?), INTERVAL ? DAY)
+					WHERE time < DATE_SUB(CONCAT(CURDATE(), ?), INTERVAL ? DAY)
 				';
 				Shopware::Instance()->Db()->query($sql, array(' 00:00:00', $time));
 				$cache->save(true, $id, array('Shopware_Plugin'), 86400);
