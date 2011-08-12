@@ -3278,8 +3278,6 @@ class sArticles
 
 			if (!empty($getArticle["filtergroupID"])) $getArticle["sProperties"] = $this->sGetArticleProperties($getArticle["articleID"],$getArticle["filtergroupID"]);
 
-			// Refresh last articles
-			$this->sSetLastArticle($getArticle["image"]["src"][$this->sSYSTEM->sCONFIG['sLASTARTICLESTHUMB']],$getArticle['articleName'],$getArticle['articleID']);
 			$getArticle["sNavigation"] = $this->sGetAllArticlesInCategory($getArticle["articleID"]);
 
 			//sDescriptionKeywords
