@@ -3830,23 +3830,29 @@ class sArticles
 	 * @param int $id id of the article
 	 * @access public
 	 */
-	public function sSetLastArticle($image,$name, $id){
-		if (empty($this->sSYSTEM->sSESSION_ID)) return;
-		$id = intval($id);
-		if ((rand()%10) == 0){
-			// Remove entries older then 14 days
-			$this->sSYSTEM->sDB_CONNECTION->Execute("DELETE FROM s_emarketing_lastarticles WHERE UNIX_TIMESTAMP(time)<=(UNIX_TIMESTAMP(now())-1209600)");
+	public function sSetLastArticle($image, $name, $id)
+	{
+		if (empty($this->sSYSTEM->sSESSION_ID) || empty($name) || empty($id)) {
+			return;
 		}
-		$checkForArticle = $this->sSYSTEM->sDB_CONNECTION->GetRow("
-		SELECT id FROM s_emarketing_lastarticles WHERE sessionID=? AND articleID=?
-		",array($this->sSYSTEM->sSESSION_ID,$id));
-		$name = $this->sSYSTEM->sDB_CONNECTION->qstr($name);
-		if (!empty($name) && !empty($id) && empty($checkForArticle["id"])){
-			$insertArticle = $this->sSYSTEM->sDB_CONNECTION->Execute("
+		
+		$checkForArticle = $this->sSYSTEM->sDB_CONNECTION->GetOne('
+			SELECT id FROM s_emarketing_lastarticles WHERE sessionID=? AND articleID=?
+		', array($this->sSYSTEM->sSESSION_ID, $id));
+		if (!empty($checkForArticle)) {
+			return;
+		}
+		
+		$insertArticle = $this->sSYSTEM->sDB_CONNECTION->Execute('
 			INSERT INTO s_emarketing_lastarticles (img, name, articleID, sessionID, time, userID)
-			VALUES ('$image',$name,$id,'".$this->sSYSTEM->sSESSION_ID."',now(),'".intval($this->sSYSTEM->_SESSION["sUserId"])."')
-			");
-		}
+			VALUES (?, ?, ?, ?, NOW(), ?)
+		', array(
+			(string) $image,
+			(string) $name,
+			$id,
+			$this->sSYSTEM->sSESSION_ID,
+			(int) $this->sSYSTEM->_SESSION['sUserId']
+		));
 	}
 
 	/**
@@ -3951,28 +3957,48 @@ class sArticles
 
 	/**
 	 * Get recently viewed products
+	 * 
 	 * @param int $sCurrentArticle current article
-	 * @access public
 	 * @return array 
 	 */
-	public function sGetLastArticles($sCurrentArticle=0){
+	public function sGetLastArticles($sCurrentArticle = null)
+	{
 		$numberOfArticles = $this->sSYSTEM->sCONFIG['sLASTARTICLESTOSHOW'];
 
 		// If the user visits currencly an article, this article should not be listed
-		if ($sCurrentArticle){
+		if ($sCurrentArticle) {
 			$queryArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll("
-			SELECT img, name, articleID FROM s_emarketing_lastarticles WHERE articleID!=$sCurrentArticle AND sessionID='".$this->sSYSTEM->sSESSION_ID."' GROUP BY articleID ORDER BY time DESC LIMIT $numberOfArticles
-			");
-		}else {
+				SELECT img, name, articleID
+				FROM s_emarketing_lastarticles
+				WHERE articleID!=?
+				AND sessionID=?
+				GROUP BY articleID
+				ORDER BY time DESC
+				LIMIT ?
+			", array(
+				$sCurrentArticle,
+				$this->sSYSTEM->sSESSION_ID,
+				(int) $numberOfArticles
+			));
+		} else {
 			// Update articles
 			if (!empty($this->sSYSTEM->_SESSION["sUserId"])){
-				$updateArticles =  $this->sSYSTEM->sDB_CONNECTION->Execute("
-				UPDATE s_emarketing_lastarticles SET userID = '".$this->sSYSTEM->_SESSION["sUserId"]."'
-				WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."'
-				");
+				$updateArticles =  $this->sSYSTEM->sDB_CONNECTION->Execute('
+					UPDATE s_emarketing_lastarticles
+					SET userID=?
+					WHERE sessionID=?
+				', array(
+					$this->sSYSTEM->_SESSION['sUserId'],
+					$this->sSYSTEM->sSESSION_ID
+				));
 			}
 			$queryArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll("
-			SELECT img, name, articleID FROM s_emarketing_lastarticles WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."' GROUP BY articleID ORDER BY time DESC LIMIT $numberOfArticles
+				SELECT img, name, articleID
+				FROM s_emarketing_lastarticles
+				WHERE sessionID='".$this->sSYSTEM->sSESSION_ID."'
+				GROUP BY articleID
+				ORDER BY time DESC
+				LIMIT $numberOfArticles
 			");
 		}
 

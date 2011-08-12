@@ -1210,40 +1210,62 @@ class sBasket
 
 	/**
 	 * Alle auf dem Merkzettel stehenden Artikel auslesen
-	 * @access public
+	 * 
 	 * @return array
 	 */
-	public function sGetNotes(){
-
-		$getArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll("SELECT s_order_notes.* FROM s_order_notes
-		INNER JOIN s_articles ON s_articles.id = s_order_notes.articleID AND s_articles.active = 1
-		WHERE (sUniqueID=? OR (userID!=0 AND userID = ?))
-		ORDER BY s_order_notes.datum DESC
-		",array(empty($this->sSYSTEM->_COOKIE["sUniqueID"]) ? $this->sSYSTEM->sSESSION_ID : $this->sSYSTEM->_COOKIE["sUniqueID"],isset($this->sSYSTEM->_SESSION['sUserId']) ? $this->sSYSTEM->_SESSION['sUserId'] : 0));
-
-
-		$countItems = count($getArticles);
-
-		if ($countItems){
-			// Reformating data, add additional datafields to array
-			foreach ($getArticles as $key => $value){
-				// Article-Image
-				$getArticles[$key] = $this->sSYSTEM->sMODULES['sArticles']->sGetPromotionById("fix", 0, (int) $value["articleID"]);
-				if(empty($getArticles[$key])) {
-					$this->sDeleteNote($value["id"]);
-					unset($getArticles[$key]);
-					continue;
-				}
-				$getArticles[$key]["articlename"] = $getArticles[$key]["articleName"];
-				$getArticles[$key]["image"] = $this->sSYSTEM->sMODULES['sArticles']->sGetArticlePictures($value["articleID"],true,$this->sSYSTEM->sCONFIG['sTHUMBBASKET']);
-				// Links to details, basket
-				$getArticles[$key]["id"] = $value["id"];
-				$getArticles[$key]["linkBasket"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$value["ordernumber"];
-				$getArticles[$key]["linkDelete"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=note&sDelete=".$value["id"];
-			}
+	public function sGetNotes()
+	{
+		$getArticles = $this->sSYSTEM->sDB_CONNECTION->GetAll('
+			SELECT n.* FROM s_order_notes n, s_articles a
+			WHERE (sUniqueID=? OR (userID!=0 AND userID=?))
+			AND a.id = n.articleID AND a.active = 1
+			ORDER BY n.datum DESC
+		', array(
+			empty($this->sSYSTEM->_COOKIE['sUniqueID']) ? $this->sSYSTEM->sSESSION_ID : $this->sSYSTEM->_COOKIE['sUniqueID'],
+			isset($this->sSYSTEM->_SESSION['sUserId']) ? $this->sSYSTEM->_SESSION['sUserId'] : 0
+		));
+		
+		if(empty($getArticles)) {
+			return $getArticles;
 		}
 
+		// Reformating data, add additional datafields to array
+		foreach ($getArticles as $key => $value){
+			// Article-Image
+			$getArticles[$key] = $this->sSYSTEM->sMODULES['sArticles']->sGetPromotionById("fix", 0, (int) $value["articleID"]);
+			if(empty($getArticles[$key])) {
+				$this->sDeleteNote($value["id"]);
+				unset($getArticles[$key]);
+				continue;
+			}
+			$getArticles[$key]["articlename"] = $getArticles[$key]["articleName"];
+			$getArticles[$key]["image"] = $this->sSYSTEM->sMODULES['sArticles']->sGetArticlePictures(
+				$value["articleID"], true, $this->sSYSTEM->sCONFIG['sTHUMBBASKET']
+			);
+			// Links to details, basket
+			$getArticles[$key]["id"] = $value["id"];
+			$getArticles[$key]["linkBasket"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$value["ordernumber"];
+			$getArticles[$key]["linkDelete"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=note&sDelete=".$value["id"];
+		}
 		return $getArticles;
+	}
+	
+	/**
+	 * Returns the number of notepad entries
+	 * 
+	 * @return int
+	 */
+	public function sCountNotes()
+	{
+		$count = (int) $this->sSYSTEM->sDB_CONNECTION->GetOne('
+			SELECT COUNT(*) FROM s_order_notes n, s_articles a
+			WHERE (sUniqueID=? OR (userID!=0 AND userID = ?))
+			AND a.id = n.articleID AND a.active = 1
+		', array(
+			empty($this->sSYSTEM->_COOKIE['sUniqueID']) ? $this->sSYSTEM->sSESSION_ID : $this->sSYSTEM->_COOKIE['sUniqueID'],
+			isset($this->sSYSTEM->_SESSION['sUserId']) ? $this->sSYSTEM->_SESSION['sUserId'] : 0
+		));
+		return $count;
 	}
 
 	/**

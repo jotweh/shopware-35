@@ -1,6 +1,20 @@
 <?php
+/**
+ * Shopware ControllerBase Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -11,7 +25,14 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		$this->subscribeEvent($event);
 		return true;
 	}
-			
+
+	/**
+	 * Event listener method
+	 * 
+	 * Read base controller data
+	 * 
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onPostDispatch(Enlight_Event_EventArgs $args)
 	{				
 		$request = $args->getSubject()->Request();
@@ -25,18 +46,18 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		$plugin = Shopware()->Plugins()->Core()->ControllerBase();
 		
 		$view->setNoCache(true);
+		
 		$view->Controller = $args->getSubject()->Request()->getControllerName();
-		$view->sBasketQuantity = $plugin->getBasketQuantity();
+		$view->sBasketQuantity = Shopware()->Modules()->Basket()->sCountBasket();
 		$view->sBasketAmount = $plugin->getBasketAmount();
-		$view->sNotesQuantity = $plugin->getNotesQuantity();
+		$view->sNotesQuantity = Shopware()->Modules()->Basket()->sCountNotes();
 		$view->sUserLoggedIn = Shopware()->Modules()->Admin()->sCheckUser();
 		$view->sUniqueRand = md5(uniqid(mt_rand(), true));
 		$view->Shopware = Shopware();
 
 		$view->setNoCache(false);
 		
-		if(!$view->isCached())
-		{
+		if(!$view->isCached()) {
 			$view->Shop = Shopware()->Shop();
 			$view->Locale = Shopware()->Locale();
 			$view->sCategories = $plugin->getCategories();
@@ -53,53 +74,69 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		}
 	}
 	
-	function getBasketAmount()
+	/**
+	 * Returns basket amount
+	 *
+	 * @return float
+	 */
+	public function getBasketAmount()
 	{
 		$amount = Shopware()->Modules()->Basket()->sGetAmount();
-		return empty($amount) ? 0 : array_shift ($amount);
+		return empty($amount) ? 0 : array_shift($amount);
 	}
 	
-	function getBasketQuantity()
-	{
-		return Shopware()->Modules()->Basket()->sCountBasket();
-	}
-	
-	function getNotesQuantity()
-	{
-		return count(Shopware()->Modules()->Basket()->sGetNotes());
-	}
-	
-	function getCategoryCurrent()
+	/**
+	 * Returns current category id
+	 *
+	 * @return int
+	 */
+	public function getCategoryCurrent()
 	{
 		if(!empty(Shopware()->System()->_GET['sCategory'])) {
 			return (int) Shopware()->System()->_GET['sCategory'];
-		} elseif(!Shopware()->Front()->Request()->getQuery('sCategory')) {
-			return (int) Shopware()->System()->sLanguageData[Shopware()->System()->sLanguage]['parentID'];
-		} else {
+		} elseif(Shopware()->Front()->Request()->getQuery('sCategory')) {
 			return (int) Shopware()->Front()->Request()->getQuery('sCategory');	
+		} else {
+			return (int) Shopware()->Shop()->get('parentID');
 		}
 	}
 	
-	function getCategories()
+	/**
+	 * Return current categories
+	 *
+	 * @return array
+	 */
+	public function getCategories()
 	{
 		return Shopware()->Modules()->Categories()->sGetCategories($this->getCategoryCurrent());
 	}
 	
-	function getCategoryStart()
+	/**
+	 * Returns start category id
+	 *
+	 * @return int
+	 */
+	public function getCategoryStart()
 	{
-		if(empty(Shopware()->System()->sLanguageData[Shopware()->System()->sLanguage]['parentID'])) {
-			return Shopware()->Front()->Request()->getQuery('sCategory');
-		} else {
-			return Shopware()->System()->sLanguageData[Shopware()->System()->sLanguage]['parentID'];
-		}
+		return Shopware()->Shop()->get('parentID');
 	}
 	
-	function getMainCategories()
+	/**
+	 * Returns main categories
+	 *
+	 * @return array
+	 */
+	public function getMainCategories()
 	{
 		return Shopware()->Modules()->Categories()->sGetMainCategories();
 	}
 	
-	function getLanguages()
+	/**
+	 * Return shop languages
+	 *
+	 * @return array
+	 */
+	public function getLanguages()
 	{
 		if (empty(Shopware()->System()->sSubShop['switchLanguages'])
 			|| !Shopware()->License()->checkLicense('sLANGUAGEPACK'))
@@ -113,7 +150,12 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		return Shopware()->Db()->fetchAll($sql, array(Shopware()->System()->sLanguage));
 	}
 	
-	function getCurrencies()
+	/**
+	 * Return shop currencies
+	 *
+	 * @return array
+	 */
+	public function getCurrencies()
 	{
 		if (empty(Shopware()->System()->sSubShop['switchCurrencies'])
 			|| !Shopware()->License()->checkLicense('sLANGUAGEPACK'))
@@ -127,14 +169,19 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		';
 		return Shopware()->Db()->fetchAll($sql, array(Shopware()->System()->sCurrency['id']));
 	}
-		
-	function getMenu()
+	
+	/**
+	 * Return cms menu items
+	 *
+	 * @return array
+	 */
+	public function getMenu()
 	{
 		$menu = array();
 		$sql = '
-			SELECT * FROM s_cms_static WHERE grouping!=\'\' ORDER BY position ASC
+			SELECT * FROM s_cms_static WHERE grouping!=? ORDER BY position ASC
 		';
-		$links = Shopware()->Db()->fetchAll($sql);
+		$links = Shopware()->Db()->fetchAll($sql, array(''));
 		foreach ($links as $link)
 		{
 			$groups = explode('|', $link['grouping']);
@@ -146,12 +193,12 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 			}
 		}
 		
-		if (!empty(Shopware()->System()->sSubShop['navigation']))
-		{
-			foreach (explode(';', Shopware()->System()->sSubShop['navigation']) as $group)
-			{
+		if (Shopware()->Shop()->get('navigation')) {
+			foreach (explode(';', Shopware()->Shop()->get('navigation')) as $group) {
 				$group = explode(':', $group);
-				if(empty($group[0])||empty($group[1])||empty($menu[$group[1]])) continue;
+				if(empty($group[0])||empty($group[1])||empty($menu[$group[1]])) {
+					continue;
+				}
 				$menu[$group[0]] = $menu[$group[1]];
 			}
 		}
@@ -159,20 +206,27 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		return $menu;
 	}
 	
-	function getCampaigns()
+	/**
+	 * Return box campaigns items
+	 *
+	 * @return array
+	 */
+	public function getCampaigns()
 	{
 		$campaigns = array('leftTop'=>array(), 'leftMiddle'=>array(), 'leftBottom'=>array(), 'rightMiddle'=>array(),);
 							
-		if(!empty(Shopware()->Config()->CampaignsPositions))
-		{
+		if(!empty(Shopware()->Config()->CampaignsPositions)) {
 			$campaignPositions = explode(';', Shopware()->Config()->CampaignsPositions);
 			
-			foreach ($campaignPositions as $campaign_position)
-			{
+			foreach ($campaignPositions as $campaign_position) {
 				$group = explode(':', $campaign_position);
-				if(empty($group[1])) continue;
+				if(empty($group[1])) {
+					continue;
+				}
 			
-				$campaigns[$group[1]] = Shopware()->Modules()->Marketing()->sCampaignsGetList($this->getCategoryCurrent(),$group[1]);
+				$campaigns[$group[1]] = Shopware()->Modules()->Marketing()->sCampaignsGetList(
+					$this->getCategoryCurrent(), $group[1]
+				);
 				if (empty($campaigns[$group[1]])){
 					$campaigns[$group[1]] = array();
 				}
@@ -182,6 +236,11 @@ class Shopware_Plugins_Core_ControllerBase_Bootstrap extends Shopware_Components
 		return $campaigns;
 	}
 	
+	/**
+	 * Returns capabilities
+	 *
+	 * @return array
+	 */
 	public function getCapabilities()
     {
         return array(
