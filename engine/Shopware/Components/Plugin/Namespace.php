@@ -18,9 +18,9 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 	/**
 	 * Returns plugin info
 	 *
-	 * @param unknown_type $plugin
-	 * @param unknown_type $name
-	 * @return unknown
+	 * @param string $plugin
+	 * @param string $name
+	 * @return mixed
 	 */
 	public function getInfo($plugin, $name)
 	{
@@ -51,7 +51,7 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 	public function getSource($plugin)
 	{
 		foreach ($this->path as $path=>$prefix) {
-			$file = $path.$plugin.Enlight::DS().'Bootstrap.php';
+			$file = $path . $plugin . Enlight::DS() . 'Bootstrap.php';
 			if(file_exists($file)){
 				return basename(dirname(dirname(dirname($file))));
 			}
@@ -79,7 +79,7 @@ class Shopware_Components_Plugin_Namespace extends Enlight_Plugin_Namespace
 		if(!isset($this->configs[$pluginId][$shopId][$localeId])) {
 			$this->configs[$pluginId][$shopId][$localeId] = new Shopware_Models_Plugin_Config(array(
 				'section' => array($pluginId, $localeId, $shopId),
-				'extends' => array(array($pluginId, 1, $shopId), array($pluginId, 1, 1)),
+				'extends' => array(array($pluginId, 1, 1), array($pluginId, 1, $shopId)),
 				'cache' => $this->cache
 			));
 		}
