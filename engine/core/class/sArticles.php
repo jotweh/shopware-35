@@ -1260,6 +1260,7 @@ class sArticles
 
 				// Price-Handling
 				$articles[$articleKey]["price"] = $this->sCalculatingPrice($articles[$articleKey]["price"],$articles[$articleKey]["tax"],$articles[$articleKey]);
+				$articles[$articleKey]["priceNumeric"] = floatval(str_replace(",",".",$articles[$articleKey]["price"]));
 
 				if (!empty($articles[$articleKey]["pseudoprice"])){
 					$articles[$articleKey]["pseudoprice"] = $this->sCalculatingPrice($articles[$articleKey]["pseudoprice"],$articles[$articleKey]["tax"],$articles[$articleKey]);
@@ -1296,7 +1297,6 @@ class sArticles
 			// Links to details, basket
 			$articles[$articleKey]["linkBasket"] = "http://".$this->sSYSTEM->sCONFIG['sBASEPATH']."/".$this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$articles[$articleKey]["ordernumber"];
 			$articles[$articleKey]["linkDetails"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=detail&sArticle=".$articles[$articleKey]["articleID"]."&sCategory=".$this->sSYSTEM->_GET['sCategory'];
-			$articles[$articleKey]["priceNumeric"] = floatval(str_replace(",",".",$articles[$articleKey]["price"]));
 
 			if ($articles[$articleKey]["purchaseunit"]  > 0 && !empty($articles[$articleKey]["referenceunit"])){
 
@@ -2453,7 +2453,7 @@ class sArticles
 		}
 
 
-		if ($instockCheck["type"]!=3){
+		if (empty($instockCheck["type"]) || $instockCheck["type"]!=3){
 			// Check for additional prices in article - configurator
 			// Updated / Fixed 28.10.2008 - STH
 			$sql = "
