@@ -1,8 +1,8 @@
 {function name=categories_top level=0}
 <ul class="{if !$level}dropdown{else}droplevel{/if} droplevel{$level}">
 {foreach from=$categories item=category}
-    <li class="{if $category.flag}active{/if}{if $category.sub} sub{/if}">
-     	<a href="{$category.link}" class="{if $category.flag} active{/if}">{$category.name}</a>
+    <li class="{if !empty($category.flag)}active{/if}{if $category.sub} sub{/if}">
+     	<a href="{$category.link}" class="{if !empty($category.flag)} active{/if}">{$category.name}</a>
     	{if $category.sub}
 	     	{call name=categories_top categories=$category.sub level=$level+1}
 	    {/if}
@@ -19,8 +19,8 @@
 			</a>
 		</li>
 	    {foreach from=$sAdvancedMenu item=sCategory}
-			<li class="{if $sCategory.flag}active{/if}{if $sCategory.sub} dropactive{/if}">
-	        	<a href="{$sCategory.link}" title="{$sCategory.description}" {if $sCategory.flag} class="active"{/if}>
+			<li class="{if !empty($sCategory.flag)}active{/if}{if $sCategory.sub} dropactive{/if}">
+	        	<a href="{$sCategory.link}" title="{$sCategory.description}" {if !empty($sCategory.flag)} class="active"{/if}>
 	        		{$sCategory.description}
 	        	</a>
 	        	{if $sCategory.sub}
