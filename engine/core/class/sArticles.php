@@ -492,22 +492,13 @@ class sArticles
 
 		$sLimitStart = ($sPage-1) * $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
 		$sLimitEnd = $this->sSYSTEM->_GET['sPerPage'] ? $this->sSYSTEM->_GET['sPerPage'] : $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
-
-		if (empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT'])) {
-			$this->sSYSTEM->sCONFIG['sARTICLELIMIT'] = 125;
-		}
-		if (!empty($mode)){
-			$limitNew = $this->sSYSTEM->sCONFIG['sARTICLELIMIT'];
-		}
+		$limitNew = empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT']) ? (int) $this->sSYSTEM->sCONFIG['sARTICLELIMIT'] : 125;
 
 		$ret = array();
 		if (empty($mode)){
-			$sSearch = explode(' ',$sSearch);
-			foreach ($sSearch as $sqlSearch){
-				$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
-			}
-			if(!empty($this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"]))
-			{
+			$sSearch = explode(' ', $sSearch);
+			
+			if(!empty($this->sSYSTEM->sLanguageData[$this->sSYSTEM->sLanguage]["id"])) {
 				foreach ($sSearch as $search){
 					$search = $this->sSYSTEM->sDB_CONNECTION->qstr("%$search%");
 					$sql_add_where .= "
@@ -525,6 +516,10 @@ class sArticles
 
 			$sqlFields = array("s.name", "a.name", "a.keywords", "d.ordernumber");
 			$sql_search_fields .= " OR (";
+			foreach ($sSearch as $sqlSearch){
+				$sql_search[] = $this->sSYSTEM->sDB_CONNECTION->qstr("%$sqlSearch%");
+			}
+			
 			foreach ($sql_search as $term){
 				$sql_search_fields .= " (";
 				foreach ($sqlFields as $field){
@@ -590,10 +585,6 @@ class sArticles
 			'search_' . $mode
 		);
 		$sCountArticles = $this->sSYSTEM->sDB_CONNECTION->CacheGetFoundRows();
-
-		if ($sCountArticles >= $limitNew && !empty($mode) && $mode=='newest'){
-			$sCountArticles = $limitNew;
-		}
 
 		$numberPages = ceil($sCountArticles / $sLimitEnd);
 
