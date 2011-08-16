@@ -41,3 +41,10 @@ ALTER TABLE `s_emarketing_lastarticles` ADD UNIQUE (
 	`sessionID`,
 	`shopID`
 );
+
+/*
+ * @ticket 5867 (internal)
+ * @author h.lohaus 
+ * @since 3.5.5 - 2011/08/16
+ */
+ALTER TABLE `s_articles` ADD INDEX ( `changetime` );
