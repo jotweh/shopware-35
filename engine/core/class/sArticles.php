@@ -492,7 +492,7 @@ class sArticles
 
 		$sLimitStart = ($sPage-1) * $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
 		$sLimitEnd = $this->sSYSTEM->_GET['sPerPage'] ? $this->sSYSTEM->_GET['sPerPage'] : $this->sSYSTEM->sCONFIG['sARTICLESPERPAGE'];
-		$limitNew = empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT']) ? (int) $this->sSYSTEM->sCONFIG['sARTICLELIMIT'] : 125;
+		$limitNew = !empty($this->sSYSTEM->sCONFIG['sARTICLELIMIT']) ? (int) $this->sSYSTEM->sCONFIG['sARTICLELIMIT'] : 125;
 
 		$ret = array();
 		if (empty($mode)){
