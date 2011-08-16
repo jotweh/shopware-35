@@ -2,7 +2,6 @@
 /**
  * Shopware Debug Plugin
  * 
- * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
@@ -45,10 +44,6 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 	 */
 	public static function onStartDispatch(Enlight_Event_EventArgs $args)
 	{
-		if(!Shopware()->Bootstrap()->hasResource('Log')){
-			return;
-		}
-		
 		$config = Shopware()->Plugins()->Core()->Debug()->Config();
 		
 		if (!empty($_SERVER['REMOTE_ADDR']) 
@@ -56,7 +51,15 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		  && strpos($config->AllowIP, $_SERVER['REMOTE_ADDR'])===false){
 			return;
 		}
-
+		
+		$error_handler = Shopware()->Plugins()->Core()->ErrorHandler();
+		$error_handler->setEnabledLog(true);
+		$error_handler->registerErrorHandler(E_ALL | E_STRICT);
+				
+		if(!Shopware()->Bootstrap()->hasResource('Log')){
+			return;
+		}
+		
 		if(!empty($_SERVER['HTTP_USER_AGENT'])
 		  && strpos($_SERVER['HTTP_USER_AGENT'], 'FirePHP/')!==false) {
 			$writer = new Zend_Log_Writer_Firebug();
@@ -66,9 +69,6 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 			$writer->setPriorityStyle(11, 'TRACE');
 			Shopware()->Log()->addWriter($writer);
 		}
-		
-		$error_handler = Shopware()->Plugins()->Core()->ErrorHandler();
-		$error_handler->setEnabledLog(true);
 		
 		$debug = Shopware()->Plugins()->Core()->Debug();
 		
@@ -116,8 +116,7 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		$errors = $error_handler->getErrorLog();
 		
 		$counts = array();
-		foreach ($errors as $error_key => $error)
-		{
+		foreach ($errors as $error_key => $error) {
 			$counts[$error_key] = $error['count'];
 		}
 		array_multisort($counts, SORT_NUMERIC, SORT_DESC, $errors);
@@ -149,16 +148,19 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 		$rows = array(array('spec', 'value'));
 		foreach ($template_vars as $template_spec => $template_var)
 		{
+			if($template_spec == 'sPropertiesOptionsOnly') {
+				continue;
+			}
 			$template_var = $this->encode($template_var);
 			$rows[] = array($template_spec, $template_var);
 		}
 		$table = array('Template Vars ('.(count($template_vars)).')',
 			$rows
 		);
+		
 		Shopware()->Log()->table($table);
 		$config_vars = $template->getConfigVars();
-		if(!empty($config_vars))
-		{
+		if(!empty($config_vars)) {
 			$rows = array(array('spec', 'value'));
 			foreach ($config_vars as $config_spec => $config_var)
 			{
@@ -178,12 +180,14 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 	{
 		if(is_array($data)) {
 			foreach ($data as $key => $value) {
-				$data[$key] = $this->encode($value);
+				unset($data[$key]);
+				$data[$this->encode($key)] = $this->encode($value);
 			}
 		} elseif(is_string($data)) {
-			if(strlen($data)>250) {
-				$data = substr($data, 0, 10).'...';
+			if(strlen($data) > 250) {
+				$data = substr($data, 0, 250) . '...';
 			}
+			$data = utf8_encode($data);
 		} elseif($data instanceof ArrayObject) {
 			$data = $this->encode($data->getArrayCopy());
 		} elseif(is_object($data)) {
@@ -199,29 +203,27 @@ class Shopware_Plugins_Core_Debug_Bootstrap extends Shopware_Components_Plugin_B
 	{
 		$response = Shopware()->Front()->Response();
 		$exceptions = $response->getException();
-		if(!empty($exceptions))
-		{
-			$rows = array(array('code', 'name', 'message', 'line', 'file', 'trace'));
-			foreach ($exceptions as $exception)
-			{
-				$rows[] = array(
-					$exception->getCode(),
-					get_class($exception),
-					$exception->getMessage(),
-					$exception->getLine(),
-					$exception->getFile(),
-					explode("\n", $exception->getTraceAsString())
-				);
-			}
-			$table = array('Exception Log ('.count($exceptions).')',
-				$rows
+		if(empty($exceptions)) {
+			return;
+		}
+		$rows = array(array('code', 'name', 'message', 'line', 'file', 'trace'));
+		foreach ($exceptions as $exception) {
+			$rows[] = array(
+				$exception->getCode(),
+				get_class($exception),
+				$exception->getMessage(),
+				$exception->getLine(),
+				$exception->getFile(),
+				explode("\n", $exception->getTraceAsString())
 			);
-			Shopware()->Log()->table($table);
-			
-			foreach ($exceptions as $exception)
-			{
-				Shopware()->Log()->err((string) $exception);
-			}
+		}
+		$table = array('Exception Log ('.count($exceptions).')',
+			$rows
+		);
+		Shopware()->Log()->table($table);
+		
+		foreach ($exceptions as $exception) {
+			Shopware()->Log()->err((string) $exception);
 		}
 	}
 }

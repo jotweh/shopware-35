@@ -1,6 +1,19 @@
 <?php
+/**
+ * Shopware Error Handler
+ * 
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Core_ErrorHandler_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {	
+	/**
+	 * Plugin install method
+	 */
 	public function install()
 	{		
 		$event = $this->createEvent(
@@ -11,43 +24,42 @@ class Shopware_Plugins_Core_ErrorHandler_Bootstrap extends Shopware_Components_P
 		return true;
 	}
 	
+	/**
+	 * Plugin event method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onStartDispatch($args)
 	{
 		Shopware()->Plugins()->Core()->ErrorHandler()->registerErrorHandler(E_ALL | E_STRICT);
 	}
 
     /**
-     *
      * @var callback
      */
-    protected $_origErrorHandler       = null;
+    protected $_origErrorHandler = null;
     
     /**
-     *
      * @var boolean
      */
     protected $_registeredErrorHandler = false;
     
     /**
-     *
      * @var array
      */
-    protected $_errorHandlerMap        = null;
+    protected $_errorHandlerMap = null;
     
     /**
-     *
      * @var array
      */
-    protected $_errorLevel             = 0;
+    protected $_errorLevel = 0;
     
     /**
-     *
      * @var array
      */
-    protected $_errorLog             = false;
+    protected $_errorLog = false;
     
     /**
-     *
      * @var array
      */
     protected $_errorList             = array();
@@ -72,7 +84,10 @@ class Shopware_Plugins_Core_ErrorHandler_Bootstrap extends Shopware_Components_P
     );
     
     /**
+     * Register error handler callback
+     * 
      * @link http://www.php.net/manual/en/function.set-error-handler.php Custom error handler
+     * @param int $errorLevel
      */
     public function registerErrorHandler($errorLevel=E_ALL)
     {
@@ -100,37 +115,32 @@ class Shopware_Plugins_Core_ErrorHandler_Bootstrap extends Shopware_Components_P
      */
     public function errorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     {
-    	if($this->_errorLog)
-    	{
+    	if($this->_errorLog) {
 	    	$hash_id = md5($errno.$errstr.$errfile.$errline);
-	    	if(!isset($this->_errorList[$hash_id]))
-	    	{
+	    	if(!isset($this->_errorList[$hash_id])) {
 	    		$errna = isset($this->_errorLevelList[$errno]) ? $this->_errorLevelList[$errno] : '';
 	    		$this->_errorList[$hash_id] = array(
-	    			'count'=>1,
-	    			'code'=>$errno,
-	    			'name'=>$errna,
-	    			'message'=>$errstr,
-	    			'line'=>$errline,
-	    			'file'=>$errfile
-	    			//'context'=>$errcontext
+	    			'count' => 1,
+	    			'code' => $errno,
+	    			'name' => $errna,
+	    			'message' => $errstr,
+	    			'line' => $errline,
+	    			'file' => $errfile
 	    		);
-	    	}
-	    	else
-	    	{
+	    	} else {
 	    		++$this->_errorList[$hash_id]['count'];
 	    	}
     	}
     	
-    	switch ($errno)
-    	{
+    	switch ($errno) {
     		case 0:
     		case E_NOTICE:
     		case E_WARNING:
     		case E_USER_NOTICE:
     		case E_RECOVERABLE_ERROR:
     		case E_STRICT:
-    		case E_DEPRECATED:
+    		case defined('E_DEPRECATED') ? E_DEPRECATED : 0:
+    		case defined('E_USER_DEPRECATED') ? E_USER_DEPRECATED : 0:
     			break;
     		case E_CORE_WARNING:
     		case E_USER_WARNING:
@@ -149,16 +159,30 @@ class Shopware_Plugins_Core_ErrorHandler_Bootstrap extends Shopware_Components_P
         return true;
     }
     
+    /**
+     * Returns error log list
+     *
+     * @return array
+     */
     public function getErrorLog()
     {
     	return $this->_errorList;
     }
     
-    public function setEnabledLog($value=true)
+    /**
+     * Sets enabled log flag
+     *
+     * @param bool $value
+     */
+    public function setEnabledLog($value = true)
     {
     	$this->_errorLog = $value ? true : false;
+    	return $this;
     }
     
+    /**
+	 * Returns plugin capabilities
+	 */
     public function getCapabilities()
     {
         return array(
