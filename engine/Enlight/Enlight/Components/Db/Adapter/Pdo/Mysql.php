@@ -8,7 +8,7 @@
  * @package Enlight
  * @subpackage Components
  */
-class	Enlight_Components_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql
+class Enlight_Components_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql
 {
 	/**
      * Quote a raw string.
@@ -48,5 +48,33 @@ class	Enlight_Components_Db_Adapter_Pdo_Mysql extends Zend_Db_Adapter_Pdo_Mysql
         }
         
         return parent::query($sql, $bind);
+    }
+    
+    /**
+     * Creates a PDO object and connects to the database.
+     *
+     * @return void
+     * @throws Zend_Db_Adapter_Exception
+     */
+    protected function _connect()
+    {
+        // if we already have a PDO object, no need to re-connect.
+        if ($this->_connection) {
+            return;
+        }
+        
+        try {
+        	parent::_connect();
+        } catch (Exception $e) {
+        	$message = $e->getMessage();
+        	$message = str_replace(array(
+        		$this->_config['username'],
+        		$this->_config['password']
+        	), '******', $message);
+            throw new Zend_Db_Adapter_Exception($message, $e->getCode(), $e->getPrevious());
+        }
+        
+        // finally, we delete the authorization data
+        unset($this->_config['username'], $this->_config['password']);
     }
 }
