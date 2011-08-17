@@ -6,6 +6,7 @@
  * @copyright Copyright (c) 2011, shopware AG
  * @package Shopware
  * @subpackage Plugins
+ * @author H.Lohaus
  */
 class Shopware_Plugins_Backend_Locale_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
