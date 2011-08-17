@@ -101,6 +101,14 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	{
     	$data = array();
     	try {
+			Zend_Feed::setHttpClient(
+				new Zend_Http_Client(
+					null,
+					array(
+					'timeout' => 3 // seconds
+					)
+				)
+			);
 	    	$channel = new Zend_Feed_Rss('http://www.shopware.de/rss.xml');
 	    	foreach ($channel as $i => $item) {
 	    		$title = (string) $item->title;
