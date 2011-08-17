@@ -1,6 +1,20 @@
 <?php
+/**
+ * Shopware AdvancedMenu Plugin
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
+ */
 class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Components_Plugin_Bootstrap
 {
+	/**
+	 * Install plugin method
+	 *
+	 * @return bool
+	 */
 	public function install()
 	{
 		$event = $this->createEvent(
@@ -12,7 +26,7 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		$form = $this->Form();
 		
 		$form->setElement('checkbox', 'show', array('label'=>'Menu zeigen', 'value'=>1, 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
-		$form->setElement('checkbox', 'caching', array('label'=>'Caching aktivieren', 'value'=>0));
+		$form->setElement('checkbox', 'caching', array('label'=>'Caching aktivieren', 'value'=>1));
 		$form->setElement('text', 'cachetime', array('label'=>'Cachezeit', 'value'=>86400));
 		$form->setElement('text', 'levels', array('label'=>'Anzahl Ebenen', 'value'=>2, 'scope'=>Shopware_Components_Form::SCOPE_SHOP));
 		
@@ -21,6 +35,11 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		return true;
 	}
 	
+	/**
+	 * Event listener method
+	 *
+	 * @param Enlight_Event_EventArgs $args
+	 */
 	public static function onPostDispatch(Enlight_Event_EventArgs $args)
 	{	
 		$request = $args->getSubject()->Request();
@@ -41,8 +60,8 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		}
 		
 		$compile_id = $view->Template()->compile_id;
-		$cache_id = 'frontend|index|plugins|advanced_menu|'.$category.'|'.$usergroup;
-		$template = 'frontend/plugins/advanced_menu/advanced_menu.tpl';
+		//$cache_id = 'frontend|index|plugins|advanced_menu|'.$category.'|'.$usergroup;
+		//$template = 'frontend/plugins/advanced_menu/advanced_menu.tpl';
 		$view->assign('sAdvancedMenuConfig', array(
 			'cache_id' => $cache_id,
 			'template' => $template,
@@ -59,6 +78,14 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		//}
 	}
 	
+	/**
+	 * Returns the complete menu with category path.
+	 *
+	 * @param int $category
+	 * @param int $categoryFlag
+	 * @param int $depth
+	 * @return array
+	 */
 	public function getAdvancedMenu($category, $categoryFlag=null, $depth=null)
 	{
 		$shopID = Shopware()->Shop()->getId();
@@ -77,14 +104,14 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 			$id = 'Shopware_AdvancedMenu_Path_'.$categoryFlag.'_'.$category;
 			$cache = Shopware()->Cache();
 			if(!$cache->test($id)) {
-				$path = $this->getCatogeriePath($categoryFlag, $category);
+				$path = $this->getCatogeryPath($categoryFlag, $category);
 				$cache->save($path, $id, array('Shopware_Plugin'), $config->cachetime);
 			} else {
 				$path = $cache->load($id);
 			}
 		} else {
 			$tree = $this->getCategoryTree($category, $depth);
-			$path = $this->getCatogeriePath($categoryFlag, $category);
+			$path = $this->getCatogeryPath($categoryFlag, $category);
 		}
 		
 		$ref =& $tree;
@@ -99,6 +126,13 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		return $tree;
 	}
 	
+	/**
+	 * Returns a category tree.
+	 *
+	 * @param int $category
+	 * @param int $depth
+	 * @return array
+	 */
 	public function getCategoryTree($category, $depth=null)
 	{
 		$sql = '
@@ -136,7 +170,7 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 			} else {
 				$row['link'] = Shopware()->Router()->assemble(array('sViewport'=>'cat', 'sCategory'=>$row['id']));
 			}
-			if($depth===null||$depth>=0) {
+			if($depth===null || $depth>=0) {
 				$row['sub'] = $this->getCategoryTree($row['id'], $depth);
 			}
 			$categories[(int) $row['id']] = $row;
@@ -144,18 +178,25 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 		return $categories;
 	}
 	
-	public function getCatogeriePath($category, $end)
+	/**
+	 * Returns a catogery path by category id.
+	 *
+	 * @param int $category
+	 * @param int $end
+	 * @return array
+	 */
+	public function getCatogeryPath($category, $end)
 	{
-		if($category==$end) {
+		if($category == $end) {
 			return array();
 		}
 		$category = (int) $category;
 		$sql = 'SELECT parent FROM s_categories WHERE id=?';
 		$next = Shopware()->Db()->fetchOne($sql, array($category));
-		if(empty($next)||$category==$next) {
+		if(empty($next) || $category == $next) {
 			return array($category);
 		}
-		$result = $this->getCatogeriePath($next, $end);
+		$result = $this->getCatogeryPath($next, $end);
 		$result[] = $category;
 		return $result;
 	}
