@@ -314,7 +314,7 @@ jQuery(document).ready(function($) {
 				if($me.attr('id') == 'newpwdrepeat' && $me.val().length == $('#newpwd').val().length) {
 					$me.triggerHandler('blur');
 				}
-				if($me.attr('id') == 'neweailrepeat' && $me.val().length == $('#newmail').val().length) {
+				if($me.attr('id') == 'newmailrepeat' && $me.val().length == $('#newmail').val().length) {
 					$me.triggerHandler('blur');
 				}
 			});
