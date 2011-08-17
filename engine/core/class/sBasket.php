@@ -1246,6 +1246,7 @@ class sBasket
 			$getArticles[$key]["id"] = $value["id"];
 			$getArticles[$key]["linkBasket"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=basket&sAdd=".$value["ordernumber"];
 			$getArticles[$key]["linkDelete"] = $this->sSYSTEM->sCONFIG['sBASEFILE']."?sViewport=note&sDelete=".$value["id"];
+			$getArticles[$key]["datum_add"] = $value["datum"];
 		}
 		return $getArticles;
 	}

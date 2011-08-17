@@ -653,6 +653,7 @@ div#notes .table_row .title {position: absolute;top: 0px;font-family: Arial, san
 div#notes .table_row .supplier {position: absolute;top: 20px;background: transparent;border: 0 none;}
 div#notes .table_row a.thumb_image {width: 105px;height: 105px;top: 15px;position: relative;}
 div#notes .table_row .ordernumber {margin: 0;position: absolute;top: 35px;}
+div#notes .table_row .date {position:absolute; top: 50px;}
 div#notes .table_row .desc {position: absolute;top: 60px;}
 div#notes .table_row .rating {right: 10px;top: 20px;position: absolute;}
 div#notes .table_row .delivery {position: absolute;right: 85px;top: 20px;text-align: left;width: 140px;}

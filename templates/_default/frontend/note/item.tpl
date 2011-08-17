@@ -71,6 +71,12 @@
 				{/block}
 				
 			</p>
+			{if $sBasketItem.datum_add}
+				{* added date *}
+				<div class="date">
+					{s name='NoteInfoDate'}Hinzugefügt am:{/s} {$sBasketItem.datum_add|date:DATE_MEDIUM}
+				</div>
+			{/if}
 			{block name="frontend_note_index_items"}{/block}
 		</div>
 		
