@@ -929,7 +929,7 @@ echo "
         {
            header: "<?php echo $sLang["orderlist"]["orders_options"] ?>",
            dataIndex: 'options',
-           width: 80,
+           width: 85,
            align: 'right',
            renderer: renderOptions
         }
