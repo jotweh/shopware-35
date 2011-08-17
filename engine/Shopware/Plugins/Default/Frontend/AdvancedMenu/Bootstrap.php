@@ -59,15 +59,17 @@ class Shopware_Plugins_Frontend_AdvancedMenu_Bootstrap extends Shopware_Componen
 			return;
 		}
 		
+		/*
 		$compile_id = $view->Template()->compile_id;
-		//$cache_id = 'frontend|index|plugins|advanced_menu|'.$category.'|'.$usergroup;
-		//$template = 'frontend/plugins/advanced_menu/advanced_menu.tpl';
+		$cache_id = 'frontend|index|plugins|advanced_menu|'.$category.'|'.$usergroup;
+		$template = 'frontend/plugins/advanced_menu/advanced_menu.tpl';
 		$view->assign('sAdvancedMenuConfig', array(
 			'cache_id' => $cache_id,
 			'template' => $template,
 			'caching' => (bool) $config->caching,
 			'cachtime' => (int) $config->cachetime
 		));
+		*/
 		//if(!$view->Engine()->isCached($template, $cache_id, $compile_id)) {
 			$view->assign('sAdvancedMenu', Shopware()->Plugins()->Frontend()->AdvancedMenu()->getAdvancedMenu(
 				$parent,
