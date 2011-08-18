@@ -184,8 +184,8 @@
 			{if $sUserData.shippingaddress.company}
 			<p>
 	        	{$sUserData.shippingaddress.company}{if $sUserData.shippingaddress.department} - {$sUserData.shippingaddress.department}{/if}
-	        {/if}
 	        </p>
+			{/if}
 	        <p>
 	        {if $sUserData.shippingaddress.salutation eq "mr"}{se name="AccountSalutationMr"}{/se}{else}{se name="AccountSalutationMs"}{/se}{/if}
 	    	{$sUserData.shippingaddress.firstname} {$sUserData.shippingaddress.lastname}<br />
