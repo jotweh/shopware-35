@@ -235,7 +235,7 @@ div#notes .article_price_unit p,
 .table .table_head {background-color: #F5F5F5;border-color:#c7c7c7;}
 .table .table_row, .table .lastrow, .table .table_foot {border-color: #C7C7C7;border-top-color: #e3e3e3;}
 
-.table .ordernumber, .table .supplier, .table .zoom_picture {color: #999;}
+.table .ordernumber, .table .supplier, .table .zoom_picture, div#notes .table_row .date  {color: #999;}
 
 /* Row specific row coloring */
 .table .bundle_row, #basket .bundle_row {background-color:#FBE3E4;color:#8a1f11;border-color:#FBC2C4;}
