@@ -50,7 +50,7 @@
 			
 			{* Article Description *}
 			<p class="desc">
-				{$sBasketItem.description_long|strip_tags|trim|truncate:250}
+				{$sBasketItem.description_long|strip_tags|trim|truncate:160}
 				
 				{* Unit price *}
 				{block name="frontend_note_item_unitprice"}
