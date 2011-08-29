@@ -65,6 +65,7 @@ class Enlight_Loader extends Enlight_Class
 	 * Load file method
 	 *
 	 * @param string $path
+	 * @return mixed
 	 */
 	public static function loadFile($path)
 	{
@@ -74,7 +75,14 @@ class Enlight_Loader extends Enlight_Class
 		if(!self::isReadable($path)) {
 			throw new Enlight_Exception('File "'.$path.'" not exists failure');
 		}
-		return include $path;
+		if(!ob_start()) {
+			throw new Enlight_Exception('Output buffering could not be started');
+		}
+		
+		$result = include $path;
+		ob_end_clean();
+		
+		return $result;
 	}
 	
 	/**
