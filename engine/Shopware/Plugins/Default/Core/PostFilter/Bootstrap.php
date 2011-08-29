@@ -101,7 +101,7 @@ class Shopware_Plugins_Core_PostFilter_Bootstrap extends Shopware_Components_Plu
 			$source = preg_replace_callback('#<(link|img|script|input|a|form|iframe)[^<>]*(href|src|action)="([^"]*)".*>#Umsi', array($this, 'rewriteSrc'), $source);
 			$source = preg_replace_callback('#((style))="[^"]*(url\([^\)]+\))[^"]*"#', array($this,'rewriteStyle'), $source);
 		} else {
-			$source = preg_replace_callback('#<(a|form|iframe)[^<>]*(href|src|action)="([^"]*)".*>#Umsi', array($this, 'rewriteSrc'), $source);
+			$source = preg_replace_callback('#<(a|form|iframe|link)[^<>]*(href|src|action)="([^"]*)".*>#Umsi', array($this, 'rewriteSrc'), $source);
 		}
 				
 		// User defined, runtime rewriterules
