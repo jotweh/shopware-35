@@ -293,6 +293,6 @@ class Enlight_Loader extends Enlight_Class
 	 */
 	public static function checkFile($path)
     {
-        return !preg_match('/[^a-z0-9\\/\\\\_.:-\s]/i', $path);
+        return !preg_match('/[^a-z0-9\\/\\\\_.:- ]/i', $path);
     }
 }
