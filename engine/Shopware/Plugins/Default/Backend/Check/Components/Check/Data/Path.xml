@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<shopware>
+<files>
+	<file><path>shopware.php</path></file>
+	<file><path>cache/database/</path></file>
+	<file><path>cache/templates/</path></file>
+	<file><path>files/cms/</path></file>
+	<file><path>files/documents/</path></file>
+	<file><path>files/downloads/</path></file>
+	<file><path>files/552211cce724117c3178e3d22bec532ec/</path></file>
+	<file><path>images/articles/</path></file>
+	<file><path>images/banner/</path></file>
+	<file><path>images/cms/</path></file>
+	<file><path>images/supplier/</path></file>
+<!--
+	<file><path>engine/vendor/html2ps/cache/</path></file>
+	<file><path>engine/vendor/html2ps/temp/</path></file>
+-->
+	<file><path>uploads/</path></file>
+	<file><path>engine/Enlight/Vendor/mpdf/tmp/</path></file>
+	<file><path>engine/Enlight/Vendor/mpdf/ttfontdata/</path></file>
+	<file><path>engine/Shopware/Plugins/Community/</path></file>
+	<file><path>engine/Shopware/Proxies/</path></file>
+	<file><path>engine/connectors/api/tmp/</path></file>
+	<file><path>files/config/</path></file>
+</files>
+</shopware>
