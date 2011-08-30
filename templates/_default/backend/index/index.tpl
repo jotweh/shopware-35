@@ -89,7 +89,7 @@
 				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
 				<a class="ico2 status_online" href="#" onclick="javascript:loadSkeleton('auth',true);" title="{s name='UserLabel'}Benutzer: {$UserName}{/s}" style="width: 8px;"></a>
 				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
-				<a class="ico2 balloons" href="#" id="imHandler" onclick="if ($('im').getStyle('display')=='none'){ $('im').setStyle('display','block'); myExt.reload(); myExt.displayLicense(); }else{ $('im').setStyle('display','none');}" title="Instant Messenger" style="width: 8px;"></a>
+				<a class="ico2 balloons" href="#" id="imHandler" onclick="if ($('im').getStyle('display')=='none'){ $('im').setStyle('display','block'); myExt.reload(); }else{ $('im').setStyle('display','none');}" title="Instant Messenger" style="width: 8px;"></a>
 				<img src="{link file='engine/backend/img/default/footer/line.gif'}" alt="line" />
 				<div id="windowTracker" class="windowTracker" style="position:absolute;left:160px;padding-top:3px;top:-5px;width:450px">
 				</div>
