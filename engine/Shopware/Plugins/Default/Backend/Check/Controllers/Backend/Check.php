@@ -33,6 +33,20 @@ class Shopware_Controllers_Backend_Check extends Enlight_Controller_Action
 	public function skeletonAction()
 	{
 	}
+	
+	/**
+	 * Skeleton action method
+	 */
+	public function infoAction()
+	{
+		$_COOKIE = array();
+		$_REQUEST = array();
+		$_SERVER['HTTP_COOKIE'] = null;
+		if(function_exists('apache_setenv')) {
+			apache_setenv('HTTP_COOKIE', null);
+		}
+		phpinfo();
+	}
 
 	/**
 	 * Returns check paths data action

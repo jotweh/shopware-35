@@ -19,11 +19,16 @@ Ext.ns('Shopware.Check');
 	    	this.List = new Shopware.Check.List;
 			this.Path = new Shopware.Check.Path;
 			this.File = new Shopware.Check.File;
-			//this.Info = new Shopware.Check.Info;
+			this.Info = new Shopware.Check.Info;
 			
 			this.Tab = new Shopware.Check.Tab({
-				items: [this.List, this.Path, this.File]
+				items: [this.List, this.Path, this.File, this.Info]
 			});
+			
+			this.showItem = function(item) {
+				this[item].enable();
+				this.Tab.activate(this[item]);
+			};
 
 			this.items = [this.Tab];
 			

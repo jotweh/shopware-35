@@ -20,7 +20,7 @@ Ext.ns('Shopware.Check');
 	   				totalProperty: 'count',
 	   				id: 'position',
 	   				fields: [
-	   					'name', 'required_version', 'version', 'compare_result', 'group', 'position', 'info'
+	   					'name', 'required', 'version', 'result', 'group', 'position', 'info'
 	   				]
 	   			})
 	    	});
@@ -41,7 +41,7 @@ Ext.ns('Shopware.Check');
 	        		}
 	        		return value;
 	        	} },
-	        	{ dataIndex: 'required_version',  header: 'Benötigt', sortable: false, width: 200, align: 'right', renderer: function(value) {
+	        	{ dataIndex: 'required',  header: 'Benötigt', sortable: false, width: 200, align: 'right', renderer: function(value) {
 	        		if(value==false) {
 	        			return '0';
 	        		} else if(value==true) {
@@ -59,7 +59,7 @@ Ext.ns('Shopware.Check');
 	        			return value;
 	        		}
 	        	} },
-	        	{ dataIndex: 'compare_result',  header: 'Status', sortable: false, width: 200, renderer: function(value) {
+	        	{ dataIndex: 'result',  header: 'Status', sortable: false, width: 200, renderer: function(value) {
 	        		return '<a href="" class="ico '+(value?'accept':'cross')+'"></a>';
 	        	}},
 	            { dataIndex: 'group', header: "Gruppe", width: 40, sortable: false, hidden: true, groupRenderer:function(value) {
@@ -82,12 +82,13 @@ Ext.ns('Shopware.Check');
 			this.buttons = [{
 				text: 'Aktualisieren',
 				handler  : function(){
-					Window.refreshList();
-				}
+					this.store.load();
+				},
+				scope: this
 			},{
 				text: 'Weiter',
 				handler  : function(){
-					Window.showItem('Config');
+					Check.showItem('Path');
 				}
 			}];
 				        

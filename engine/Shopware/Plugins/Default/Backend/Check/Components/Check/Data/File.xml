@@ -2,7 +2,7 @@
 <shopware>
 <files>
 	<file>
-		<path>shopware.php</path>
+		<name>shopware.php</name>
 		<test version="3.0.3b" hash="140b8d166aaa284d02b946c759ebc988"/>
 		<test version="3.0.3" hash="140b8d166aaa284d02b946c759ebc988"/>
 		<test version="3.0.2" hash="c96c46059103c20539dab5b5103190c3"/>
@@ -15,9 +15,10 @@
 		<test version="3.5.3" hash="f043d4d3cb6b1f424567d8ecff136948"/>
 		<test version="3.5.4" hash="f043d4d3cb6b1f424567d8ecff136948"/>
 		<test version="3.5.4" hash="f043d4d3cb6b1f424567d8ecff136948"/>
+		<test version="3.5.5" hash="c86ae9d44a51de443a3509274f424dcf"/>
 	</file>
 	<file>
-		<path>engine/core/class/sArticles.php</path>
+		<name>engine/core/class/sArticles.php</name>
 		<test version="3.0.3b" hash="28b8ad5ddf1ac95ef110e5b0bbb6528c"/>
 		<test version="3.0.3" hash="620bbe0c2d06b3cb1f621e15b2e72b55"/>
 		<test version="3.0.2" hash="e47c935535f6794e0858cf599b9cecfc"/>
@@ -32,7 +33,7 @@
 		<test version="3.5.4" hash="7b893bc65620f687ce7c3876ff691791"/>
 	</file>
 	<file>
-		<path>engine/core/class/sBasket.php</path>
+		<name>engine/core/class/sBasket.php</name>
 		<test version="3.0.3b" hash="b08ed4a541f83dbe013368521a9b64be"/>
 		<test version="3.0.3" hash="b08ed4a541f83dbe013368521a9b64be"/>
 		<test version="3.0.2" hash="fb5315f122664f286cd59a85cdcb921e"/>
@@ -47,7 +48,7 @@
 		<test version="3.5.4" hash="99da605e6b2e774edd0ae01437e920c4"/>
 	</file>
 	<file>
-		<path>engine/core/class/sCategories.php</path>
+		<name>engine/core/class/sCategories.php</name>
 		<test version="3.0.3b" hash="386dccfeac92f73d2141fe2446da0610"/>
 		<test version="3.0.3" hash="386dccfeac92f73d2141fe2446da0610"/>
 		<test version="3.0.2" hash="695e8b62c5851cd54e594d4664b1e82b"/>
@@ -62,7 +63,7 @@
 		<test version="3.5.4" hash="c27b2e1778853ae555302e373f64ff8c"/>
 	</file>
 	<file>
-		<path>engine/core/class/sCms.php</path>
+		<name>engine/core/class/sCms.php</name>
 		<test version="3.0.3b" hash="ce7ad2ec8df7f908ed231ff00cd6db21"/>
 		<test version="3.0.3" hash="ce7ad2ec8df7f908ed231ff00cd6db21"/>
 		<test version="3.0.2" hash="5c7b437d2786bc5c2655fea38cbaeab3"/>
@@ -77,7 +78,7 @@
 		<test version="3.5.4" hash="04dae1634fc1088ca0299919a7f3d406"/>
 	</file>
 	<file>
-		<path>engine/core/class/sCmsSupport.php</path>
+		<name>engine/core/class/sCmsSupport.php</name>
 		<test version="3.0.3b" hash="f42e2ecd50c824fb54c53aba702814a8"/>
 		<test version="3.0.3" hash="f42e2ecd50c824fb54c53aba702814a8"/>
 		<test version="3.0.2" hash="687a26293b82e428fcad542cc70a27e1"/>
@@ -92,7 +93,7 @@
 		<test version="3.5.4" hash="524616db0b471c7b47c4d302d2f652cc"/>
 	</file>
 	<file>
-		<path>engine/core/class/sCore.php</path>
+		<name>engine/core/class/sCore.php</name>
 		<test version="3.0.3b" hash="e8a0b6ac01db0d5bfffcd277518ef852"/>
 		<test version="3.0.3" hash="e8a0b6ac01db0d5bfffcd277518ef852"/>
 		<test version="3.0.2" hash="f6fbc7b471af7db8690407bcd84420dc"/>
@@ -107,7 +108,7 @@
 		<test version="3.5.4" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
 	</file>
 	<file>
-		<path>engine/core/class/sCrossselling.php</path>
+		<name>engine/core/class/sCrossselling.php</name>
 		<test version="3.0.3b" hash="4fbbb3dc5fb17aa0f245963495e50d92"/>
 		<test version="3.0.3" hash="4fbbb3dc5fb17aa0f245963495e50d92"/>
 		<test version="3.0.2" hash="f463002622f9fb851c128cc4af860e2e"/>
@@ -122,7 +123,7 @@
 		<test version="3.5.4" hash="4372311a21bcde2b9dfb7179b10d4298"/>
 	</file>
 	<file>
-		<path>engine/core/class/sMarketing.php</path>
+		<name>engine/core/class/sMarketing.php</name>
 		<test version="3.0.3b" hash="2ccd27b06173728395c8a9e0e9e1f5fb"/>
 		<test version="3.0.3" hash="2ccd27b06173728395c8a9e0e9e1f5fb"/>
 		<test version="3.0.2" hash="aa6a3a2076d16872ac8d8ec517ea637f"/>
@@ -137,7 +138,7 @@
 		<test version="3.5.4" hash="8eb56b32bc3d2fc3778cf0519f0b3f73"/>
 	</file>
 	<file>
-		<path>engine/core/class/sOrder.php</path>
+		<name>engine/core/class/sOrder.php</name>
 		<test version="3.0.3b" hash="2d028da63c342877abe2ae3711c07919"/>
 		<test version="3.0.3" hash="84980168d4572a1cea5efcc7e4242e5d"/>
 		<test version="3.0.2" hash="5254d1c61699371edd9af6c0ff47e4ba"/>
@@ -152,7 +153,7 @@
 		<test version="3.5.4" hash="2332f9879d700c4d6a178ef0e9bc95b8"/>
 	</file>
 	<file>
-		<path>engine/core/class/sSearch.php</path>
+		<name>engine/core/class/sSearch.php</name>
 		<test version="3.0.3b" hash="6b800599dfa5a4c9d92d36741758d9bb"/>
 		<test version="3.0.3" hash="e959d2f2488e78b6c198b8ed9abe7894"/>
 		<test version="3.0.2" hash="f9958036975106e42bf0098ea9f70398"/>
@@ -168,7 +169,7 @@
 		<test version="3.5.4" hash="213f61ec3dcb773e30d1ed80727b1890"/>
 	</file>
 	<file>
-		<path>engine/core/class/sSystem.php</path>
+		<name>engine/core/class/sSystem.php</name>
 		<test version="3.0.3b" hash="d2614f657f7c433e19e9c03a50ce9196"/>
 		<test version="3.0.3" hash="7a5890ce666d6c9a66233e1644e4982b"/>
 		<test version="3.0.2" hash="985d22b9b1cbb19dffb32467cc0fcb80"/>
@@ -184,7 +185,7 @@
 		<test version="3.5.4" hash="a1701307cc11f3675ed1742681bf3cc8"/>
 	</file>
 	<file>
-		<path>engine/core/class/sTicketSystem.php</path>
+		<name>engine/core/class/sTicketSystem.php</name>
 		<test version="3.0.4" hash="f7ccf8a48a8b93f919dea31e6ee2a1b0"/>
 		<test version="3.0.5" hash="a6ff83397aa1933bd27971617397089e"/>
 		<test version="3.0.5.1" hash="a6ff83397aa1933bd27971617397089e"/>

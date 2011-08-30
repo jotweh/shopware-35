@@ -1,27 +1,26 @@
 <?xml version="1.0"?>
 <shopware>
 <files>
-	<file><path>shopware.php</path></file>
-	<file><path>cache/database/</path></file>
-	<file><path>cache/templates/</path></file>
-	<file><path>files/cms/</path></file>
-	<file><path>files/documents/</path></file>
-	<file><path>files/downloads/</path></file>
-	<file><path>files/552211cce724117c3178e3d22bec532ec/</path></file>
-	<file><path>images/articles/</path></file>
-	<file><path>images/banner/</path></file>
-	<file><path>images/cms/</path></file>
-	<file><path>images/supplier/</path></file>
+	<file><name>cache/database/</name></file>
+	<file><name>cache/templates/</name></file>
+	<file><name>files/cms/</name></file>
+	<file><name>files/documents/</name></file>
+	<file><name>files/downloads/</name></file>
+	<file><name>files/552211cce724117c3178e3d22bec532ec/</name></file>
+	<file><name>images/articles/</name></file>
+	<file><name>images/banner/</name></file>
+	<file><name>images/cms/</name></file>
+	<file><name>images/supplier/</name></file>
 <!--
-	<file><path>engine/vendor/html2ps/cache/</path></file>
-	<file><path>engine/vendor/html2ps/temp/</path></file>
+	<file><name>engine/vendor/html2ps/cache/</name></file>
+	<file><name>engine/vendor/html2ps/temp/</name></file>
 -->
-	<file><path>uploads/</path></file>
-	<file><path>engine/Enlight/Vendor/mpdf/tmp/</path></file>
-	<file><path>engine/Enlight/Vendor/mpdf/ttfontdata/</path></file>
-	<file><path>engine/Shopware/Plugins/Community/</path></file>
-	<file><path>engine/Shopware/Proxies/</path></file>
-	<file><path>engine/connectors/api/tmp/</path></file>
-	<file><path>files/config/</path></file>
+	<file><name>uploads/</name></file>
+	<file><name>engine/Enlight/Vendor/mpdf/tmp/</name></file>
+	<file><name>engine/Enlight/Vendor/mpdf/ttfontdata/</name></file>
+	<file><name>engine/Shopware/Plugins/Community/</name></file>
+	<file><name>engine/Shopware/Proxies/</name></file>
+	<file><name>engine/connectors/api/tmp/</name></file>
+	<file><name>files/config/</name></file>
 </files>
 </shopware>

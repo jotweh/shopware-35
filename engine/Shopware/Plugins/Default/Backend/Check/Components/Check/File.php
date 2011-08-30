@@ -7,7 +7,7 @@
  * @author Heiner Lohaus
  */
 class
-	Shopware_Components_Check_File implements IteratorAggregate
+	Shopware_Components_Check_File implements IteratorAggregate, Countable
 {
 	protected $list;
 		
@@ -36,6 +36,8 @@ class
 				$file->version = $test->version;
 			}
 		}
+		unset($file->test);
+		
 		return $file->version;
 	}
 	
@@ -49,8 +51,10 @@ class
 		if($this->list === null) {
 			$this->list = new Zend_Config_Xml(
 				dirname(__FILE__) . '/Data/File.xml',
-				'files'
+				'files',
+				true
 			);
+			$this->list = $this->list->file;
 			$this->checkAll();
 		}
 		return $this->list;

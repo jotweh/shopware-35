@@ -11,14 +11,14 @@ Ext.ns('Shopware.Check');
 				html: '<span class="info">Bitte setzten Sie bei diesen Ordnern die Dateirechte rekursiv auf 777, da Shopware ansonsten nicht ordnungsgem‰ﬂ lauff‰hig ist.</span>'
 			};
 	    	this.store = new Ext.data.Store({
-	   			url: '?action=pathList',
+	   			url: '{url action=checkPathList}',
 	   			autoLoad: true,
 	   			reader: new Ext.data.JsonReader({
 	   				root: 'data',
 	   				totalProperty: 'count',
 	   				id: 'position',
 	   				fields: [
-	   					'name', 'compare_result', 'position'
+	   					'name', 'result', 'position'
 	   				]
 	   			})
 	    	});
@@ -32,7 +32,7 @@ Ext.ns('Shopware.Check');
 	   		};
 	        this.columns = [
 	        	{ dataIndex: 'name',  header: 'Name', sortable: false, width: 200 },
-	        	{ dataIndex: 'compare_result',  header: 'Status', sortable: false, width: 200, renderer: function(value) {
+	        	{ dataIndex: 'result',  header: 'Status', sortable: false, width: 200, renderer: function(value) {
 	        		return '<a href="" class="ico '+(value?'accept':'cross')+'"></a>';
 	        	} }
 	        ];
@@ -41,12 +41,13 @@ Ext.ns('Shopware.Check');
 			this.buttons = [{
 				text: 'Aktualisieren',
 				handler  : function(){
-					Window.Path.store.load();
-				}
+					this.store.load();
+				},
+				scope: this
 			},{
 				text: 'Weiter',
 				handler  : function(){
-					Window.showItem('File');
+					Check.showItem('File');
 				}
 			}];
 				        

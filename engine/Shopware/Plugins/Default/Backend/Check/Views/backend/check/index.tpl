@@ -42,11 +42,12 @@
 {include file="backend/check/list.tpl"}
 {include file="backend/check/path.tpl"}
 {include file="backend/check/file.tpl"}
+{include file="backend/check/info.tpl"}
 <script type="text/javascript">
 //<![CDATA[
 	var Check;
 	Ext.onReady(function(){
-		var Check = new Shopware.Check.Viewport;
+		Check = new Shopware.Check.Viewport;
 	});
 //]]>
 </script>

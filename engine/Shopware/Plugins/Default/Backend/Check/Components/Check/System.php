@@ -11,7 +11,7 @@ class
 {	
 	protected $list;
 	
-	public function checkAll()
+	protected function checkAll()
 	{
 		foreach ($this->list as $requirement) {
 			$requirement->version = $this->check($requirement->name);
@@ -27,9 +27,11 @@ class
 	{
 		if($this->list === null) {
 			$this->list = new Zend_Config_Xml(
-				dirname(__FILE__) . '/Data/Check.xml',
-				'requirements'
+				dirname(__FILE__) . '/Data/System.xml',
+				'requirements',
+				true
 			);
+			$this->list = $this->list->requirement;
 			$this->checkAll();
 		}
 		return $this->list;
@@ -121,7 +123,7 @@ class
 	public function checkMysql()
 	{
 		if(Shopware()->Db()) {
-			$v = Shopware()->Db()->getAttribute(Zend_Db::ATTR_SERVER_VERSION);
+			$v = Shopware()->Db()->getConnection()->getAttribute(Zend_Db::ATTR_SERVER_VERSION);
 			if(strpos($v, '-')) {
 				return substr($v, 0, strpos($v, '-'));
 			} else {

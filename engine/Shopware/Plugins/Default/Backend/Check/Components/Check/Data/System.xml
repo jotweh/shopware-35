@@ -14,22 +14,22 @@
 	 	<name>mysql</name><group>core</group><required>5.0.45</required>
 	</requirement>
 	<requirement>
-	 	<name>pdo</name><group>core</group><required>true</required>
+	 	<name>pdo</name><group>core</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>pdo_mysql</name><group>core</group><required>true</required>
+	 	<name>pdo_mysql</name><group>core</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>disk_free_space</name><group>core</group><required>5 GB</required><info>true</info></required>
+	 	<name>disk_free_space</name><group>core</group><required>5 GB</required><info>1</info>
 	</requirement>
 	<requirement>
 	 	<name>gd</name><group>extension</group><required>2.0.0</required>
 	</requirement>
 	<requirement>
-	 	<name>gd_jpg</name><group>extension</group><required>true</required>
+	 	<name>gd_jpg</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>freetype</name><group>extension</group><required>true</required>
+	 	<name>freetype</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
 	 	<name>libxml</name><group>extension</group><required>2.6.26</required>
@@ -38,34 +38,34 @@
 	 	<name>curl</name><group>extension</group><required>7.0.0</required>
 	</requirement>
 	<requirement>
-	 	<name>openssl</name><group>extension</group><required>true</required>
+	 	<name>openssl</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>session</name><group>extension</group><required>true</required>
+	 	<name>session</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>mbstring</name><group>extension</group><required>true</required>
+	 	<name>mbstring</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>json</name><group>extension</group><required>true</required>
+	 	<name>json</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>xml</name><group>extension</group><required>true</required>
+	 	<name>xml</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>simplexml</name><group>extension</group><required>true</required>
+	 	<name>simplexml</name><group>extension</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>ini_set</name><group>config</group><required>true</required>
+	 	<name>ini_set</name><group>config</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>include_path</name><group>config</group><required>true</required>
+	 	<name>include_path</name><group>config</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>register_globals</name><group>config</group><required>false</required>
+	 	<name>register_globals</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
-	 	<name>session.auto_start</name><group>config</group><required>false</required>
+	 	<name>session.auto_start</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
 	 	<name>session.gc_probability</name><group>config</group><required>1</required>
@@ -74,7 +74,7 @@
 	 	<name>session.gc_divisor</name><group>config</group><required>10</required>
 	</requirement>
 	<requirement>
-	 	<name>session.use_trans_sid</name><group>config</group><required>false</required>
+	 	<name>session.use_trans_sid</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
 	 	<name>memory_limit</name><group>config</group><required>64M</required>
@@ -89,28 +89,28 @@
 	 	<name>post_max_size</name><group>config</group><required>8M</required>
 	</requirement>
 	<requirement>
-	 	<name>magic_quotes</name><group>config</group><required>false</required>
+	 	<name>magic_quotes</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
-	 	<name>allow_url_fopen</name><group>config</group><required>true</required>
+	 	<name>allow_url_fopen</name><group>config</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>file_uploads</name><group>config</group><required>true</required>
+	 	<name>file_uploads</name><group>config</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>zend.ze1_compatibility_mode</name><group>config</group><required>false</required>
+	 	<name>zend.ze1_compatibility_mode</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
-	 	<name>suhosin.session.cryptua</name><group>config</group><required>false</required>
+	 	<name>suhosin.session.cryptua</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
-	 	<name>zip</name><group>other</group><required>true</required>
+	 	<name>zip</name><group>other</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>ftp</name><group>other</group><required>true</required>
+	 	<name>ftp</name><group>other</group><required>1</required>
 	</requirement>
 	<requirement>
-	 	<name>safe_mode</name><group>other</group><required>false</required>
+	 	<name>safe_mode</name><group>other</group><required>0</required>
 	</requirement>
 </requirements>
 </shopware>
