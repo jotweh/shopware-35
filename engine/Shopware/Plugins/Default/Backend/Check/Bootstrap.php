@@ -24,11 +24,11 @@ class Shopware_Plugins_Backend_Check_Bootstrap extends Shopware_Components_Plugi
 		$this->subscribeEvent($event);
 		
 		$sql = 'DELETE FROM `s_core_menu` WHERE `name`=?';
-		Shopware()->Db()->query($sql, array('Systeminfo'));
+		Shopware()->Db()->query($sql, array($this->getName()));
 		
 		$parent = $this->Menu()->findOneBy('label', 'Einstellungen');
 		$item = $this->createMenuItem(array(
-			'label' => 'Systeminfo',
+			'label' => $this->getName(),
 			'onclick' => 'openAction(\'check\');',
 			'class' => 'ico2 information_frame',
 			'active' => 1,
@@ -59,5 +59,15 @@ class Shopware_Plugins_Backend_Check_Bootstrap extends Shopware_Components_Plugi
 		);
     	
 		return dirname(__FILE__) . '/Controllers/Backend/Check.php';
+    }
+    
+    /**
+	 * Returns plugin name
+	 *
+	 * @return string
+	 */
+    public function getName()
+    {
+    	return 'Systeminfo';
     }
 }

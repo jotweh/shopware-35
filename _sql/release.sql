@@ -48,3 +48,15 @@ ALTER TABLE `s_emarketing_lastarticles` ADD UNIQUE (
  * @since 3.5.5 - 2011/08/16
  */
 ALTER TABLE `s_articles` ADD INDEX ( `changetime` );
+
+/*
+ * @ticket 5857 (internal)
+ * @author h.lohaus 
+ * @since 3.5.5 - 2011/08/30
+ */
+INSERT IGNORE INTO `s_core_plugins` (`namespace`, `name`, `label`, `source`, `description`, `description_long`, `active`, `added`, `installation_date`, `update_date`, `autor`, `copyright`, `license`, `version`, `support`, `changes`, `link`) VALUES
+('Backend', 'Check', 'Systeminfo', 'Default', '', '', 1, '2010-10-18 00:00:00', '2010-10-18 00:00:00', '2010-10-18 00:00:00', 'shopware AG', 'Copyright © 2011, shopware AG', '', '1.0.0', 'http://wiki.shopware.de', '', 'http://www.shopware.de/');
+SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `label` = 'Systeminfo');
+INSERT IGNORE INTO `s_core_subscribes` (`subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
+('Enlight_Controller_Dispatcher_ControllerPath_Backend_Check', 0, 'Shopware_Plugins_Backend_Check_Bootstrap::onGetControllerPathBackend', @parent, 0);
+UPDATE `s_core_menu` SET `onclick` = 'openAction(\'check\');', `pluginID` = @parent WHERE `name` = 'Systeminfo';

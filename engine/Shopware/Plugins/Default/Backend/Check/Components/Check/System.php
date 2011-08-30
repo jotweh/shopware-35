@@ -1,16 +1,18 @@
 <?php
 /**
- * Shopware Config Component
+ * Shopware Check System
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
  */
-class
-	Shopware_Components_Check_System implements IteratorAggregate, Countable
+class Shopware_Components_Check_System implements IteratorAggregate, Countable
 {	
 	protected $list;
 	
+	/**
+	 * Checks all requirements
+	 */
 	protected function checkAll()
 	{
 		foreach ($this->list as $requirement) {
@@ -23,6 +25,11 @@ class
 		}
 	}
 	
+	/**
+	 * Returns the check list
+	 *
+	 * @return Iterator
+	 */
 	public function getList()
 	{
 		if($this->list === null) {
@@ -37,7 +44,13 @@ class
 		return $this->list;
 	}
 	
-	public function check($name)
+	/**
+	 * Checks a requirement
+	 *
+	 * @param string $name
+	 * @return bool|null
+	 */
+	protected function check($name)
 	{
 		$m = 'check'.str_replace(' ', '', ucwords(str_replace(array('_','.'), ' ', $name)));
 		if(method_exists($this, $m)) {
@@ -60,7 +73,15 @@ class
 		}
 	}
 	
-	public function compare($name, $version, $required)
+	/**
+	 * Compares the requirement with the version
+	 *
+	 * @param string $name
+	 * @param string $version
+	 * @param string $required
+	 * @return bool
+	 */
+	protected function compare($name, $version, $required)
 	{
 		$m = 'compare'.str_replace(' ', '', ucwords(str_replace(array('_','.'), ' ', $name)));
 		if(method_exists($this, $m)) {
@@ -76,11 +97,21 @@ class
 		}
 	}
 	
+	/**
+	 * Returns the check list
+	 *
+	 * @return Iterator
+	 */
 	public function getIterator()
     {
         return $this->getList();
     }
-		
+	
+    /**
+     * Checks the zend optimizer
+     *
+     * @return bool|string
+     */
 	public function checkZendOptimizer()
 	{
 		if(!extension_loaded('Zend Optimizer')) {
@@ -96,6 +127,11 @@ class
 		return false;
 	}
 	
+	/**
+     * Checks the ion cube loader
+     *
+     * @return bool|string
+     */
 	public function checkIonCubeLoader()
 	{
 		if(!extension_loaded('ionCube Loader')) {
@@ -111,6 +147,11 @@ class
 		return false;
 	}
 	
+	/**
+     * Checks the php version
+     *
+     * @return bool|string
+     */
 	public function checkPhp()
 	{
 		if(strpos(phpversion(), '-')) {
@@ -120,6 +161,11 @@ class
 		}
 	}
 	
+	/**
+     * Checks the mysql version
+     *
+     * @return bool|string
+     */
 	public function checkMysql()
 	{
 		if(Shopware()->Db()) {
@@ -133,6 +179,11 @@ class
 		return false;
 	}
 	
+	/**
+     * Checks the curl version
+     *
+     * @return bool|string
+     */
 	public function checkCurl()
 	{
 		if (function_exists('curl_version')) {
@@ -145,6 +196,11 @@ class
 		}
 	}
 	
+	/**
+     * Checks the lib xml version
+     *
+     * @return bool|string
+     */
 	public function checkLibXml()
 	{
 		if(defined('LIBXML_DOTTED_VERSION')) {
@@ -154,6 +210,11 @@ class
 		}
 	}
 	
+	/**
+     * Checks the gd version
+     *
+     * @return bool|string
+     */
 	public function checkGd()
 	{
 		if (function_exists('gd_info')) {
@@ -170,6 +231,11 @@ class
 		}
 	}
 	
+	/**
+     * Checks the gd jpg support
+     *
+     * @return bool|string
+     */
 	public function checkGdJpg()
 	{
 		if (function_exists('gd_info')) {
@@ -180,6 +246,11 @@ class
 		}
 	}
 	
+	/**
+	 * Checks the freetype support
+	 *
+	 * @return bool|string
+	 */
 	public function checkFreetype()
 	{
 		if (function_exists('gd_info')) {
@@ -190,6 +261,11 @@ class
 		}
 	}
 	
+	/**
+	 * Checks the session save path config
+	 *
+	 * @return bool|string
+	 */
 	public function checkSessionSavePath()
 	{
 		if (function_exists('session_save_path')) {
@@ -201,6 +277,11 @@ class
 		}
 	}
 	
+	/**
+	 * Checks the magic quotes config
+	 *
+	 * @return bool|string
+	 */
 	public function checkMagicQuotes()
 	{
 		if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
@@ -211,7 +292,11 @@ class
 			return false;
 		}
 	}
-	
+	/**
+	 * Checks the disk free space
+	 *
+	 * @return bool|string
+	 */
 	public function checkDiskFreeSpace()
 	{
 		if(function_exists('disk_free_space')) {
@@ -220,7 +305,12 @@ class
 			return false;
 		}
 	}
-		
+	
+	/**
+	 * Checks the include path config
+	 *
+	 * @return unknown
+	 */
 	public function checkIncludePath()
 	{
 		if (function_exists('set_include_path')) {
@@ -231,6 +321,13 @@ class
 		}
 	}
 	
+	/**
+	 * Compare max execution time config
+	 *
+	 * @param string $version
+	 * @param string $required
+	 * @return bool
+	 */
 	public function compareMaxExecutionTime($version, $required)
 	{
 		if(!$version) {
@@ -239,12 +336,18 @@ class
 		return version_compare($required, $version, '<=');
 	}
 	
+	/**
+	 * Decode php size format
+	 *
+	 * @param string $val
+	 * @return float
+	 */
 	public static function decodePhpSize ($val)
 	{
 	    $val = trim($val);
 	    $last = strtolower($val[strlen($val)-1]);
-	    switch($last) 
-	    {
+	    $val = (float) $val;
+	    switch($last) {
 	        case 'g':
 	            $val *= 1024;
 	        case 'm':
@@ -255,12 +358,18 @@ class
 	    return $val;
 	}
 	
+	/**
+	 * Decode byte size format
+	 *
+	 * @param string $val
+	 * @return float
+	 */
 	public static function decodeSize ($val)
 	{
 	    $val = trim($val);
 	    list($val, $last) = explode(' ',$val);
-	    switch(strtoupper($last))
-	    {
+	    $val = (float) $val;
+	    switch(strtoupper($last)) {
 	    	case 'TB':
 	            $val *= 1024;
 	        case 'GB':
@@ -275,6 +384,12 @@ class
 	    return $val;
 	}
 	
+	/**
+	 * Encode byte size format
+	 *
+	 * @param float $bytes
+	 * @return string
+	 */
 	public static function encodeSize($bytes)
 	{
 	    $types = array( 'B', 'KB', 'MB', 'GB', 'TB' );
@@ -282,11 +397,21 @@ class
 	    return( round( $bytes, 2 ) . ' ' . $types[$i] );
 	}
 	
+	/**
+	 *  Returns the check list
+	 *
+	 * @return array
+	 */
 	public function toArray()
     {
     	return $this->getList()->toArray();
     }
     
+    /**
+     * Counts the check list
+     *
+     * @return int
+     */
     public function count()
     {
     	return $this->getList()->count();
