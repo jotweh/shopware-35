@@ -99,16 +99,18 @@
 	// Besucher
 	$dashboard[] = array("desc"=>"Besucher",
 	"today"=>$visitsToday,
-	"yesterday"=>$visitsYesterday
+	"yesterday"=>floatval($visitsYesterday)
 	);
 	
 	// Besucher
 	$dashboard[] = array("desc"=>"Seitenaufrufe",
 	"today"=>$hitsToday,
-	"yesterday"=>$hitsYesterday
+	"yesterday"=>floatval($hitsYesterday)
 	);
+
+
 	
-	$queryUsersUnlock = mysql_query("
+	/*$queryUsersUnlock = mysql_query("
 	SELECT id FROM s_user 
 	WHERE
 		validation != ''
@@ -120,7 +122,7 @@
 		"merchants"=>true,
 		"link"=>"loadSkeleton('userunlock')"
 		);
-	}
+	}*/
 	
 	require_once("json.php");
 	$json = new Services_JSON();

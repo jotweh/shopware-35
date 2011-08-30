@@ -20,23 +20,12 @@
 	<div class="grid_16 register" id="center">
 		{if $register.personal.form_data.sValidation}
 			{block name='frontend_register_index_dealer_register'}
-			    <div class="supplier_register">
-			    	<div class="inner_container">
-				        <h1>{$sShopname} {s name='RegisterHeadlineSupplier'}{/s}</h1>
-				       	<strong>{s name='RegisterInfoSupplier'}{/s}</strong><br />
-				        <a href="{url controller='account'}" class="account">{s name='RegisterInfoSupplier2'}{/s}</a>
-				        
-				        <div class="space">&nbsp;</div>
-				        
-						<h4 class="bold">{s name='RegisterInfoSupplier3'}{/s}</h4>
-						
-				        <h5 class="bold">{s name='RegisterInfoSupplier4'}{/s}</h5>{s name='RegisterInfoSupplier5'}{/s}
-				        <div class="space">&nbsp;</div>
-				        
-				       <h5 class="bold">{s name='RegisterInfoSupplier6'}{/s}</h5>{s name='RegisterInfoSupplier7'}{/s}
-			    	</div>
-			    </div>
+		    {* Included for compatibility reasons *}
 		    {/block}
+			{block name='frontend_register_index_cgroup_header'}
+			{* Include information related to registration for other customergroups then guest, this block get overridden by b2b essentials plugin *}
+				{include file="frontend/register/index_merchants.tpl"}
+			{/block}
 		{/if}
 			
 		<form method="post" action="{$this->url(['action'=>'saveRegister'])}">
@@ -51,11 +40,7 @@
 			{include file="frontend/register/shipping_fieldset.tpl" form_data=$register->shipping->form_data error_flags=$register->shipping->error_flags country_list=$register->shipping->country_list}
 			
 			<div class="payment_method register_last"></div>
-			{*
-			{include file="frontend/register/error_message.tpl" error_messages=$register->payment->error_messages}
-			{include file="frontend/register/payment_fieldset.tpl" form_data=$register->payment->form_data error_flags=$register->payment->error_flags payment_means=$register->payment->payment_means}
-			*}
-			
+
 			{* Privacy checkbox *}
 			{if !$update}
 				{if $this->config('ACTDPRCHECK')}
@@ -73,7 +58,6 @@
 			<div class="required_fields">
 				{s name='RegisterPersonalRequiredText' namespace='frontend/register/personal_fieldset'}{/s}
 			</div>
-	
 			
 			<div class="actions">
 				<input id="registerbutton" type="submit" class="right" value="{s name='RegisterIndexActionSubmit'}{/s}" />
