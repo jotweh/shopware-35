@@ -129,7 +129,7 @@ if (ini_get("magic_quotes_gpc")){
 	<p style="font-weight:bold;color:#F00;font-size:14px;margin-bottom:30px">Sie haben die PHP-Direktive magic_quotes_gpc aktiviert,dies führt
 		dazu das die eMail-Vorlagen defekt gespeichert werden. Bitte deaktivieren Sie diese Funktion oder
 		kontaktieren Sie Ihren Provider!</p>
-<?
+<?php
 }
 if ($_GET["edit"]){
 ?>
