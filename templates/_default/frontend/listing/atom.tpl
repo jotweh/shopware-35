@@ -24,7 +24,7 @@
 		]]>
 		</summary>
 		<content type="html">
-		<![CDATA[{
+		<![CDATA[
 			{$sArticle.description_long|strip_tags|escape}
 		]]>
 		</content> 
