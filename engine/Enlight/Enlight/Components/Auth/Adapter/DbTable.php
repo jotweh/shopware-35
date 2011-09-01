@@ -10,13 +10,36 @@
  */
 class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 {
+	/**
+	 * The expiry Column value
+	 *
+	 * @var string
+	 */
 	protected $expiryColumn;
+
+	/**
+	 * The expiry value
+	 *
+	 * @var int
+	 */
 	protected $expiry;
+
+	/**
+	 * The session id value
+	 *
+	 * @var string
+	 */
 	protected $sessionId;
+
+	/**
+	 * The session id column value
+	 *
+	 * @var string
+	 */
 	protected $sessionIdColumn;
 	
 	/**
-	 * Add condition method
+	 * Adds a where-condition to the db-select.
 	 *
 	 * @param string $condition
 	 * @return Enlight_Components_Auth_Adapter_DbTable
@@ -28,7 +51,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 	}
 	
 	/**
-	 * Set expiry column method
+	 * Sets the expiry column method and the expiry time.
 	 *
 	 * @param string $expiryColumn
 	 * @param int $expiry
@@ -61,7 +84,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 	}
 	
 	/**
-	 * Update expiry method
+	 * Updates the expiration date to now.
 	 */
 	protected function updateExpiry()
 	{
@@ -78,7 +101,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 	}
 	
 	/**
-	 * Update session id method
+	 * Update the session id field in the session db.
 	 */
 	protected function updateSessionId()
 	{
@@ -91,10 +114,18 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 			$this->_zendDb->quoteIdentifier($this->_identityColumn, true) . ' = ?',
 			$this->_identity
 		));
+		$this->_zendDb->update($this->_tableName, array(
+			$this->sessionIdColumn => null
+		), $this->_zendDb->quoteInto(
+			$this->_zendDb->quoteIdentifier($this->_identityColumn, true) . ' != ?',
+			$this->_identity
+		));
 	}
 	
 	/**
-	 * Refresh auth metod
+	 * Refresh the authentication.
+	 * 
+	 * Checks the expiry date and the identity.
 	 *
 	 * @return Zend_Auth_Result
 	 */
@@ -131,7 +162,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
     }
     
     /**
-     * Set session id column
+     * Sets the session id column value.
      *
      * @param string $sessionIdColumn
      * @return Enlight_Components_Auth_Adapter_DbTable
@@ -143,7 +174,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
     }
     
     /**
-     * Set session id method
+     * Sets the session id value in the instance.
      *
      * @param string $value
      * @return Enlight_Components_Auth_Adapter_DbTable
