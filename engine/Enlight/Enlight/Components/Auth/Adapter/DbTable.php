@@ -119,6 +119,9 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 		), $this->_zendDb->quoteInto(
 			$this->_zendDb->quoteIdentifier($this->_identityColumn, true) . ' != ?',
 			$this->_identity
+		) . ' AND ' . $this->_zendDb->quoteInto(
+			$this->_zendDb->quoteIdentifier($this->sessionIdColumn, true) . ' = ?',
+			$this->sessionId
 		));
 	}
 	
