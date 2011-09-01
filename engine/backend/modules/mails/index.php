@@ -126,28 +126,80 @@ function deleteArticle(ev,text){
 		}); 
 	  
 		tree = new Ext.tree.TreePanel({
-		id:'feed-tree',
-		region:'west',
-		title:'eMail-Vorlagen',
-		split:true,
-		width: 300,
-		minSize: 175,
-		maxSize: 400,
-		collapsible: true,
-		margins:'0 0 0 0',
-		cmargins:'0 5 5 5',
-		rootVisible:false,
-		lines:false,
-		loader: new Ext.tree.TreeLoader({dataUrl:'../../../backend/ajax/getMails.php'}),
-		autoScroll:true,
-		root: new Ext.tree.AsyncTreeNode({
-		 text: '<?php echo $sLang["auth"]["auth_user"] ?>',
-		 cls:'feeds-node',
-		 expanded:true,
-		 id:'0'
-		}),
-		collapseFirst:false,
-		
+			id:'feed-tree',
+			region:'west',
+			title:'eMail-Vorlagen',
+			split:true,
+			width: 300,
+			minSize: 175,
+			maxSize: 400,
+			collapsible: true,
+			margins:'0 0 0 0',
+			cmargins:'0 5 5 5',
+			rootVisible:false,
+			lines:false,
+			loader: new Ext.tree.TreeLoader({dataUrl:'../../../backend/ajax/getMails.php'}),
+			autoScroll:true,
+			root: new Ext.tree.AsyncTreeNode({
+			 text: '<?php echo $sLang["auth"]["auth_user"] ?>',
+			 cls:'feeds-node',
+			 expanded:true,
+			 id:'0'
+			}),
+			collapseFirst:false,
+			tbar: new Ext.Toolbar(
+			{
+			items: [
+
+			new Ext.Button(
+					{
+						text: 'eMail-Vorlage hinzufügen',
+						handler: function(){
+							 var url = "textvorlagen.php?new=1";
+							 Ext.get('framepanelmyiframe').dom.src = url;
+						}
+					}
+			),
+			new Ext.Button(
+					{
+						text: 'eMail-Vorlage löschen',
+						handler: function(){
+							var id = tree.getSelectionModel().getSelectedNode();
+							if (!id){
+								alert('Bitte wählen Sie zunächst eine Vorlage!');
+								return;
+							}
+							if (id.attributes.shopwaremail){
+								alert('Shopware Standard eMail-Vorlagen können nicht gelöscht werden');
+								return;
+							}
+							Ext.MessageBox.confirm('Bestätigung erforderlich', 'Soll die eMail-Vorlage ' + id.attributes.text + ' wirklich gelöscht werden?', function deleteMailConfirmed(btn){
+							
+								if (btn=="yes"){
+									Ext.Ajax.request({
+										waitMsg: 'Lösche eMail',
+										url: '<?php echo $_SERVER["SERVER_PORT"] == "80" ? "http" : "https" ?>://<?php echo $sCore->sCONFIG['sBASEPATH']?>/engine/backend/ajax/deleteMail.php',
+										params: {
+											delete: id.attributes.id
+										},
+										failure:function(response,options){
+											Ext.MessageBox.alert('Info','eMail-Vorlage konnte nicht gelöscht werden');
+										},
+										success:function(response,options){
+											Ext.MessageBox.alert('Info','eMail-Vorlage wurde gelöscht');
+											tree.root.reload();
+										}
+									});
+
+								}
+							},this);
+						},
+						scope: this
+					}
+			)			
+			]
+			}
+			)
 		});
 	    
 	    tree.on('click', function(e){

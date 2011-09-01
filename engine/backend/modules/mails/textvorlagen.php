@@ -54,6 +54,18 @@ if ($_POST["sAction"]=="saveArticle"){
 			$insertArticle = mysql_query($sql);
 			
 			
+		}elseif ($_GET["new"]){
+			
+			$_POST["name"] = mysql_real_escape_string($_POST["name"]);
+			mysql_query("
+			INSERT INTO s_core_config_mails (name,htmlable)
+			VALUES ('{$_POST["name"]}',1)
+			");
+			$_GET["edit"] = mysql_insert_id();
+			unset($_GET["new"]);
+			if (mysql_error()){
+				die(mysql_error());
+			}
 		}
 		
 		if ($insertArticle){
@@ -131,12 +143,17 @@ if (ini_get("magic_quotes_gpc")){
 		kontaktieren Sie Ihren Provider!</p>
 <?php
 }
-if ($_GET["edit"]){
+if ($_GET["edit"] || $_GET["new"]){
 ?>
-<form enctype="multipart/form-data" method="POST" id="ourForm" action="<?php echo $_SERVER["PHP_SELF"]."?id=".$_GET["id"]?>&edit=<?php echo $_GET["edit"]?>">
+<form enctype="multipart/form-data" method="POST" id="ourForm" action="<?php echo $_SERVER["PHP_SELF"]."?id=".$_GET["id"]?>&edit=<?php echo $_GET["edit"]?>&new=<?php echo $_GET["new"]?>">
 		<input type="hidden" name="sAction" value="saveArticle">
 		<fieldset>
-		<legend>eMail-Vorlage bearbeiten</legend>
+		<legend>eMail-Vorlage <?php if ($_GET["new"]) { ?>anlegen<?php }else { echo "bearbeiten"; } ?></legend>
+			<?php
+				if ($_GET["new"]){
+					echo "Vergeben Sie zunächst einen eindeutigen Key für diese Vorlage (Keine Leerzeichen und Sonderzeichen erlaubt!)<br />";
+				}
+			?>
 		<ul>
 		
 	
@@ -144,7 +161,7 @@ if ($_GET["edit"]){
 		<?php
 		$getFields = mysql_query("SHOW COLUMNS FROM s_core_config_mails");
 		
-		
+		if ($_GET["edit"]){
 		$substitute = array("id"=>"hide",
 		"name"=>"hide",
 		"ishtml"=>"HTML eMail verschicken",
@@ -156,7 +173,20 @@ if ($_GET["edit"]){
 		"attachment"=>"eMail-Anhang",
 		"htmlable"=>"hide",
 		);
-		
+		}else {
+			$substitute = array("id"=>"hide",
+			"name"=>"Key",
+			"ishtml"=>"hide",
+			"frommail"=>"hide",
+			"fromname"=>"hide",
+			"subject"=>"hide",
+			"content"=>"hide",
+			"contentHTML"=>"hide",
+			"attachment"=>"hide",
+			"htmlable"=>"hide",
+			);
+			$getSite = array();
+		}
 		
 		while ($row = mysql_fetch_assoc($getFields)) {
 		

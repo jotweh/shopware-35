@@ -48,7 +48,8 @@ if ($_REQUEST["node"]==1){
 	if (@mysql_num_rows($getCategories)){
 		while ($category=mysql_fetch_assoc($getCategories)){
 			$category["name"] = utf8_encode($category["name"]." - ".$category["subject"]);
-			$nodes[] = array('text'=>$category["name"], 'id'=>$category["id"],'leaf'=>true, 'iconcls'=>'');
+			
+			$nodes[] = array('text'=>$category["name"], 'id'=>$category["id"],'leaf'=>true, 'iconcls'=>'','shopwaremail'=>substr($category["name"],0,1)=="s" ? true : false);
 		}
 	}
 //}
