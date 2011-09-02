@@ -11,7 +11,7 @@
 abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_Action
 {
 	/**
-	 * Returns payment short name
+	 * Returns the current payment short name.
 	 *
 	 * @return string
 	 */
@@ -26,7 +26,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Returns currency short name
+	 * Returns the current currency short name.
 	 *
 	 * @return string
 	 */
@@ -36,7 +36,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Create payment unique id
+	 * Creates a unique payment id and returns it then.
 	 *
 	 * @return unknown
 	 */
@@ -46,7 +46,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Save and complete order
+	 * Stores the final order and does some more actions accordingly.
 	 *
 	 * @param string $transactionId
 	 * @param string $paymentUniqueId
@@ -71,7 +71,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 			Shopware()->Session()->sUserId
 		));
 		
-		if(empty($order)) {
+		if(empty($orderNumber)) {
 			$user = $this->getUser();
 			$basket = $this->getBasket();
 			
@@ -104,13 +104,13 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Save payment status
+	 * Saves the payment status an sends and possibly sends a status email.
 	 *
 	 * @param string $transactionId
 	 * @param string $paymentUniqueId
 	 * @param int $paymentStatusId
 	 * @param bool $sendStatusMail
-	 * @return unknown
+	 * @return void
 	 */
 	public function savePaymentStatus($transactionId, $paymentUniqueId, $paymentStatusId, $sendStatusMail = false)
 	{
@@ -128,7 +128,7 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Returns basket amount
+	 * Return the full amount to pay.
 	 *
 	 * @return float
 	 */
@@ -144,28 +144,28 @@ abstract class Shopware_Controllers_Frontend_Payment extends Enlight_Controller_
 	}
 	
 	/**
-	 * Returns user data
+	 * Returns the full user data as array.
 	 *
 	 * @return array
 	 */
 	public function getUser()
 	{
-		if(!empty(Shopware()->Session()->sOrderVariables->sUserData)) {
-			return Shopware()->Session()->sOrderVariables->sUserData;
+		if(!empty(Shopware()->Session()->sOrderVariables['sUserData'])) {
+			return Shopware()->Session()->sOrderVariables['sUserData'];
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
-	 * Returns user data
+	 * Returns the full basket data as array.
 	 *
 	 * @return array
 	 */
 	public function getBasket()
 	{
-		if(!empty(Shopware()->Session()->sOrderVariables->sBasket)) {
-			return Shopware()->Session()->sOrderVariables->sBasket;
+		if(!empty(Shopware()->Session()->sOrderVariables['sBasket'])) {
+			return Shopware()->Session()->sOrderVariables['sBasket'];
 		} else {
 			return null;
 		}
