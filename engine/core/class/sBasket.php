@@ -957,13 +957,46 @@ class sBasket
 
 					}
 				}
+				
+				if (empty($value["modus"])){
+					$tax = $this->sSYSTEM->sMODULES['sArticles']->sGetArticleTaxById($getArticles[$key]["articleID"]);
+				} elseif ($value["modus"]==3 || $value["modus"]==4 || $value["modus"]==10){
+					if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
+						$tax = $this->getMaxTax();
+					} else {
+						$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
+					}
+				} elseif ($value["modus"]==2){
+					// Validate voucher
+					if (empty($ticketResult["taxconfig"]) || $ticketResult["taxconfig"] == "default"){
+						$tax = $this->sSYSTEM->sCONFIG['sVOUCHERTAX'];
+					} elseif ($ticketResult["taxconfig"] == "auto"){
+						$tax = $this->getMaxTax();
+					} elseif ($ticketResult["taxconfig"]=="none"){
+						$tax = 0;
+					} elseif (intval($ticketResult["taxconfig"])){
+						// Fix defined tax
+						$getArticles[$key]["taxID"] = $ticketResult["taxconfig"];
+						$tax = $this->sSYSTEM->sDB_CONNECTION->getOne("
+							SELECT tax FROM s_core_tax WHERE id = ?
+						", array($getArticles[$key]["taxID"]));
+					}
+				} else {
+					$tax = 0;
+				}
+				$getArticles[$key]["taxPercent"] = round($tax, 2);
+				
+				if (empty($getArticles[$key]["taxID"])) {
+					$getArticles[$key]["taxID"]  = $this->sSYSTEM->sDB_CONNECTION->GetOne("
+						SELECT id FROM s_core_tax WHERE tax = ?
+					", array($tax));
+				}
+				
 				// If shop is in net mode, we have to consider
 				// the tax separately
 				if (($this->sSYSTEM->sCONFIG['sARTICLESOUTPUTNETTO'] && !$this->sSYSTEM->sUSERGROUPDATA["tax"]) || (!$this->sSYSTEM->sUSERGROUPDATA["tax"] && $this->sSYSTEM->sUSERGROUPDATA["id"]))
 				{
-
 					if (empty($value["modus"])){
-						$tax = $this->sSYSTEM->sMODULES['sArticles']->sGetArticleTaxById($getArticles[$key]["articleID"]);
 						$priceWithTax = round($netprice,2) / 100 * (100+$tax);
 
 						$getArticles[$key]["amountWithTax"] = $quantity * $priceWithTax;
@@ -973,40 +1006,15 @@ class sBasket
 						}
 
 					}elseif ($value["modus"]==3){
-						if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
-							$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
-						}else {
-							$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
-						}
 						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$tax)),2);
 						// Basket discount
 					}elseif ($value["modus"]==2){
-						// Validate voucher
-						if (empty($ticketResult["taxconfig"]) || $ticketResult["taxconfig"] == "default"){
-							$tax = $this->sSYSTEM->sCONFIG['sVOUCHERTAX'];
-						}elseif ($ticketResult["taxconfig"] == "auto"){
-							$tax = $this->getMaxTax();
-						}elseif ($ticketResult["taxconfig"]=="none"){
-							$tax = 0;
-						}elseif (intval($ticketResult["taxconfig"])){
-							// Fix defined tax
-							$temporaryTax =$ticketResult["taxconfig"];
-							$tax = $this->sSYSTEM->sDB_CONNECTION->getOne("
-							SELECT tax FROM s_core_tax WHERE id = ?
-							",array($temporaryTax));
-						}
-
 						$getArticles[$key]["amountWithTax"] = round(1 * (round($price,2) / 100 * (100+$tax)),2);
 						
 						if ($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"] && $this->sCheckForDiscount()){
 							$discount += ($getArticles[$key]["amountWithTax"]/100*($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"]));
 						}
-					}elseif ($value["modus"]==4 || $value["modus"]==10){
-						if (!empty($this->sSYSTEM->sCONFIG["sTAXAUTOMODE"])){
-							$tax = $this->sSYSTEM->sMODULES['sBASKET']->getMaxTax();
-						}else {
-							$tax = $this->sSYSTEM->sCONFIG['sDISCOUNTTAX'];
-						}
+					} elseif ($value["modus"]==4 || $value["modus"]==10){
 						$getArticles[$key]["amountWithTax"] = round(1 * ($price / 100 * (100+$tax)),2);
 						if ($this->sSYSTEM->sUSERGROUPDATA["basketdiscount"] && $this->sCheckForDiscount()){
 							$discount += ($getArticles[$key]["amountWithTax"]/100*$this->sSYSTEM->sUSERGROUPDATA["basketdiscount"]);
