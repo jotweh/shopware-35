@@ -1491,9 +1491,9 @@ else {
 			
 			if (!isset($result_data) && isset($default)) { $result_data = $default;}
 			
-			if($element["domname"] !="notification" || $element["domname"] =="notification" && $sCore->sCheckLicense("","",$sCore->sLicenseData["sPREMIUM"])) {
-				$form->addElement($element["domtype"],$element["domname"],$element["domdescription"],1,$result_data,$element["required"],$element["domclass"],$element["help"],$element["multilanguage"]);
-			}
+
+			$form->addElement($element["domtype"],$element["domname"],$element["domdescription"],1,$result_data,$element["required"],$element["domclass"],$element["help"],$element["multilanguage"]);
+			
 			
 			if ($element["required"]){
 				$form->addRule($element["domname"],''.$element["domdescription"].'','required',$element["domtype"]);
