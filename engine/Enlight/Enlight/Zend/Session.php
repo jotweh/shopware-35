@@ -490,7 +490,7 @@ class Zend_Session extends Zend_Session_Abstract
             
             if((self::sessionExists() && !isset($_SESSION['__ZA']))
               || !self::getId()) {
-				session_regenerate_id(true);
+				//session_regenerate_id(true);
 				session_destroy();
 				if(self::$_saveHandler !== null) {
 					self::setSaveHandler(self::$_saveHandler);
