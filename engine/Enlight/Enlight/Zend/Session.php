@@ -442,13 +442,13 @@ class Zend_Session extends Zend_Session_Abstract
             self::setOptions(is_array($options) ? $options : array());
         }
         
-        if(!session_id()&&ini_get('session.use_cookies')==1&&!empty($_COOKIE[session_name()])) {
-        	session_id($_COOKIE[session_name()]);
+        if(!session_id() && ini_get('session.use_cookies')==1 && !empty($_COOKIE[session_name()])) {
+        	self::setId($_COOKIE[session_name()]);
         }
-        if(!session_id()&&!empty($_REQUEST[session_name()])) {
-        	session_id($_REQUEST[session_name()]);
+        if(!session_id() && !empty($_REQUEST[session_name()])) {
+        	self::setId($_REQUEST[session_name()]);
         }
-
+        
         // In strict mode, do not allow auto-starting Zend_Session, such as via "new Zend_Session_Namespace()"
         if (self::$_strict && $options === true) {
             /** @see Zend_Session_Exception */
@@ -488,9 +488,10 @@ class Zend_Session extends Zend_Session_Abstract
 
             $startedCleanly = session_start();
             
-            if(self::sessionExists() && !isset($_SESSION['__ZA'])) {
-				session_destroy();
+            if((self::sessionExists() && !isset($_SESSION['__ZA']))
+              || !self::getId()) {
 				session_regenerate_id(true);
+				session_destroy();
 				if(self::$_saveHandler !== null) {
 					self::setSaveHandler(self::$_saveHandler);
 				}
