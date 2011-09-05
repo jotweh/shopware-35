@@ -61,3 +61,13 @@ SET @parent = (SELECT `id` FROM `s_core_plugins` WHERE `label` = 'Systeminfo');
 INSERT IGNORE INTO `s_core_subscribes` (`subscribe`, `type`, `listener`, `pluginID`, `position`) VALUES
 ('Enlight_Controller_Dispatcher_ControllerPath_Backend_Check', 0, 'Shopware_Plugins_Backend_Check_Bootstrap::onGetControllerPathBackend', @parent, 0);
 UPDATE `s_core_menu` SET `onclick` = 'openAction(\'check\');', `pluginID` = @parent WHERE `name` = 'Systeminfo';
+
+/*
+ * @ticket 5418 (internal)
+ * @author h.lohaus 
+ * @since 3.5.5 - 2011/09/05
+ */
+SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'USt-IdNr. Überprüfung');
+INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
+(NULL, @parent, 'sVATCHECKCONFIRMATION', '0', 'Amtliche Bestätigungsmitteilung bei der erweiterten Überprüfung anfordern', 0, 0, '', 1, 'int'),
+(NULL, @parent, 'sVATCHECKVALIDRESPONSE', 'A, D', 'Gültige Ergebnisse bei der erweiterten Überprüfung', 0, 0, '', 0, '');
