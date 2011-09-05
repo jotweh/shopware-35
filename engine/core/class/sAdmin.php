@@ -69,7 +69,10 @@ class sAdmin
 
 		$messages = array();
 		$ustid = preg_replace('#[^0-9A-Z\+\*\.]#','',strtoupper($this->sSYSTEM->_POST['ustid']));
-		$country = $this->sSYSTEM->sDB_CONNECTION->GetOne('SELECT countryiso FROM s_core_countries WHERE id=?', array($this->sSYSTEM->_POST['country']));
+		$country = $this->sSYSTEM->sDB_CONNECTION->GetOne(
+			'SELECT countryiso FROM s_core_countries WHERE id=?',
+			array($this->sSYSTEM->_POST['country'])
+		);
 		if(empty($this->sSYSTEM->_POST["ustid"]))
 		{
 			$messages[] = $this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorEmpty'];
@@ -100,7 +103,8 @@ class sAdmin
 				'Druck' => empty($this->sSYSTEM->sCONFIG['sVATCHECKCONFIRMATION']) ? 'nein' : 'ja'
 			);
 			
-			if(!empty($this->sSYSTEM->sCONFIG['sVATCHECKADVANCED']) && strpos($this->sSYSTEM->sCONFIG['sVATCHECKADVANCEDCOUNTRIES'],$vat[1])!==false)
+			if(!empty($this->sSYSTEM->sCONFIG['sVATCHECKADVANCED'])
+			  && strpos($this->sSYSTEM->sCONFIG['sVATCHECKADVANCEDCOUNTRIES'], $vat[1])!==false)
 			{
 				$data['Firmenname'] = $this->sSYSTEM->_POST['company'];
 				$data['Ort'] = $this->sSYSTEM->_POST['city'];
@@ -122,7 +126,7 @@ class sAdmin
 			$reg = '#<param>\s*<value><array><data>\s*<value><string>([^<]*)</string></value>\s*<value><string>([^<]*)</string></value>\s*</data></array></value>\s*</param>#msi';
 			if(!empty($response)&&preg_match_all($reg,$response,$matches))
 			{
-				$response = array_combine($matches[1],$matches[2]);
+				$response = array_combine($matches[1], $matches[2]);
 				$messages = $this->sCheckVatResponse($response);
 			}
 			elseif(empty($this->sSYSTEM->sCONFIG['sVATCHECKNOSERVICE']))
@@ -163,7 +167,9 @@ class sAdmin
 		{
 			$messages[] = $this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorInfo'];
 		}
-		$messages = Enlight()->Events()->filter('Shopware_Modules_Admin_CheckTaxID_MessagesFilter', $messages, array('subject'=>$this,"post"=>$this->sSYSTEM->_POST));
+		$messages = Enlight()->Events()->filter('Shopware_Modules_Admin_CheckTaxID_MessagesFilter', $messages,
+		  array('subject'=>$this,"post"=>$this->sSYSTEM->_POST)
+		);
 		return $messages;
 	}
 
@@ -239,7 +245,7 @@ class sAdmin
 			$field_names = explode(',',$this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorFields']);
 			foreach ($fields as $key=>$field)
 			{
-				if(isset($response[$field])&&($response[$field]=='B'||$response[$field]=='D'))
+				if(isset($response[$field]) && strpos($this->sSYSTEM->sCONFIG['sVATCHECKVALIDRESPONSE'], $response[$field]) === false)
 				{
 					$name = isset($field_names[$key]) ? $field_names[$key] : $field;
 					$result[] = sprintf($this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckErrorField'], $name);
