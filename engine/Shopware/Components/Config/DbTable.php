@@ -5,30 +5,141 @@
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Components_Config
  */
 class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 {
+	/**
+	 * The table name in database.
+	 *
+	 * @var string
+	 */
 	protected $_name;
+	
+	/**
+	 * The db table instance.
+	 *
+	 * @var string
+	 */
 	protected $_dbTable;
+	
+	/**
+	 * The cache instance.
+	 *
+	 * @var string
+	 */
 	protected $_cache;
+	
+	/**
+	 * The cache id prefix 
+	 *
+	 * @var string
+	 */
 	protected $_cacheIdPrefix = 'Shopware_Config_';
+	
+	/**
+	 * The db table instance.
+	 *
+	 * @var string
+	 */
 	protected $_cacheId;
+	
+	/**
+	 * The default cache tags.
+	 *
+	 * @var string
+	 */
 	protected $_cacheTags = array('Shopware_Config');
+	
+	/**
+	 * The current section.
+	 *
+	 * @var string
+	 */
 	protected $_section;
+	
+	/**
+	 * The section separator.
+	 *
+	 * @var string
+	 */
 	protected $_sectionSeparator = ':';
+	
+	/**
+	 * The section extends.
+	 *
+	 * @var string
+	 */
 	protected $_extends;
+	
+	/**
+	 * The name column in the database table.
+	 *
+	 * @var null|string
+	 */
 	protected $_nameColum = 'name';
+	
+	/**
+	 * The value column in the database table.
+	 *
+	 * @var null|string
+	 */
 	protected $_valueColum = 'value';
+	
+	/**
+	 * The section colum in the database table.
+	 *
+	 * @var null|string
+	 */
 	protected $_sectionColum = 'section';
+	
+	/**
+	 * The automatic serialization option value.
+	 *
+	 * @var bool
+	 */
 	protected $_automaticSerialization = false;
+	
+	/**
+	 * The allow modificationsoption value.
+	 *
+	 * @var bool
+	 */
 	protected $_allowModifications = false;
+	
+	/**
+	 * The dirty fields list.
+	 *
+	 * @var bool
+	 */
 	protected $_dirtyFields = array();
+	
+	/**
+	 * The created colum in the database table.
+	 *
+	 * @var null|string
+	 */
 	protected $_createdColumn = 'created';
+	
+	/**
+	 * The created colum in the database table.
+	 *
+	 * @var null|string
+	 */
 	protected $_updatedColumn = 'updated';
+	
+	/**
+	 * The local data list.
+	 *
+	 * @var null|string
+	 */
     protected $_data = array();
 	
 	/**
 	 * Constructor method
+	 * 
+	 * Expect an array with the options.
 	 *
 	 * @param array $config
 	 */
@@ -56,7 +167,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Set options method
+     * Sets the options of an array.
      *
      * @param array $options
      * @return Shopware_Components_Config_DbTable
@@ -93,7 +204,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Set section method
+     * Sets the current section of the config list.
      *
      * @param array|string $section
      * @return Shopware_Components_Config_DbTable
@@ -108,7 +219,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Set extends method
+     * Sets the extends of the config list.
      *
      * @param array|string $extends
      * @return Shopware_Components_Config_DbTable
@@ -134,7 +245,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Set extend method
+     * Sets an extending section and an expanded section.
      *
      * @param string $extendingSection
      * @param string $extendedSection
@@ -149,7 +260,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Returns cache id method
+     * Returns a unique id for the cache list.
      *
      * @return string
      */
@@ -168,7 +279,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Test cache method
+     * Tests the data in the cache storage.
      *
      * @return bool
      */
@@ -181,7 +292,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Load cache method
+     * Loads the data from cache storage.
      *
      * @return bool
      */
@@ -195,7 +306,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Save cache method
+     * Stores the data in the cache storage.
      *
      * @return void
      */
@@ -208,7 +319,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Load data method
+     * Loads the default data and the sections from the data store.
      *
      * @return void
      */
@@ -225,10 +336,10 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Read section method
+     * Reads a section from the data store.
      *
-     * @param unknown_type $section
-     * @return unknown
+     * @param string|array $section
+     * @return array
      */
     protected function readSection($section)
     {
@@ -263,7 +374,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
     
     /**
-     * Returns value method
+     * Returns a specific value from the list.
      *
      * @param string $name
      * @param mixed $default
@@ -281,7 +392,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	}
     
 	/**
-	 * Set value method
+	 * Sets a value in the list by name.
 	 *
 	 * @param string $name
 	 * @param mixed $value
@@ -294,7 +405,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	}
 	
 	/**
-	 * Reset dirty fields
+	 * Resets the dirty fields to an empty list.
 	 */
 	public function resetDirtyFields()
 	{
@@ -302,7 +413,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	}
 	
 	/**
-	 * Returns dirty fields
+	 * Returns the dirty field list as an array.
 	 *
 	 * @return array
 	 */
@@ -313,7 +424,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 	}
 	
 	/**
-	 * Insert value method
+	 * Adds a new value in the datastore.
 	 *
 	 * @param string $name
 	 * @param mixed $value
@@ -326,7 +437,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     }
 	
     /**
-     * Save data method
+     * Saves the data changes in the datastore.
      *
      * @param null|string|array $fields
      * @param bool $update
@@ -366,7 +477,7 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
 			}
 		} elseif($this->_section!==null) {
 			$where[] = $db->quoteInto($this->_sectionColum.'=?', $this->_section);
-			$insertData[$this->_sectionColum] = $section[$this->_section];
+			$insertData[$this->_sectionColum] = $this->_section;
 		}
 		
     	foreach ($fields as $field) {
