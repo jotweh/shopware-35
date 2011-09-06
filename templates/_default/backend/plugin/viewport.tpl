@@ -1,10 +1,5 @@
 <script type="text/javascript">
 Ext.ns('Shopware.Plugin');
-Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
- onRender : function(ct, position){
-      this.el = ct.createChild({ tag: 'iframe', id: 'framepanel'+this.id, frameBorder: 0, src: this.url});
- }
-});
 (function(){
 	var Viewport = Ext.extend(Ext.Viewport, {
 	    layout: 'border',
@@ -12,25 +7,14 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 	    	this.list = new Shopware.Plugin.List;
 	    	this.upload = new Shopware.Plugin.Upload;
 			this.communityStore = new Ext.ux.IFrameComponent({ 
-							title:'Shopware CommunityStore',
-							autoScroll:true,
-							id: "iframe", 
-							height:600,
-							width: 1000,
-							url: 'http://store.shopware.de',
-							tbar: [
-								new Ext.Button  ({
-					            	text: 'Store im neuen Fenster öffnen',
-					            	handler: function(){
-					            		
-					            	},
-					            	scope:this
-				             	})
-							]
+				title:'Shopware CommunityStore',
+				autoScroll:true,
+				height: 600,
+				width: 1000,
+				url: 'http://store.shopware.de',
 			});
 			
-			this.store = new Ext.Panel(
-			{
+			this.store = new Ext.Panel({
 				autoScroll:true,
 				title: 'Shopware CommunityStore',
 				items: [
@@ -45,9 +29,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		            	scope:this
 	             	})
 				]
-			}
-			);
-			
+			});
 	
 	    	this.tree = new Ext.tree.TreePanel({
 	    		title: 'Verzeichnisse',
@@ -86,6 +68,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 	        	this.tree,
 	        	this.tabpanel
 	        ];
+	        
 		    this.showDetail = function(pluginId) {
 		    	$.ajax({
 		    		url: '{url action="detail"}',
@@ -100,6 +83,7 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 		    		}
 		    	});
 		    };
+		    
 		    this.refreshList = function() {
 		    	this.list.store.load();
 		    };
@@ -117,100 +101,139 @@ Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
 			    		dataType: 'json',
 			    		success: function(result) {
 							Ext.Msg.show({
-								   title:'Hinweis!',
-								   msg: 'Das Plugin wurde aus dem Dateisystem entfernt!',
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   icon: Ext.MessageBox.ERROR,
-								   maxWidth: 700,
-								   minWidth: 700
-								});
+							   title:'Hinweis!',
+							   msg: 'Das Plugin wurde aus dem Dateisystem entfernt!',
+							   buttons: Ext.Msg.OK,
+							   animEl: 'elId',
+							   icon: Ext.MessageBox.ERROR,
+							   maxWidth: 700,
+							   minWidth: 700
+							});
 							Viewport.refreshList();
 						},
 						error: function(result){
 							Ext.Msg.show({
-								   title:'Es ist ein kritischer Fehler aufgetreten!',
-								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.responseText,
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   icon: Ext.MessageBox.ERROR,
-								   maxWidth: 700,
-								   minWidth: 700
-								});
+							   title:'Es ist ein kritischer Fehler aufgetreten!',
+							   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.responseText,
+							   buttons: Ext.Msg.OK,
+							   animEl: 'elId',
+							   icon: Ext.MessageBox.ERROR,
+							   maxWidth: 700,
+							   minWidth: 700
+							});
 						}
 					});
 				});
 			};
+			
+			this.doUninstallPlugin = function(params) {
+				Ext.Ajax.request({
+					url: '{url action=uninstall}',
+					method: 'post',
+					params: params,
+					scope: this,
+					success: function(response, options) {
+						var result = Ext.decode(response.responseText);
+	   					if(result.success) {
+	   						Ext.MessageBox.alert('Plugin deinstallieren', 'Das Plugin wurde erfolgreich deinstalliert.');
+	   						this.refreshList();
+	   					} else {
+	   						Ext.Msg.show({
+	   							title: 'Plugin konnte nicht deinstalliert werden!',
+	   							msg: '<strong>Fehler: </strong><br /><br />' + result.message,
+	   							buttons: Ext.Msg.OK,
+	   							icon: Ext.MessageBox.ERROR,
+	   							maxWidth: 700,
+	   							minWidth: 400
+	   						});
+	   					}
+					},
+					failure: function(response, opts) {
+						Ext.Msg.show({
+						   title:'Es ist ein kritischer Fehler aufgetreten!',
+						   msg: '<strong>Fehler: </strong><br /><br />'+response.responseText,
+						   buttons: Ext.Msg.OK,
+						   icon: Ext.MessageBox.ERROR,
+						   maxWidth: 700,
+						   minWidth: 400
+						});
+					}
+				});
+			}
+			
+			this.doInstallPlugin = function(params) {
+				
+				Ext.Ajax.request({
+					url: '{url action=install}',
+					method: 'post',
+					params: params,
+					scope: this,
+					success: function(response, options) {
+						var result = Ext.decode(response.responseText);
+	   					if(result.success) {
+	   						Ext.MessageBox.alert('Plugin installieren', 'Das Plugin wurde erfolgreich installiert.');
+	   						this.refreshList();
+		   					this.showDetail(pluginId);
+	   					} else if(result.license) {
+	   						Ext.Msg.prompt(
+	   							'Plugin installieren',
+	   							'Das Plugin konnte nicht installiert werden.<br />'+
+	   							result.message+
+	   							'<br /><br />'+
+	   							'Bitte geben Sie jetzt die Lizenz für das Modul "' + result.module +'" ein:',
+	   							function(btn, value){
+								    if (btn == 'ok'){
+								    	params.license = value;
+								    	params.module = result.module;
+								    	this.doInstallPlugin(params);
+								    }
+	   							}, this
+							);
+	   					} else {
+	   						if (!result.message){
+								var message = 'Die Install-Methode hat "false" zurückgegeben. Bitte kontaktieren Sie den Plugin-Hersteller!';
+							} else {
+								var message = '<strong>Fehler: </strong><br /><br />' + result.message;
+							}	
+	   						Ext.Msg.show({
+	   							title: 'Plugin konnte nicht installiert werden!',
+	   							msg: message,
+	   							buttons: Ext.Msg.OK,
+	   							icon: Ext.MessageBox.ERROR,
+	   							maxWidth: 700,
+	   							minWidth: 400
+	   						});
+	   					}
+					},
+					failure: function(response, opts) {
+						Ext.Msg.show({
+						   title:'Es ist ein kritischer Fehler aufgetreten!',
+						   msg: '<strong>Fehler: </strong><br /><br />' + response.responseText,
+						   buttons: Ext.Msg.OK,
+						   icon: Ext.MessageBox.ERROR,
+						   maxWidth: 700,
+						   minWidth: 700
+						});
+					}
+				});
+			}
+
 		    this.installPlugin = function(pluginId, install) {
 		    	if(install) {
 					var message = 'Soll dieses Plugin installiert werden?';
-					var url = '{url action="install"}';
 				} else {
 					var message = 'Soll dieses Plugin deinstalliert werden?';
-					var url = '{url action="uninstall"}';
 				}
-				var Viewport = this; 
 				Ext.MessageBox.confirm('', message, function(r){
 					if(r!='yes') {
 						return;
 					}
-					$.ajax({
-			    		url: url,
-			    		method: 'post',
-			    		context: this, 
-			    		data: { id: pluginId },
-			    		dataType: 'json',
-			    		success: function(result) {
-			    			if(result.success && install) {
-		   						var message = 'Das Plugin wurde erfolgreich installiert.';
-		   					} else if (install) {
-								if (!result.message){
-									result.message = "Install-Methode hat \"false\" zurückgegeben. Bitte kontaktieren Sie den Plugin-Hersteller!";
-								}
-								Ext.Msg.show({
-								   title:'Plugin konnte nicht installiert werden!',
-								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.message+ "<br />Aktivieren Sie ggf. die Optionen throwExceptions und showException in der Application.php um eindeutige Fehlermeldungen zu erhalten! ",
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   icon: Ext.MessageBox.ERROR,
-								   maxWidth: 700,
-								   minWidth: 700
-								});
-								return false;
-		   					} else if(result.success) {
-		   						var message = 'Das Plugin wurde erfolgreich deinstalliert.';
-		   					} else {
-								Ext.Msg.show({
-								   title:'Plugin konnte nicht deinstalliert werden!',
-								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.message,
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   icon: Ext.MessageBox.ERROR,
-								   maxWidth: 700,
-								   minWidth: 700
-								});
-								return false;
-		   					}
-		   					Ext.MessageBox.alert('Plugin installieren/deinstallieren', message);
-		   					Viewport.refreshList();
-		   					if(result.success && install) {
-		   						Viewport.showDetail(pluginId);
-		   					}
-			    		},
-						error: function(result){
-							
-							Ext.Msg.show({
-								   title:'Es ist ein kritischer Fehler aufgetreten!',
-								   msg: '<strong>Fehler-Protokoll: </strong><br />'+result.responseText,
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   icon: Ext.MessageBox.ERROR,
-								   maxWidth: 700,
-								   minWidth: 700
-								});
-						}
-			    	});
-				});
+					if(install) {
+						this.doInstallPlugin({ id: pluginId });
+					} else {
+						this.doUninstallPlugin({ id: pluginId });
+					}
+				}, this);
 		    };
 	        Viewport.superclass.initComponent.call(this);
 	    }

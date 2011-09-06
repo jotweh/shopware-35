@@ -66,7 +66,7 @@ Ext.ns('Shopware.Plugin');
    				 return (str + '').replace(/(\n)/g, '$1' + breakTag)
 			}
 			
-			this.store.on('exception',function (misc,type,action,options,response){
+			this.store.on('exception', function (misc,type,action,options,response){
 				var text = nl2br(response.responseText,true);
 				var code = response.status;
 				var info = "Bitte beheben Sie den Fehler oder löschen Sie das fehlerhafte Plugin!";
@@ -85,7 +85,7 @@ Ext.ns('Shopware.Plugin');
 	    		if (!record.data.active) {
 					if (!record.data.installation_date){
 	    				return 'inactive';
-					}else {
+					} else {
 						return 'red';
 					}
 	    		}else {
@@ -99,23 +99,16 @@ Ext.ns('Shopware.Plugin');
 				Viewport.showDetail(rec.get('id'));
 			});
 			this.updateWindow = new Shopware.Plugin.UpdateWindow();
-			this.tbar = new Ext.Toolbar(
-				{
-				items:
-				[
-					new Ext.Button(
-						{
-							text: 'Nach Updates suchen',
-							handler: function(){
-								this.updateWindow.show();
+			this.tbar = new Ext.Toolbar( {
+				items: new Ext.Button({
+					text: 'Nach Updates suchen',
+					handler: function(){
+						this.updateWindow.show();
 
-							},
-							scope: this
-						}
-					)
-				]
-				}
-			);
+					},
+					scope: this
+				})
+			});
 	    	this.bbar = new Ext.PagingToolbar({
 	    		pageSize: 25,
 	    		store: this.store,
@@ -192,8 +185,11 @@ Ext.ns('Shopware.Plugin');
 	                sortable: false,
 	                width: 150,
 	                renderer: function (v,p,r){
-						p.attr = 'ext:qtip="Installationsdatum:'+Ext.util.Format.date(r.data.installation_date,'d.m.Y')+'<br />Lizenz: '+r.data.license+'" ext:qtitle="'+r.data.label+'"';
-	                	return "<span style=\"font-weight:bold\">"+v+"</span";
+						p.attr = 'ext:qtip="Installationsdatum:'
+						 + Ext.util.Format.date(r.data.installation_date,'d.m.Y')
+						 + '<br />Lizenz: '+r.data.license
+						 + '" ext:qtitle="'+r.data.label+'"';
+	                	return '<span style="font-weight:bold">' + v + "</span";
 	                }
 	            },
 				{
@@ -223,10 +219,7 @@ Ext.ns('Shopware.Plugin');
 	                width: 95,
 					scope:this,
 					renderer: this.renderEdit
-			    },
-	        	
-
-	            {
+			    }, {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'version',
 	                header: 'Ihre Version',
@@ -240,8 +233,7 @@ Ext.ns('Shopware.Plugin');
 						}
 						return v;
 					}
-	            },
-				{
+	            }, {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'checkversion',
 	                header: 'Aktuelle Version',
@@ -256,15 +248,13 @@ Ext.ns('Shopware.Plugin');
 						if (v != '') return v;
 						return '?';
 					}
-	            },
-				{
+	            }, {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'path',
 	                header: 'Pfad',
 	                sortable: false,
 	                width: 200
-	            },
-				{
+	            }, {
 	                xtype: 'gridcolumn',
 	                dataIndex: 'autor',
 	                header: 'Hersteller',
@@ -276,8 +266,7 @@ Ext.ns('Shopware.Plugin');
 	                	}
 	                	return '<a h'+'ref="'+record.data.link+'" target="_blank">'+record.data.autor+'</a>';
 	                }
-	            },
-				{
+	            }, {
 	                xtype: 'gridcolumn',
 	                header: 'Löschen',
 	                sortable: false,

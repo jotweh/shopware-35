@@ -4,19 +4,24 @@
  *
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
+ * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
- * @author st.hamann
- * @author h.lohaus
- * @subpackage Plugins
+ * @subpackage Controllers
  */
 class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 {	
+	/**
+	 * The shopware db adapter instance.
+	 *
+	 * @var Zend_Db_Adapter_Abstract
+	 */
 	protected $db;
 
 	/**
 	 * Init resources
-	 * Set renderer for index / detail / skeleton action
-	 * @return void
+	 * 
+	 * Set renderer for index / detail / skeleton action.
 	 */
 	public function preDispatch()
 	{
@@ -27,8 +32,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Load viewport for plugin manager and check system requirements
-	 * @return void
+	 * Load viewport for plugin manager and check system requirements.
 	 */
 	public function indexAction()
 	{
@@ -36,26 +40,28 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$this->View()->errorPluginPath = false;
 		$this->View()->errorZip = false;
 
-		if (!is_writeable(Shopware()->DocPath()."/engine/Shopware/Proxies")){
+		if (!is_writeable(Shopware()->AppPath('Proxies'))) {
 			$this->View()->errorProxy = true;
 		}
 
-		$pathes = array("engine/Shopware/Plugins/Community/Backend","engine/Shopware/Plugins/Community/Frontend","engine/Shopware/Plugins/Community/Core");
+		$pathes = array(
+			'Plugins_Community_Backend',
+			'Plugins_Community_Frontend',
+			'Plugins_Community_Core'
+		);
 		foreach ($pathes as $path){
-			if (!is_writeable(Shopware()->DocPath()."/".$path)){
+			if (!is_writeable(Shopware()->AppPath($path))) {
 				$this->View()->errorPluginPath = true;
 			}
 		}
+		
 		if (!extension_loaded('zip')) {
 			$this->View()->errorZip = true;
 		}
-
-		
 	}
 
 	/**
-	 * Load window properties from skeleton.tpl
-	 * @return void
+	 * Load window properties from skeleton template.
 	 */
 	public function skeletonAction ()
 	{
@@ -63,8 +69,9 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Load plugin detail mask
-	 * @return void
+	 * Detail plugin action
+	 * 
+	 * Loads the plugin detail mask.
 	 */
 	public function detailAction()
 	{
@@ -89,13 +96,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$plugin = $this->getPluginById($id);
 		$this->View()->form = $plugin->Form();
 		
-		
 		$this->View()->shops = $this->getShops();
 	}
 
 	/**
-	 * Save plugin details / configuration
-	 * @return void
+	 * Saves the plugin details and the configuration.
 	 */
 	public function saveDetailAction()
 	{
@@ -104,8 +109,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$plugin = $this->getPluginById($pluginId);
 		
 		foreach ($config as $shopId => $shop_config) {
-			foreach ($shop_config as $config_name => $config_value)
-			{
+			foreach ($shop_config as $config_name => $config_value) {
 				$sql = '
 		    	 	INSERT INTO `s_core_plugin_configs` (
 						`name`,
@@ -127,7 +131,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		    	));
 			}
 		}
-				
+		
 		$active = $this->Request()->getParam('active');
 		if($active!==null) {
 			if(empty($active)) {
@@ -139,17 +143,21 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Get plugin list to display in grid
-	 * @return void
+	 * Get plugin list to display in grid.
 	 */
 	public function getListAction()
 	{
 		$this->refreshList();
 
+		$select = $this->db->select()->from(
+			's_core_plugins',
+			array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'), '*')
+		);
+		
 		if (!empty($this->Request()->sort)){
-			$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('checkdate DESC'));
-		}else {
-			$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
+			$select->order(array('checkdate DESC'));
+		} else {
+			$select->order(array('added DESC','installation_date DESC','name'));
 		}
 		$limit = $this->Request()->getParam('limit', 25);
 		$start = $this->Request()->getParam('start', 0);
@@ -190,45 +198,15 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		echo Zend_Json::encode(array('data'=>$rows, 'count'=>$count));
 	}
-
-	/**
-	 * Get a list of available downloads for a certain plugin / shopware id connection
-	 * @return void
-	 */
-	public function getUpdateDownloadsAction(){
-		$this->View()->setTemplate();
-		$plugin = $this->Request()->plugin;
-		$domain = $this->Request()->host;
-		$shopwareID = $this->Request()->user;
-		$password = $this->Request()->password;
-		if (empty($plugin)
-		|| empty($domain)
-		|| empty($shopwareID)
-		|| empty($password)
-		){
-			throw new Enlight_Exception("Missing Parameter");
-		}
-
-		$result = $this->getDownloadInfo($shopwareID, $password, $domain, $plugin);
-		if (empty($result["success"]) || empty($result["downloads"])){
-			throw new Enlight_Exception($result["errorcode"]." ".$result["errormsg"]);
-		}
-		$downloads = array();
-		foreach ($result["downloads"] as $kind => $download){
-			$downloads[] = array("typ" => $kind,"download"=>$download["downloadlink"],"filename"=>$download["filename"]);
-		}
-
-		echo Zend_Json::encode(array("count"=>count($download), "downloads"=>$downloads));
-	}
+	
 	/**
 	 * Get plugin list for delete combo (deprecated)
-	 * @return void
 	 */
 	public function getDeleteListAction()
 	{
 		$list = array();
 		
-		$path = Shopware()->AppPath().'Plugins/Community';
+		$path = Shopware()->AppPath() . 'Plugins/Community';
 		foreach (new DirectoryIterator($path) as $dir) {
 		    if($dir->isDot()||strpos($dir->getFilename(), '.')===0){
 		    	continue;
@@ -261,8 +239,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Get plugin scopes for tree menu
-	 * @return void
+	 * Get plugin scopes for tree menu.
 	 */
 	public function getTreeAction()
 	{
@@ -275,7 +252,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			
 			$list = array(
 					array('id'=>'Default', 'text'=>'Core Plugins', 'leaf'=>false, 'expended'=>true),
-					array('id'=>'Community', 'text'=>'CommunityStore', 'leaf'=>false, 'expended'=>true),
+					array('id'=>'Community', 'text'=>'Community Plugins', 'leaf'=>false, 'expended'=>true),
 					array('id'=>'Local', 'text'=>'Lokale Plugins', 'leaf'=>false, 'expended'=>true));
 					
 			foreach ($list as $key=>$row) {
@@ -294,15 +271,15 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				
 				$list[$key]['children'] = $children;
 			}
-			
 		}
 		
 		echo Zend_Json::encode($list);
 	}
 
 	/**
-	 * Enable a certain plugin
-	 * @return void
+	 * Enable plugin action
+	 * 
+	 * Enables a plugin based on the plugin id.
 	 */
 	public function enableAction()
 	{
@@ -311,12 +288,13 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		
 		$result = $plugin->enable();
 
-		echo Zend_Json::encode(array('success'=>$result));		
+		echo Zend_Json::encode(array('success' => $result));		
 	}
 
 	/**
-	 * Disable a certain plugin
-	 * @return void
+	 * Disable plugin action
+	 * 
+	 * Disables a plugin based on the plugin id.
 	 */
 	public function disableAction()
 	{
@@ -329,16 +307,36 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Do plugin installation
-	 * @return void
+	 * Install plugin action
+	 * 
+	 * Installs a plugin by id.
+	 * Adds a license key if required.
 	 */
 	public function installAction()
-	{		
+	{
+		$license = $this->Request()->license;
+		$module = $this->Request()->module;
 		$id = (int) $this->Request()->id;
-		$plugin = $this->getPluginById($id);
-						
-		
+			
 		try {
+			Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
+				'Shopware_License'
+			));
+			
+			if(!empty($license)) {
+				if(Shopware()->License()->checkLicenseKey($license) !== true) {
+					echo Zend_Json::encode(array(
+						'success' => false,
+						'license' => true,
+						'module' => $module,
+						'message' => utf8_encode('Die eingebende Lizenz ist nicht gültig.')
+					));
+					return;
+				}
+				Shopware()->License()->addLicenseKey($license);
+			}
+			
+			$plugin = $this->getPluginById($id);
 			$result = $plugin->install();
 			if($result) {
 				$data = array(
@@ -347,23 +345,36 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				);
 				$this->db->update('s_core_plugins', $data, array('id=?'=>$id));
 			}
+		} catch (Shopware_Components_License_Exception $e) {
+			echo Zend_Json::encode(array(
+				'success' => false,
+				'license' => true,
+				'module' => $e->getModule(),
+				'message' => utf8_encode('Die Lizenz für das Plugin wurde noch nicht hinterlegt.')
+			));
+			return;
 		} catch (Exception $e) {
-			$message = $e->getMessage();
+			echo Zend_Json::encode(array(
+				'success' => false,
+				'message' => $e->getMessage()
+			));
+			return;
 		}
 		
-		echo Zend_Json::encode(array('success'=>isset($message)?false:$result, 'message'=>isset($message)?$message:''));
+		echo Zend_Json::encode(array('success' => true));
 	}
 
 	/**
-	 * Remove a certain plugin
-	 * @return void
+	 * Uninstall plugin action
+	 * 
+	 * Uninstall a given plugin by id.
 	 */
 	public function uninstallAction()
 	{
 		$id = (int) $this->Request()->id;
 		$plugin = $this->getPluginById($id);
-		if (!is_object($plugin)){
-			// Fatal error plugin object not available
+		
+		if (!empty($plugin)) {
 			$sql = 'DELETE FROM `s_core_plugin_elements` WHERE `pluginID`=?';
 			Shopware()->Db()->query($sql, $id);
 			$sql = 'DELETE FROM `s_core_plugin_configs` WHERE `pluginID`=?';
@@ -375,7 +386,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			$sql = 'DELETE FROM `s_core_plugins` WHERE `id`=?';
 			Shopware()->Db()->query($sql, $id);
 			$result = true;
-		}else {
+		} else {
 			$result = $plugin->disable();
 			$result = $plugin->uninstall();
 			if($result) {
@@ -384,14 +395,15 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 					'update_date' =>  NULL
 				);
 				$this->db->update('s_core_plugins', $data, array('id=?'=>$id));
-		}
+			}
 		}
 		echo Zend_Json::encode(array('success'=>$result));
 	}
 
 	/**
-	 * Get all subshops
-	 * @return
+	 * Return all shop rows as array.
+	 * 
+	 * @return array
 	 */
 	public function getShops()
 	{
@@ -405,7 +417,8 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Check if a certain plugin is already installed
+	 * Check if a certain plugin is already installed.
+	 * 
 	 * @param  $source
 	 * @param  $namespace
 	 * @param  $name
@@ -424,31 +437,31 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Get a certain plugin by id
-	 * @param  $id
-	 * @return bool
+	 * Returns a certain plugin by plugin id.
+	 *
+	 * @param int $id
+	 * @return Shopware_Components_Plugin_Bootstrap
 	 */
 	public function getPluginById($id)
 	{
 		$select = $this->db->select()->from('s_core_plugins')->where('id=?', $id);
 		$plugin =  $this->db->fetchRow($select);
 		if(empty($plugin)) {
-			return false;
+			return null;
 		}
 		$namespace = Shopware()->Plugins()->getNamespace($plugin['namespace']);
 		if(empty($namespace)) {
-			return false;
+			return null;
 		}
 		$plugin = $namespace->getPlugin($plugin['name']);
 		if(empty($namespace)) {
-			return false;
+			return null;
 		}
 		return $plugin;
 	}
 
 	/**
-	 * Reload plugin list
-	 * @return void
+	 * Synchronizes the plugins in the database with the available plugins.
 	 */
 	public function refreshList()
 	{
@@ -481,7 +494,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				);
 								
 				if(empty($id)) {
-					$data["added"] = new Zend_Db_Expr('NOW()');
+					$data['added'] = new Zend_Db_Expr('NOW()');
 					Shopware()->Db()->insert('s_core_plugins', $data);
 				} else {
 					$where = array('name=?'=>$plugin_name, 'namespace=?'=>$namespace_name);
@@ -492,24 +505,22 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Upload a new plugin
-	 * @return void
+	 * Upload plugin action
+	 * 
+	 * Saves the uploaded plugin in the plugins directory.
 	 */
 	public function uploadAction()
 	{
 		$upload = new Zend_File_Transfer_Adapter_Http();
 		
 		try {
-			$upload->setDestination(Shopware()->DocPath().'files/downloads');
+			$upload->setDestination(Shopware()->DocPath() . 'files/downloads');
 			$upload->addValidator('Extension', false, 'zip');
 			if (!$upload->receive()) {
 				$message = $upload->getMessages();
 				$message = implode("\n", $message);
 			} else {
-				if (!$this->decompressFile($upload->getFileName())){
-					echo htmlspecialchars(Zend_Json::encode(array('success'=>false, 'message'=>"Stellen Sie sicher, dass Schreibrechte auf die Ordner engine/Shopware/Plugins/Community [Frontend|Backend|Core) gesetzt sind.")));
-					exit;
-				}
+				$this->decompressFile($upload->getFileName());
 			}
 		} catch (Exception $e) {
 			$message = $e->getMessage();
@@ -519,32 +530,30 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			@unlink($upload->getFileName());
 		}
 		
-		echo htmlspecialchars(Zend_Json::encode(array('success'=>isset($message)?false:true, 'message'=>isset($message)?$message:'')));
+		echo htmlspecialchars(Zend_Json::encode(array(
+			'success'=>isset($message)?false:true,
+			'message'=>isset($message)?$message:''
+		)));
 	}
 
 	/**
-	 * Decompress plugin zip
+	 * Decompress a given plugin zip file.
+	 * 
 	 * @param  $file
-	 * @return bool
 	 */
 	public function decompressFile($file)
 	{
-		$target = Shopware()->AppPath().'Plugins/Community';
-		if(!is_dir($target)||!is_writable($target)) {
-			return false;
-		}
+		$target = Shopware()->AppPath('Plugins_Community');
 		$filter = new Zend_Filter_Decompress( array(
 			'adapter' => 'Zip',
 			'options' => array(
 				'target' => $target
 		)));
 		$filter->filter($file);
-		return true;
 	}
 
 	/**
-	 * Direct download of a plugin zip
-	 * @return void
+	 * Direct download of a plugin zip file.
 	 */
 	public function downloadAction()
 	{
@@ -571,22 +580,23 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	}
 
 	/**
-	 * Delete plugin directory structure
-	 * @return
+	 * Deletes a complete plugin directory structure.
 	 */
 	public function deleteAction()
 	{
 		$id = $this->Request()->id;
 		
-		$fetchPlugin = Shopware()->Db()->fetchRow("
-		SELECT * FROM s_core_plugins WHERE id = ?
-		",array($id));
+		$fetchPlugin = Shopware()->Db()->fetchRow('
+			SELECT * FROM s_core_plugins WHERE id = ?
+		',array($id));
 
 		if (empty($fetchPlugin["id"]) || empty($fetchPlugin["name"])){
 			throw new Enlight_Exception("Could not delete plugin with id $id");
 		}
 
-		$deletePath = Shopware()->DocPath()."engine/Shopware/Plugins/".$fetchPlugin["source"]."/".$fetchPlugin["namespace"]."/".$fetchPlugin["name"];
+		$deletePath = Shopware()->AppPath(implode('_', array(
+			'Plugins', $fetchPlugin['source'], $fetchPlugin['namespace'], $fetchPlugin['name']
+		)));
 
 		if(!file_exists($deletePath)) {
 			throw new Enlight_Exception("Invalid path $deletePath");
@@ -594,8 +604,8 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 
 		// Remove plugin from database
 		Shopware()->Db()->query("
-		DELETE FROM s_core_plugins WHERE id = ?
-		",array($id));
+			DELETE FROM s_core_plugins WHERE id = ?
+		", array($id));
 
 		// Remove plugin in filesystem
 		if(is_dir($deletePath)) {
@@ -619,33 +629,23 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			@unlink($deletePath);
 		}
 		 
-		echo Zend_Json::encode(array('success'=>isset($message)?false:true, 'message'=>isset($message)?$message:''));
+		echo Zend_Json::encode(array(
+			'success' => empty($message),
+			'message' => isset($message)?$message:''
+		));
 	}
 
-	/**
-	 * Hiftsmethode der Klasse restfulClient
-	 *
-	 * @param unknown_type $result
-	 * @return unknown
+	/** 
+	 * ----------------- UPDATE SERVICE -----------------
 	 */
-	private function getReturn($result){
-		if($result->isSuccess()){
-			$newArr = array();
-			$result = json_decode($result);
-
-			$newArr = $this->getArray($result);
-			return $newArr;
-		}else{
-			return false;
-		}
-	}
-
+	
 	/**
 	 * Search for updates for all community plugins
 	 * through webservice
 	 * @return void
 	 */
-	public function searchUpdatesAction(){
+	public function searchUpdatesAction()
+	{
 		$this->View()->setTemplate();
 		$select = $this->db->select()->from('s_core_plugins', array(new Zend_Db_Expr('SQL_CALC_FOUND_ROWS id as fake_column'),'*'))->order(array('added DESC','installation_date DESC','name'));
 		$select->where('source=?', 'Community');
@@ -685,26 +685,51 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			throw new Enlight_Exception("No Updates found");
 		}
 	}
+	
 	/**
-	 * Hiftsmethode der Klasse restfulClient
+	 * Get a list of available downloads for a certain plugin / shopware id connection
+	 */
+	public function getUpdateDownloadsAction()
+	{
+		$this->View()->setTemplate();
+		$plugin = $this->Request()->plugin;
+		$domain = $this->Request()->host;
+		$shopwareID = $this->Request()->user;
+		$password = $this->Request()->password;
+		if (empty($plugin)
+		  || empty($domain)
+		  || empty($shopwareID)
+		  || empty($password)
+		){
+			throw new Enlight_Exception("Missing Parameter");
+		}
+
+		$result = $this->getDownloadInfo($shopwareID, $password, $domain, $plugin);
+		if (empty($result["success"]) || empty($result["downloads"])){
+			throw new Enlight_Exception($result["errorcode"]." ".$result["errormsg"]);
+		}
+		$downloads = array();
+		foreach ($result["downloads"] as $kind => $download){
+			$downloads[] = array("typ" => $kind,"download"=>$download["downloadlink"],"filename"=>$download["filename"]);
+		}
+
+		echo Zend_Json::encode(array("count"=>count($download), "downloads"=>$downloads));
+	}
+	
+	/**
+	 * Hiftsmethode für die veralteten Service Funktionen.
 	 *
 	 * @param unknown_type $result
 	 * @return unknown
 	 */
-	private function getArray($result)
+	private function getReturn($result)
 	{
-		$newArr = array();
-		if($result instanceof stdClass || is_array($result)){
-			foreach ($result as $key=>$value) {
-				$newArr[$key] = $this->getArray($value);
-			}
-			return $newArr;
-		}else{
-			return $result;
+		if($result->isSuccess()){
+			return Zend_Json::decode($result);
+		} else{
+			return false;
 		}
 	}
-
-	/* ----------------- SERVICES ----------------- */
 
 	/**
 	 * Liest von allen Plugins die Bestellnummer, den Namen,
@@ -746,7 +771,6 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	 */
 	public function getDownloadInfo($shopwareID, $password, $domain, $article_match)
 	{
-		
 		$authcode = 'f0Dbh1jL9RoddLD8lqhYHKYWyUqova';
 		$clientObj = new Zend_Rest_Client('http://store.shopware.de/restfulServer');
 		$result = $clientObj->getDownloadInfo($authcode, $shopwareID, $password, $domain, $article_match)->post();

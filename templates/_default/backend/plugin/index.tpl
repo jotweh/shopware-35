@@ -31,8 +31,16 @@
 	<script type="text/javascript" src="{link file='frontend/_resources/javascript/jquery-1.4.2.js'}"></script>
 	<script type="text/javascript" src="{link file='engine/backend/css/icons.css'}"></script>
 	<script type="text/javascript" src="{link file='engine/backend/css/icons4.css'}"></script>
-<script type="text/javascript" src="{link file='engine/backend/js/ext.rowExpander.js'}"></script>
-
+	<script type="text/javascript" src="{link file='engine/backend/js/ext.rowExpander.js'}"></script>
+<script type="text/javascript">
+//<![CDATA[
+	Ext.ux.IFrameComponent = Ext.extend(Ext.BoxComponent, {
+		onRender : function(ct, position){
+		  this.el = ct.createChild({ tag: 'iframe', id: 'framepanel'+this.id, frameBorder: 0, src: this.url});
+		}
+	});
+//]]>
+</script>
 	{include file='backend/plugin/update.tpl'}
 	{include file='backend/plugin/dlupdate.tpl'}
 	{include file='backend/plugin/list.tpl'}

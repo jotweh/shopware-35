@@ -17,8 +17,10 @@
 {if !$link}
 {$link = {link file="backend/_resources/javascript/ext-4.0.0/locale/ext-lang-{$Locale->getLanguage()}.js"}}
 {/if}
-{if $link}<script type="text/javascript" src="{$link}" charset="utf-8"></script>
+{else}
+{$link = {link file="backend/_resources/javascript/ext-4.0.0/locale/ext-lang-de.js"}}
 {/if}
+{if $link}<script type="text/javascript" src="{$link}" charset="utf-8"></script>
 {/if}
 <script type="text/javascript">
 //<![CDATA[
