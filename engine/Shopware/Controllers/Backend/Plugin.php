@@ -315,7 +315,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 	public function installAction()
 	{
 		$license = $this->Request()->license;
-		$module = $this->Request()->module;
+		$module = $this->Request()->license_module;
 		$id = (int) $this->Request()->id;
 			
 		try {
@@ -328,7 +328,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 					echo Zend_Json::encode(array(
 						'success' => false,
 						'license' => true,
-						'module' => $module,
+						'license_module' => $module,
 						'message' => utf8_encode('Die eingebende Lizenz ist nicht gültig.')
 					));
 					return;
@@ -349,7 +349,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			echo Zend_Json::encode(array(
 				'success' => false,
 				'license' => true,
-				'module' => $e->getModule(),
+				'license_module' => $e->getModule(),
 				'message' => utf8_encode('Die Lizenz für das Plugin wurde noch nicht hinterlegt.')
 			));
 			return;
