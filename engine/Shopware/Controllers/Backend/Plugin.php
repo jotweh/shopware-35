@@ -329,7 +329,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 						'success' => false,
 						'license' => true,
 						'license_module' => $module,
-						'message' => utf8_encode('Die eingebende Lizenz ist nicht gültig.')
+						'message' => utf8_encode('Die eingegebene Lizenz ist nicht gültig.')
 					));
 					return;
 				}
@@ -350,7 +350,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 				'success' => false,
 				'license' => true,
 				'license_module' => $e->getModule(),
-				'message' => utf8_encode('Die Lizenz für das Plugin wurde noch nicht hinterlegt.')
+				'message' => utf8_encode('Für dieses Plugin wurde noch keine Lizenz hinterlegt.')
 			));
 			return;
 		} catch (Exception $e) {
