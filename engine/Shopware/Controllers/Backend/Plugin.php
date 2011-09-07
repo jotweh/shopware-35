@@ -374,7 +374,11 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 		$id = (int) $this->Request()->id;
 		$plugin = $this->getPluginById($id);
 		
-		if (!empty($plugin)) {
+		Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
+			'Shopware_License', 'Shopware_Plugin'
+		));
+		
+		if (!is_object($plugin)) {
 			$sql = 'DELETE FROM `s_core_plugin_elements` WHERE `pluginID`=?';
 			Shopware()->Db()->query($sql, $id);
 			$sql = 'DELETE FROM `s_core_plugin_configs` WHERE `pluginID`=?';
