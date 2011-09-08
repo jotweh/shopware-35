@@ -1,6 +1,6 @@
 <?php
 /**
- * Router rewrite plugin
+ *  Shopware Router Rewrite Plugin
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
@@ -12,8 +12,8 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 {
 	/**
 	 * Init plugin method
-	 *
-	 * @return bool
+	 * 
+	 * Registers the plugin events.
 	 */
 	public function init()
 	{		
@@ -57,6 +57,8 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	/**
 	 * Install plugin method
 	 *
+	 * Registers the plugin start event.
+	 * 
 	 * @return bool
 	 */
 	public function install()
@@ -70,7 +72,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Event listener method
+	 * Loads the plugin before the dispatch.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -80,7 +82,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
     }
     
     /**
-	 * Event listener method
+	 * Checks the url / the request and passes it around if necessary.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -100,18 +102,17 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		
 		$router = $args->getSubject()->Router();
 		
-		$currentLocation = $request->getScheme().'://'.$request->getHttpHost().$request->getRequestUri();
 		$query = $request->getQuery();
 		unset($query['RewriteOld'], $query['RewriteAlias'], $query['RewriteUrl']);
 		$location = $router->assemble($query);
-				
-		if($currentLocation != $location) {
+
+		if(strpos($location, $request->getRequestUri()) === false) {
 			$response->setRedirect($location, 301);
 		}
 	}
 	
 	/**
-	 * Event listener method
+	 * Tests the rewrite cache, and may be re-created them.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -160,7 +161,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Event listener method
+	 * Gets the session id from the query alias.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -174,7 +175,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Event listener method
+	 * Reads the route based on the url.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -207,7 +208,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Event listener method
+	 * Builds a url using the request.
 	 *
 	 * @param Enlight_Event_EventArgs $args
 	 */
@@ -249,7 +250,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Assemble query method
+	 * Build the url based on the query.
 	 *
 	 * @param array $query
 	 * @return string
@@ -325,10 +326,15 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		return null;
 	}
 	
+	/**
+	 * The query alias list.
+	 *
+	 * @var array
+	 */
 	protected $sQueryAliasList;
 	
 	/**
-	 * Returns query alias list
+	 * Returns the query alias list as an array.
 	 *
 	 * @return array
 	 */
@@ -348,7 +354,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Returns query alias by key
+	 * Returns an alias of the list by name.
 	 *
 	 * @param string $key
 	 * @return string
@@ -360,7 +366,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 	}
 	
 	/**
-	 * Rewrite query method
+	 * Creates a url query based on the parameters.
 	 *
 	 * @param array $query
 	 * @return string

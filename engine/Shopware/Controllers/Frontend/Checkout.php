@@ -1,21 +1,44 @@
 <?php
 /**
- * Checkout controller
+ * Checkout Controller
+ * 
+ * Used for cart / confirm / confirmFinished Views
+ * Display information in templates and do order processing
  * 
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @author Stefan Hamann
  * @package Shopware
  * @subpackage Controllers
  */
 class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 {
+	/**
+	 * Reference to sAdmin object (core/class/sAdmin.php)
+	 * 
+	 * @var sAdmin
+	 */
 	protected $admin;
+	
+	/**
+	 * Reference to sBasket object (core/class/sBasket.php)
+	 * 
+	 * @var sBasket
+	 */
 	protected $basket;
+	
+	/**
+	 * Reference to Shopware session object (Shopware()->Session)
+	 * 
+	 * @var Zend_Session_Namespace
+	 */
 	protected $session;
 	
 	/**
-	 * Init controller method
+	 * Init method that get called automatically
+	 *
+	 * Set class properties
 	 */
 	public function init()
 	{
@@ -25,22 +48,23 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 		
 	/**
-	 * Index action method
+	 * Forward to cart or confirm action depending on user state
 	 */
 	public function indexAction()
 	{
 		if ($this->basket->sCountBasket()<1||!$this->admin->sCheckUser()) {
-			return $this->forward('cart');
+			$this->forward('cart');
 		} else {
-			return $this->forward('confirm');
+			$this->forward('confirm');
 		}
 	}
 	
 	/**
-	 * Index action method
+	 * Read all data from objects / models that are required in cart view
+	 * (User-Data / Payment-Data / Basket-Data etc.)
 	 */
 	public function cartAction()
-	{
+ 	{
 		$this->View()->sUserData = $this->getUserData();	
 		
 		$this->View()->sCountry = $this->getSelectedCountry();
@@ -70,7 +94,12 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Mostly equivalent to cartAction
+	 * Get user- basket- and payment-data for view assignment
+	 * Create temporary entry in s_order table
+	 * Check some conditions (minimum charge)
+	 *
+	 * @return void
 	 */
 	public function confirmAction()
 	{
@@ -116,7 +145,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Called from confirmAction View
+	 * Customers requests to finish current order
+	 * Check if all conditions match and save order
+	 *
+	 * @return void
 	 */
 	public function finishAction()
 	{		
@@ -172,7 +205,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * If any external payment mean chooses by customer
+	 * Forward to payment page after order submitting
 	 */
 	public function paymentAction()
 	{
@@ -216,12 +250,18 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			$this->View()->sEmbedded = $embedded;
 		} else {
 			$action = explode('/', $this->View()->sPayment['action']);
-			$this->redirect(array('controller' => $action[0], 'action' => empty($action[1]) ? 'index' : $action[1]));	
+			$this->redirect(array(
+				'controller' => $action[0],
+				'action' => empty($action[1]) ? 'index' : $action[1],
+				'forceSecure' => true
+			));
 		}
 	}
 	
 	/**
-	 * Index action method
+	 * Add an article to cart directly from cart / confirm view
+	 * @param sAdd = ordernumber
+	 * @param sQuantity = quantity
 	 */
 	public function addArticleAction()
 	{
@@ -252,23 +292,21 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 			$this->View()->sCrossBoughtToo = $this->getBoughtToo($articleID);
 		}
 		
-		if($this->request->isXmlHttpRequest()||!empty($this->Request()->callback))	
-		{
+		if($this->request->isXmlHttpRequest()||!empty($this->Request()->callback)){
 			$this->Request()->setParam('sTargetAction', 'ajax_add_article');
 		}
 		
-		if($this->Request()->getParam('sAddAccessories'))
-		{
+		if($this->Request()->getParam('sAddAccessories')) {
 			$this->forward('addAccessories');
-		}
-		else
-		{
+		} else {
 			$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 		}
 	}
 	
 	/**
-	 * Index action method
+	 * Add more then one article directly from cart / confirm view
+	 * @param sAddAccessories = List of article ordernumbers separated by ;
+	 * @param sAddAccessoriesQuantity = List of article quantities separated by ;
 	 */
 	public function addAccessoriesAction()
 	{
@@ -297,7 +335,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Add bundle product to cart defined with request parameters sAddBundle and sBID
 	 */
 	public function addBundleAction()
 	{
@@ -309,7 +347,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Delete an article from cart -
+	 * @param sDelete = id from s_basket identifying the product to delete
+	 * Forward to cart / confirmation page after success
 	 */
 	public function deleteArticleAction()
 	{
@@ -321,7 +361,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Change quantity of a certain product
+	 * @param sArticle = The article to update
+	 * @param sQuantity = new quantity
+	 * Forward to cart / confirm view after success
 	 */
 	public function changeQuantityAction()
 	{
@@ -333,7 +376,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Add voucher to cart
+	 * 
+	 * At failure view variable sVoucherError will give further information
+	 * At success return to cart / confirm view
 	 */
 	public function addVoucherAction()
 	{
@@ -349,7 +395,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * Add premium / bonus article to cart
+	 * @param sAddPremium - ordernumber of bonus article (defined in s_articles_premiums)
+	 * Return to cart / confirm page on success
 	 */
 	public function addPremiumAction()
 	{
@@ -369,27 +417,25 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Index action method
+	 * On any change on country, payment or dispatch recalculate shipping costs
+	 * and forward to cart / confirm view
 	 */
 	public function calculateShippingCostsAction()
 	{
-		if ($this->Request()->getPost('sCountry'))
-		{
+		if ($this->Request()->getPost('sCountry')) {
 			$this->session['sCountry'] = (int) $this->Request()->getPost('sCountry');
 		}
-		if ($this->Request()->getPost('sPayment'))
-		{
+		if ($this->Request()->getPost('sPayment')) {
 			$this->session['sPaymentID'] = (int) $this->Request()->getPost('sPayment');
 		}
-		if ($this->Request()->getPost('sDispatch'))
-		{
+		if ($this->Request()->getPost('sDispatch')) {
 			$this->session['sDispatch'] = (int) $this->Request()->getPost('sDispatch');
 		}
 		$this->forward($this->Request()->getParam('sTargetAction', 'index'));
 	}
 	
 	/**
-	 * Returns user data
+	 * Get complete user-data as an array to use in view
 	 *
 	 * @return array
 	 */
@@ -427,7 +473,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Save temporary order
+	 * Create temporary order in s_order_basket on confirm page
+	 * Used to track failed / aborted orders
 	 */
 	public function saveTemporaryOrder()
 	{
@@ -451,7 +498,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Save order method
+	 * Finish order - set some object properties to do this
 	 */
 	public function saveOrder()
 	{
@@ -474,10 +521,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 		
 	/**
-	 * Returns instock info
+	 * Used in ajax add cart action
+	 * Check availability of product and return info / error - messages
 	 *
-	 * @param unknown_type $ordernumber
-	 * @param unknown_type $quantity
+	 * @param unknown_type $ordernumber article order number
+	 * @param unknown_type $quantity quantity
 	 * @return unknown
 	 */
 	public function getInstockInfo($ordernumber, $quantity)
@@ -507,10 +555,11 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns available stock
+	 * Get current stock from a certain product defined by $ordernumber
+	 * Support for multidimensional variants
 	 *
 	 * @param unknown_type $ordernumber
-	 * @return unknown
+	 * @return array with article id / current basket quantity / instock / laststock
 	 */
 	public function getAvailableStock($ordernumber)
 	{
@@ -542,7 +591,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns shipping costs
+	 * Get Shippingcosts as an array (brutto / netto) depending on selected country / payment
 	 *
 	 * @return array
 	 */
@@ -556,7 +605,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns basket data
+	 * Return complete basket data to view
+	 * Basket items / Shippingcosts / Amounts / Tax-Rates
 	 *
 	 * @return array
 	 */
@@ -607,10 +657,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns tax rates
+	 * Returns tax rates for all basket positions
 	 *
-	 * @param unknown_type $basket
-	 * @return unknown
+	 * @param unknown_type $basket array returned from this->getBasket
+	 * @return array
 	 */
 	public function getTaxRates($basket)
 	{
@@ -677,7 +727,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get similar shown products to display in ajax add dialog
 	 *
 	 * @param unknown_type $articleID
 	 * @return unknown
@@ -703,7 +753,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get articles that bought in combination with last added product to
+	 * display on cart page
 	 *
 	 * @param unknown_type $articleID
 	 * @return unknown
@@ -726,7 +777,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get configured minimum charge to check in order processing
 	 *
 	 * @return unknown
 	 */
@@ -736,7 +787,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Check if order is possible under current conditions (dispatch)
 	 *
 	 * @return unknown
 	 */
@@ -746,7 +797,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get all premium products that are configured and available for this order
 	 *
 	 * @return unknown
 	 */
@@ -759,7 +810,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Check if any electronically distribution product is in basket
 	 *
 	 * @return unknown
 	 */
@@ -770,9 +821,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Check if a custom inquiry possibility should displayed on cart page
+	 * Compare configured inquirevalue with current amount
 	 *
-	 * @return unknown
+	 * @return boolean
 	 */
 	public function getInquiry()
 	{
@@ -794,9 +846,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get link to inquiry form if getInquiry returend true
 	 *
-	 * @return unknown
+	 * @return link
 	 */
 	public function getInquiryLink()
 	{
@@ -804,9 +856,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get all countries from database via sAdmin object
 	 *
-	 * @return unknown
+	 * @return list of countries
 	 */
 	public function getCountryList()
 	{
@@ -814,9 +866,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get all dispatches available in selected country from sAdmin object
 	 *
-	 * @return unknown
+	 * @return list of dispatches
 	 */
 	public function getDispatches()
 	{
@@ -828,9 +880,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Returns all available payment methods from sAdmin object
 	 *
-	 * @return unknown
+	 * @return list of payment methods
 	 */
 	public function getPayments()
 	{
@@ -838,9 +890,10 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get current selected country - if no country is selected, choose first one from list
+	 * of available countries
 	 *
-	 * @return unknown
+	 * @return array with country information
 	 */
 	public function getSelectedCountry()
 	{
@@ -861,7 +914,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get selected payment or do payment mean selection automatically
 	 *
 	 * @return unknown
 	 */
@@ -892,9 +945,9 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns checkout data method
+	 * Get selected dispatch or select a default dispatch
 	 *
-	 * @return unknown
+	 * @return false|array
 	 */
 	public function getSelectedDispatch()
 	{
@@ -923,6 +976,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 
 	/**
 	 * Ajax add article action
+	 * 
+	 * Loads the ajax padding plugin.
 	 */
 	public function ajaxAddArticleAction()
 	{
@@ -931,6 +986,8 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	
 	/**
 	 * Ajax cart action
+	 * 
+	 * Loads the cart in order to send via ajax.
 	 */
 	public function ajaxCartAction()
 	{
@@ -950,7 +1007,7 @@ class Shopware_Controllers_Frontend_Checkout extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Ajax amount action
+	 * Get current amount from cart via ajax to display in realtime
 	 */
 	public function ajaxAmountAction()
 	{
