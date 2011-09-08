@@ -49,7 +49,7 @@ Ext.ns('Shopware.Plugin');
 	    			url: '{url action="getTree"}'
 	    		},
                 listeners: {
-                    'click': { scope:this, fn:function(el){
+                    'click': { scope:this, fn:function(el) {
                     	this.list.store.baseParams["search"] = '';
                     	this.list.store.baseParams["path"] = el.id;
                     	this.list.store.load({ params:{ start:0, limit:20 } });
@@ -173,18 +173,18 @@ Ext.ns('Shopware.Plugin');
 	   					if(result.success) {
 	   						Ext.MessageBox.alert('Plugin installieren', 'Das Plugin wurde erfolgreich installiert.');
 	   						this.refreshList();
-		   					this.showDetail(pluginId);
+		   					this.showDetail(params.id);
 	   					} else if(result.license) {
 	   						Ext.Msg.prompt(
 	   							'Plugin installieren',
 	   							'Das Plugin konnte nicht installiert werden.<br />'+
 	   							result.message+
 	   							'<br /><br />'+
-	   							'Bitte geben Sie jetzt die Lizenz für das Modul "' + result.module +'" ein:',
+	   							'Bitte geben Sie jetzt die Lizenz für das Modul "' + result.license_module +'" ein:',
 	   							function(btn, value){
 								    if (btn == 'ok'){
 								    	params.license = value;
-								    	params.module = result.module;
+								    	params.license_module = result.license_module;
 								    	this.doInstallPlugin(params);
 								    }
 	   							}, this
