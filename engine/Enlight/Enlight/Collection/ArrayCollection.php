@@ -5,13 +5,22 @@
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @package Enlight
+ * @subpackage Enlight_Collection
  */
 class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collection
 {
+	/**
+	 * The element list.
+	 *
+	 * @var array
+	 */
 	protected $_elements;
 
 	/**
 	 * Constructor method
+	 * 
+	 * Expects an array as a parameter with default elements.
 	 *
 	 * @param array $elements
 	 */
@@ -21,7 +30,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 
 	/**
-	 * Count elements method
+	 * Counts the stored items or checks whether elements are deposited.
 	 *
 	 * @return int
 	 */
@@ -31,7 +40,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Set element method
+	 * Sets a value of an element in the list.
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -44,7 +53,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Returns element method
+	 * Returns a value of an element in the list.
 	 *
 	 * @param string $key
 	 * @return mixed
@@ -55,18 +64,18 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Contains element
+	 * Checks whether an element with a given name is stored.
 	 *
 	 * @param string $key
 	 * @return bool
 	 */
 	public function containsKey($key)
 	{
-		return isset($this->_elements[$key]);
+		return array_key_exists($key, $this->_elements);
 	}
 	
 	/**
-	 * Remove element method
+	 * Deletes an item from the list.
 	 *
 	 * @param string $key
 	 * @return Enlight_Collection_ArrayCollection
@@ -78,7 +87,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 
 	/**
-	 * Contains element
+	 * Checks whether an element with a given name is stored.
 	 *
 	 * @param string $key
 	 * @return bool
@@ -89,7 +98,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Remove element method
+	 * Deletes an item from the list.
 	 *
 	 * @param unknown_type $key
 	 */
@@ -99,7 +108,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Returns element method
+	 * Returns a value of an element in the list.
 	 *
 	 * @param string $key
 	 */
@@ -109,7 +118,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Set element method
+	 * Sets a value of an element in the list.
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -120,7 +129,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 
 	/**
-	 * Returns iterator
+	 * Returns the iterator instance for the list.
 	 *
 	 * @return Iterator
 	 */
@@ -131,7 +140,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 
 	/**
-	 * Set element method
+	 * Sets a value of an element in the list.
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -142,7 +151,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Returns element method
+	 * Returns a value of an element in the list.
 	 *
 	 * @param string $key
 	 */
@@ -152,7 +161,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Contains element
+	 * Checks whether an element with a given name is stored.
 	 *
 	 * @param string $key
 	 * @return bool
@@ -163,7 +172,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Remove element method
+	 * Deletes an item from the list.
 	 *
 	 * @param string $key
 	 * @return Enlight_Collection_ArrayCollection
@@ -174,7 +183,7 @@ class Enlight_Collection_ArrayCollection implements Enlight_Collection_Collectio
 	}
 	
 	/**
-	 * Call setter or getter method
+	 * Captures the magic phone calls and executes them accordingly.
 	 *
 	 * @param string $name
 	 * @param array $args
