@@ -71,3 +71,10 @@ SET @parent = (SELECT `id` FROM `s_core_config_groups` WHERE `name` = 'USt-IdNr.
 INSERT IGNORE INTO `s_core_config` (`id`, `group`, `name`, `value`, `description`, `required`, `warning`, `detailtext`, `multilanguage`, `fieldtype`) VALUES
 (NULL, @parent, 'sVATCHECKCONFIRMATION', '0', 'Amtliche Bestätigungsmitteilung bei der erweiterten Überprüfung anfordern', 0, 0, '', 1, 'int'),
 (NULL, @parent, 'sVATCHECKVALIDRESPONSE', 'A, D', 'Gültige Ergebnisse bei der erweiterten Überprüfung', 0, 0, '', 0, '');
+
+/*
+ * @ticket 6026 (internal)
+ * @author h.lohaus 
+ * @since 3.5.5 - 2011/09/08
+ */
+ALTER TABLE `s_core_subscribes` CHANGE `position` `position` INT( 11 ) NOT NULL;
