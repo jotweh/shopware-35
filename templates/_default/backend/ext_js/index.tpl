@@ -11,7 +11,7 @@
 <!--
 <script type="text/javascript" src="{link file='backend/_resources/javascript/ext-4.0.0/bootstrap.js'}" charset="utf-8"></script>
 -->
-<script type="text/javascript" src="{link file='backend/_resources/javascript/ext-4.0.0/ext-all-debug.js'}" charset="utf-8"></script>
+<script type="text/javascript" src="{link file='backend/_resources/javascript/ext-4.0.0/ext-all.js'}" charset="utf-8"></script>
 {if $Locale}
 {$link = {link file="backend/_resources/javascript/ext-4.0.0/locale/ext-lang-{$Locale->getLanguage()}_{$Locale->getRegion()}.js"}}
 {if !$link}
