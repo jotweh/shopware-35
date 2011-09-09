@@ -1,11 +1,31 @@
 <?php
+/**
+ * Shopware Captcha Controller 
+ * 
+ * @link http://www.shopware.de
+ * @copyright Copyright (c) 2011, shopware AG
+ * @author Stefan Hamann
+ * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Controllers
+ */
 class Shopware_Controllers_Frontend_Captcha extends Enlight_Controller_Action
 {
-	public function init()
+	/**
+	 * Pre dispatch action method
+	 * 
+	 * Sets no render on some actions
+	 */
+	public function preDispatch()
 	{
 		Shopware()->Plugins()->Controller()->ViewRenderer()->setNoRender();
 	}
 	
+	/**
+	 * Index action method
+	 *
+	 * Creates a captcha and then outputs it.
+	 */
 	public function indexAction()
 	{
 		if (!Shopware()->Session() || !Shopware()->Session()->Shop) {
@@ -31,8 +51,8 @@ class Shopware_Controllers_Frontend_Captcha extends Enlight_Controller_Action
 		}
 		
 		$random = $this->Request()->rand;
-		$random .= Shopware()->Plugins()->Core()->License()->getLicense("community");
-		$random .= Shopware()->Plugins()->Core()->License()->getLicense("core");
+		$random .= Shopware()->License()->getLicense("community");
+		$random .= Shopware()->License()->getLicense("core");
 		$random = md5($random);
 		$string = substr($random,0,5);
 
