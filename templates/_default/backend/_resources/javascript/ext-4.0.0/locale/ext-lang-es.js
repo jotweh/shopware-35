@@ -1,3 +1,17 @@
+/*
+
+This file is part of Ext JS 4
+
+Copyright (c) 2011 Sencha Inc
+
+Contact:  http://www.sencha.com/contact
+
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial Software License Agreement provided with the Software or, alternatively, in accordance with the terms contained in a written agreement between you and Sencha.
+
+If you are unsure which license is appropriate for your use, please contact the sales department at http://www.sencha.com/contact.
+
+*/
 /**
  * Spanish/Latin American Translation by genius551v 04-08-2007
  * Revised by efege, 2007-04-15.
@@ -154,7 +168,7 @@ Ext.onReady(function() {
 
     if(Ext.form.field.Number){
       Ext.apply(Ext.form.field.Number.prototype, {
-        decimalSeparator : ".",
+        decimalSeparator : ",",
         decimalPrecision : 2,
         minText : "El valor m&#237;nimo para este campo es de {0}",
         maxText : "El valor m&#225;ximo para este campo es de {0}",
