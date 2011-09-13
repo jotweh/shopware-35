@@ -18,11 +18,12 @@
 
 {block name="frontend_index_content"}
 	<div class="grid_16 register" id="center">
-		{if $register.personal.form_data.sValidation}
+
 			{block name='frontend_register_index_dealer_register'}
 		    {* Included for compatibility reasons *}
 		    {/block}
 			{block name='frontend_register_index_cgroup_header'}
+			{if $form_data.sValidation}
 			{* Include information related to registration for other customergroups then guest, this block get overridden by b2b essentials plugin *}
 				<div class="supplier_register">
 					<div class="inner_container">
@@ -40,8 +41,9 @@
 						   <h5 class="bold">{s name='RegisterInfoSupplier6' namespace='frontend/register/index'}{/s}</h5>{s name='RegisterInfoSupplier7' namespace='frontend/register/index'}{/s}
 					</div>
 				</div>
+			{/if}
 			{/block}
-		{/if}
+
 			
 		<form method="post" action="{$this->url(['action'=>'saveRegister'])}">
 			
