@@ -23,7 +23,7 @@
 		    {* Included for compatibility reasons *}
 		    {/block}
 			{block name='frontend_register_index_cgroup_header'}
-			{if $form_data.sValidation}
+			{if $register.personal.form_data.sValidation}
 			{* Include information related to registration for other customergroups then guest, this block get overridden by b2b essentials plugin *}
 				<div class="supplier_register">
 					<div class="inner_container">
