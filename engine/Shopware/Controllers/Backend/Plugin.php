@@ -320,7 +320,7 @@ class Shopware_Controllers_Backend_Plugin extends Enlight_Controller_Action
 			
 		try {
 			Shopware()->Cache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG, array(
-				'Shopware_License'
+				'Shopware_License', 'Shopware_Plugin'
 			));
 			
 			if(!empty($license)) {
