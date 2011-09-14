@@ -1,6 +1,7 @@
 <?php
 /**
  * Shopware Backend Controller
+ * Display backend / administration 
  *
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
@@ -10,25 +11,13 @@
  * @subpackage Controllers
  */
 class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
-{	
+{
+
 	/**
-	 * Init controller method
-	 */
-	public function init()
-	{
-		Shopware()->Config()->revision = 5922;
-		$sql = '
-			INSERT IGNORE INTO `s_core_config` (`group`, `name`, `value`)
-			VALUES (0, ?, ?)
-			ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)
-		';
-		Shopware()->Db()->query($sql, array(
-			'sREVISION', Shopware()->Config()->revision
-		));
-	}
-	
-	/**
-	 * Index action method
+	 * On index - get all Resources that we need in backend area
+	 * Backend Menu
+	 * Licence Information
+	 * Rss-Data for example
 	 */
 	public function indexAction()
 	{
@@ -68,7 +57,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	}
 
 	/**
-	 * logout action method
+	 * On logout destroy session and redirect to auth controller
 	 */
 	public function logoutAction()
 	{
@@ -78,7 +67,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns backend users
+	 * Get all backend users as an array
 	 *
 	 * @return array
 	 */
@@ -93,7 +82,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns sidebar rss feed
+	 * Get shopware rss feed to display in sidebar
 	 *
 	 * @return array
 	 */
@@ -125,7 +114,7 @@ class Shopware_Controllers_Backend_Index extends Enlight_Controller_Action
 	}
 	
 	/**
-	 * Returns account amount
+	 * Get current amount from shopware account if configured
 	 *
 	 * @return float
 	 */
