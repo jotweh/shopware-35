@@ -6,12 +6,12 @@
 	<file><name>files/cms/</name></file>
 	<file><name>files/documents/</name></file>
 	<file><name>files/downloads/</name></file>
-	<file><name>files/552211cce724117c3178e3d22bec532ec/</name></file>
 	<file><name>images/articles/</name></file>
 	<file><name>images/banner/</name></file>
 	<file><name>images/cms/</name></file>
 	<file><name>images/supplier/</name></file>
 <!--
+	<file><name>files/552211cce724117c3178e3d22bec532ec/</name></file>
 	<file><name>engine/vendor/html2ps/cache/</name></file>
 	<file><name>engine/vendor/html2ps/temp/</name></file>
 -->

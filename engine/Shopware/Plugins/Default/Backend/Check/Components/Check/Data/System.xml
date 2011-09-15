@@ -67,6 +67,7 @@
 	<requirement>
 	 	<name>session.auto_start</name><group>config</group><required>0</required>
 	</requirement>
+<!--
 	<requirement>
 	 	<name>session.gc_probability</name><group>config</group><required>1</required>
 	</requirement>
@@ -76,6 +77,7 @@
 	<requirement>
 	 	<name>session.use_trans_sid</name><group>config</group><required>0</required>
 	</requirement>
+-->
 	<requirement>
 	 	<name>memory_limit</name><group>config</group><required>64M</required>
 	</requirement>
@@ -104,13 +106,13 @@
 	 	<name>suhosin.session.cryptua</name><group>config</group><required>0</required>
 	</requirement>
 	<requirement>
+	 	<name>safe_mode</name><group>config</group><required>0</required>
+	</requirement>
+	<requirement>
 	 	<name>zip</name><group>other</group><required>1</required>
 	</requirement>
 	<requirement>
 	 	<name>ftp</name><group>other</group><required>1</required>
-	</requirement>
-	<requirement>
-	 	<name>safe_mode</name><group>other</group><required>0</required>
 	</requirement>
 </requirements>
 </shopware>
