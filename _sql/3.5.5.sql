@@ -1,6 +1,8 @@
 /**
  * Insert sql queries for shopware 3.5.5
  */
+ 
+SET NAMES 'latin1';
 
 /**
  * @ticket 5716 (internal)
