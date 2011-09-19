@@ -510,4 +510,14 @@ class Shopware_Components_Config_DbTable extends Shopware_Components_Config
     	$this->_dirtyFields = array_diff($this->_dirtyFields, $fields);
     	return true;
     }
+    	
+	/**
+	 * Returns a list with the fields to be stored
+	 *
+	 * @return array
+	 */
+    public function __sleep()
+    {
+        return array('_data');
+    }
 }
