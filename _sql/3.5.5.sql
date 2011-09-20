@@ -25,7 +25,7 @@ ALTER TABLE `s_core_translations` CHANGE `objectkey` `objectkey` INT( 11 ) UNSIG
  * @since 3.5.5 - 2011/08/08
  */
 UPDATE `s_core_config` SET `value` = '3.5.5' WHERE `name` = 'sVERSION';
-UPDATE `s_core_config` SET `value` = '7126' WHERE `name` = 'sREVISION';
+UPDATE `s_core_config` SET `value` = '7151' WHERE `name` = 'sREVISION';
 
 /*
  * @ticket 5867 (internal)
