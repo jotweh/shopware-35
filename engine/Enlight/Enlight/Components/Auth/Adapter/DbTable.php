@@ -93,7 +93,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
 		}
 		
 		$this->_zendDb->update($this->_tableName, array(
-			$this->expiryColumn => Zend_Date::now()
+			$this->expiryColumn => date("Y-m-d H:i:s",time())
 		), $this->_zendDb->quoteInto(
 			$this->_zendDb->quoteIdentifier($this->_identityColumn, true) . ' = ?',
 			$this->_identity
@@ -140,7 +140,7 @@ class Enlight_Components_Auth_Adapter_DbTable extends Zend_Auth_Adapter_DbTable
     	$identityColumn = $this->_identityColumn;
     	$credentialTreatment = $this->_credentialTreatment;
     	
-    	$expiry = Zend_Date::now()->subSecond($this->expiry);
+    	$expiry = date("Y-m-d H:i:s",time()-$this->expiry); 
     	$this->setCredential($expiry);
     	$this->setCredentialColumn($this->expiryColumn);
     	$expiryColumn = $this->_zendDb->quoteIdentifier($this->expiryColumn, true);
