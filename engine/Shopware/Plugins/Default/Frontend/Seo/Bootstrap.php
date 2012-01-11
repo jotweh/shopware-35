@@ -71,7 +71,7 @@ class Shopware_Plugins_Frontend_Seo_Bootstrap extends Shopware_Components_Plugin
 			}
 			elseif(!empty($view->sCategoryContent['metadescription']))
 			{
-				$$meta_description = $view->sCategoryContent['metadescription'];
+				$meta_description = $view->sCategoryContent['metadescription'];
 			}
 			elseif(!empty($view->sCategoryContent['cmstext']))
 			{
