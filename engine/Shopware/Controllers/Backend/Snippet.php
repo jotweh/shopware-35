@@ -460,8 +460,8 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					$tempArr = explode("~",$row["localeVals"]);
 					$countAvailableLocales = count($tempArr);
 					foreach ($tempArr as $key => $value) {
-						$row["value-".$locales[$key]] =$value;
-						$values[] = $value;
+					    $row["value-".$locales[$key]] = htmlentities($value);
+					    $values[] = $value;
 					}
 					//fill missing locale data
 					for ($i = $countAvailableLocales; $i < $countLocales; $i++) {
@@ -469,16 +469,16 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					}
 				}
 				else {
-					$row["value-".$locales[0]] = $row["localeVals"];
+					$row["value-".$locales[0]] = htmlentities($row["localeVals"]);
 					for ($i = 1; $i < $countLocales; $i++) {
-						$row["value-".$locales[$i]] = "";
+					    $row["value-".$locales[$i]] = "";
 					}
 				}
 				unset($row["localeVals"]);
 				echo $this->encodeLine($row, array_keys($row));
 			}
 		} else {
-			$this->Response()->setHeader('Content-type: text/plain');
+			$this->Response()->setHeader('Content-type: text/plain','');
 			$this->Response()->setHeader('Content-Disposition', 'attachment; filename="export.sql"');
 			
 			$sql = "SELECT * FROM `s_core_snippets`";
