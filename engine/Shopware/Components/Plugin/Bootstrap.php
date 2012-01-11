@@ -5,10 +5,21 @@
  * @link http://www.shopware.de
  * @copyright Copyright (c) 2011, shopware AG
  * @author Heiner Lohaus
+ * @package Shopware
+ * @subpackage Plugins
  */
 abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Bootstrap
-{	
+{
+	/**
+	 * Array with properties of plugin
+	 * @var array
+	 */
 	protected $capabilities;
+
+	/**
+	 * Save path to widget configuration file
+	 * @var string
+	 */
 	protected $widgetXML;
 	
 	/**
@@ -392,8 +403,10 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	 */
 	public function unsubscribeHooks()
 	{
-		Shopware()->Subscriber()->unsubscribeHooks(array('pluginID'=>$this->getId()));
-		
+		$pluginId = $this->getId();
+		if (!empty($pluginId)){
+			Shopware()->Subscriber()->unsubscribeHooks(array('pluginID'=>$this->getId()));
+		}
 		return $this;
 	}
 	
@@ -402,8 +415,11 @@ abstract class Shopware_Components_Plugin_Bootstrap extends Enlight_Plugin_Boots
 	 */
 	public function unsubscribeEvents()
 	{
-		Shopware()->Subscriber()->unsubscribeEvents(array('pluginID'=>$this->getId()));
-		
+		$pluginId = $this->getId();
+		if (!empty($pluginId)){
+			Shopware()->Subscriber()->unsubscribeEvents(array('pluginID'=>$this->getId()));
+		}
+
 		return $this;
 	}
 	
