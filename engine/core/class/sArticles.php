@@ -23,6 +23,11 @@ class sArticles
      * @var array
      */
 	var $sCachePromotions = array();
+
+	/**
+	 * Temporary set of liveshopping articles that was already requested in this session
+	 * @var array
+	 */
 	var $LiveShoppingCache = array();
 	/**
 	 * Delete articles from comparision chart
@@ -1231,32 +1236,39 @@ class sArticles
 
 			$articles[$articleKey]["sVariantArticle"] = false;
 
-			// Translate base
-
-
-			// Check if price is set for this customergroup
-
-
 			if (empty($blogCategory)){
-				if(!empty($article['liveshoppingData']['net_price'])) {
-					$cheapestPrice = $this->sGetCheapestPrice($articles[$articleKey]["articleID"],$articles[$articleKey]["pricegroup"],$articles[$articleKey]["pricegroupID"],$articles[$articleKey]["pricegroupActive"],false,true);
+				if(!empty($articles[$articleKey]['liveshoppingData']['net_price'])) {
+					$cheapestPrice = $articles[$articleKey]['liveshoppingData']['net_price'];
 				} else {
-					$cheapestPrice = $article['liveshoppingData']['net_price'];
+					$cheapestPrice = $this->sGetCheapestPrice(
+					$articles[$articleKey]["articleID"], $articles[$articleKey]["pricegroup"],
+					$articles[$articleKey]["pricegroupID"], $articles[$articleKey]["pricegroupActive"],
+					false, true
+					);
 				}
 
-				if (!is_array($cheapestPrice)){
-					$cheapestPriceT[0] = $cheapestPrice;
-					$cheapestPriceT[1] = "";
-					$cheapestPrice = $cheapestPriceT;
-				}
+			    // Reformat the price for further processing
+			    if (!is_array($cheapestPrice)){
+			     $cheapestPrice = array(
+			      $cheapestPrice,
+			      0
+			     );
+			    }
 
-				if (!empty($cheapestPrice[0]) && $cheapestPrice[0]!="0"){
-					if ($cheapestPrice[1]<=1){
-						$articles[$articleKey]["priceStartingFrom"] = $cheapestPrice[0];
-					}
-					$articles[$articleKey]["priceDefault"] = $articles[$articleKey]["price"];
-					$articles[$articleKey]["price"] = $cheapestPrice[0];
-				}
+			    // Temporary save default price
+			    $articles[$articleKey]["priceDefault"] = $articles[$articleKey]["price"];
+
+			    // Display always the cheapest price
+			    if(!empty($cheapestPrice[0])) {
+			     $articles[$articleKey]["price"] = $cheapestPrice[0];
+			    }
+
+			    // Is not free + Has a cheapest price available / Blockprice > display starting from attribut
+			    if ($cheapestPrice[0] != 0 && ($cheapestPrice[1] == 0 || $cheapestPrice[1] > 1)){
+			     $articles[$articleKey]["priceStartingFrom"] = $cheapestPrice[0];
+			    } else {
+			     $articles[$articleKey]["priceStartingFrom"] = null;
+			    }
 
 				// Price-Handling
 				$articles[$articleKey]["price"] = $this->sCalculatingPrice($articles[$articleKey]["price"],$articles[$articleKey]["tax"],$articles[$articleKey]);
