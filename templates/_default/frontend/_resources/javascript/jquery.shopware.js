@@ -293,23 +293,51 @@ jQuery(document).ready(function($) {
  *
  * Shopware AG (c) 2011
  */
+
+/**
+ * AJAX Validation
+ * for Shopware
+ *
+ * Shopware AG (c) 2011
+ */
 (function($) {
+
+	/** Plugin starter */
 	$(document).ready(function() {
 		$('.account .password :input').accountValidation();
-		$('.account .email :text').accountValidation();
+		$('.account .email input').accountValidation();
 	});
+
+	/**
+	 * Shopware UI - Account validation
+	 *
+	 * This jQuery plugin checks the given
+	 * mail address and the given password
+	 * against our criterions. Additionally we're
+	 * checking the mail address against the server side
+	 * to avoid account hijacking
+	 *
+	 * Example usage:
+	 * $('[selector]').accountValidation([settings]);
+	 *
+	 * @param {obj} settings - user settings
+	 * @return {obj} jQuery object basend on the given selector
+	 */
 	$.fn.accountValidation = function(settings) {
 
-		/** extend default settings with user settings */
+		/** Extend the default configuration with the provided user settings */
 		if(settings) $.extend($.accountValidation.config, settings);
 
-		this.each(function() {
+		/** Return this for jQuery's chaining support */
+		return this.each(function() {
 			var $me = $(this);
 
-			$me.parents('form').find(':submit').attr('disabled', 'disabled').css('opacity', .5);
+			/** Disable the submit button */
+			if(!$.browser.msie && parseInt($.browser.version) != 6) {
+				$me.parents('form').find('input[type=submit]').attr('disabled', 'disabled').css('opacity', 0.5);
+			}
 
-			//var timeout = null;
-
+			/** Event listener which checks on every keystroke the password and it's iteration */
 			$me.bind('keyup', function() {
 				if($me.attr('id') == 'newpwdrepeat' && $me.val().length == $('#newpwd').val().length) {
 					$me.triggerHandler('blur');
@@ -319,76 +347,71 @@ jQuery(document).ready(function($) {
 				}
 			});
 
+			/** Event listener which checks the given mail addresses or the given password against the server side */
 			$me.bind('blur', function() {
+				var error = false;
 
-				/*
-				if(timeout !== null) {
-					clearTimeout(timeout);
-					timeout = null;
+				if(!$me.val().length) { error = true; }
+
+				if(($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat') && !error) {
+					$.accountValidation.checkPasswd($me);
 				}
-				*/
 
-				/** Check length */
-				/*
-				timeout = window.setTimeout(function() {
-				*/
-					var error = false;
-					if(!$me.val().length) {
-						//$.accountValidation.setError($me);
-						error = true;
-					}
-
-					if(($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat') && !error) {
-						$.accountValidation.checkPasswd($me);
-					}
-
-					if(($me.attr('id') == 'neweailrepeat' || $me.attr('id') == 'newmail') && !error) {
-						$.accountValidation.checkEmail($me);
-					}
-				/*
-					}, 500);
-				*/
+				if(($me.attr('id') == 'neweailrepeat' || $me.attr('id') == 'newmail') && !error) {
+					$.accountValidation.checkEmail($me);
+				}
 			});
 		});
-		return this;
-	}
+	};
 
 	$.accountValidation = {
 
-		/** Default settings */
+		/** Default configuration */
 		config: {
 			errorCls: 'instyle_error',
 			successCls: 'instyle_success'
 		},
 
-		/** Set error cls */
+		/**
+		 * Simple method which sets the configured error class to the given element
+		 *
+		 * @param {obj} $el - jQuery object of the element which will become invalid
+		 * @return {obj} $el - jQuery object of the passed element
+		 */
 		setError: function($el) {
 			$el.removeClass($.accountValidation.config.successCls).addClass($.accountValidation.config.errorCls);
 
 			return $el;
 		},
 
-		/** Set success cls */
+		/**
+		 * Simple method which sets the configured success class to the given element
+		 *
+		 * @param {obj} $el - jQuery object of the element which will become valid
+		 * @return {obj} $el - jQuery object of the passed element
+		 */
 		setSuccess: function($el) {
 			$el.removeClass($.accountValidation.config.errorCls).addClass($.accountValidation.config.successCls);
-
-			if(!$el.val()) {
-				//$.accountValidation.setError($el)
-			}
 
 			return $el;
 		},
 
-		/** Validates the passwd */
+		/**
+		 * Validates the password
+		 *
+		 * @param {obj} object of the repeat field
+		 * @return void
+		 */
 		checkPasswd: function($repeat) {
 			var $form = $repeat.parents('form');
 
 			var str = '';
-			$form.find(':password').each(function(i, el) {
+
+			$form.find('input[type=password]').each(function(i, el) {
 				var $el = $(el), name = $el.attr('name');
 
 				if(str.length) { str += '&'; }
-				str += 'register[personal][' + name + ']='+$el.val()
+				str += 'register[personal][' + name + ']='+$el.val();
 			});
 
 			str = encodeURI(str);
@@ -396,16 +419,21 @@ jQuery(document).ready(function($) {
 			$.accountValidation.ajaxValidation('ajax_validate_password', str, $form);
 		},
 
-		/** Validates the emails */
+		/**
+		 * Validates the email address
+		 *
+		 * @param {obj} object of the repeat field
+		 * @return void
+		 */
 		checkEmail: function($repeat) {
 			var $form = $repeat.parents('form');
 
 			var str = '';
-			$form.find(':text').each(function(i, el) {
+			$form.find('input[type=text]').each(function(i, el) {
 				var $el = $(el), name = $el.attr('name');
 
 				if(str.length) { str += '&'; }
-				str += 'register[personal][' + name + ']='+$el.val()
+				str += 'register[personal][' + name + ']='+$el.val();
 			});
 
 			str = encodeURI(str);
@@ -413,9 +441,17 @@ jQuery(document).ready(function($) {
 			$.accountValidation.ajaxValidation('ajax_validate_email', str, $form);
 		},
 
-		/** Validates the elements over an ajax request */
+		/**
+		 * Validates the given elements against the server side
+		 * and determines on the base of the request response
+		 * if the given elements are valid or invalid.
+		 *
+		 * @param {str} action - the action which will be called server side
+		 * @param {str} data - the data string which will be send to the server
+		 * @param {obj} $form - jQuery object of the form
+		 * @return void
+		 */
 		ajaxValidation: function(action, data, $form) {
-
 
 			$.ajax({
 				'data': 'action=' + action + '&' + data,
@@ -433,15 +469,13 @@ jQuery(document).ready(function($) {
 					});
 
 					if(!result.success) {
+
 						if(!$.isEmptyObject(result.error_flags)) {
 
 							$(document.body).find('#ajax-validate-error').remove();
 
-							// Set error cls
-
-
 							// Get first element in form
-							var first = $form.find(':input:first');
+							var first = $form.find('input:first');
 
 							// Output error message
 							var err = $('<div>', {
@@ -462,19 +496,27 @@ jQuery(document).ready(function($) {
 								err.remove();
 							}, 4000);
 
-							$form.find(':submit').attr('disabled', 'disabled').css('opacity', .5);
+							// Check for IE6 to prevent a displaying issue
+							if(!$.browser.msie && parseInt($.browser.version) != 6) {
+								$form.find(':submit').attr('disabled', 'disabled').css('opacity', 0.5);
+							}
 						}
 					}  else {
-						$form.find(':password, :text').each(function(i, el) {
+
+						$form.find('input[type=password], input[type=text]').each(function(i, el) {
 							$(document.body).find('#ajax-validate-error').remove();
-							$form.find(':submit').removeAttr('disabled').css('opacity', 1);
-							//$.accountValidation.setSuccess($(el));
-						})
+
+							// Check for IE6 to prevent a displaying issue
+							if(!$.browser.msie && parseInt($.browser.version) != 6) {
+
+								$form.find('input[type=submit]').removeAttr('disabled').css('opacity', 1);
+							}
+						});
 					}
 				}
-			})
+			});
 		}
-	}
+	};
 })(jQuery);
 
 /**

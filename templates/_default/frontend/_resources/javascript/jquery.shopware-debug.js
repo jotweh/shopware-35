@@ -14,11 +14,14 @@
  * @package		default
  * @subpackage	javascript
  * @category	design
- * version		v1.8
+ * version		v1.9
  * @author		stp/shopware AG <info@shopware.de>
  * @copyright	Copyright (c) 2010 Shopware AG (http://www.shopware.de)
  *
  * CHANGELOG
+ * Version 1.9
+ * - removed unnecessary CSS styling
+ *
  * Version 1.8
  * - added ajax slider component
  * - loading indicator plugin
@@ -63,30 +66,21 @@
  * Version 1.0
  * - inital release
  */
- 
-/**
- * Plugin Starter
- * for Shopware
- *
- * Shopware AG (c) 2010
- */
-/**
- * Setting up all plugins and 
- * adding new functionality
- * to the shopware Storefront
- */
 jQuery(document).ready(function($) {
-		
+
 		// Removes hiding class for all script related elements
 		$('.hide_script').removeClass('hide_script');
 		
 		//IE 6 Drop down menu fallback
-		if($.browser.msie && parseInt($.browser.version) == 6) {
+		if($.browser.msie === true && parseInt($.browser.version, 10) == 6) {
 			$('#mainNavigation li').hover(function(){ $(this).addClass('hover'); }, function() { $(this).removeClass('hover'); });
 		}
 		
 		//Liveshopping 
 		$('.liveshopping_container:visible, .liveshopping_detail:visible').liveshopping();
+		
+		//Register Tooltip
+		$('.register .required').tipTip();
 		
 		//Bundle
 		$('.bundle_container, .relatedbox_container').bundle();
@@ -112,37 +106,34 @@ jQuery(document).ready(function($) {
 				$.modal(data, '', {'position':'fixed'}).find('.close').remove();			
 			});
 		});
-		
-		//Striping der Tabellen
-		$.stripe('zebra');
-		
+				
 		//Topseller
-		if($('.topseller')) $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350});
+		if($('.topseller')) { $('.accordion').kwicks({min: 52,sticky: true,spacing: 0,isVertical: true,duration: 350}); }
 		
-		//Suche
+		//Suggest Search
 		$('#searchfield').liveSearch({url:$.controller.ajax_search, 'id': 'searchresults'});
+		var defaultValue = $('#searchfield').val();
 		$('#searchfield').focus(function(){
-			if ($('#searchfield').val() == "Suche:"){
-				$('#searchfield').val("");
+			if ($('#searchfield').val() == defaultValue){
+				$('#searchfield').val('');
 			}
-			
 		});
-		//Serverzeit fuer Liveshopping
+		
+		//Get's the servertime for liveshopping articles
 		$.server.init(timeNow);
 		
-		//Wechsel bei Variantenartikeln
-		if(typeof(isVariant) != 'undefined' && isVariant == true) {
+		//Changing article informations on variants
+		if(typeof(isVariant) != 'undefined' && isVariant === true) {
 			$.changeDetails(0);
 		}	
-		
 		$('#sAdd.variant').change(function() {
-			$.changeDetails($(this).val())
-		});$
+			$.changeDetails($(this).val());
+		});
 		
-		//Lightbox Warenkorb
+		//Lightbox basket
 		$('a.zoom_picture[rel^=lightbox]').slimbox();
 		
-		//Ajax basket
+		//AJAX basket
 		$('div.ajax_basket').click(function() {
 			if($('.ajax_basket_result').hasClass('active')) {
 				$('.ajax_basket_result').removeClass('active').slideToggle('fast');
@@ -162,7 +153,6 @@ jQuery(document).ready(function($) {
 				$('div#DIV'+value).fadeIn('fast');
 				lasthover = $('div#DIV'+value);
 			}
-			
 		}, function() {
 			lasthover.fadeOut('fast');
 			lasthover = '';
@@ -186,7 +176,7 @@ jQuery(document).ready(function($) {
 		//Lightbox - Blog
 		$('.blogbox [rel^=lightbox]').slimbox();
 		
-		//Lightbox statt ZoomViewer
+		//Use a lightbox instead of a zoom
 		if(typeof(useZoom) != 'undefined' && useZoom == '0') {
 			$("[rel^='lightbox']").slimbox();
 			$('div.thumb_box a').bind('click', function(event) {
@@ -196,30 +186,46 @@ jQuery(document).ready(function($) {
 				return false;
 			});
 		}
+
+		$('.account .password').hide();
+		$('.account .email').hide();
 		
-		//Change Password Account
-		if(!$('.account .error').length) {
-			$('.account .password').hide();
-			$('.account .email').hide();
+		//Change password account
+		if($('.account .password').hasClass('displayblock')) {
+			$('.account .password').show();
 		}
+		if($('.account .email').hasClass('displayblock')) {
+			$('.account .password').show();
+		}
+
 		$('.account .change_password').bind('click', function(event) {
 			event.preventDefault();
-			$('.account .password').slideToggle('fast');
+			$('.account .password').slideToggle('fast').toggleClass('active');
+			$('.account .email').slideUp('fast');
 		});
 		
-		//Change Email Account
+		//Change email account
 		$('.account .change_mail').bind('click', function(event) {
 			event.preventDefault();
-			$('.account .email').slideToggle('fast');
+			$('.account .email').slideToggle('fast').toggleClass('active');
+			$('.account .password').slideUp('fast');
 		});
 		
 		//Logout Account
 		$('.logout').bind('click', function(event) {
 			event.preventDefault();
 			$.post($.controller.ajax_logout, function(data) {
-				var position = 'fixed'
-				if($.browser.msie && parseInt($.browser.version) == 6) {position = 'absolute';}
-				$.modal(data, '', {'position':position}).find('.close').remove();			
+				var position = 'fixed';
+				if($.browser.msie && parseInt($.browser.version, 10) == 6) {
+					position = 'absolute';
+				}
+				$.modal(data, '', {'position':position}).find('.close').remove();
+				if($.browser.msie && ~~$.browser.version <= 7) {
+					buttons = $('.modal').find('.button-right');
+					buttons.each(function() {
+						this.fireEvent('onmove');
+					});
+				}
 			});
 		});
 		
@@ -232,46 +238,47 @@ jQuery(document).ready(function($) {
 				$('#'+$(this).attr('rel')).addClass('active').show();
 			}
 		});	
-			//Register Validation
-			$('.register .required:input').validate();
-			
-			if($("#register_personal_customer_type").val()=="private") {
-				$('.register .company_informations').hide();
+		
+		//Register validation
+		$('.register .required:input').validate();
+		
+		if($("#register_personal_customer_type").val()=="private") {
+			$('.register .company_informations').hide();
+		}
+		
+		if($("#register_personal_skipLogin").is(':checked')) {
+			$('.register .fade_password, .register p.description, #birthdate').hide();
+		}
+		
+		$("#register_personal_customer_type").change(function() {
+			if($(this).val() == 'business') {
+				$('.register .company_informations').slideDown();
+			} else {
+				$('.register .company_informations').slideUp();
 			}
-			
-			if($("#register_personal_skipLogin").is(':checked')) {
-				$('.register .fade_password, .register p.description, #birthdate').hide();
+		});
+		
+		if(!$("#register_billing_shippingAddress").is(':checked')) {
+			if(!$('.register').hasClass('change_shipping')) {
+				$('.register .alternative_shipping').hide();
 			}
-			
-			$("#register_personal_customer_type").change(function() {
-				if($(this).val() == 'buisness') {
-					$('.register .company_informations').slideDown();
-				} else {
-					$('.register .company_informations').slideUp();
-				}
-			});
-			
-			if(!$("#register_billing_shippingAddress").is(':checked')) {
-				if(!$('.register').hasClass('change_shipping')) {
-					$('.register .alternative_shipping').hide();
-				}
+		}
+		
+		$('#register_billing_shippingAddress').click(function() {
+			if(!$(this).is(':checked')) {
+				$('.register .alternative_shipping').slideUp();
+			} else {
+				$('.register .alternative_shipping').slideDown();
 			}
-			
-			$('#register_billing_shippingAddress').click(function() {
-				if(!$(this).is(':checked')) {
-					$('.register .alternative_shipping').slideUp();
-				} else {
-					$('.register .alternative_shipping').slideDown();
-				}
-			});
-			
-			$('#register_personal_skipLogin').click(function() {
-				if($(this).is(':checked')) {
-					$('.register .fade_password, .register p.description, #birthdate').slideUp();
-				} else {
-					$('.register .fade_password, .register p.description, #birthdate').slideDown();
-				}
-			});
+		});
+		
+		$('#register_personal_skipLogin').click(function() {
+			if($(this).is(':checked')) {
+				$('.register .fade_password, .register p.description, #birthdate').slideUp();
+			} else {
+				$('.register .fade_password, .register p.description, #birthdate').slideDown();
+			}
+		});
 		
 		// Loading Indicator
 		$('form.upprice_config').bind('change', function() {
@@ -279,6 +286,238 @@ jQuery(document).ready(function($) {
 		});
 
 });
+
+/**
+ * AJAX Validation
+ * for Shopware
+ *
+ * Shopware AG (c) 2011
+ */
+
+/**
+ * AJAX Validation
+ * for Shopware
+ *
+ * Shopware AG (c) 2011
+ */
+(function($) {
+
+	/** Plugin starter */
+	$(document).ready(function() {
+		$('.account .password :input').accountValidation();
+		$('.account .email input').accountValidation();
+	});
+
+	/**
+	 * Shopware UI - Account validation
+	 *
+	 * This jQuery plugin checks the given
+	 * mail address and the given password
+	 * against our criterions. Additionally we're
+	 * checking the mail address against the server side
+	 * to avoid account hijacking
+	 *
+	 * Example usage:
+	 * $('[selector]').accountValidation([settings]);
+	 *
+	 * @param {obj} settings - user settings
+	 * @return {obj} jQuery object basend on the given selector
+	 */
+	$.fn.accountValidation = function(settings) {
+
+		/** Extend the default configuration with the provided user settings */
+		if(settings) $.extend($.accountValidation.config, settings);
+
+		/** Return this for jQuery's chaining support */
+		return this.each(function() {
+			var $me = $(this);
+
+			/** Disable the submit button */
+			if(!$.browser.msie && parseInt($.browser.version) != 6) {
+				$me.parents('form').find('input[type=submit]').attr('disabled', 'disabled').css('opacity', 0.5);
+			}
+
+			/** Event listener which checks on every keystroke the password and it's iteration */
+			$me.bind('keyup', function() {
+				if($me.attr('id') == 'newpwdrepeat' && $me.val().length == $('#newpwd').val().length) {
+					$me.triggerHandler('blur');
+				}
+				if($me.attr('id') == 'newmailrepeat' && $me.val().length == $('#newmail').val().length) {
+					$me.triggerHandler('blur');
+				}
+			});
+
+			/** Event listener which checks the given mail addresses or the given password against the server side */
+			$me.bind('blur', function() {
+				var error = false;
+
+				if(!$me.val().length) { error = true; }
+
+				if(($me.attr('id') == 'newpwd' || $me.attr('id') == 'newpwdrepeat') && !error) {
+					$.accountValidation.checkPasswd($me);
+				}
+
+				if(($me.attr('id') == 'neweailrepeat' || $me.attr('id') == 'newmail') && !error) {
+					$.accountValidation.checkEmail($me);
+				}
+			});
+		});
+	};
+
+	$.accountValidation = {
+
+		/** Default configuration */
+		config: {
+			errorCls: 'instyle_error',
+			successCls: 'instyle_success'
+		},
+
+		/**
+		 * Simple method which sets the configured error class to the given element
+		 *
+		 * @param {obj} $el - jQuery object of the element which will become invalid
+		 * @return {obj} $el - jQuery object of the passed element
+		 */
+		setError: function($el) {
+			$el.removeClass($.accountValidation.config.successCls).addClass($.accountValidation.config.errorCls);
+
+			return $el;
+		},
+
+		/**
+		 * Simple method which sets the configured success class to the given element
+		 *
+		 * @param {obj} $el - jQuery object of the element which will become valid
+		 * @return {obj} $el - jQuery object of the passed element
+		 */
+		setSuccess: function($el) {
+			$el.removeClass($.accountValidation.config.errorCls).addClass($.accountValidation.config.successCls);
+
+			return $el;
+		},
+
+		/**
+		 * Validates the password
+		 *
+		 * @param {obj} object of the repeat field
+		 * @return void
+		 */
+		checkPasswd: function($repeat) {
+			var $form = $repeat.parents('form');
+
+			var str = '';
+
+			$form.find('input[type=password]').each(function(i, el) {
+				var $el = $(el), name = $el.attr('name');
+
+				if(str.length) { str += '&'; }
+				str += 'register[personal][' + name + ']='+$el.val();
+			});
+
+			str = encodeURI(str);
+
+			$.accountValidation.ajaxValidation('ajax_validate_password', str, $form);
+		},
+
+		/**
+		 * Validates the email address
+		 *
+		 * @param {obj} object of the repeat field
+		 * @return void
+		 */
+		checkEmail: function($repeat) {
+			var $form = $repeat.parents('form');
+
+			var str = '';
+			$form.find('input[type=text]').each(function(i, el) {
+				var $el = $(el), name = $el.attr('name');
+
+				if(str.length) { str += '&'; }
+				str += 'register[personal][' + name + ']='+$el.val();
+			});
+
+			str = encodeURI(str);
+
+			$.accountValidation.ajaxValidation('ajax_validate_email', str, $form);
+		},
+
+		/**
+		 * Validates the given elements against the server side
+		 * and determines on the base of the request response
+		 * if the given elements are valid or invalid.
+		 *
+		 * @param {str} action - the action which will be called server side
+		 * @param {str} data - the data string which will be send to the server
+		 * @param {obj} $form - jQuery object of the form
+		 * @return void
+		 */
+		ajaxValidation: function(action, data, $form) {
+
+			$.ajax({
+				'data': 'action=' + action + '&' + data,
+				'type': 'post',
+				'dataType': 'json',
+				'url': $.controller.ajax_validate,
+				'success': function(result) {
+
+					$.each(result.error_flags, function(key, val) {
+						if(val) {
+							$.accountValidation.setError($('input[name=' + key + ']'));
+						} else {
+							$.accountValidation.setSuccess($('input[name=' + key + ']'));
+						}
+					});
+
+					if(!result.success) {
+
+						if(!$.isEmptyObject(result.error_flags)) {
+
+							$(document.body).find('#ajax-validate-error').remove();
+
+							// Get first element in form
+							var first = $form.find('input:first');
+
+							// Output error message
+							var err = $('<div>', {
+								'class': 'error',
+								'id': 'ajax-validate-error',
+								'html': result.error_messages[0],
+								'css': {
+									'display': 'none',
+									'position': 'absolute',
+									'top': first.offset().top,
+									'left': first.offset().left + first.outerWidth() + 30,
+									'width': 200,
+									'zIndex': 100
+								}
+							}).prependTo($(document.body)).fadeIn('fast');
+
+							window.setTimeout(function() {
+								err.remove();
+							}, 4000);
+
+							// Check for IE6 to prevent a displaying issue
+							if(!$.browser.msie && parseInt($.browser.version) != 6) {
+								$form.find(':submit').attr('disabled', 'disabled').css('opacity', 0.5);
+							}
+						}
+					}  else {
+
+						$form.find('input[type=password], input[type=text]').each(function(i, el) {
+							$(document.body).find('#ajax-validate-error').remove();
+
+							// Check for IE6 to prevent a displaying issue
+							if(!$.browser.msie && parseInt($.browser.version) != 6) {
+
+								$form.find('input[type=submit]').removeAttr('disabled').css('opacity', 1);
+							}
+						});
+					}
+				}
+			});
+		}
+	};
+})(jQuery);
 
 /**
  * AJAX Slider
@@ -321,8 +560,6 @@ jQuery(document).ready(function($) {
 			
 			// Public
 			'layout':           'horizontal',
-			'width':            763,
-			'height':           220,
 			'scrollWidth':      711,
 			'scrollHeight':     711,
 			'scrollSpeed':      400,
@@ -333,7 +570,6 @@ jQuery(document).ready(function($) {
 			'loadingContainer': 'loader',
 			'title':            '',
 			'titleClass':       'headingbox',
-			'outer':            true,
 			'headline':         false,
 			'url':              '',
 			'rotate':           false,
@@ -365,47 +601,36 @@ jQuery(document).ready(function($) {
 		};
 		
 		// Override default config with user settings
-		if (settings) $.extend(config, settings);
+		if (settings) { $.extend(config, settings); }
 		
 		this.each(function() {
 			
-			if(config.debug == true) {
+			if(config.debug === true) {
 				console.group('Slider: .' + $(this).attr('class'));
 			}
 			
 			$.ajaxSlider.debugMode('Mode: ' + mode, config);
 			
 			config._this = $(this);
-			config._this.css('width',config.width+'px');
 			
 			$.ajaxSlider.debugMode('Create Container', config);
 			
 			// Create slider outer container and replace selector
 			config._container = $('<div>', {
-				'class': config.containerClass,
-				'css':{
-					'width': config.width+'px',
-					'height': config.height+'px',
-					'position': 'relative'
-				}
+				'class': config.containerClass
 			}).appendTo(config._this);
 			
 			$.ajaxSlider.debugMode('Container created', config);
 			
 			// Save slider mode
-			config._mode = mode
-			
-			// Sets additional css styles
-			if(!$.isEmptyObject(config.containerCSS)) {
-				$.ajaxSlider.debugMode('Set additional styles', config);
-				config._container.css(config.containerCSS);
-			}
+			config._mode = mode;
 			
 			// Add layout class
 			config._this.addClass(config.layout+'_slider');
 			
-			if(config.title != '' && config.headline) {
+			if(config.title !== '' && config.headline) {
 				$.ajaxSlider.debugMode('Create headline', config);
+				
 				// Create headline
 				config._headline = $('<h2>', {
 					'class': config.titleClass,
@@ -449,21 +674,21 @@ jQuery(document).ready(function($) {
 					return false;
 			}
 			
-			if(config.rotate == true) {
+			if(config.rotate === true) {
 				$.ajaxSlider.debugMode('Create rotation', config);
 				$.ajaxSlider.rotateSlider(config);
 			}
 		});
 		
-		if(config.debug == true) {
+		if(config.debug === true) {
 			console.groupEnd();
 		}
 		
 		// Return this to support jQuery's chaining
 		return this;
-	}
+		};
 		
-	$.ajaxSlider = {
+		$.ajaxSlider = {
 		
 		/**
 		 * $.ajaxSlider.createContainers
@@ -475,17 +700,13 @@ jQuery(document).ready(function($) {
 		createContainers: function(config) {
 			// Create sliding outer container
 			config._slideOuterContainer = $('<div>', {
-				'class': 'sliding_outer',
-				'css': {
-					'position': 'relative',
-					'overflow': 'hidden'
-				}
+				'class': 'sliding_outer'
 			}).appendTo(config._container);
 			
 			// Create actual sliding container
 			config._slideContainer = $('<div>', {
 				'class': 'sliding_container'
-			}).prependTo(config._slideOuterContainer).hide()
+			}).prependTo(config._slideOuterContainer).hide();
 		},
 		
 		/**
@@ -504,7 +725,7 @@ jQuery(document).ready(function($) {
 				'method': config.ajaxMethod,
 				'data': {'pages': slideNumber},
 				'beforeSend': function() {
-					if(config._loader == null) {
+					if(config._loader === null) {
 					
 						// Create AJAX Loader
 						config._loader = $('<div>', {
@@ -557,12 +778,12 @@ jQuery(document).ready(function($) {
 							config._rightArrow.show();
 						}
 						
-						if(parseInt(config._slidesCount) == 1) {
+						if(parseInt(config._slidesCount, 10) === 1) {
 							config._leftArrow.hide();
 							config._rightArrow.hide();
 						}
 						
-						if(parseInt(config._slidesCount) == 0) {
+						if(parseInt(config._slidesCount, 10) === 0) {
 							config._container.hide();
 							return;
 						}
@@ -574,21 +795,6 @@ jQuery(document).ready(function($) {
 								height = config.height;
 							} else {
 								height = config.height - config._headline.outerHeight();
-							}
-							if(config.outer) {
-								// Position the outer container
-								config._slideOuterContainer.css({
-									'left': config._leftArrow.width()+'px',
-									'width': config.width - (config._leftArrow.width() * 2)+'px',
-									'height': height
-								});
-							} else {
-								// Position the outer container
-								config._slideOuterContainer.css({
-									'left': 0,
-									'width': config.width,
-									'height': height
-								});
 							}
 						// vertical slider
 						} else {
@@ -606,12 +812,12 @@ jQuery(document).ready(function($) {
 									'height': config.height - config._headline.outerHeight()+'px'
 								});
 							}
-
+		
 						}
 						
 						// Adding numbers
-						if(config.showNumbers == true) {
-							if(config._numbers == null) { 
+						if(config.showNumbers === true) {
+							if(config._numbers === null) { 
 								config._numbers = $('<div>', {
 									'class': 'slide_numbers'
 								}).insertAfter(config._headline);
@@ -631,7 +837,7 @@ jQuery(document).ready(function($) {
 						return true;
 					}
 				}
-			})
+			});
 		},
 		
 		/**
@@ -644,7 +850,7 @@ jQuery(document).ready(function($) {
 		 */
 		ajaxMode: function(config) {
 			
-			if(config.navigation == false) {
+			if(config.navigation === false) {
 				$.ajaxSlider.createContainers(config);
 				config._activeSlide = 1;
 				$.ajaxSlider.getPage(config._activeSlide, config);
@@ -660,7 +866,7 @@ jQuery(document).ready(function($) {
 					$.ajaxSlider.getPage(config._activeSlide - 1, config);
 					
 				});
-
+		
 				
 			} else { 
 				
@@ -737,11 +943,7 @@ jQuery(document).ready(function($) {
 			
 			// Create sliding outer container
 			config._slideOuterContainer = $('<div>', {
-				'class': 'sliding_outer',
-				'css': {
-					'position': 'relative',
-					'overflow': 'hidden'
-				}
+				'class': 'sliding_outer'
 			}).appendTo(config._container);
 			
 			// Create actual sliding container
@@ -758,10 +960,10 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Create slider navigation
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				$.ajaxSlider.sliderNavigation(config);
 			}
-
+		
 		},
 		
 		/**
@@ -780,30 +982,15 @@ jQuery(document).ready(function($) {
 				height = config.height - config._headline.outerHeight();
 			}
 			
-			if(config.outer) {
-				// Position the outer container
-				config._slideOuterContainer.css({
-					'left': config._leftArrow.width()+'px',
-					'width': config.width - (config._leftArrow.width() * 2)+'px',
-					'height': height
-				});
-			} else {
-				// Position the outer container
-				config._slideOuterContainer.css({
-					'left': 0,
-					'width': config.width,
-					'height': height
-				});
-			}
 			
-			if(config.navigation == true || config.navigation == false && config._mode == 'locale') {
+			if(config.navigation === true || config.navigation === false && config._mode == 'locale') {
 				
 				// Setting the width of the slide container
 				var slides = config._slideContainer.find('.slide');
 				config._slideContainerWidth = 0;
 				
 				$.each(slides,function(i, el) { config._slideContainerWidth += $(el).width();});
-				config._slideContainer.width(config._slideContainerWidth)
+				config._slideContainer.width(config._slideContainerWidth);
 				
 				// Getting the number of slides
 				config._slidesCount = slides.length;
@@ -857,7 +1044,7 @@ jQuery(document).ready(function($) {
 				});
 			}
 			
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				// Setting containerHeight
 				var slides = config._slideContainer.find('.slide');
 				config._slideContainerHeight = 0;
@@ -887,10 +1074,9 @@ jQuery(document).ready(function($) {
 				config._leftArrow.bind('click', function(event) {
 					$.ajaxSlider.leftArrow(event, config);
 				});
-			} else {
-			
 			}
 		},
+
 		
 		rightArrow: function(event, config) {
 			event.preventDefault();
@@ -940,10 +1126,10 @@ jQuery(document).ready(function($) {
 			var links = config._slideNavigation.find('a');
 			
 			links.bind('click', function(event) {
-				config._activeSlide = parseInt($(this).text());
+				config._activeSlide = parseInt($(this).text(), 10);
 				window.clearInterval(config._rotateInterval);
 				$.ajaxSlider.animateContainerTo(config._activeSlide -1, config);
-			})
+			});
 			
 		},
 		
@@ -1010,11 +1196,11 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Set navigation point to active
-			if(config.navigation == true) {
+			if(config.navigation === true) {
 				
 				// Set this navigation point as active
 				config._activeNavigation.removeClass('active');
-				config._activeNavigation = $('#slideNavigation'+ (slideNumber +1)).addClass('active');
+				config._activeNavigation = config._this.find('#slideNavigation'+ (slideNumber +1)).addClass('active');
 			}
 		},
 					
@@ -1041,11 +1227,11 @@ jQuery(document).ready(function($) {
 			}
 		},
 		debugMode: function(text, config) {
-			if(config.debug == true) {
+			if(config.debug === true) {
 				console.log(text);
 			}
 		}
-	}
+	};
 })(jQuery);
 
 /**
@@ -1057,15 +1243,13 @@ jQuery(document).ready(function($) {
 (function($) {
 	
 	$.loadingIndicator = {
-		
+	
 		config: {
 			'overlay': '#lbOverlay',
 			'overlayOpacity': 0.6,
 			'hideOverlayAfterClose': false,
 			'loadingClass': 'loadingIndicator',
 			'loadingText': 'Loading...',
-			'height': 64,
-			'width': 64,
 			'animationSpeed': 500,
 			'additionalCSS': {},
 			'bindEvent': false,
@@ -1075,23 +1259,20 @@ jQuery(document).ready(function($) {
 		open: function(settings) {
 			
 			// settings
-			if (settings) $.extend($.loadingIndicator.config, settings);
+			if (settings) { $.extend($.loadingIndicator.config, settings); }
 		
 			// Create loader
 			$.loadingIndicator.config._loader = $('<div>', {
 				'class': $.loadingIndicator.config.loadingClass,
-				'text': $.loadingIndicator.config.loadingText,
-				'css': {
-					'position': 'fixed',
-					'top': '50%',
-					'left': '50%',
-					'marginTop':  -($.loadingIndicator.config.height/2) +'px',
-					'marginLeft': -($.loadingIndicator.config.width/2) + 'px',
-					'height': $.loadingIndicator.config.height,
-					'width': $.loadingIndicator.config.width,
-					'zIndex': 99999
-				}
+				'text': $.loadingIndicator.config.loadingText
 			}).hide().appendTo($(document.body));
+			
+			var height = $.loadingIndicator.config._loader.height(), width = $.loadingIndicator.config._loader.width();
+			
+			$.loadingIndicator.config._loader.css({
+				'marginTop':  -(height/2) +'px',
+				'marginLeft': -(width/2) + 'px'
+			});
 			
 			// Add additionalcss if passed
 			if(!$.isEmptyObject($.loadingIndicator.config.additionalCSS)) {
@@ -1099,17 +1280,17 @@ jQuery(document).ready(function($) {
 			}
 			
 			// Overlay handling
-			if($.loadingIndicator.config.hideOverlayAfterClose == true) {
+			if($.loadingIndicator.config.hideOverlayAfterClose === true) {
 				$($.loadingIndicator.config.overlay).fadeTo($.loadingIndicator.config.animationSpeed, $.loadingIndicator.config.overlayOpacity);
 			}
-			if($.loadingIndicator.config.bindEvent == true) {
+			if($.loadingIndicator.config.bindEvent === true) {
 				$($.loadingIndicator.config.overlay).css({'cursor': 'pointer'}).bind('click', function() {
 					$.loadingIndicator.close();
 				});
 			} else {
 				$($.loadingIndicator.config.overlay).css({'cursor': 'default'});
 			}
-			if($.browser.msie && parseInt($.browser.version) == 6) {
+			if($.browser.msie && parseInt($.browser.version, 10) == 6) {
 				$.ie6fix.open($.loadingIndicator.config._loader);
 			} else {
 				$.loadingIndicator.config._loader.fadeIn($.loadingIndicator.config.animationSpeed);
@@ -1120,7 +1301,7 @@ jQuery(document).ready(function($) {
 		close: function() {
 			if($.loadingIndicator.config._loader) {
 				$($.loadingIndicator.config.overlay).fadeOut($.loadingIndicator.config.animationSpeed);
-				if($.browser.msie && parseInt($.browser.version) == 6) {
+				if($.browser.msie && parseInt($.browser.version, 10) == 6) {
 					$.ie6fix.close($.loadingIndicator.config._loader);
 				} else {
 					$.loadingIndicator.config._loader.animate({
@@ -1151,7 +1332,7 @@ jQuery(document).ready(function($) {
 
 	$.fn.validate = function(settings) {
 		
-		if (settings) $.extend(config, settings);
+		if (settings) { $.extend(config, settings); }
 		
 		this.bind('blur', function(event) {
 			validate($(this));
@@ -1188,51 +1369,51 @@ jQuery(document).ready(function($) {
 			setSuccess(el);
 			return;
 		}
-	}
+	};
 	
 	ajaxValidate = function(el, action) {
-		var data = 'action='+action+'&'+$('.register form').serialize(); 
+		var data = 'action='+action+'&'+$('.register form').serialize();
 		$.ajax({
             'data': data,
             'type': 'post',
             'dataType': 'json',
             'url': $.controller.ajax_validate,
             'success': function (result, data) {
-            	if(result && result.error_flags) 
-            	{
-            		for (var error_flag in result.error_flags)
-            		{  
-            			if(result.error_flags[error_flag])
-            				setError($('.register .'+error_flag));
-            			else
-            				setSuccess($('.register .'+error_flag));
-            		}
-            	}
-            	
-            	$('#'+action+'_error').remove();
-            	
-            	
-            	if(result && result.error_messages&& result.error_messages.length)
-            	{            		            		
-            		var error_css = {
-            			'top': el.offset().top-5,
-            			'left': el.offset().left+el.outerWidth()+15,
-            			'position': 'absolute',
-            			'z-index': 100
-            		};
-            		
-            		var error_el = $('<div>').attr('id', action+'_error').addClass('error').prependTo($('body')).css(error_css);
-            		
-            		for (var error_key in result.error_messages)
-            		{
-            			var error_message = result.error_messages[error_key];
-            			
-            			error_el.append(error_message+'<br />');
-            		}
-            	}
+				if(result && result.error_flags) 
+				{
+					for (var error_flag in result.error_flags)
+					{  
+						if(result.error_flags[error_flag]) {
+							setError($('.register .'+error_flag));
+						} else {
+							setSuccess($('.register .'+error_flag));
+						}
+					}
+				}
+				
+				$('#'+action+'_error').remove();
+				
+				if(result && result.error_messages&& result.error_messages.length)
+				{
+					var error_css = {
+						'top': el.offset().top-5,
+						'left': el.offset().left+el.outerWidth()+15,
+						'position': 'absolute',
+						'z-index': 100
+					};
+					
+					var error_el = $('<div>').attr('id', action+'_error').addClass('error').prependTo($('body')).css(error_css);
+					
+					for (var error_key in result.error_messages)
+					{
+						var error_message = result.error_messages[error_key];
+
+						error_el.append(error_message+'<br />');
+					}
+				}
             }
         });
-	}
+	};
 	
 	//Sets error class
 	setError = function(el) {
@@ -1244,7 +1425,7 @@ jQuery(document).ready(function($) {
 			$(el).removeClass(config.successClass).addClass(config.errorClass);
 		}
 		return el;
-	}
+	};
 	
 	//Sets success class
 	setSuccess = function(el) {
@@ -1256,7 +1437,7 @@ jQuery(document).ready(function($) {
 			$(el).removeClass(config.errorClass).addClass(config.successClass);
 		}
 		return el;
-	}
+	};
 
 })(jQuery);
 
@@ -1286,7 +1467,7 @@ jQuery(document).ready(function($) {
 				'max_quantity_enable': $(this).find('input.max_quantity_enable').val(),
 				'max_quantity': $(this).find('input.max_quantity').val(),
 				'sells': $(this).find('input.sells').val(),
-				'typeID': parseInt($(this).find('input.typeID').val()),
+				'typeID': parseInt($(this).find('input.typeID').val(), 10),
 				'price': eval($(this).find('input.price').val()),
 				'minPrice': eval($(this).find('input.minPrice').val())
 				//'stints': $(this).find('input.stints').val().split(';')
@@ -1306,12 +1487,12 @@ jQuery(document).ready(function($) {
 			
 			// article limitation
 			var stints = $(obj).find('input.stints');
-			if($.isEmptyObject(stints) == true) {
+			if($.isEmptyObject(stints) === true) {
 				article.stints = $(stints).val().split(';');
 			}
 			
 			// prepare ordernumber for sizzle
-			article.ordernumber = article.ordernumber.replace('\.', '\\.');
+			article.ordernumber = article.ordernumber.replace(/\./g, '\\.');
 			
 			// refresh every second
 			window.setInterval(function () {
@@ -1322,7 +1503,7 @@ jQuery(document).ready(function($) {
 				var diff = $.timestampDiff(article.target.getTime(), now.getTime());
 				
 				// liveshopping is running 
-				if(diff != false) {
+				if(diff !== false) {
 				
 					$.liveshopping.refreshDates(article, diff);
 					
@@ -1331,7 +1512,7 @@ jQuery(document).ready(function($) {
 						$.liveshopping.refreshBarChart(article,diff);
 						
 						if(article.max_quantity_enable) {
-							$.liveshopping.refreshQuantity(article)
+							$.liveshopping.refreshQuantity(article);
 						}
 						
 					// Minutes decrease
@@ -1346,8 +1527,6 @@ jQuery(document).ready(function($) {
 					}
 					
 				// liveshopping is finished
-				} else {
-					//window.location.reload();
 				}
 			}, 1000);
 		},
@@ -1367,7 +1546,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_days_doubledigit').each(function(index, item) {
 				tmp = diff.d;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0' + tmp); else	$(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0' + tmp); } else { $(item).html(tmp); }
 			});
 			
 			// hours
@@ -1379,7 +1558,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_hours_doubledigit').each(function(index, item) {
 				tmp = diff.h;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 			
 			// minutes
@@ -1391,7 +1570,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_min_doubledigit').each(function(index, item) {
 				tmp = diff.m;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 			
 			// seconds
@@ -1403,7 +1582,7 @@ jQuery(document).ready(function($) {
 			$('span.live'+key+'_sec_doubledigit').each(function(index, item) {
 				tmp = diff.s;
 				tmp = tmp.toString();
-				if(tmp.length == 1) $(item).html('0'+tmp); else $(item).html(tmp);
+				if(tmp.length == 1) { $(item).html('0'+tmp); } else { $(item).html(tmp); }
 			});
 
 		},
@@ -1417,7 +1596,7 @@ jQuery(document).ready(function($) {
 			// days process bar
 			$('div.live'+key+'_days_process').each(function(index, item) {
 				var proz = eval(diff.d)*100/31;
-				if(proz > 100) proz = 100;
+				if(proz > 100) { proz = 100; }
 				proz = 100 - proz;
 				$(item).css('width', proz+'%');
 			});
@@ -1448,7 +1627,7 @@ jQuery(document).ready(function($) {
 		// necessary for minutes increase and decrease
 		refreshPrices: function(article, diff) {
 		
-			if (diff.s == 0) {
+			if (diff.s === 0) {
 				
 				var key = article.uniquekey + article.ordernumber;
 				// calulating new price
@@ -1516,9 +1695,10 @@ jQuery.fn.liveSearch = function (conf) {
 		results: {},
 		lastValue: '',
 		timer: null,
-		searchPosition: 'middle',		// left, middle, right
-		searchWidth: 450				// search width
+		_left: null,
+		_top: null
 	}, conf);
+
 
 	var liveSearch    = jQuery('#' + config.id);
 	
@@ -1542,45 +1722,25 @@ jQuery.fn.liveSearch = function (conf) {
 	}
 
 	return this.each(function () {
-		var input = jQuery(this).attr('autocomplete', 'off');
+		var input = jQuery(this);
 		var liveSearchPaddingBorderHoriz = parseInt(liveSearch.css('paddingLeft'), 10) + parseInt(liveSearch.css('paddingRight'), 10) + parseInt(liveSearch.css('borderLeftWidth'), 10) + parseInt(liveSearch.css('borderRightWidth'), 10);
 		
 		// Re calculates live search's position
 		var repositionLiveSearch = function () {
+		
 			
-			var tmpOffset	= input.offset();
-			
-			switch(config.searchPosition) {
-				case 'left':
-					leftValue = tmpOffset.left;
-					break;
-				case 'middle':
-					leftValue = (tmpOffset.left + input.outerWidth() / 2) - (config.searchWidth / 2);
-					break;
-				case 'right':
-					leftValue = (tmpOffset.left + input.outerWidth()) - config.searchWidth + 8;
-					break;
+			if(config._left === null || config._top === null) {
+				liveSearch.show();
+				if(config._left === null) { config._left = parseInt(liveSearch.css('left'), 10); }
+				if(config._top === null) { config._top = parseInt(liveSearch.css('top'), 10); }
+				liveSearch.hide();
 			}
 			
-			//console.log(leftValue);
-			
-			var inputDim    = {
-				
-				//setting static offset
-				left:	leftValue,
-				top:	tmpOffset.top,
-				width:	input.outerWidth(),
-				height:	input.outerHeight()
-			};
-
-			inputDim.topPos        = inputDim.top + inputDim.height;
-			inputDim.totalWidth    = inputDim.width - liveSearchPaddingBorderHoriz;
-			
+			var containerOffset = $('.container_20:first').offset();
+						
 			liveSearch.css({
-				position:	'absolute',
-				left:		inputDim.left + 'px',
-				top:		inputDim.topPos + 'px',
-				width:		config.searchWidth + 'px'
+				'left': containerOffset.left + config._left,
+				'top': containerOffset.top + config._top
 			});
 		};
 
@@ -1607,7 +1767,7 @@ jQuery.fn.liveSearch = function (conf) {
 		
 		var doLiveSearch = function () {
 			
-			if(input.val() == config.lastValue) return;
+			if(input.val() == config.lastValue) { return; }
 
 			input.addClass(config.loadingClass);
 		
@@ -1630,7 +1790,7 @@ jQuery.fn.liveSearch = function (conf) {
 	                'cancelExisting': true,
 	                'data': $(input.attr('form')).serialize(),
 	                'beforeSend': function() {
-	                	$('div.inner_searchcontainer .ajax_loader').show();
+						$('div.inner_searchcontainer .ajax_loader').show();
 	                },
 	                'success': function (request) {
 	                   $('div.inner_searchcontainer .ajax_loader').hide();
@@ -1656,7 +1816,7 @@ jQuery.fn.liveSearch = function (conf) {
 			if (this.value !== '') {
 				
 				// Perform a new search if there are no search results
-				if (liveSearch.html() == '') {
+				if (liveSearch.html() === '') {
 					config.lastValue = '';
 					doLiveSearch();
 				}
@@ -1714,16 +1874,16 @@ jQuery.fn.liveSearch = function (conf) {
 	 // Methods to fix the select box bug
     // and the missing position fixed
     $.ie6fix ={
-    	_init: function() {
-    		if($.browser.msie && parseInt($.browser.version) == 6) {
-     			$.ie6fix.open(modal, config);
-     		} else {
-     			return false;
-     		}
-    	},
-    	open: function(obj) {
-    		// Hide select boxes
-    		$('select:visible').css('visibility', 'hidden');
+		_init: function() {
+			if($.browser.msie && parseInt($.browser.version, 10) == 6) {
+				$.ie6fix.open(modal, config);
+			} else {
+				return false;
+			}
+		},
+		open: function(obj) {
+			// Hide select boxes
+			$('select:visible').css('visibility', 'hidden');
     		
     		// Fix missing 'position: fixed'
     		obj.css({
@@ -1755,18 +1915,18 @@ jQuery.fn.liveSearch = function (conf) {
 			$('select, #detail .liveshopping_detail, .accessory_container').css('visibility', 'visible');
     	},
     	selectOnlyShow: function() {
-    		$('select').css('visibility', 'visible')
+    		$('select').css('visibility', 'visible');
     	}
     }; 
 
 	// Formats a string
 	// Syntax: $.format('<div class="%0"'>%1</div>, [value for %0], [value for %1], ...)
 	$.format = function(str) {
-	        for (var i = 1; i < arguments.length; i++) {
-	            str = str.replace('%' + (i - 1), arguments[i]);
-	        }
-	        return str;
-	    }
+        for (var i = 1; i < arguments.length; i++) {
+            str = str.replace('%' + (i - 1), arguments[i]);
+        }
+        return str;
+    };
 
 	//Extends jQuery's namespace
     $.server = {
@@ -1779,12 +1939,12 @@ jQuery.fn.liveSearch = function (conf) {
         $.server.dateObj = new Date();
         $.server.dateObj.setTime(servertime * 1000);
         window.setInterval(function () {
-            $.server.increment()
-        }, 1000)
+            $.server.increment();
+        }, 1000);
     };
     $.server.increment = function () {
         var crntTime = $.server.dateObj.getTime() + 1000;
-        $.server.dateObj = new Date(crntTime)
+        $.server.dateObj = new Date(crntTime);
     };
     
     //Formats floats
@@ -1793,7 +1953,7 @@ jQuery.fn.liveSearch = function (conf) {
             prec = decimals;
         var toFixedFix = function (n, prec) {
             var k = Math.pow(10, prec);
-            return (Math.round(n * k) / k).toString()
+            return (Math.round(n * k) / k).toString();
         };
         n = !isFinite(+n) ? 0 : +n;prec = !isFinite(+prec) ? 0 : Math.abs(prec);
         var sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep;
@@ -1805,54 +1965,27 @@ jQuery.fn.liveSearch = function (conf) {
             _ = abs.split(/\D/);
             i = _[0].length % 3 || 3;
             _[0] = s.slice(0, i + (n < 0)) + _[0].slice(i).replace(/(\d{3})/g, sep + '$1');
-            s = _.join(dec)
+            s = _.join(dec);
         } else {
-            s = s.replace('.', dec)
+            s = s.replace('.', dec);
         }
         var decPos = s.indexOf(dec);
         if (prec >= 1 && decPos !== -1 && (s.length - decPos - 1) < prec) {
-            s += new Array(prec - (s.length - decPos - 1)).join(0) + '0'
+            s += new Array(prec - (s.length - decPos - 1)).join(0) + '0';
         } else if (prec >= 1 && decPos === -1) {
-            s += dec + new Array(prec).join(0) + '0'
+            s += dec + new Array(prec).join(0) + '0';
         }
-        return s
+        return s;
     };
-    
-    //Stripes tables
-    $.stripe = function (id) {
-        var even = false;
-        var evenColor = arguments[1] ? arguments[1] : "#fff";
-        var oddColor = arguments[2] ? arguments[2] : "#efefef";
-        var table = document.getElementById(id);
-        if (!table) {
-            return
-        }
-        var tbodies = table.getElementsByTagName("tbody");
-        for (var h = 0; h < tbodies.length; h++) {
-            var trs = tbodies[h].getElementsByTagName("tr");
-            for (var i = 0; i < trs.length; i++) {
-                if (!hasClass(trs[i]) && !trs[i].style.backgroundColor) {
-                    var tds = trs[i].getElementsByTagName("td");
-                    for (var j = 0; j < tds.length; j++) {
-                        var mytd = tds[j];
-                        if (!hasClass(mytd) && !mytd.style.backgroundColor) {
-                            mytd.style.backgroundColor = even ? evenColor : oddColor
-                        }
-                    }
-                }
-                even = !even
-            }
-        }
-    };
-        
+            
     //Changes the state of the related articles which is
     //used by the bundle module
     $.changeRelatedArticleState = function (ordernumber, active) {
         var tmpContainerName = '#' + ordernumber + '_related_container';
-        if (false == active) {
-            $(tmpContainerName).hide()
+        if (false === active) {
+            $(tmpContainerName).hide();
         } else {
-            $(tmpContainerName).show()
+            $(tmpContainerName).show();
         }
     };
     
@@ -1860,7 +1993,7 @@ jQuery.fn.liveSearch = function (conf) {
     //which is used by the live shopping module
     $.timestampDiff = function (d1, d2) {
         if (d1 < d2) {
-            return false
+            return false;
         }
         var d = Math.floor((d1 - d2) / (24 * 60 * 60 * 1000));
         var h = Math.floor(((d1 - d2) - (d * 24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
@@ -1871,79 +2004,129 @@ jQuery.fn.liveSearch = function (conf) {
             'h': h,
             'm': m,
             's': s
-        }
+        };
     };
     
     //Changes the displayed informations on the
-    //article detail site and changes the active
-    //images which is used by variant articles
-    $.changeDetails = function (ordernumber) {
-        if (typeof($.checkNotification) == 'function') {
-        	if (!ordernumber){
-            	$.checkNotification($.ordernumber);
-        	}else {
-        		$.checkNotification(ordernumber);
-        	}
-        }
-        
-        if (!ordernumber) {
-        	// Hide all other thumbnails
-            if (isVariant) {
-                var thumbs = $('.thumb_box').children('a:[id]');
-                thumbs.each(function (i, el) {
-                    if ($(el).attr('id') != 'thumb' + $.ordernumber) $(el).hide()
-                })
-            }
-            // Hide basket
-            $('#basketButton').css('opacity', '0.4')
-        } else {
-        	// Change informations
-            $('#article_details').html($('#' + ordernumber).html());
-            
-            //Set basket button to active
-            $('#basketButton').css('opacity', '1.0');
-            
-            // Change main image
-            $('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
-            
-            //Wenn eine andere Variante ausgewaehlt ist
-            if(ordernumber != $.ordernumber) {
-            	
-            	//Wenn ZoomViewer ist aktiv
-            	useZoom = parseInt(useZoom);
-            	if(useZoom) {
-            		$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
-            		$('#img' + ordernumber).find('a').trigger('click');
-            	} else {
-            		 //Lightboxlink wechseln
-                	$('a#zoom1').attr('href', $('#img' + ordernumber).children('a').attr('href'));
-            	}
-            	
-            	//Thumbnails wechseln
-            	$('#thumb' + $.ordernumber).hide();
-                $('#thumb' + ordernumber).show();
-                
-                
-                //neue Ordernumber in die globale Variable schreiben
-                $.ordernumber = ordernumber;
-            	try {
-            		$('#variantOrdernumber').val(ordernumber);
-            	}catch (err){
-            		
-            	}
-            	// try to active liveshopping
-            	try {
-            		$('#article_details').liveshopping();
-            	} catch(err) {}
-            }
-        }
-    };
-    
+	//article detail site and changes the active
+	//images which is used by variant articles
+	$.changeDetails = function (ordernumber) {
+		if(ordernumber) {
+			ordernumber = ordernumber.replace(/\./g, '\\.');
+		}
+		if (typeof($.checkNotification) == 'function') {
+			if (!ordernumber){
+				$.checkNotification($.ordernumber);
+			}else {
+				$.checkNotification(ordernumber);
+			}
+		}
+		try {
+			if(!ordernumber || $('#instock_'+ordernumber).val() > 0) {
+				$('#article_notification').hide();
+				$('#detailCartButton').show();
+				$('#detailBuyInfoNotAvailable').hide();
+			} else {
+				$('#article_notification').show();
+				var hideBasket = $('#notifyHideBasket').val();
+				hideBasket = ~~hideBasket;
+				
+				if(hideBasket) {
+					$('#detailCartButton').hide();
+				}
+				if($('#detailBuyInfoNotAvailable').length) {
+					$('#detailCartButton').hide();
+					$('#detailBuyInfoNotAvailable').show();
+				}
+			}
+		} catch(e) {}
+
+		if (!ordernumber) {
+			// Hide Pseudoprice
+			$('.PseudoPrice').hide();
+
+			// Hide all other thumbnails
+			if (isVariant) {
+				var thumbs = $('.thumb_box').children('a:[id]');
+				thumbs.each(function (i, el) {
+					if ($(el).attr('id') != 'thumb' + $.ordernumber) { $(el).hide(); }
+				});
+			}
+			// Hide delivery info
+			$('.delivery_container').hide();
+			// Hide basket
+			$('#basketButton').css('opacity', '0.4');
+		} else {
+		
+			// Show Pseudo price
+			$('#'+ordernumber).find('.PseudoPrice').show();
+			
+			// Show delivery info
+			$('.delivery_container').show();
+			
+			// Change informations
+			$('#article_details').html($('#' + ordernumber).html());
+
+			//Set basket button to active
+			$('#basketButton').css('opacity', '1.0');
+
+			// Change main image
+			$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
+
+			if(ordernumber != $.ordernumber) {
+
+				// ZoomViewer active...
+				useZoom = parseInt(useZoom);
+				if(useZoom) {
+					var img_link = $('a#zoom1 img');
+
+					// Refresh src attribute
+					if(img_link.attr('src')) {
+						$('a#zoom1 img').attr('src', $('#img' + ordernumber).find('img').attr('src'));
+					}
+					// Refresh img title
+					if(img_link.attr('title')) {
+						img_link.attr('title', $('#img' + ordernumber).children('a').attr('title'))
+					}
+
+					// If image found and the neccessary attributes are set
+					// fire the click event to change the image over the
+					// CloudZoom plugin
+					if(img_link.attr('src') && img_link.attr('title')) {
+						$('#img' + ordernumber).find('a').trigger('click');
+					}
+				} else {
+					 // Change lightbox link
+					$('a#zoom1').attr('href', $('#img' + ordernumber).children('a').attr('href'));
+				}
+				
+				// Change active thumbnail image
+				$('#thumb' + $.ordernumber).hide();
+				$('#thumb' + ordernumber).show();
+
+
+				// Set the new ordernumber in the global scope
+				$.ordernumber = ordernumber;
+				try {
+					$('#variantOrdernumber').val(ordernumber);
+				}catch (err){
+
+				}
+			}
+		}
+		// Try to active liveshopping
+		try {
+			$('#article_details').liveshopping();
+		} catch(err) {}
+	};
+
     //Check if the article are set up for
     //email notification and checks if
     //a notification was sent 
     $.checkNotification = function(ordernumber) {
-    	
+    	if(typeof(variantOrdernumberArray) == 'undefined') {
+    		return;
+    	}
     	var isSet = false;
     	try {
 	    	for(var i = 0; i < variantOrdernumberArray.length; ++i) {
@@ -1956,19 +2139,6 @@ jQuery.fn.liveSearch = function (conf) {
 						$('#sendArticleNotification').hide();
 					} catch(e) {}
 				}
-			}
-			
-			var currentInstock = $('#instock_'+ordernumber).val();
-				if(currentInstock > 0) {
-					$('#article_notification').hide();
-					try {
-						$('#detailCartButton').show();
-					} catch(e) {}
-				} else {
-					$('#article_notification').show();
-					try {
-						$('#detailCartButton').hide();
-					} catch(e) {}
 			}
 		} catch(err) {}
 	}
@@ -2190,6 +2360,17 @@ jQuery.fn.liveSearch = function (conf) {
         
         $('input[class=relatedOrdernumber]').each(function (i, item) {
             var tmpOrdernumber = $(item).val();
+			
+			/**
+			 * Fix issue with sizzle selector engine and ordernumbers
+			 * which includes dots
+			 * @ticket #5711 (intern)
+			 * @ticket #100483 (extern)
+			 * @author s.pohl
+			 * @date 2011-07-27
+			 */
+			tmpOrdernumber = tmpOrdernumber.replace(/(:|\.)/g,'\\$1');
+
             var tmpContainerName = '#related_'+tmpOrdernumber+'_image';
             var tmpPlusiconName = '#related_'+tmpOrdernumber+'_plus';
             var tmpPriceName = '#' + tmpOrdernumber + '_price';
@@ -2295,31 +2476,36 @@ jQuery.fn.liveSearch = function (conf) {
     };
     
     //Requests the compare informations
-    $.compare.startComparison = function (url) {
-        $.ajax({
-            'dataType': $.compare.options.dataType,
-            'type': $.compare.options.requestType,
-            'url': url,
-            'complete': function (result) {
-				var width = 160 * $.compare.options.compareCount + 160;
-					var position = 'fixed';
+	$.compare.startComparison = function (url) {
+	    $.ajax({
+	        'dataType': $.compare.options.dataType,
+	        'type': $.compare.options.requestType,
+	        'url': url,
+	        'complete': function (result) {
+	        	
+	        	var container = $('<div>', {'class':'ajax_compare_container'}).appendTo(document.body);
+	        	var div = $('<div>', {'class': 'grid_3'}).appendTo(container);
+	        	
+	        	container.show();	
+	        	var tmpWidth = parseInt(div.css('width'));
+	        	container.remove();
+	        	
+				var width = tmpWidth * $.compare.options.compareCount + tmpWidth;
 				
 				if($.browser.msie && parseInt($.browser.version) == 6) {
 					width += 2;
-					position = 'absolute';
 				}
-                
+	            
 				$.modal(result.responseText, '', {
-               		'position': position,
-               		'width': width+'px',
-               		'top': '30px',
-               		'textContainer': '<div>',
-               		'textClass': 'ajax_compare_container'
-               });
-            }
-        })
-    };
-    
+	           		'width': width+'px',
+	           		'top': '30px',
+	           		'textContainer': '<div>',
+	           		'textClass': 'ajax_compare_container'
+	           });
+	        }
+	    })
+	};
+	
     //Adds an article with it's article id
     //to the current compare list
     $.compare.addCompare = function (url) {
@@ -2397,88 +2583,78 @@ jQuery.fn.liveSearch = function (conf) {
 (function ($) {
 	
 	//Default settings
-    var config = {
-        position: 'absolute',
-        left: '50%',
-        top: '10%',
-        width: '560px',
-        border: '1px solid #333',
-        background: '#fff',
-        animationSpeed: 500,
-        frameHeight: '500px',
-        textClass: '',
-        textContainer: '<p>',
-        overlay: '#lbOverlay',
-        overlayOpacity: '0.6',
-        useOverlay: true
-    };
-    
-    //creates an modal window with text and headline
-    $.modal = function (text, headline, settings) {
-        if (settings) $.extend(config, settings);
-        if ($('.modal')) $('.modal').remove();
-        var modal = $('<div>', {
-            'class': 'modal',
-            'css': {
-                'width': config.width,
-                'left': '50%',
-                'border': config.border,
-                'background': config.background,
-                'display': 'none',
-                'margin-left': -(parseInt(config.width) / 2)
-            }
-        });
-        
-        if (headline.length) {
-            var h2 = $('<h2>', {
-                'html': headline
-            }).appendTo(modal)
-        }
-        if (text.length) {
-            var container = $(config.textContainer, {
-                'html': text
-            });
-            
-            if (config.textClass.length) {
-                container.addClass(config.textClass)
-            }
-            container.appendTo(modal);
-        }
-        var close = $('<a>', {
-            'text': 'Schlieﬂen',
-            'class': 'close'
-        }).appendTo(modal);
-        close.bind('click', function (event) {
-            event.preventDefault();
-            if (config.useOverlay == true) {
-                $.modal.overlay.fadeOut()
-            }
-            if (config.position == 'absolute') {
-                modal.fadeOut(config.animationSpeed)
-            } else if (config.position == 'fixed') {
-                modal.animate({
-                    'top': -(modal.height() + 100) + 'px'
-                }, config.animationSpeed)
-            }
-        });
-        modal.appendTo('body');
-        if (config.useOverlay == true) {
-            $.modal.overlay.fadeIn();
-            
-            $(config.overlay).bind('click', function (event) {
-                $.modalClose();
-            })
-        }
-        if($.browser.msie && parseInt($.browser.version) == 6) {
-     		$.ie6fix.open(modal, config);
-     	} else {
+	var config = {
+	    animationSpeed: 500,
+	    frameHeight: '500px',
+	    textClass: '',
+	    textContainer: '<p>',
+	    overlay: '#lbOverlay',
+	    overlayOpacity: '0.6',
+	    useOverlay: true,
+	    width: 500
+	};
+	
+	//creates an modal window with text and headline
+	$.modal = function (text, headline, settings) {
+	    if (settings) $.extend(config, settings);
+	    if ($('.modal')) $('.modal').remove();
+	    var modal = $('<div>', {
+	        'class': 'modal',
+	        'css': {
+	        	'width': config.width
+	        } 
+	    });
+	    
+	    if(settings.width) { modal.css('width', settings.width); }
+	    
+	    if (headline.length) {
+	        var h2 = $('<h2>', {
+	            'html': headline
+	        }).appendTo(modal)
+	    }
+	    if (text.length) {
+	        var container = $(config.textContainer, {
+	            'html': text
+	        });
+	        
+	        if (config.textClass.length) {
+	            container.addClass(config.textClass)
+	        }
+	        container.appendTo(modal);
+	    }
+	    
+	    //get css properties
+	    modal.show();
+	    if(!config.position) {
+	   		config.position = modal.css('position');
+	    }
+	    config.top = modal.css('top');
+	    modal.hide();
+	    
+	  
+	    modal.appendTo('body');
+	    
+	    modal.show().css('marginLeft', -(modal.width()/2)).hide();
+	    
+	    if (config.useOverlay == true) {
+	        $.modal.overlay.fadeIn();
+	        
+	        $(config.overlay).bind('click', function (event) {
+	            $.modalClose();
+	        })
+	    }
+	    $('.modal').fadeIn('fast');
+	    
+	    if($.browser.msie && parseInt($.browser.version) == 6) {
+	 		$.ie6fix.open(modal, config);
+	 	} else {
 	        if (config.position == 'absolute') {
 	            modal.css({
-	                'top': config.top,
 	                'position': config.position,
 	                'bottom': 'auto'
 	            }).fadeIn(config.animationSpeed);
 	        } else if (config.position == 'fixed') {
+	        	$('.modal').fadeIn();
 	            modal.css({
 	                'position': config.position,
 	                'top': -(modal.height() + 100) + 'px',
@@ -2487,10 +2663,10 @@ jQuery.fn.liveSearch = function (conf) {
 	                'top': '40px'
 	            }, config.animationSpeed)
 	        }
-        }
-        
-        return modal
-    };
+	    }
+	    
+	    return modal
+	};
     
     //Cloeses the current modal window
     $.modalClose = function () {
@@ -2508,6 +2684,7 @@ jQuery.fn.liveSearch = function (conf) {
 	                'top': -($('.modal').height() + 100) + 'px'
 	            }, config.animationSpeed)
 	        }
+	        $('.modal').fadeOut();
         }
     };
     
@@ -2610,30 +2787,36 @@ jQuery.fn.liveSearch = function (conf) {
     };
     
     //Extends jQuery's function namespace
-    $.fn.checkout = function (settings) {
-        if (settings) $.extend(config, settings);
-        
-        $(config.container + ' form').live('submit', function (event) {
-        	if(!$(this).hasClass('new_customer_form')) {
-        		event.preventDefault();
-        		$.checkout.loginUser(this);
-        	}
-        });
-        
-        this.live('click', function (event) {
-            event.preventDefault();
-            $.checkout.checkUser(this.href);
-        });
-        
-        return this
-    };
+	$.fn.checkout = function (settings) {
+	    if (settings) $.extend(config, settings);
+	    
+	    $(config.container + ' form').live('submit', function (event) {
+	    	if(!$(this).hasClass('new_customer_form')) {
+	    		event.preventDefault();
+	    		$.checkout.loginUser(this);
+	    	}
+	    });
+	    $(config.container + ' .existing_customer input[type^=submit]').live('click', function(event) {
+	    	event.preventDefault();
+	    	var form = $(config.container + ' form[name^=existing_customer]');
+	    	$.checkout.loginUser(form);
+	    });
+	    
+	    this.live('click', function (event) {
+	        event.preventDefault();
+	        $.checkout.checkUser(this.href);
+	    });
+	    
+	    return this
+	};
+
     
     //Extends jQuery's namespace
     $.checkout = {};
     
     //Checks the user
     $.checkout.checkUser = function (target,event) {
-    	config.target = target;    	
+    	config.target = target;
         $.ajax({
             'url': config.viewport,
             'dataType': 'jsonp',
@@ -2641,18 +2824,25 @@ jQuery.fn.liveSearch = function (conf) {
                 if (result.length) {
                 	var width = 530;
                 	var position = 'fixed';
-                
+
                 	if($.browser.msie && parseInt($.browser.version) == 6) {
                 		var width = 530;
                 		var position = 'absolute';
                 	}
-                
+
                     $.modal(result, config.headline, {
                         'position': position,
                         'textClass': '',
                         'textContainer': '<div>',
                         'width': width+'px'
                     }).find('.close').remove();
+
+                    if($.browser.msie) {
+	                    buttons = $('.modal').find('input[type^=submit]');
+	                    buttons.each(function() {
+	                    	this.fireEvent('onmove');
+	                    });
+                    }
                 
                 // user is logged in                
                 } else {
@@ -2735,11 +2925,10 @@ jQuery.fn.liveSearch = function (conf) {
         
         $('a.buynow').live('click', function (event) {
             event.preventDefault();
+
+			$.loadingIndicator.open();
             $.ajax({
                 'dataType': 'jsonp',
-                'beforeSend': function() {
-                	$.loadingIndicator.open();
-                },
                 'url': $(this).attr('href'),
                 'success': function (result) {
                 	$.loadingIndicator.close();
@@ -2755,13 +2944,12 @@ jQuery.fn.liveSearch = function (conf) {
         });
         $('.basketform').bind('submit', function (event) {
             event.preventDefault();
+			
+			$.loadingIndicator.open();
             $.ajax({
                 'data': $(this).serialize(),
                 'dataType': 'jsonp',
                 'url': $(this).attr('action'),
-                'beforeSend': function() {
-                	$.loadingIndicator.open();
-                },
                 'success': function(result) {
                 	
                 	$.loadingIndicator.close();
@@ -3128,6 +3316,28 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
 (function(c){c.effects.slide=function(d){return this.queue(function(){var a=c(this),h=["position","top","left"],e=c.effects.setMode(a,d.options.mode||"show"),b=d.options.direction||"left";c.effects.save(a,h);a.show();c.effects.createWrapper(a).css({overflow:"hidden"});var f=b=="up"||b=="down"?"top":"left";b=b=="up"||b=="left"?"pos":"neg";var g=d.options.distance||(f=="top"?a.outerHeight({margin:true}):a.outerWidth({margin:true}));if(e=="show")a.css(f,b=="pos"?-g:g);var i={};i[f]=(e=="show"?b=="pos"?
 "+=":"-=":b=="pos"?"-=":"+=")+g;a.animate(i,{queue:false,duration:d.duration,easing:d.options.easing,complete:function(){e=="hide"&&a.hide();c.effects.restore(a,h);c.effects.removeWrapper(a);d.callback&&d.callback.apply(this,arguments);a.dequeue()}})})}})(jQuery);
 
+/*
+ * TipTip
+ * Copyright 2010 Drew Wilson
+ * www.drewwilson.com
+ * code.drewwilson.com/entry/tiptip-jquery-plugin
+ *
+ * Version 1.3   -   Updated: Mar. 23, 2010
+ *
+ * This Plug-In will create a custom tooltip to replace the default
+ * browser tooltip. It is extremely lightweight and very smart in
+ * that it detects the edges of the browser window and will make sure
+ * the tooltip stays within the current window size. As a result the
+ * tooltip will adjust itself to be displayed above, below, to the left 
+ * or to the right depending on what is necessary to stay within the
+ * browser window. It is completely customizable as well via CSS.
+ *
+ * This TipTip jQuery plug-in is dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
+ */
+(function($){$.fn.tipTip=function(options){var defaults={activation:"hover",keepAlive:false,maxWidth:"200px",edgeOffset:3,defaultPosition:"bottom",delay:400,fadeIn:200,fadeOut:200,attribute:"title",content:false,enter:function(){},exit:function(){}};var opts=$.extend(defaults,options);if($("#tiptip_holder").length<=0){var tiptip_holder=$('<div id="tiptip_holder" style="max-width:'+opts.maxWidth+';"></div>');var tiptip_content=$('<div id="tiptip_content"></div>');var tiptip_arrow=$('<div id="tiptip_arrow"></div>');$("body").append(tiptip_holder.html(tiptip_content).prepend(tiptip_arrow.html('<div id="tiptip_arrow_inner"></div>')))}else{var tiptip_holder=$("#tiptip_holder");var tiptip_content=$("#tiptip_content");var tiptip_arrow=$("#tiptip_arrow")}return this.each(function(){var org_elem=$(this);if(opts.content){var org_title=opts.content}else{var org_title=org_elem.attr(opts.attribute)}if(org_title!=""){if(!opts.content){org_elem.removeAttr(opts.attribute)}var timeout=false;if(opts.activation=="hover"){org_elem.hover(function(){active_tiptip()},function(){if(!opts.keepAlive){deactive_tiptip()}});if(opts.keepAlive){tiptip_holder.hover(function(){},function(){deactive_tiptip()})}}else if(opts.activation=="focus"){org_elem.focus(function(){active_tiptip()}).blur(function(){deactive_tiptip()})}else if(opts.activation=="click"){org_elem.click(function(){active_tiptip();return false}).hover(function(){},function(){if(!opts.keepAlive){deactive_tiptip()}});if(opts.keepAlive){tiptip_holder.hover(function(){},function(){deactive_tiptip()})}}function active_tiptip(){opts.enter.call(this);tiptip_content.html(org_title);tiptip_holder.hide().removeAttr("class").css("margin","0");tiptip_arrow.removeAttr("style");var top=parseInt(org_elem.offset()['top']);var left=parseInt(org_elem.offset()['left']);var org_width=parseInt(org_elem.outerWidth());var org_height=parseInt(org_elem.outerHeight());var tip_w=tiptip_holder.outerWidth();var tip_h=tiptip_holder.outerHeight();var w_compare=Math.round((org_width-tip_w)/2);var h_compare=Math.round((org_height-tip_h)/2);var marg_left=Math.round(left+w_compare);var marg_top=Math.round(top+org_height+opts.edgeOffset);var t_class="";var arrow_top="";var arrow_left=Math.round(tip_w-12)/2;if(opts.defaultPosition=="bottom"){t_class="_bottom"}else if(opts.defaultPosition=="top"){t_class="_top"}else if(opts.defaultPosition=="left"){t_class="_left"}else if(opts.defaultPosition=="right"){t_class="_right"}var right_compare=(w_compare+left)<parseInt($(window).scrollLeft());var left_compare=(tip_w+left)>parseInt($(window).width());if((right_compare&&w_compare<0)||(t_class=="_right"&&!left_compare)||(t_class=="_left"&&left<(tip_w+opts.edgeOffset+5))){t_class="_right";arrow_top=Math.round(tip_h-13)/2;arrow_left=-12;marg_left=Math.round(left+org_width+opts.edgeOffset);marg_top=Math.round(top+h_compare)}else if((left_compare&&w_compare<0)||(t_class=="_left"&&!right_compare)){t_class="_left";arrow_top=Math.round(tip_h-13)/2;arrow_left=Math.round(tip_w);marg_left=Math.round(left-(tip_w+opts.edgeOffset+5));marg_top=Math.round(top+h_compare)}var top_compare=(top+org_height+opts.edgeOffset+tip_h+8)>parseInt($(window).height()+$(window).scrollTop());var bottom_compare=((top+org_height)-(opts.edgeOffset+tip_h+8))<0;if(top_compare||(t_class=="_bottom"&&top_compare)||(t_class=="_top"&&!bottom_compare)){if(t_class=="_top"||t_class=="_bottom"){t_class="_top"}else{t_class=t_class+"_top"}arrow_top=tip_h;marg_top=Math.round(top-(tip_h+5+opts.edgeOffset))}else if(bottom_compare|(t_class=="_top"&&bottom_compare)||(t_class=="_bottom"&&!top_compare)){if(t_class=="_top"||t_class=="_bottom"){t_class="_bottom"}else{t_class=t_class+"_bottom"}arrow_top=-12;marg_top=Math.round(top+org_height+opts.edgeOffset)}if(t_class=="_right_top"||t_class=="_left_top"){marg_top=marg_top+5}else if(t_class=="_right_bottom"||t_class=="_left_bottom"){marg_top=marg_top-5}if(t_class=="_left_top"||t_class=="_left_bottom"){marg_left=marg_left+5}tiptip_arrow.css({"margin-left":arrow_left+"px","margin-top":arrow_top+"px"});tiptip_holder.css({"margin-left":marg_left+"px","margin-top":marg_top+"px"}).attr("class","tip"+t_class);if(timeout){clearTimeout(timeout)}timeout=setTimeout(function(){tiptip_holder.stop(true,true).fadeIn(opts.fadeIn)},opts.delay)}function deactive_tiptip(){opts.exit.call(this);if(timeout){clearTimeout(timeout)}tiptip_holder.fadeOut(opts.fadeOut)}}})}})(jQuery);
+
 
 /**
 	Slimbox v2.03 - The ultimate lightweight Lightbox clone for jQuery
@@ -3156,8 +3366,9 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         overlay, center, image, thumbs, closer, sizer, prevLink, nextLink, bottomContainer, bottom, caption, number;
     $(function () {
         $("body").append($([overlay = $('<div id="lbOverlay" />').click(close)[0], center = $('<div id="lbCenter" />')[0], bottomContainer = $('<div id="lbBottomContainer" />')[0], closer = $('<div id="lbCloser" />').click(close)[0], ]).css("display", "none"));
-        image = $('<div id="lbImage" />').appendTo(center).append(sizer = $('<div style="position: relative;" />').append([prevLink = $('<a id="lbPrevLink" href="#" />').click(previous)[0], nextLink = $('<a id="lbNextLink" href="#" />').click(next)[0]])[0])[0];
-        thumbs = $('<div id="lbThumbs" />').appendTo(center)
+        image = $('<div id="lbImage" />').appendTo(center).click(close).append(sizer = $('<div style="position: relative;" />').append([prevLink = $('<a id="lbPrevLink" href="#" />').click(previous)[0], nextLink = $('<a id="lbNextLink" href="#" />').click(next)[0]])[0])[0];
+        thumbs = $('<div id="lbThumbs" />').appendTo(center);
+        $('#lbImage').css('cursor', 'pointer');
     });
     $.slimbox = function (_images, startImage, thumbList, video, _options) {
         options = $.extend({
@@ -3355,9 +3566,10 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
         });
         centerWidth = centerWidth / 2;
         $(closer).css({
-            'top': top,
-            'marginLeft': -centerWidth - 11
-        });
+		    'top': top,
+		    'marginLeft': centerWidth - 11
+		});
+
         
         //Hide Prev and Next picture link
          $.ie6fix.selectHide();
@@ -3669,8 +3881,9 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                         h = appendTo.innerHeight();
                     }
                 }
-               	zoomDiv = appendTo.append($.format('<div id="cloud-zoom-big" class="cloud-zoom-big" style="display:none;position:absolute;left:%0px;top:%1px;width:%2px;height:%3px;background-image:url(\'%4\');z-index:99;"></div>', xPos, yPos, w, h, zoomImage.src)).find(':last');
-               	
+               	var pos = appendTo.offset();
+				zoomDiv = $(document.body).append($.format('<div id="cloud-zoom-big" class="cloud-zoom-big" style="display:none;position:absolute;left:%0px;top:%1px;width:%2px;height:%3px;background-image:url(\'%4\');z-index:99;"></div>', pos.left + sImg.width() + 15, pos.top - 4, w, h, zoomImage.src)).find(':last');
+
                 // Add the title from title tag.
                 if (sImg.attr('title') && opts.showTitle) {
                     zoomDiv.append($.format('<div class="cloud-zoom-title">%0</div>', sImg.attr('title'))).find(':last').css('opacity', opts.titleOpacity);
@@ -3686,18 +3899,6 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                 	zoomDiv.width(zoomImage.width); 
                 }
 				
-                // Fix ie6 select elements wrong z-index bug. Placing an iFrame over the select element solves the issue...		
-                if ($.browser.msie && parseInt($.browser.version) == 6) {
-                    $ie6Fix = $('<iframe frameborder="0" src="#"></iframe>').css({
-                        position: "absolute",
-                        left: xPos,
-                        top: yPos,
-                        zIndex: 99,
-                        width: cw,
-                        height: h
-                    }).insertBefore(zoomDiv);
-                }
-
 				zoomDiv.fadeIn(500);
 				
             	 if (lens) {
@@ -3794,32 +3995,35 @@ d,e)*0.5+b;return f.easing.easeOutBounce(c,a*2-e,0,d,e)*0.5+d*0.5+b}})}(jQuery);
                 opts = $.extend({}, opts, relOpts);
                 $(this).data('zoom', new CloudZoom($(this), opts));
             } else if ($(this).is('.cloud-zoom-gallery')) {
-                relOpts = {
-                    useZoom: 'zoom1',
-                    smallImage: $(this).attr('src')
-                };
-              	if(!$(this).parent().attr('id')) {
-              		relOpts.smallImage = $(this).attr('rev');
-              	} else {
-              		relOpts.smallImage = $(this).attr('src');
-              	}
-                opts = $.extend({}, relOpts, options);
-                $(this).data('relOpts', opts);
-                $(this).bind('click', $(this), function (event) {
-                	event.preventDefault();
-                    var data = event.data.data('relOpts');
-                   	$('#' + data.useZoom).data('zoom').destroy();
-                    $('#' + data.useZoom).attr('href', event.data.attr('href'));
-                    $('#' + data.useZoom + ' img').attr('src', relOpts.smallImage);
-                    $('#' + event.data.data('relOpts').useZoom).CloudZoom();
-                    
-                    //fading picture
-                    if ($.browser.msie && parseInt($.browser.version) > 8) {
-                    	$('#wrap').fadeTo(0,0.01).delay(200).fadeTo(200,1);
-                    }
-                    return false;
-                });
-            }
+				relOpts = {
+					useZoom: 'zoom1',
+					smallImage: $(this).attr('src')
+				};
+				if(!$(this).parent().attr('id')) {
+					relOpts.smallImage = $(this).attr('rev');
+				} else {
+					relOpts.smallImage = $(this).attr('src');
+				}
+				opts = $.extend({}, relOpts, options);
+				$(this).data('relOpts', opts);
+				$(this).bind('click', $(this), function (event) {
+					event.preventDefault();
+					var data = event.data.data('relOpts');
+					$('#' + data.useZoom).data('zoom').destroy();
+					$('#' + data.useZoom).attr('href', event.data.attr('href'));
+					$('#' + data.useZoom + ' img').attr('src', relOpts.smallImage);
+					$('#' + event.data.data('relOpts').useZoom).CloudZoom();
+
+					// change title
+					$('#zoom1 img').attr('title', $(this).attr('title'));
+
+					//fading picture
+					if ($.browser.msie && parseInt($.browser.version) > 8) {
+						$('#wrap').fadeTo(0,0.01).delay(200).fadeTo(200,1);
+					}
+					return false;
+				});
+			}
         });
         return this
     };
