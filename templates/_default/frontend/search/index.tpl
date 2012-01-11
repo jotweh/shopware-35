@@ -43,7 +43,7 @@
 		<label>{se name='ListingPaging'}Blättern:{/se}</label>
 		
 		{if $sPages.previous}
-			<a href="{$sPages.previous}" title="{s name='ListingLinkNext'}{/s}" class="navi prev">
+			<a href="{$sPages.previous}" class="navi prev">
 				{s name="ListingTextPrevious"}&lt;{/s}
 			</a>
 		{/if}
@@ -59,7 +59,7 @@
 		{/foreach}
 		
 		{if $sPages.next}
-			<a href="{$sPages.next}" title="{s name='ListingLinkPrevious'}{/s}" class="navi more">{s name="ListingTextNext"}&gt;{/s}</a>
+			<a href="{$sPages.next}" class="navi more">{s name="ListingTextNext"}&gt;{/s}</a>
 		{/if}
 	</div>
 	<div class="display_sites">
