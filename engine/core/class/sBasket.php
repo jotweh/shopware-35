@@ -841,6 +841,7 @@ class sBasket
 			useragent = ?,
 			userID = '".intval($this->sSYSTEM->_SESSION['sUserId'])."'
 			WHERE sessionID=?",array($sViewport,$_SERVER["HTTP_USER_AGENT"],array($this->sSYSTEM->sSESSION_ID)));
+		}
 			// Refresh basket-prices
 			$basketData = $this->sSYSTEM->sDB_CONNECTION->GetAll("
 			SELECT id,modus, quantity FROM s_order_basket
@@ -850,7 +851,7 @@ class sBasket
 					$this->sSYSTEM->sMODULES['sBasket']->sUpdateArticle ($basketContent["id"],$basketContent["quantity"]);
 				}
 			}
-		}
+
 		$this->sUpdateBundles();
 		// Check, if we have some free products for the client
 		$this->sInsertPremium();
