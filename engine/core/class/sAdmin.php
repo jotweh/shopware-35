@@ -182,7 +182,7 @@ class sAdmin
 	{
 		if(!empty($this->sSYSTEM->sCONFIG['sVATCHECKNOSERVICE']))
 		{
-			if(in_array($response['ErrorCode'], array(999, 205, 218, 208, 217, 219)))
+			if(in_array($response['ErrorCode'], array(999, 200, 205, 218, 208, 217, 219)))
 			{
 				return array();
 			}
