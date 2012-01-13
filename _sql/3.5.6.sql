@@ -12,7 +12,7 @@ SET NAMES 'latin1';
  */
 UPDATE `s_core_config` SET `value` = '3.5.6' WHERE `name` = 'sVERSION';
 INSERT IGNORE INTO `s_core_config` (`group`, `name`, `value`)
-VALUES (0, 'sREVISION', '7151')
+VALUES (0, 'sREVISION', '8259')
 ON DUPLICATE KEY UPDATE `value` = VALUES(`value`);
 
 

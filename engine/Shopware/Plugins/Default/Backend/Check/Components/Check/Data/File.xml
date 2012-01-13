@@ -1,201 +1,155 @@
 <?xml version="1.0"?>
 <shopware>
 <files>
-	<file>
-		<name>shopware.php</name>
-		<test version="3.0.3b" hash="140b8d166aaa284d02b946c759ebc988"/>
-		<test version="3.0.3" hash="140b8d166aaa284d02b946c759ebc988"/>
-		<test version="3.0.2" hash="c96c46059103c20539dab5b5103190c3"/>
-		<test version="3.0.4" hash="a4ad41fb9431d07776dd326bb120fbca"/>
-		<test version="3.0.5" hash="4495b5ed729cb705285bf0694481475b"/>
-		<test version="3.0.5.1" hash="a86dfdc27c40dd58b019e534ec9481ba"/>
-		<test version="3.5.0" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.1" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.2" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.3" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.4" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.4" hash="f043d4d3cb6b1f424567d8ecff136948"/>
-		<test version="3.5.5" hash="c86ae9d44a51de443a3509274f424dcf"/>
-	</file>
-	<file>
-		<name>engine/core/class/sArticles.php</name>
-		<test version="3.0.3b" hash="28b8ad5ddf1ac95ef110e5b0bbb6528c"/>
-		<test version="3.0.3" hash="620bbe0c2d06b3cb1f621e15b2e72b55"/>
-		<test version="3.0.2" hash="e47c935535f6794e0858cf599b9cecfc"/>
-		<test version="3.0.4" hash="6b6d13044a18c16e36a4d8144ca1c4ca"/>
-		<test version="3.0.5" hash="bd8526999799e1abecca0e325f794030"/>
-		<test version="3.0.5.1" hash="607f45429eccaaaade8ff2030ab39c54"/>
-		<test version="3.5.0" hash="c1d3380cba43e667f64a4d629da2d9d7"/>
-		<test version="3.5.1" hash="c1d3380cba43e667f64a4d629da2d9d7"/>
-		<test version="3.5.2" hash="f56debb458ee92861a51166a64679a8a"/>
-		<test version="3.5.3" hash="7fc06a47095e235194cc394d200c161a"/>
-		<test version="3.5.4" hash="7b893bc65620f687ce7c3876ff691791"/>
-		<test version="3.5.4" hash="7b893bc65620f687ce7c3876ff691791"/>
-	</file>
-	<file>
-		<name>engine/core/class/sBasket.php</name>
-		<test version="3.0.3b" hash="b08ed4a541f83dbe013368521a9b64be"/>
-		<test version="3.0.3" hash="b08ed4a541f83dbe013368521a9b64be"/>
-		<test version="3.0.2" hash="fb5315f122664f286cd59a85cdcb921e"/>
-		<test version="3.0.4" hash="3217589b22e138ed65a83b8a189564ac"/>
-		<test version="3.0.5" hash="9faab9c57d3c6c86e87a8dc9a98de59f"/>
-		<test version="3.0.5.1" hash="78c291f13e1bb9f7917171a51faaf121"/>
-		<test version="3.5.0" hash="e67e0ae5db310abe58cd30ce56913b36"/>
-		<test version="3.5.1" hash="da420829d963d348b76d6331ae45b96f"/>
-		<test version="3.5.2" hash="da420829d963d348b76d6331ae45b96f"/>
-		<test version="3.5.3" hash="b88b29ce7aa36b9397070320ef85fd37"/>
-		<test version="3.5.4" hash="99da605e6b2e774edd0ae01437e920c4"/>
-		<test version="3.5.4" hash="99da605e6b2e774edd0ae01437e920c4"/>
-	</file>
-	<file>
-		<name>engine/core/class/sCategories.php</name>
-		<test version="3.0.3b" hash="386dccfeac92f73d2141fe2446da0610"/>
-		<test version="3.0.3" hash="386dccfeac92f73d2141fe2446da0610"/>
-		<test version="3.0.2" hash="695e8b62c5851cd54e594d4664b1e82b"/>
-		<test version="3.0.4" hash="bd96a7a7717e24eda23442c05cd707c4"/>
-		<test version="3.0.5" hash="64c3984bf6488f7073862d42a3e675dd"/>
-		<test version="3.0.5.1" hash="b6344745f79d5895d11215583d808177"/>
-		<test version="3.5.0" hash="1a5ebbb1d6a6e7880ec2ff12390fb788"/>
-		<test version="3.5.1" hash="1a5ebbb1d6a6e7880ec2ff12390fb788"/>
-		<test version="3.5.2" hash="611a11d1a7a1e3baeb1d43f5c566373c"/>
-		<test version="3.5.3" hash="611a11d1a7a1e3baeb1d43f5c566373c"/>
-		<test version="3.5.4" hash="c27b2e1778853ae555302e373f64ff8c"/>
-		<test version="3.5.4" hash="c27b2e1778853ae555302e373f64ff8c"/>
-	</file>
-	<file>
-		<name>engine/core/class/sCms.php</name>
-		<test version="3.0.3b" hash="ce7ad2ec8df7f908ed231ff00cd6db21"/>
-		<test version="3.0.3" hash="ce7ad2ec8df7f908ed231ff00cd6db21"/>
-		<test version="3.0.2" hash="5c7b437d2786bc5c2655fea38cbaeab3"/>
-		<test version="3.0.4" hash="cbc86bcb6b6d0a118cd6fe692b3b686e"/>
-		<test version="3.0.5" hash="0fb005a11f64b8b2987e92a2557b15cc"/>
-		<test version="3.0.5.1" hash="0ed6c8a515423339987f4e466862b7f2"/>
-		<test version="3.5.0" hash="fe7f29638b7f884c83727ce469a13758"/>
-		<test version="3.5.1" hash="fe7f29638b7f884c83727ce469a13758"/>
-		<test version="3.5.2" hash="fe7f29638b7f884c83727ce469a13758"/>
-		<test version="3.5.3" hash="fe7f29638b7f884c83727ce469a13758"/>
-		<test version="3.5.4" hash="04dae1634fc1088ca0299919a7f3d406"/>
-		<test version="3.5.4" hash="04dae1634fc1088ca0299919a7f3d406"/>
-	</file>
-	<file>
-		<name>engine/core/class/sCmsSupport.php</name>
-		<test version="3.0.3b" hash="f42e2ecd50c824fb54c53aba702814a8"/>
-		<test version="3.0.3" hash="f42e2ecd50c824fb54c53aba702814a8"/>
-		<test version="3.0.2" hash="687a26293b82e428fcad542cc70a27e1"/>
-		<test version="3.0.4" hash="ecf1ec6293f357586a5618c55eb1c67b"/>
-		<test version="3.0.5" hash="7a7d85390711ae63bcc5b8a5131193ff"/>
-		<test version="3.0.5.1" hash="7a7d85390711ae63bcc5b8a5131193ff"/>
-		<test version="3.5.0" hash="600cadde01f538a60129bcd4a794e433"/>
-		<test version="3.5.1" hash="600cadde01f538a60129bcd4a794e433"/>
-		<test version="3.5.2" hash="600cadde01f538a60129bcd4a794e433"/>
-		<test version="3.5.3" hash="600cadde01f538a60129bcd4a794e433"/>
-		<test version="3.5.4" hash="524616db0b471c7b47c4d302d2f652cc"/>
-		<test version="3.5.4" hash="524616db0b471c7b47c4d302d2f652cc"/>
-	</file>
-	<file>
-		<name>engine/core/class/sCore.php</name>
-		<test version="3.0.3b" hash="e8a0b6ac01db0d5bfffcd277518ef852"/>
-		<test version="3.0.3" hash="e8a0b6ac01db0d5bfffcd277518ef852"/>
-		<test version="3.0.2" hash="f6fbc7b471af7db8690407bcd84420dc"/>
-		<test version="3.0.4" hash="00a47e793cecbed59e2da1798a64daff"/>
-		<test version="3.0.5" hash="f6f09198f3877e10a6668a90e08d9a00"/>
-		<test version="3.0.5.1" hash="e3ce89866bc24b9172f2d367d6224773"/>
-		<test version="3.5.0" hash="2277a85b2bcf55828eea15a58c878dfc"/>
-		<test version="3.5.1" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
-		<test version="3.5.2" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
-		<test version="3.5.3" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
-		<test version="3.5.4" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
-		<test version="3.5.4" hash="06cd9f97aa3d6b247ae3664e8471964d"/>
-	</file>
-	<file>
-		<name>engine/core/class/sCrossselling.php</name>
-		<test version="3.0.3b" hash="4fbbb3dc5fb17aa0f245963495e50d92"/>
-		<test version="3.0.3" hash="4fbbb3dc5fb17aa0f245963495e50d92"/>
-		<test version="3.0.2" hash="f463002622f9fb851c128cc4af860e2e"/>
-		<test version="3.0.4" hash="dd8582c6ada0f12d29b767412a35e1f6"/>
-		<test version="3.0.5" hash="65e958710dc7be44e5b200a1af488b7c"/>
-		<test version="3.0.5.1" hash="e410b81241bd03c0aa6f146036fc3bf4"/>
-		<test version="3.5.0" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-		<test version="3.5.1" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-		<test version="3.5.2" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-		<test version="3.5.3" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-		<test version="3.5.4" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-		<test version="3.5.4" hash="4372311a21bcde2b9dfb7179b10d4298"/>
-	</file>
-	<file>
-		<name>engine/core/class/sMarketing.php</name>
-		<test version="3.0.3b" hash="2ccd27b06173728395c8a9e0e9e1f5fb"/>
-		<test version="3.0.3" hash="2ccd27b06173728395c8a9e0e9e1f5fb"/>
-		<test version="3.0.2" hash="aa6a3a2076d16872ac8d8ec517ea637f"/>
-		<test version="3.0.4" hash="2270c5dfad3094675bda935980662798"/>
-		<test version="3.0.5" hash="34c249df384c3d69c85c02b1c54040e0"/>
-		<test version="3.0.5.1" hash="545c86cb4490f463df9ce1735073f691"/>
-		<test version="3.5.0" hash="2227e958ff3f1030903f5e2ebc7d909c"/>
-		<test version="3.5.1" hash="2227e958ff3f1030903f5e2ebc7d909c"/>
-		<test version="3.5.2" hash="2227e958ff3f1030903f5e2ebc7d909c"/>
-		<test version="3.5.3" hash="2227e958ff3f1030903f5e2ebc7d909c"/>
-		<test version="3.5.4" hash="8eb56b32bc3d2fc3778cf0519f0b3f73"/>
-		<test version="3.5.4" hash="8eb56b32bc3d2fc3778cf0519f0b3f73"/>
-	</file>
-	<file>
-		<name>engine/core/class/sOrder.php</name>
-		<test version="3.0.3b" hash="2d028da63c342877abe2ae3711c07919"/>
-		<test version="3.0.3" hash="84980168d4572a1cea5efcc7e4242e5d"/>
-		<test version="3.0.2" hash="5254d1c61699371edd9af6c0ff47e4ba"/>
-		<test version="3.0.4" hash="15b1234ec453ace45dc2769b45ff713c"/>
-		<test version="3.0.5" hash="bfcbaa4d477576687f3cea384684a3a2"/>
-		<test version="3.0.5.1" hash="01e8d06bb19fbc69156b1170351dc3a1"/>
-		<test version="3.5.0" hash="05c03070439a168627dd51a7beb129af"/>
-		<test version="3.5.1" hash="05c03070439a168627dd51a7beb129af"/>
-		<test version="3.5.2" hash="05c03070439a168627dd51a7beb129af"/>
-		<test version="3.5.3" hash="05c03070439a168627dd51a7beb129af"/>
-		<test version="3.5.4" hash="2332f9879d700c4d6a178ef0e9bc95b8"/>
-		<test version="3.5.4" hash="2332f9879d700c4d6a178ef0e9bc95b8"/>
-	</file>
-	<file>
-		<name>engine/core/class/sSearch.php</name>
-		<test version="3.0.3b" hash="6b800599dfa5a4c9d92d36741758d9bb"/>
-		<test version="3.0.3" hash="e959d2f2488e78b6c198b8ed9abe7894"/>
-		<test version="3.0.2" hash="f9958036975106e42bf0098ea9f70398"/>
-		<test version="3.0.4" hash="bc0e66c4368a670881b8aa554b39eb3e"/>
-		<test version="3.0.5" hash="90df1de25b118bf56d6050c25a665a79"/>
-		<test version="3.0.5.1" hash="90df1de25b118bf56d6050c25a665a79"/>
-		<test version="3.5.0" hash="6c2aa36fd7de1b77216e3bed0096ecbc"/>
-		<test version="3.5.1" hash="6c2aa36fd7de1b77216e3bed0096ecbc"/>
-		<test version="3.5.2" hash="6c2aa36fd7de1b77216e3bed0096ecbc"/>
-		<test version="3.5.3" hash="f67b074755fe85be742b783b11888e7e"/>
-		<test version="3.5.3" hash="e2d2271c7e2b49bfcd5c4913cdce01c2"/>
-		<test version="3.5.4" hash="213f61ec3dcb773e30d1ed80727b1890"/>
-		<test version="3.5.4" hash="213f61ec3dcb773e30d1ed80727b1890"/>
-	</file>
-	<file>
-		<name>engine/core/class/sSystem.php</name>
-		<test version="3.0.3b" hash="d2614f657f7c433e19e9c03a50ce9196"/>
-		<test version="3.0.3" hash="7a5890ce666d6c9a66233e1644e4982b"/>
-		<test version="3.0.2" hash="985d22b9b1cbb19dffb32467cc0fcb80"/>
-		<test version="3.0.4" hash="fdac9decee7a747b490d35454c0d8f2a"/>
-		<test version="3.0.5" hash="025fbed6ad9319bfcddc7a6c3ec5a51c"/>
-		<test version="3.0.5.1" hash="025fbed6ad9319bfcddc7a6c3ec5a51c"/>
-		<test version="3.5.0" hash="b6aee67da249130401977c2619da853d"/>
-		<test version="3.5.1" hash="b6aee67da249130401977c2619da853d"/>
-		<test version="3.5.2" hash="b6aee67da249130401977c2619da853d"/>
-		<test version="3.5.3" hash="b6aee67da249130401977c2619da853d"/>
-		<test version="3.5.3" hash="a1701307cc11f3675ed1742681bf3cc8"/>
-		<test version="3.5.4" hash="a1701307cc11f3675ed1742681bf3cc8"/>
-		<test version="3.5.4" hash="a1701307cc11f3675ed1742681bf3cc8"/>
-	</file>
-	<file>
-		<name>engine/core/class/sTicketSystem.php</name>
-		<test version="3.0.4" hash="f7ccf8a48a8b93f919dea31e6ee2a1b0"/>
-		<test version="3.0.5" hash="a6ff83397aa1933bd27971617397089e"/>
-		<test version="3.0.5.1" hash="a6ff83397aa1933bd27971617397089e"/>
-		<test version="3.5.0" hash="adad5c93a964ab1bbe368a6fb5db86fb"/>
-		<test version="3.5.1" hash="adad5c93a964ab1bbe368a6fb5db86fb"/>
-		<test version="3.5.2" hash="adad5c93a964ab1bbe368a6fb5db86fb"/>
-		<test version="3.5.3" hash="adad5c93a964ab1bbe368a6fb5db86fb"/>
-		<test version="3.5.3" hash="4c2e1f252127941d13488a6794ca6849"/>
-		<test version="3.5.4" hash="fa1059ecf4e03cf42e6ec288b94b8cd5"/>
-		<test version="3.5.4" hash="f3df51cb791de2a0a0b1a3c0cb4097a6"/>
-	</file>
+	<file><name>engine/core/class/sAdmin.php</name><test hash="454d23bde3f92935a3b9d4f8a1b5bddd" version="3.5.6"/><test hash="454d23bde3f92935a3b9d4f8a1b5bddd" version="3.5.6"/></file>
+	<file><name>engine/core/class/sArticles.php</name><test hash="9cdaa378e2fbc11b7cda85bd70927faa" version="3.5.6"/><test hash="9cdaa378e2fbc11b7cda85bd70927faa" version="3.5.6"/></file>
+	<file><name>engine/core/class/sBasket.php</name><test hash="86d373d6f752473eee7a4c984363968d" version="3.5.6"/><test hash="86d373d6f752473eee7a4c984363968d" version="3.5.6"/></file>
+	<file><name>engine/core/class/sBundle.php</name><test hash="5055d2c8bbe5b901503b9270f2db98a2" version="3.5.6"/><test hash="8cdb3d561533162d0219ca21e079d4f0" version="3.5.6"/></file>
+	<file><name>engine/core/class/sCategories.php</name><test hash="c27b2e1778853ae555302e373f64ff8c" version="3.5.6"/><test hash="c27b2e1778853ae555302e373f64ff8c" version="3.5.6"/></file>
+	<file><name>engine/core/class/sCms.php</name><test hash="04dae1634fc1088ca0299919a7f3d406" version="3.5.6"/><test hash="04dae1634fc1088ca0299919a7f3d406" version="3.5.6"/></file>
+	<file><name>engine/core/class/sCmsSupport.php</name><test hash="420d7d15c5d8c8d9fda617ac2a3da9d8" version="3.5.6"/><test hash="420d7d15c5d8c8d9fda617ac2a3da9d8" version="3.5.6"/></file>
+	<file><name>engine/core/class/sConfigurator.php</name><test hash="34137a666213e15cbbe9d7e7a48b70a9" version="3.5.6"/><test hash="f56d1ecf3bcbae69666444ee226ae708" version="3.5.6"/></file>
+	<file><name>engine/core/class/sCore.php</name><test hash="06cd9f97aa3d6b247ae3664e8471964d" version="3.5.6"/><test hash="06cd9f97aa3d6b247ae3664e8471964d" version="3.5.6"/></file>
+	<file><name>engine/core/class/sCrossselling.php</name><test hash="4372311a21bcde2b9dfb7179b10d4298" version="3.5.6"/><test hash="4372311a21bcde2b9dfb7179b10d4298" version="3.5.6"/></file>
+	<file><name>engine/core/class/sExport.php</name><test hash="3fc260564e7e35b2624fbba26fb72089" version="3.5.6"/><test hash="ea00b4a7ca9e4df60d401ec46b6d3b29" version="3.5.6"/></file>
+	<file><name>engine/core/class/sLiveshopping.php</name><test hash="d0166aa13d41debb2e5f73cd0306eebb" version="3.5.6"/><test hash="dd9a80239edd8c2b6c66208de217687a" version="3.5.6"/></file>
+	<file><name>engine/core/class/sMarketing.php</name><test hash="e55e0ea9b371fb4639fd98d5b8a1ae1a" version="3.5.6"/><test hash="e55e0ea9b371fb4639fd98d5b8a1ae1a" version="3.5.6"/></file>
+	<file><name>engine/core/class/sModules.php</name><test hash="512b39f946edabe72b730f59c4e08e91" version="3.5.6"/><test hash="512b39f946edabe72b730f59c4e08e91" version="3.5.6"/></file>
+	<file><name>engine/core/class/sNewsletter.php</name><test hash="2fbf24a27309d8d375d1e3cff6dbbe5e" version="3.5.6"/><test hash="f97508d1a6991b92db512ab0567a1e4e" version="3.5.6"/></file>
+	<file><name>engine/core/class/sOrder.php</name><test hash="2332f9879d700c4d6a178ef0e9bc95b8" version="3.5.6"/><test hash="2332f9879d700c4d6a178ef0e9bc95b8" version="3.5.6"/></file>
+	<file><name>engine/core/class/sRewriteTable.php</name><test hash="85e633b837ce64c08d98ff16ea46fb24" version="3.5.6"/><test hash="85e633b837ce64c08d98ff16ea46fb24" version="3.5.6"/></file>
+	<file><name>engine/core/class/sRouter.php</name><test hash="43ec8fd3fd9e8c104026e573d2d0360d" version="3.5.6"/><test hash="43ec8fd3fd9e8c104026e573d2d0360d" version="3.5.6"/></file>
+	<file><name>engine/core/class/sSearch.php</name><test hash="0cf98f9d83fab6b3cb75d1487292301a" version="3.5.6"/><test hash="e1ed6f258258896d9223673b8d58a7bf" version="3.5.6"/></file>
+	<file><name>engine/core/class/sSystem.php</name><test hash="fa81d8c2e6042bf1a8828577bce9e2d8" version="3.5.6"/><test hash="884da1ff54cb1dcbc954b76d6874489d" version="3.5.6"/></file>
+	<file><name>engine/core/class/sTicketSystem.php</name><test hash="e2fa6d319361a603de7bbf2f16d90864" version="3.5.6"/><test hash="b1262acb8ec0613f8fa204c153de9171" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Auth/Bootstrap.php</name><test hash="f3008888599528de3fd7b967de1e9926" version="3.5.6"/><test hash="f3008888599528de3fd7b967de1e9926" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Bootstrap.php</name><test hash="4bd3b9d17eda420e2b7729863353d141" version="3.5.6"/><test hash="9d034882f915eddfbb5d9ad2aa943ead" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Check/Bootstrap.php</name><test hash="4c45d905a6c6547ad252b31d4c24d081" version="3.5.6"/><test hash="4c45d905a6c6547ad252b31d4c24d081" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Locale/Bootstrap.php</name><test hash="e524b9c473603390ddf04afa216e4334" version="3.5.6"/><test hash="e524b9c473603390ddf04afa216e4334" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Menu/Bootstrap.php</name><test hash="aaafbe347c43ce51deadc4765f252bab" version="3.5.6"/><test hash="aaafbe347c43ce51deadc4765f252bab" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Modules/Bootstrap.php</name><test hash="723ef4f8c6111eb1ed5aed09efb5462a" version="3.5.6"/><test hash="723ef4f8c6111eb1ed5aed09efb5462a" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/Widgets/Bootstrap.php</name><test hash="d30aba32e32a63230627aae998a0ee4e" version="3.5.6"/><test hash="d30aba32e32a63230627aae998a0ee4e" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Api/Bootstrap.php</name><test hash="28e91a16b8ccb3c44887c7d9403cda2f" version="3.5.6"/><test hash="28e91a16b8ccb3c44887c7d9403cda2f" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Benchmark/Bootstrap.php</name><test hash="78d6e704439b7aba263063863dc2e6bb" version="3.5.6"/><test hash="78d6e704439b7aba263063863dc2e6bb" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/BenchmarkEvents/Bootstrap.php</name><test hash="db6fe111116ac32d594ae06ca3bb83dd" version="3.5.6"/><test hash="db6fe111116ac32d594ae06ca3bb83dd" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/ControllerBase/Bootstrap.php</name><test hash="8e71b2405e6761d8cf7ac7a622676494" version="3.5.6"/><test hash="8e71b2405e6761d8cf7ac7a622676494" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Cron/Bootstrap.php</name><test hash="c3f6f9f6a4faf14b207bba229fabc3b8" version="3.5.6"/><test hash="c3f6f9f6a4faf14b207bba229fabc3b8" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/CronBirthday/Bootstrap.php</name><test hash="dc2fe5cd901e2783bcd4ae88adee8a84" version="3.5.6"/><test hash="dc2fe5cd901e2783bcd4ae88adee8a84" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/CronRating/Bootstrap.php</name><test hash="4df3d7c2f1a35d60ff8dbd785360f40e" version="3.5.6"/><test hash="4df3d7c2f1a35d60ff8dbd785360f40e" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/CronStock/Bootstrap.php</name><test hash="905bcd9f5ae12c53d3e94741fc3d9409" version="3.5.6"/><test hash="905bcd9f5ae12c53d3e94741fc3d9409" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Debug/Bootstrap.php</name><test hash="416c81ed62cc7e85e16091fd6ba19379" version="3.5.6"/><test hash="416c81ed62cc7e85e16091fd6ba19379" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/ErrorHandler/Bootstrap.php</name><test hash="9ac56c24e4db1cd17b274c50327511d0" version="3.5.6"/><test hash="9ac56c24e4db1cd17b274c50327511d0" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Bootstrap.php</name><test hash="63b9c7630dd2c07cebbdfe211d679f62" version="3.5.6"/><test hash="9e905a0ba346441f18965d15e5f2d877" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Log/Bootstrap.php</name><test hash="bb72799c4dbdf9dda38c1c31aaabc570" version="3.5.6"/><test hash="bb72799c4dbdf9dda38c1c31aaabc570" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/PostFilter/Bootstrap.php</name><test hash="4d6629884a14e64bd2abc39c5675dd37" version="3.5.6"/><test hash="4d6629884a14e64bd2abc39c5675dd37" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Router/Bootstrap.php</name><test hash="22a08b0a700e19ac20a1f4e21f47e7df" version="3.5.6"/><test hash="22a08b0a700e19ac20a1f4e21f47e7df" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Shop/Bootstrap.php</name><test hash="60aa4002abb005568ae3117a4b406e2e" version="3.5.6"/><test hash="128c404d28b2400d72c37d8e433f01aa" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/System/Bootstrap.php</name><test hash="35cd32b8af83fd1d736062818ff82832" version="3.5.6"/><test hash="35cd32b8af83fd1d736062818ff82832" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Template/Bootstrap.php</name><test hash="fdfd1519521e65f832acecb948395ef0" version="3.5.6"/><test hash="fdfd1519521e65f832acecb948395ef0" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/ViewportForward/Bootstrap.php</name><test hash="11f8e306c7497cdace3ef4c44743d703" version="3.5.6"/><test hash="11f8e306c7497cdace3ef4c44743d703" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/AdvancedMenu/Bootstrap.php</name><test hash="ffce2edf758aa0b49eca0f1c9024cccb" version="3.5.6"/><test hash="ffce2edf758aa0b49eca0f1c9024cccb" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Compare/Bootstrap.php</name><test hash="9665e2414a231a80702fc8fd10226617" version="3.5.6"/><test hash="9665e2414a231a80702fc8fd10226617" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/CouponsSelling/Bootstrap.php</name><test hash="e7d83f8baeb038e2797d4c0727b43bf9" version="3.5.6"/><test hash="5ad951ebe4fab77c0b7032a8e0ac8f25" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/CronRefresh/Bootstrap.php</name><test hash="01eea7cae61e0a21341570dcafad282c" version="3.5.6"/><test hash="01eea7cae61e0a21341570dcafad282c" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Facebook/Bootstrap.php</name><test hash="8c8a586a74b3c05ce83f564e2fc1cfed" version="3.5.6"/><test hash="8c8a586a74b3c05ce83f564e2fc1cfed" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Google/Bootstrap.php</name><test hash="25dc892907f7bc2b62e1837cc27d3368" version="3.5.6"/><test hash="25dc892907f7bc2b62e1837cc27d3368" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/InputFilter/Bootstrap.php</name><test hash="4c4d6aa97d94c747595c20948b1da652" version="3.5.6"/><test hash="4c4d6aa97d94c747595c20948b1da652" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/LastArticles/Bootstrap.php</name><test hash="d563a13983d632522b757c20470e5428" version="3.5.6"/><test hash="d563a13983d632522b757c20470e5428" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Notification/Bootstrap.php</name><test hash="7c344ab59b32143599ab4be357c7f689" version="3.5.6"/><test hash="32ceb6a2e98fcbeb1e1221b30bf2d06e" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Payment/Bootstrap.php</name><test hash="a7a1ef4ae91e49e505b306d7f86f2444" version="3.5.6"/><test hash="a7a1ef4ae91e49e505b306d7f86f2444" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Paypal/Bootstrap.php</name><test hash="b0bd9892ffad50065b86437133506822" version="3.5.6"/><test hash="b0bd9892ffad50065b86437133506822" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Recommendation/Bootstrap.php</name><test hash="b58fbac51d581b0c3b0d92fa27a8d471" version="3.5.6"/><test hash="b58fbac51d581b0c3b0d92fa27a8d471" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/RouterOld/Bootstrap.php</name><test hash="8d9bb6b3d6cf5d5c7a49c75a1643be26" version="3.5.6"/><test hash="8d9bb6b3d6cf5d5c7a49c75a1643be26" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/RouterRewrite/Bootstrap.php</name><test hash="ff783c42f6f39f4bd7d4cddfd89f8758" version="3.5.6"/><test hash="ff783c42f6f39f4bd7d4cddfd89f8758" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Seo/Bootstrap.php</name><test hash="b60ad0ad010440d0f7219f0257de53b3" version="3.5.6"/><test hash="b60ad0ad010440d0f7219f0257de53b3" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Statistics/Bootstrap.php</name><test hash="9d76824bd4543215a6b2db857f6fcb6b" version="3.5.6"/><test hash="9d76824bd4543215a6b2db857f6fcb6b" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/TagCloud/Bootstrap.php</name><test hash="1bb557e1656261bf9d1b17dd3c1d50e1" version="3.5.6"/><test hash="1bb557e1656261bf9d1b17dd3c1d50e1" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Ticket/Bootstrap.php</name><test hash="661ad02459e44e5bf93eacb6cb55c7ec" version="3.5.6"/><test hash="661ad02459e44e5bf93eacb6cb55c7ec" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/ViewportDispatcher/Bootstrap.php</name><test hash="b0834b6f832dcb5284f34bb38cb31603" version="3.5.6"/><test hash="b0834b6f832dcb5284f34bb38cb31603" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.accessories.group.php</name><test hash="f696bf69b3c94cc6f54375cf58e262fc" version="3.5.6"/><test hash="d44bb7c74d64c875fc3173364725a745" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.accessories.option.php</name><test hash="01222eb320ac256214a5c8640e6bbbf9" version="3.5.6"/><test hash="5b5494aff85e4b1d0709c6f5ea8e5f28" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.group.php</name><test hash="c786bfce29e318f05fdb1ea23aeb57d2" version="3.5.6"/><test hash="985a116b3d0bc4e2e7d2325323e82373" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.old.php</name><test hash="4fbe921d5036b07f09c8e2c30f68acdb" version="3.5.6"/><test hash="1d9725be5b8c77f022d6397060db04b1" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.option.php</name><test hash="36eb2f119647c84034a8516085b2d4b3" version="3.5.6"/><test hash="a0c36dca0832262dd4b855150de9f348" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.price.php</name><test hash="833dca9ce8d604025e1ae5e7cb10c61e" version="3.5.6"/><test hash="5ed4c57d6aae9b0297da76fef53da778" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.settings.php</name><test hash="29b3dffb58d6d3941f5ff67332ef9810" version="3.5.6"/><test hash="28319406e95d25a2bbf0d2893dc2958f" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/config.template.php</name><test hash="c3378cf5245d612157e43fa1f27dde60" version="3.5.6"/><test hash="21b9f76f2c455ba378f61a8b443c755e" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/sConfigurator.php</name><test hash="93008501584fcda2f712dcd57dfd27d5" version="3.5.6"/><test hash="416a509461658e6e8cb72f1d8d582fb5" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config/start.php</name><test hash="7260b6745a9188b14cddb3602d92ef01" version="3.5.6"/><test hash="dfb083118ff25aa662a3e3b69e22ef8f" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/config.php</name><test hash="9d5932d6113968ec36739e16e07e58e1" version="3.5.6"/><test hash="ac0c2f0210d434290ef4d1cf09517e7f" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Controllers/Backend/Activate.php</name><test hash="b9baa693960282379b154d5a7e25db87" version="3.5.6"/><test hash="b88391dabbab180f539cf823920e91c3" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Controllers/Backend/Export.php</name><test hash="e0d905a0c431891621c0219f59e29d32" version="3.5.6"/><test hash="69d4b44bcda3dbed1946c3d5df65825f" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Controllers/Backend/Newsletter.php</name><test hash="01a74924f1289fa55326647ffc7701da" version="3.5.6"/><test hash="ce44e693076a896ef6263f482569e1a3" version="3.5.6"/></file>
+	<file><name>engine/backend/php/functions.php</name><test hash="49aa9017f5a141d430ee819abae91d48" version="3.5.6"/><test hash="9246da9c8c6a4bc517001c58e7214669" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/bundle/ajaxBundle.php</name><test hash="c2deadc16888af647d6b476a1b8ba340" version="3.5.6"/><test hash="9902f6b56f5e4de78a284916b67bebb4" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/bundle/bundle_create.php</name><test hash="db70cac194b8e440ead6d588996e9b2f" version="3.5.6"/><test hash="4309920de4d10bf099413d3548fb000e" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/bundle/bundle_delete.php</name><test hash="9161e19b3156a03f36191679fc6a1a9d" version="3.5.6"/><test hash="cf52ec5a1a96fcbdac6b4588fa2191c1" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/bundle/bundle_deleteAll.php</name><test hash="a456db627daafdcbf3376364012d6a69" version="3.5.6"/><test hash="4d5865327c30d55a914e7f128f765e4a" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/bundle/bundle_read.php</name><test hash="39752c7bc1a67ab9a2277aa4d2ed765b" version="3.5.6"/><test hash="f33d7f5168b9264b9aabc7ded5678ef5" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/liveshopping/deleteLive.php</name><test hash="8c3272175be4edf4e39d78fce9045901" version="3.5.6"/><test hash="c84e2b377836a99463edee4758421332" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/liveshopping/main.php</name><test hash="eae2492c1ab687c28bb9fa01827ac611" version="3.5.6"/><test hash="b71eacdd9d07cfd4004e10abba115d1c" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/articles/liveshopping/mask.php</name><test hash="2361aa4443076c998fd107b898d1decd" version="3.5.6"/><test hash="8cc49f82ba94397bc0ae9ce0b0c8d527" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/articledetails.php</name><test hash="b316f0baa610e069139a5d464a06ae30" version="3.5.6"/><test hash="242c238d3e846b68dea49e38b1f81f5b" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/articlesedit.php</name><test hash="cd998074215516eeca0ebcde69fa3c51" version="3.5.6"/><test hash="316547281f03bb57daf896c51d74f4c5" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/banneredit.php</name><test hash="8924becd61c8ec425ace8d296793c493" version="3.5.6"/><test hash="6e3093721a2a4eba22dd3a7e3cef399f" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/campaigns.php</name><test hash="5e620c47f5ccc0f43779ba90ed6b6090" version="3.5.6"/><test hash="d42f78cb2934045afabea3c94431c256" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/campaigns2.php</name><test hash="0bb313bcf60d1aa0a2624a7686c346fd" version="3.5.6"/><test hash="f25889cce6bef42bdbb4aed5f85a8e61" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/campaignsedit.php</name><test hash="6f50d6f83df951a16d1639bd82977fd3" version="3.5.6"/><test hash="ef1d2833e368a9a929159f578fee70ec" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/config.inc.php</name><test hash="eef419220f5d63b9634fbf1683349fb1" version="3.5.6"/><test hash="890cd75216b2c2fa5be51c90421890e9" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/getArticles.php</name><test hash="b0b8aa6d99ddb1bbb8cf61f9bb8346dd" version="3.5.6"/><test hash="f25e2dab35c6cefd88c1e64888d77d21" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/groups.php</name><test hash="0c353a0e52fafa9f727ab0545b20943e" version="3.5.6"/><test hash="b165170c3691f7ba14c9e1467051d94d" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/import.inc.php</name><test hash="5823e70b4532bbbfcd2657ce80aedf2b" version="3.5.6"/><test hash="cd6ee1c715dfbcfcba547427c80711ac" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/json.php</name><test hash="4f80d61599cd6f6c6ba7b282d638180b" version="3.5.6"/><test hash="df8b0267176fcdda8bd5af11c3d9f958" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/linkdetails.php</name><test hash="67b59ed23f434fc042cf828299a1a409" version="3.5.6"/><test hash="c2b09e0b342eef73cedfb5b9d6f2de66" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/linksedit.php</name><test hash="81a46f55960b4f5443ce27384996de73" version="3.5.6"/><test hash="3079be92bc7e0ddb7feca80780161b23" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/new.php</name><test hash="fa503a7c307dc5c79f54a60b559881dc" version="3.5.6"/><test hash="0fe7d5a4e0de661fbe196623764c8c72" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/skeleton.php</name><test hash="0d491e8919af3562ed066ffcb24e2547" version="3.5.6"/><test hash="f39ebc2ab24fb9647b4e4a8fceee1c30" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/start.php</name><test hash="676bb1685557cad2b613f79218434e30" version="3.5.6"/><test hash="ebf49f14b2d09d9566119fa081a855a0" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/statistics.inc.php</name><test hash="e71fc4fee6508c4581e55ad4348b33b2" version="3.5.6"/><test hash="448847e844e958218a7588ada7b809c5" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/suggest.php</name><test hash="a647cae9f6b4031844efd0ead8228953" version="3.5.6"/><test hash="374e531e338136fae9a91eefa8cda25d" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/textedit.php</name><test hash="e9e8baf68ad306373c6f4398c86f3130" version="3.5.6"/><test hash="221ceed722d1c2ebf722da8fe157018f" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaigns/treeCampaign.php</name><test hash="0622ea1421213219cade963987fe7571" version="3.5.6"/><test hash="eee03c661abdaf2a5d19095e10e572fa" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaignspreview/skeleton.php</name><test hash="a6659248db2765f32cc9705807a327a5" version="3.5.6"/><test hash="c623b520b46d481281607ab2190219e9" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/notificationStat/notification.php</name><test hash="3f39ddaa3957887c631363a8548e3da4" version="3.5.6"/><test hash="dc0e1287c10be86c24835442dc083e4a" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/notificationStat/skeleton.php</name><test hash="9056780fd3c3c1cb2b6974a0119a2da5" version="3.5.6"/><test hash="5161685ed42cef8fb7ff14edf55acdcd" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/mailcampaignspreview/skeleton.php</name><test hash="a6659248db2765f32cc9705807a327a5" version="3.5.6"/><test hash="c623b520b46d481281607ab2190219e9" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/getCategories.php</name><test hash="242a72ee9b3df3de26a4327da68ac359" version="3.5.6"/><test hash="1fdba3f5461983879c5eb4881fa8e05c" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/getCategoryPaths.php</name><test hash="adabbd160816224d01d818c2cf87c44d" version="3.5.6"/><test hash="f38c30f28531b03f414800f423b1877c" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/getFeeds.php</name><test hash="c6c018665b12c635be8ecab3cbef3cd7" version="3.5.6"/><test hash="f3a6d61ec39b875be2c4b124deff1433" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/getValues.php</name><test hash="0c25abcb60fe265234281da3d62edd9e" version="3.5.6"/><test hash="651bd2338a2099cbb52e7b85306867de" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/index.php</name><test hash="6b9c4892402b24ebf601c10f4cf3d32a" version="3.5.6"/><test hash="1b30319501ff426b1f84c48888216084" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/json.php</name><test hash="d09023a2ca2876a02ab3b3ee30442824" version="3.5.6"/><test hash="47905ca9bdf9ee06ba04cb5b2dcbd344" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/saveFeeds.php</name><test hash="7c6449890cac97be1e0c2aa6b30c0b63" version="3.5.6"/><test hash="fd25be40812edfcde725a3fdc33a8dbf" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/search_price/skeleton.php</name><test hash="b25daed153e9139cd4820c39c43ca505" version="3.5.6"/><test hash="37b823dd3fd72f4d2730f4c51133b25a" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/global_settings.php</name><test hash="69aab6a948128c583b17abe07bcfc8dd" version="3.5.6"/><test hash="253faa87c341dcd71829d85d91eef5b6" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/iso_settings.php</name><test hash="7b7f437fe4392c0a0ad83789a56c1c0b" version="3.5.6"/><test hash="988951eadcce3702d33f19466d0cf971" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/mail_settings.php</name><test hash="dbcc0d7c4c4342601fdca4cbaf377dc8" version="3.5.6"/><test hash="5b5c4e50120743ef49b6261408189ca4" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/mapping_settings.php</name><test hash="fb49d62576339137f82803dab40a8074" version="3.5.6"/><test hash="5442f62c16df897fa7c58dbbf290efb7" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/options.php</name><test hash="c796cbda1d1a476cd93fb200d01d95c3" version="3.5.6"/><test hash="e05a34b5ed2d10ec7c9077ac7e68f664" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/orders.php</name><test hash="283d36575b7286ad192324724c45e316" version="3.5.6"/><test hash="1ffa8aa2d02b12e4850d01f75a1b9e2c" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/overview.php</name><test hash="28e6fa14bd5c3a6f698e10d9334e82fc" version="3.5.6"/><test hash="eb132af7ca965159e262417115655d3f" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/skeleton.php</name><test hash="d08a86897684686e1dd4200acc5b4d92" version="3.5.6"/><test hash="4cdf692757dd383c71c3f391f620061d" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/textvorlagen.php</name><test hash="15c6c8d7ffc10b213146bb73dfce409c" version="3.5.6"/><test hash="d693cc4da16e82f2b0f9c6495800df77" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/ticket_create.php</name><test hash="9d3d00f48d5b8d964899d328c85c8a4e" version="3.5.6"/><test hash="ba7e1f85f49960d2bbe00c5b32fb46a4" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/ticket_details.php</name><test hash="2964f08e6931981d1694a41990b5be1e" version="3.5.6"/><test hash="5b1765324b901a668059523c7a16aba7" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_system/tickettype_settings.php</name><test hash="29fc0c3a0d9cf9b91f131b52e46a32dc" version="3.5.6"/><test hash="31e7b6a8a61fcd7fdb8fe39ffbd0d218" version="3.5.6"/></file>
+	<file><name>engine/backend/modules/ticket_details/skeleton.php</name><test hash="92f9a93e6caf0d8b2e19e565777f7b53" version="3.5.6"/><test hash="58627820c6814c07b39a24a3d7b786b9" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/Shop/Bootstrap.php</name><test hash="60aa4002abb005568ae3117a4b406e2e" version="3.5.6"/><test hash="128c404d28b2400d72c37d8e433f01aa" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License/Exception.php</name><test hash="9ccea25b0fed047e45111ba362215370" version="3.5.6"/><test hash="3e463cd85d46738be8c1b6036e0fad8f" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License/List.php</name><test hash="62648d380432cc755ba3e7a9d718d69e" version="3.5.6"/><test hash="44c4ea6ea5ba0b0747e223c65cdebf22" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License.php</name><test hash="6af4820bf06bc7a0cf9ad1800f3e5e8f" version="3.5.6"/><test hash="ea2de010b33a437f02d66a833143dd36" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Bootstrap.php</name><test hash="63b9c7630dd2c07cebbdfe211d679f62" version="3.5.6"/><test hash="9e905a0ba346441f18965d15e5f2d877" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License/Exception.php</name><test hash="9ccea25b0fed047e45111ba362215370" version="3.5.6"/><test hash="3e463cd85d46738be8c1b6036e0fad8f" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License/List.php</name><test hash="62648d380432cc755ba3e7a9d718d69e" version="3.5.6"/><test hash="44c4ea6ea5ba0b0747e223c65cdebf22" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Core/License/Components/License.php</name><test hash="6af4820bf06bc7a0cf9ad1800f3e5e8f" version="3.5.6"/><test hash="ea2de010b33a437f02d66a833143dd36" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/CouponsSelling/Bootstrap.php</name><test hash="e7d83f8baeb038e2797d4c0727b43bf9" version="3.5.6"/><test hash="5ad951ebe4fab77c0b7032a8e0ac8f25" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/CouponsSelling/CouponModel.php</name><test hash="36d3e58e375c4d9077c6116f241c716e" version="3.5.6"/><test hash="b48517d689317252803f2647bd8beb2e" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/CouponsSelling/CouponsAdmin.php</name><test hash="f57d55c64bb9c158ef96508b166603a0" version="3.5.6"/><test hash="ea05e82f9e1d67ba303b5ca1ac63062c" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Frontend/Notification/Bootstrap.php</name><test hash="7c344ab59b32143599ab4be357c7f689" version="3.5.6"/><test hash="32ceb6a2e98fcbeb1e1221b30bf2d06e" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Controllers/Backend/BusinessEssentials.php</name><test hash="870484219e839e28146883cfe31e9bbc" version="3.5.6"/><test hash="44a4bace7912b68758c795bacd24f904" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Controllers/Backend/BusinessEssentialsUnlock.php</name><test hash="c4b2c3403f3c8440f7cf1b7d3709059c" version="3.5.6"/><test hash="bdd49ffed37060dac77bbad955e7fbb9" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Controllers/Frontend/PrivateLogin.php</name><test hash="3368ff0f194572e5bfc26ac101e41ef4" version="3.5.6"/><test hash="79f7f37e448b056c106d54cf72db398a" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Controllers/Frontend/PrivateRegister.php</name><test hash="3f10fc699297a6b3eaa401a69d487604" version="3.5.6"/><test hash="90304cb354b3d2537c04769ffa2d1f3c" version="3.5.6"/></file>
+	<file><name>engine/Shopware/Plugins/Default/Backend/BusinessEssentials/Bootstrap.php</name><test hash="4bd3b9d17eda420e2b7729863353d141" version="3.5.6"/><test hash="9d034882f915eddfbb5d9ad2aa943ead" version="3.5.6"/></file>
 </files>
 </shopware>
