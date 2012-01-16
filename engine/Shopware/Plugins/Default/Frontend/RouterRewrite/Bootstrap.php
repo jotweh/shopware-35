@@ -94,6 +94,7 @@ class Shopware_Plugins_Frontend_RouterRewrite_Bootstrap extends Shopware_Compone
 		if($response->isException() 
 		  || $request->isPost()
 		  || $request->isXmlHttpRequest()
+		  || $request->has('callback')
 		  || ($request->getModuleName() && $request->getModuleName()!='frontend')
 		  || (!$request->getParam('RewriteAlias') && !$request->getParam('RewriteOld'))
 		  || !Shopware()->Session()->Bot && !$request->getCookie()) {

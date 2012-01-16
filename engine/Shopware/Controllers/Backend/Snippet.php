@@ -452,15 +452,18 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 				$headerLocaleFields = "value-".$locale;
 			}
 			$header = $tempHeader;
+			
+			//echo "\xEF\xBB\xBF";
 			echo implode($header,";");
 			echo "\r\n";
+
 			while ($row = $result->fetch()) {
 				if(strpos($row["localeVals"],"~") !== false) {
 					//Contains foreign Value
 					$tempArr = explode("~",$row["localeVals"]);
 					$countAvailableLocales = count($tempArr);
 					foreach ($tempArr as $key => $value) {
-					    $row["value-".$locales[$key]] = htmlentities($value);
+					    $row["value-".$locales[$key]] = $this->getFormatSnippetForExport($value);
 					    $values[] = $value;
 					}
 					//fill missing locale data
@@ -469,11 +472,13 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					}
 				}
 				else {
-					$row["value-".$locales[0]] = htmlentities($row["localeVals"]);
+					$row["value-".$locales[0]] = $this->getFormatSnippetForExport($row["localeVals"]);
 					for ($i = 1; $i < $countLocales; $i++) {
 					    $row["value-".$locales[$i]] = "";
 					}
 				}
+				$row['namespace'] = $this->getFormatSnippetForExport($row['namespace']);
+				$row['name'] = $this->getFormatSnippetForExport($row['name']);
 				unset($row["localeVals"]);
 				echo $this->encodeLine($row, array_keys($row));
 			}
@@ -676,6 +681,22 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
 			$string
 		);
+		return $string;
+	}
+	
+	/**
+	 * Format snippet for export
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	protected function getFormatSnippetForExport($string)
+	{
+		if(function_exists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, 'HTML-ENTITIES', 'ISO-8859-1');
+		} else {
+			$string = htmlentities($string, ENT_NOQUOTES);
+		}
 		return $string;
 	}
 	
