@@ -454,13 +454,23 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			$header = $tempHeader;
 			echo implode($header,";");
 			echo "\r\n";
+
+			function keephtml($string){
+	          $res = htmlentities($string);
+	          $res = str_replace("&lt;","<",$res);
+	          $res = str_replace("&gt;",">",$res);
+	          $res = str_replace("&quot;",'"',$res);
+	          $res = str_replace("&amp;",'&',$res);
+	          return $res;
+			}
+
 			while ($row = $result->fetch()) {
 				if(strpos($row["localeVals"],"~") !== false) {
 					//Contains foreign Value
 					$tempArr = explode("~",$row["localeVals"]);
 					$countAvailableLocales = count($tempArr);
 					foreach ($tempArr as $key => $value) {
-					    $row["value-".$locales[$key]] = htmlentities($value);
+					    $row["value-".$locales[$key]] = keephtml(htmlentities($value));
 					    $values[] = $value;
 					}
 					//fill missing locale data
@@ -469,7 +479,7 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					}
 				}
 				else {
-					$row["value-".$locales[0]] = htmlentities($row["localeVals"]);
+					$row["value-".$locales[0]] = keephtml(htmlentities($row["localeVals"]));
 					for ($i = 1; $i < $countLocales; $i++) {
 					    $row["value-".$locales[$i]] = "";
 					}

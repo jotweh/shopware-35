@@ -27,3 +27,10 @@ ALTER TABLE `s_order_billingaddress` ADD UNIQUE (
 ALTER TABLE `s_order_shippingaddress` ADD UNIQUE (
 	`orderID`
 );
+
+/*
+ * @author  Stefan Hamann
+ * @since   3.5.6 - 2012/01/13
+ * @ticket  #6593
+ */
+ALTER TABLE `s_emarketing_lastarticles` ADD INDEX ( `sessionID` );
