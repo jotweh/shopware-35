@@ -452,6 +452,8 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 				$headerLocaleFields = "value-".$locale;
 			}
 			$header = $tempHeader;
+			
+			//echo "\xEF\xBB\xBF";
 			echo implode($header,";");
 			echo "\r\n";
 
@@ -475,6 +477,8 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					    $row["value-".$locales[$i]] = "";
 					}
 				}
+				$row['namespace'] = $this->getFormatSnippetForExport($row['namespace']);
+				$row['name'] = $this->getFormatSnippetForExport($row['name']);
 				unset($row["localeVals"]);
 				echo $this->encodeLine($row, array_keys($row));
 			}
