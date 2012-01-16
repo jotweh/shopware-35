@@ -455,22 +455,13 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			echo implode($header,";");
 			echo "\r\n";
 
-			function keephtml($string){
-	          $res = htmlentities($string);
-	          $res = str_replace("&lt;","<",$res);
-	          $res = str_replace("&gt;",">",$res);
-	          $res = str_replace("&quot;",'"',$res);
-	          $res = str_replace("&amp;",'&',$res);
-	          return $res;
-			}
-
 			while ($row = $result->fetch()) {
 				if(strpos($row["localeVals"],"~") !== false) {
 					//Contains foreign Value
 					$tempArr = explode("~",$row["localeVals"]);
 					$countAvailableLocales = count($tempArr);
 					foreach ($tempArr as $key => $value) {
-					    $row["value-".$locales[$key]] = keephtml(htmlentities($value));
+					    $row["value-".$locales[$key]] = $this->getFormatSnippetForExport($value);
 					    $values[] = $value;
 					}
 					//fill missing locale data
@@ -479,7 +470,7 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 					}
 				}
 				else {
-					$row["value-".$locales[0]] = keephtml(htmlentities($row["localeVals"]));
+					$row["value-".$locales[0]] = $this->getFormatSnippetForExport($row["localeVals"]);
 					for ($i = 1; $i < $countLocales; $i++) {
 					    $row["value-".$locales[$i]] = "";
 					}
@@ -686,6 +677,22 @@ class Shopware_Controllers_Backend_Snippet extends Enlight_Controller_Action
 			array('&nbsp;', '&amp;', '&lt;', '&gt;'),
 			$string
 		);
+		return $string;
+	}
+	
+	/**
+	 * Format snippet for export
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	protected function getFormatSnippetForExport($string)
+	{
+		if(function_exists('mb_convert_encoding')) {
+			$string = mb_convert_encoding($string, 'HTML-ENTITIES', 'ISO-8859-1');
+		} else {
+			$string = htmlentities($string, ENT_NOQUOTES);
+		}
 		return $string;
 	}
 	
