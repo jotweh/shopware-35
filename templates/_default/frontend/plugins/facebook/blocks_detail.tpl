@@ -37,7 +37,7 @@
 <div id="facebook">
         <h2>Facebook-Kommentare</h2>
         <div class="container">
-			div id="fb-root"></div><script src="http://connect.facebook.net/{$Locale}/all.js#appId={$app_id}&amp;xfbml=1"></script><fb:comments href="{url sArticle=$sArticle.articleID title=$sArticle.articleName}" migrated="1" xid="{$unique_id}" width="425"></fb:comments>
+			<div id="fb-root"></div><script src="http://connect.facebook.net/{$Locale}/all.js#appId={$app_id}&amp;xfbml=1"></script><fb:comments href="{url sArticle=$sArticle.articleID title=$sArticle.articleName}" migrated="1" xid="{$unique_id}" width="425"></fb:comments>
         </div>
 </div>
 {/if}
