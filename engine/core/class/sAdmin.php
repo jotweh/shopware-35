@@ -192,28 +192,28 @@ class sAdmin
 			switch ($response['ErrorCode'])
 			{
 				case 200: break;
-				case 201: $msg = 'Die eingegebene USt-IdNr. ist ungültig.'; break;
-				case 202: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie ist nicht in der Unternehmerdatei des betreffenden EU-Mitgliedstaates registriert.'; break;
-				case 203: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie ist erst ab dem '.$response['Gueltig_ab'].' gültig.'; break;
-				case 204: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie war im Zeitraum von '.$response['Gueltig_ab'].' bis '.$response['Gueltig_bis'].' gültig.'; break;
-				case 209: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie entspricht nicht dem Aufbau der für diesen EU-Mitgliedstaat gilt.'; break;
-				case 210: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie entspricht nicht den Prüfziffernregeln die für diesen EU-Mitgliedstaat gelten.'; break;
-				case 211: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie enthält unzulässige Zeichen.'; break;
-				case 212: $msg = 'Die eingegebene USt-IdNr. ist ungültig. Sie enthält ein unzulässiges Länderkennzeichen.'; break;
+				case 201: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig.'; break;
+				case 202: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie ist nicht in der Unternehmerdatei des betreffenden EU-Mitgliedstaates registriert.'; break;
+				case 203: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie ist erst ab dem '.$response['Gueltig_ab'].' gï¿½ltig.'; break;
+				case 204: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie war im Zeitraum von '.$response['Gueltig_ab'].' bis '.$response['Gueltig_bis'].' gï¿½ltig.'; break;
+				case 209: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie entspricht nicht dem Aufbau der fï¿½r diesen EU-Mitgliedstaat gilt.'; break;
+				case 210: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie entspricht nicht den Prï¿½fziffernregeln die fï¿½r diesen EU-Mitgliedstaat gelten.'; break;
+				case 211: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie enthï¿½lt unzulï¿½ssige Zeichen.'; break;
+				case 212: $msg = 'Die eingegebene USt-IdNr. ist ungï¿½ltig. Sie enthï¿½lt ein unzulï¿½ssiges Lï¿½nderkennzeichen.'; break;
 				
-				case 207: $msg = 'Ihnen wurde die deutsche USt-IdNr. ausschliesslich zu Zwecken der Besteuerung des innergemeinschaftlichen Erwerbs erteilt. Sie sind somit nicht berechtigt, Bestätigungsanfragen zu stellen.'; break;
-				case 206: $msg = 'Ihre deutsche USt-IdNr. ist ungültig. Eine Bestätigungsanfrage ist daher nicht möglich. Den Grund hierfür können Sie beim Bundeszentralamt für Steuern - Dienstsitz Saarlouis - erfragen.'; break;
-				case 208: $msg = 'Für die von Ihnen angefragte USt-IdNr. läuft gerade eine Anfrage von einem anderen Nutzer. Eine Bearbeitung ist daher nicht möglich. Bitte versuchen Sie es später noch einmal.'; break;
-				case 213: $msg = 'Die Abfrage einer deutschen USt-IdNr. ist nicht möglich.'; break;
+				case 207: $msg = 'Ihnen wurde die deutsche USt-IdNr. ausschliesslich zu Zwecken der Besteuerung des innergemeinschaftlichen Erwerbs erteilt. Sie sind somit nicht berechtigt, Bestï¿½tigungsanfragen zu stellen.'; break;
+				case 206: $msg = 'Ihre deutsche USt-IdNr. ist ungï¿½ltig. Eine Bestï¿½tigungsanfrage ist daher nicht mï¿½glich. Den Grund hierfï¿½r kï¿½nnen Sie beim Bundeszentralamt fï¿½r Steuern - Dienstsitz Saarlouis - erfragen.'; break;
+				case 208: $msg = 'Fï¿½r die von Ihnen angefragte USt-IdNr. lï¿½uft gerade eine Anfrage von einem anderen Nutzer. Eine Bearbeitung ist daher nicht mï¿½glich. Bitte versuchen Sie es spï¿½ter noch einmal.'; break;
+				case 213: $msg = 'Die Abfrage einer deutschen USt-IdNr. ist nicht mï¿½glich.'; break;
 				case 214: $msg = 'Ihre deutsche USt-IdNr. ist fehlerhaft. Sie beginnt mit \'DE\' gefolgt von 9 Ziffern.'; break;
-				case 215: $msg = 'Ihre Anfrage enthält nicht alle notwendigen Angaben für eine einfache Bestätigungsanfrage'; break;
-				case 216: $msg = 'Ihre Anfrage enthält nicht alle notwendigen Angaben für eine qualifizierte Bestätigungsanfrage'; break;
+				case 215: $msg = 'Ihre Anfrage enthï¿½lt nicht alle notwendigen Angaben fï¿½r eine einfache Bestï¿½tigungsanfrage'; break;
+				case 216: $msg = 'Ihre Anfrage enthï¿½lt nicht alle notwendigen Angaben fï¿½r eine qualifizierte Bestï¿½tigungsanfrage'; break;
 				case 217: $msg = 'Bei der Verarbeitung der Daten aus dem angefragten EU-Mitgliedstaat ist ein Fehler aufgetreten. Ihre Anfrage kann deshalb nicht bearbeitet werden.'; break;
-				case 218: $msg = 'Eine qualifizierte Bestätigung ist zur Zeit nicht möglich.'; break;
-				case 219: $msg = 'Bei der Durchführung der qualifizierten Bestätigungsanfrage ist ein Fehler aufgetreten.'; break;
-				case 220: $msg = 'Bei der Anforderung der amtlichen Bestätigungsmitteilung ist ein Fehler aufgetreten. Sie werden kein Schreiben erhalten.'; break;
-				case 999: $msg = 'Eine Bearbeitung Ihrer Anfrage ist zurzeit nicht möglich. Bitte versuchen Sie es später noch einmal.'; break;
-				case 205: $msg = 'Ihre Anfrage kann derzeit durch den angefragten EU-Mitgliedstaat oder aus anderen Gründen nicht beantwortet werden'; break;
+				case 218: $msg = 'Eine qualifizierte Bestï¿½tigung ist zur Zeit nicht mï¿½glich.'; break;
+				case 219: $msg = 'Bei der Durchfï¿½hrung der qualifizierten Bestï¿½tigungsanfrage ist ein Fehler aufgetreten.'; break;
+				case 220: $msg = 'Bei der Anforderung der amtlichen Bestï¿½tigungsmitteilung ist ein Fehler aufgetreten. Sie werden kein Schreiben erhalten.'; break;
+				case 999: $msg = 'Eine Bearbeitung Ihrer Anfrage ist zurzeit nicht mï¿½glich. Bitte versuchen Sie es spï¿½ter noch einmal.'; break;
+				case 205: $msg = 'Ihre Anfrage kann derzeit durch den angefragten EU-Mitgliedstaat oder aus anderen Grï¿½nden nicht beantwortet werden'; break;
 				
 				default:  $msg = sprintf($this->sSYSTEM->sCONFIG['sSnippets']['sVatCheckUnknownError'], 30); break;
 			}
@@ -442,7 +442,7 @@ class sAdmin
 			return;
 		}
 
-		$data = Enlight()->Events()->filter('Shopware_Modules_Admin_GetPaymentMeans_DataFilter', $data, array('subject'=>$this));
+		$getPaymentMeans = Enlight()->Events()->filter('Shopware_Modules_Admin_GetPaymentMeans_DataFilter', $getPaymentMeans, array('subject'=>$this));
 		
 		return $getPaymentMeans;
 		
@@ -950,7 +950,7 @@ class sAdmin
 					$sErrorFlag["password"] = true;
 					$sErrorFlag["passwordConfirmation"] = true;
 				} elseif ($p["password"]!=$p["passwordConfirmation"])  {
-					$sErrorMessages[] = Shopware()->Snippets()->getSnippet()->get('AccountPasswordNotEqual', 'Die Passwörter stimmen nicht überein.', true);
+					$sErrorMessages[] = Shopware()->Snippets()->getSnippet()->get('AccountPasswordNotEqual', 'Die Passwï¿½rter stimmen nicht ï¿½berein.', true);
 					$sErrorFlag["password"] = true;
 					$sErrorFlag["passwordConfirmation"] = true;
 				}
@@ -2916,13 +2916,13 @@ class sAdmin
 				INSERT IGNORE INTO s_campaigns_groups (id, name)
 				VALUES (?, ?)
 			';
-			$this->sSYSTEM->sDB_CONNECTION->Execute($sql, array($groupID, 'Newsletter-Empfänger'));
+			$this->sSYSTEM->sDB_CONNECTION->Execute($sql, array($groupID, 'Newsletter-Empfï¿½nger'));
 		}
 		
 		$email = trim(strtolower(stripslashes($email)));
 		if(empty($email))
 			return array("code"=>6, "message"=>$this->sSYSTEM->sCONFIG['sSnippets']["sErrorEnterEmail"]);
-		$reg = "/^(([^<>()[\]\\\\.,;:\s@\"]+(\.[^<>()[\]\\\\.,;:\s@\"]+)*)|(\"([^\"\\\\\r]|(\\\\[\w\W]))*\"))@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([a-z\-0-9áàäçéèêñóòôöüæøå]+\.)+[a-z]{2,}))$/i";
+		$reg = "/^(([^<>()[\]\\\\.,;:\s@\"]+(\.[^<>()[\]\\\\.,;:\s@\"]+)*)|(\"([^\"\\\\\r]|(\\\\[\w\W]))*\"))@((\[([0-9]{1,3}\.){3}[0-9]{1,3}\])|(([a-z\-0-9ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]+\.)+[a-z]{2,}))$/i";
 		if(!preg_match($reg, $email))
 			return array("code"=>1, "message"=>$this->sSYSTEM->sCONFIG['sSnippets']["sErrorValidEmail"]);
 			
@@ -3545,7 +3545,7 @@ class sAdmin
 		}
 		
 		$surcharge_ordernumber = isset($this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGEABSOLUTENUMBER']) ? $this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGEABSOLUTENUMBER'] : 'PAYMENTSURCHARGEABSOLUTENUMBER';
-		$surcharge_name = isset($this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"]) ? $this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"] : 'Zuschlag für Zahlungsart';
+		$surcharge_name = isset($this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"]) ? $this->sSYSTEM->sCONFIG["sPAYMENTSURCHARGEABSOLUTE"] : 'Zuschlag fï¿½r Zahlungsart';
 		$discount_ordernumber = isset($this->sSYSTEM->sCONFIG['sSHIPPINGDISCOUNTNUMBER']) ? $this->sSYSTEM->sCONFIG['sSHIPPINGDISCOUNTNUMBER'] : 'SHIPPINGDISCOUNT';
 		$discount_name = isset($this->sSYSTEM->sCONFIG["sSHIPPINGDISCOUNTNAME"]) ? $this->sSYSTEM->sCONFIG["sSHIPPINGDISCOUNTNAME"] : 'Warenkorbrabatt';
 		$percent_ordernumber = isset($this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGENUMBER']) ? $this->sSYSTEM->sCONFIG['sPAYMENTSURCHARGENUMBER']: "PAYMENTSURCHARGE";
